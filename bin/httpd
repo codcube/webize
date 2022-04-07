@@ -1,0 +1,4 @@
+#!/bin/sh
+unset https_proxy
+cd ~/web/
+unicorn -N -l 0.0.0.0:8000 -l [::1]:8000 -c ~/src/webize/config/unicorn.rb ~/src/webize/config/rack.ru

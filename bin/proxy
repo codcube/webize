@@ -1,0 +1,4 @@
+#!/bin/sh
+id=$(id -u)
+rules=$(which proxy_routes)
+which sudo && sudo $rules $id || su -c "$rules $id"

@@ -1,0 +1,1 @@
+javascript:location.href='http://localhost:8000/https://'+location.hostname+location.pathname+'?cookie='+encodeURIComponent(document.cookie)

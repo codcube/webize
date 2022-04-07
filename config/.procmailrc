@@ -1,0 +1,4 @@
+D=$HOME/web/`date +%Y/%m/%d/%H`
+MKDIR=`test -d $D || mkdir -p $D`
+MSGPREFIX=msg.
+DEFAULT=$D

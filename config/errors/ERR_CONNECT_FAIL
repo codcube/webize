@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  </head>
+  <body style="background: repeating-linear-gradient(45deg, #000, #000 1.5em, #f0c 1.5em, #f0c 8em); color: white; font-family: sans-serif; text-align: center">
+    connect failed<br>
+    <a href="http://localhost:8000/%u" style="color: #fff; font-size: 22em; font-weight: normal; text-decoration: none">⌘</a>
+    <script>
+      document.addEventListener("DOMContentLoaded", function(){
+	  var url = new URL(document.location);
+//	  url.searchParams.set('cookie', document.cookie);
+	  url.searchParams.delete('utm_source');
+	  url.searchParams.delete('utm_term');
+	  url.searchParams.delete('utm_medium');
+	  url.searchParams.delete('utm_content');
+	  url.searchParams.delete('utm_campaign');
+	  var loc = 'http://localhost:8000/' + url;
+	  document.querySelector('a').setAttribute('href', loc);
+	  window.location.href = loc;
+      });
+    </script>
+  </body>
+</html>

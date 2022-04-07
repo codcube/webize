@@ -1,0 +1,24 @@
+#!/bin/sh
+
+dns_port=1053
+http_port=8000
+https_port=8443
+
+#DNS
+iptables  -t nat -A OUTPUT -p tcp -d 127.0.0.1 --dport 53 -j REDIRECT --to-ports $dns_port              # simulate port 53 listener
+iptables  -t nat -A OUTPUT -p udp -d 127.0.0.1 --dport 53 -j REDIRECT --to-ports $dns_port
+#iptables  -t nat -A OUTPUT -p tcp --dport 53 -j REDIRECT --to-ports $dns_port -m owner ! --uid-owner $1 # redirect unproxied traffic to proxy
+#ip6tables -t nat -A OUTPUT -p tcp --dport 53 -j REDIRECT --to-ports $dns_port -m owner ! --uid-owner $1
+#iptables  -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports $dns_port -m owner ! --uid-owner $1
+#ip6tables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports $dns_port -m owner ! --uid-owner $1
+
+#HTTP
+iptables  -t nat -A OUTPUT -p tcp -d 127.0.0.1 --dport 80 -j REDIRECT --to-ports $http_port              # simulate port 80 lisener
+#iptables  -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports $http_port -m owner ! --uid-owner $1 # redirect unproxied traffic to proxy
+#ip6tables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports $http_port -m owner ! --uid-owner $1
+
+# HTTPS
+#iptables  -t nat -A OUTPUT -p tcp -d 127.0.0.1 --dport 443 -j REDIRECT --to-ports $https_port -m owner ! --uid-owner $1 # simulate port 443 listener
+#ip6tables -t nat -A OUTPUT -p tcp -d ::1       --dport 443 -j REDIRECT --to-ports $https_port -m owner ! --uid-owner $1
+#iptables  -t nat -A OUTPUT -p tcp --dport 443 -j REDIRECT --to-ports $https_port -m owner ! --uid-owner $1 # redirect unproxied traffic to proxy
+#ip6tables -t nat -A OUTPUT -p tcp --dport 443 -j REDIRECT --to-ports $https_port -m owner ! --uid-owner $1

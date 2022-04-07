@@ -1,0 +1,98 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+# originally Simple DNS server by Peter Cooper w/ MIT license
+require 'resolv'
+require 'socket'
+require_relative '../index'
+require 'resolv-replace'
+hosts_resolver = Resolv::Hosts.new('/etc/hosts')
+dns_resolver = Resolv::DNS.new nameserver: %w(8.8.8.8 9.9.9.9 1.1.1.1)
+Resolv::DefaultResolver.replace_resolvers([hosts_resolver, dns_resolver])
+class DNSRequest
+  attr_reader :server, :data, :domain
+  def initialize(server, data)
+    @server = server
+    @data = data
+    extract_domain
+  end
+  def extract_domain
+    @domain = ''
+    # Check "Opcode" of question header for valid question
+    if @data[2].ord & 120 == 0
+      # Read QNAME section of question section. DNS header section is 12 bytes long, so data starts at offset 12
+      idx = 12    
+      len = @data[idx].ord
+      # Strings are rendered as a byte containing length, then text.. repeat until length of 0
+      until len == 0 do
+        @domain += @data[idx + 1, len] + '.'
+        idx += len + 1
+        len = @data[idx].ord
+      end
+    end
+  end
+  def response(val)
+    return empty_response if domain.empty? || !val
+    cname = val =~ /[a-z]/
+    # Valid response header
+    hA = "\x81\x00".force_encoding('ASCII-8BIT')
+    hB = "\x00\x00\x00\x00".force_encoding('ASCII-8BIT')
+    response = [data[0,2], hA, (data[4,2] * 2), hB].join
+    # Append original question section
+    response += data[12..-1]
+    # Use pointer to refer to domain name in question section
+    response += "\xc0\x0c".force_encoding('ASCII-8BIT')
+    # Set response type accordingly
+    response += cname ? "\x00\x05".force_encoding('ASCII-8BIT') : "\x00\x01".force_encoding('ASCII-8BIT')
+    # Set response class (IN)
+    response += "\x00\x01".force_encoding('ASCII-8BIT')
+    # TTL in seconds
+    response += [server.ttl].pack("N")
+    # Calculate RDATA - we need its length in advance
+    if cname
+      rdata = val.split('.').collect { |a| a.length.chr + a }.join + "\x00".force_encoding('ASCII-8BIT')
+    else
+      # Append IP address as four 8 bit unsigned bytes
+      rdata = val.split('.').collect(&:to_i).pack("C*")
+    end
+    # RDATA is 4 bytes
+    response += [rdata.length].pack("n")
+    response += rdata
+  end
+  def empty_response
+    # Empty response header [id * 2, flags, NXDOMAIN, qd count * 2, an count * 2, ns count * 2, ar count * 2]
+    response = "#{data[0,2]}\x81\x03#{data[4,2]}\x00\x00\x00\x00\x00\x00"
+    # Append original question section
+    response += data[12..-1]
+  end
+end
+class DNSServer
+  attr_reader :port, :ttl
+  LocalHost = '127.0.0.1'
+  Cache = {}
+  def initialize(options = {})
+    options = {port: 1053, ttl: 600}.merge(options)
+    @port, @ttl = options[:port], options[:ttl]
+  end
+  def run
+    Socket.udp_server_loop(@port) do |data, src|
+      r = DNSRequest.new(self, data)
+      domain = r.domain
+      hostname = domain.sub /\.$/,''
+      if Cache.has_key? domain
+        result = Cache[domain]
+      else
+        reverse = domain.index 'in-addr.arpa'
+        domain = domain[0..reverse-2].split('.').reverse.join('.') if reverse
+        deny = ['//', hostname].join.R.denyDNS?
+        result = Cache[domain] = (!ENV.has_key?('JUNK') && (deny || domain=='l')) ? LocalHost : Resolv.send((reverse ? :getname : :getaddress), domain) rescue LocalHost
+        puts [Time.now.iso8601[11..18],
+              ["\e[38;5;#{deny ? '196;7m' : '51mhttps://'}",
+               hostname,
+               "\e[0m"].join].join ' '
+      end
+      src.reply r.response(result)
+    end
+  end
+end
+puts "listening for DNS requests on port 1053"
+DNSServer.new.run

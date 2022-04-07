@@ -1,0 +1,96 @@
+#cf-error-details {background-color: #ff0; color: #000}
+#down {background-color: #222; color: #aaa; border-radius: .5em .5em 0 0; font-size: 2em; position: fixed; right: 4.5em; bottom: 0; padding: 0 1.5em 0 1.5em}
+#favicon {position: fixed; top: 0; left: 0; z-index: -1}
+#next {right: 0; border-radius: .6em 0 0 0; border-width: .04em 0 0 .04em}
+#prev {left: 0; border-radius: 0 .6em 0 0; border-width: .04em .04em 0 0}
+#prev, #next {position: fixed; bottom: 0; padding: .2em .8em .2em .8em; color: #eee; font-size: 2.8em; border-style: solid; border-color: #666}
+#prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
+#rootpath {float: left}
+#up {background-color: #222; color: #aaa; border-radius: 0 0 .5em .5em; font-size: 2em; position: fixed; right: 3em; top: 0; padding: 0 .8em 0 .8em}
+.abstract {background-color: #222; color: #fff; border-width: 0 0 0 .5em; border-style: solid; border-color: #555; border-radius: .38em}
+.abstract, .links, blockquote, ol, p, ul {max-width: 80ex}
+.blocked, a.blocked.uri {background: repeating-linear-gradient(90deg, #000, #000, 1em, #f00 1em, #f00 2em); color: #fff}
+.bold {font-weight: bold}
+.file > .icon {font-size: 4.2em; background-color: #000; color: #fff}
+.file > .name {font-size: .8em; position: absolute; top: 4.8em; left: .4em}
+.file {position: relative}
+.greentext, .greenText {background-color: #af0; color: #000; padding-left: .3em}
+.group > .label {font-weight: bold; font-size: 1.1em; background-color: #000; border-width: .125em .125em 0 .125em; border-radius: .25em .25em 0 0; border-style: solid}
+.group > .resources {padding: .2em; border-radius: 0 .3em .3em .3em}
+.group {margin: .2em}
+.id {color: #aaa; font-size: .72em; float: right}
+.images div {margin: .1em}
+.interactionCount .count {font-weight: bold; border-radius: 0 .38em .38em 0}
+.interactionCount .type {border-radius: .38em 0 0 .38em}
+.interactionCount span {background-color: #fff; color: #000; padding: .1em}
+.interactionCount {white-space: nowrap; margin: .06em}
+.links .host img {max-width: 4em}
+.links .host {text-align: right}
+.links .path a {font-weight: normal}
+.links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
+.links {overflow: hidden}
+.path_crumb {color: #bbb}
+.post .creator > a, .post .to > a {color: #000}
+.post .creator {float: right}
+.post > .content a {margin: .1em}
+.post > .content a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
+.post > .content {border-radius: 0 .4em .38em .38em; border: 1px solid #999; margin: 0; padding-left: .2em}
+.post > .title { border-radius: .4em .4em 0 0}
+.post a.pointer {font-size: .8em; color: #aaa; font-weight: normal; margin: 0}
+.post td {border-width: 0 1px 1px 0; border-style: solid; border-color: #555}
+.post th {background-color: #ccc; color: #000}
+.post th[scope="row"] {background-color: #2d2d2d; color: #fff; border-style: solid; border-color: #555}
+.post {margin: 0 .25em 0 0}
+.post.im .creator {float: none}
+.post.im, .post.im > .content {margin: 0; padding: 0; border-width: 0}
+.posts > a.group {color: #000; vertical-align: top; margin: 0; padding: .1em; border-radius: 0 0 .4em 0}
+.posts {border-style: solid; border-width: 0.125em; padding: 0; margin: .25em}
+.preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
+.preembed {position: relative; vertical-align: top}
+.quote, .q {background-color: #ccc; color: #000; padding-left: .2em}
+.title {font-size: 1.1em; background-color: #bbbbbb; color: #000; margin: 0; padding: .1em}
+.title:visited, a.uri:visited {background-color: #dbdbdb}
+.toolbox .path {color: #aaa; font-size: .8em}
+.toolbox form input {background-color: #000; color: #fff; border-radius: .5em; border-width: 0; font-size: .8em}
+.toolbox svg {height: 1em; width: 1em}
+.toolbox {vertical-align: top; font-size: 1.33em; color: #fff; text-shadow: 1px 1px #000000}
+.video {border: solid .3em #444; background-color: #000; margin: .2em;  border-radius: .5em}
+.warning {background-color: #ff0; color: #000; font-size: 1.1em}
+:target {background-color: #2ef !important; color : #000 !important}
+a {text-decoration: none; border-radius: .14em; color: #eee; font-weight: bold; vertical-align: top; margin: 0; padding: 0 .125em 0 .125em}
+a.uri > img {float: left}
+a.uri {border-radius: .24em; background-color: #bbbbbb; color: #000; max-width: 40em; overflow: hidden; font-weight: bold}
+a.uri.path {background-color: #000; color: #fff; border: .1em solid #444}
+a.uri.path:visited {background-color: #3f3f3f}
+a:hover, a.uri:hover {border-color: #0ff; background-color: #0ff}
+audio {width: 80ex; float: right}
+blockquote {border-radius: .2em; border-width: 0 0 0 .68em; border-style: solid; border-color: #787878; background-color: #2c2c2c; color: #fff}
+body {background-color: #000; color: #fff; font-family: sans-serif}
+body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
+body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
+body.error {background: #f00; font-weight: bold}
+div, a, svg, form, pre, table, textarea {display: inline-block}
+iframe, .preembed {border: .2em solid #fff}
+iframe.main_player {border: .25em solid red}
+img {border-radius: .3em}
+img, video {max-width: 100%}
+pre, code {white-space: pre-wrap; font-family: Consolas,'Courier New',Courier,monospace; max-width: 255ex}
+pre, p, ul, ol, blockquote, h1, h2, h3, h4, h5, h6 {margin: 0}
+span.uri {font-size: 0.8em; font-weight: normal}
+svg, img[src*="svg"] {max-width:2em; max-height: 2em}
+table {border-radius: .2em; vertical-align: top;}
+table.kv {float: right}
+table.tabular td {padding: 0}
+table.tabular {border-spacing: 0}
+td {max-width: 255ex; overflow: hidden; vertical-align: top; border-radius: .2em}
+td.k a {color: #ccc; background-color: #000; max-width: 28ex; padding: 0 .1em 0 .1em}
+td.k {text-align: right; font-weight: bold}
+th {border-radius: 0; border-width: 0 0 1px 0}
+th.sort {background-color: #bbb; color: #000; border-radius: .38em}
+thead a {color: #eee}
+tr:first-child > th:first-child {border-radius: .48em 0 0 0}
+tr:first-child > th:first-child:last-child {border-radius: .48em .48em 0 0}
+tr:first-child > th:last-child {border-radius: 0 .48em 0 0}
+tr:hover td {background: #333}
+tr:last-child > th:first-child {border-radius: 0 0 0 .4em; border-width: 0}
+video {min-width: 40ex}

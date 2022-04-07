@@ -1,0 +1,2 @@
+#!/bin/sh
+links -http-proxy localhost:8080 -https-proxy localhost:8080 -no-proxy-domains l,localhost "$@"

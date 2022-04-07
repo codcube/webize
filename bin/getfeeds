@@ -1,0 +1,12 @@
+#!/bin/sh
+# feed list
+feeds=~/src/webize/config/feeds.u
+
+# caching proxy
+if test -z "${HTTP_PROXY}"; then
+    HTTP_PROXY=http://localhost:8000
+fi
+echo using cache server at $HTTP_PROXY
+
+# fetch
+shuf $feeds | parallel --delay 1 -P 8 "curl -Isw '%{http_code}\t%{content_type}\t%{url_effective}\n' -o /dev/null $HTTP_PROXY/{}" | grep -v ^200
