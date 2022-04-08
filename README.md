@@ -2,7 +2,7 @@
 ``` sh
 mkdir -p ~/src && cd ~/src
 git clone git://mw.logbook.am/webize.git
-cd webize && ./INSTALL # install DEPENDENCIES. this library doesnt have a release version yet and can be run from the checkout dir, or you may link index.rb to ww.rb somewhere in your path, so you can for exampled pry -rww
+cd webize && ./INSTALL # install DEPENDENCIES
 ```
 # USAGE
 ``` sh
@@ -40,4 +40,4 @@ in theory, this project can go away once clients and servers are [privacy respec
 
 # WHO
 
-just someone on the internet. ix on EFNet and Rizon IRC. /msg me if you've sent an email so i know to check it. i am available for hire. i prefer to not sign NDAs, write closed-source, do ad-delivery/analytics/telemetry on users, or introduce dependencies on proprietary systems (Apple/Google/Microsoft/AWS platforms and OSes etc). pronouns he/him/they
+someone on the internet. ix on EFNet and Rizon IRC. /msg me if you've sent an email so i know to check it. i am available for hire, prefer to not sign NDAs, write closed-source, subject users to ad-delivery/analytics/telemetry, or introduce dependencies on proprietary systems. pronouns he/him/they
