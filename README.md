@@ -40,4 +40,4 @@ in theory, this project can go away once clients and servers are [privacy respec
 
 # WHO
 
-just someone on the internet. IX on EFNet and Rizon IRC. msg me if you've sent an email to the address in the git log as nobody sends to that so i don't check it. i am available for hire. bear in mind i don't sign NDAs, write proprietary software or do user ad-delivery/analytics/telemetry/ before getting in touch.
+just someone on the internet. ix on EFNet and Rizon IRC. /msg me if you've sent an email so i know to check it. i am available for hire. i prefer to not sign NDAs, write closed-source, do ad-delivery/analytics/telemetry on users, or introduce dependencies on proprietary systems (Android+Gplay/iOS/AWS). pronouns he/him/they

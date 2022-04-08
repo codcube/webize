@@ -227,6 +227,7 @@ class WebResource
       to = {class: :to, c: p[To]} if re.has_key? To
       from = {class: :creator, c: p[Creator]} if re.has_key? Creator
       date = p[Date]
+      #text_color = ch[2..3].hex > 127 ? :black : :white
 
       unless (re[Creator]||[]).find{|a| KillFile.member? a.to_s}       # sender killfiled?
         {class: blocked ? 'blocked post' : (im ? 'post im' : 'post'),  # resource

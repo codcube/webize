@@ -444,14 +444,13 @@ class WebResource
                                group = group.R env
                                name = group.display_name
                                ch = nogroup ? '222222' : Digest::SHA2.hexdigest(name)[0..5]
-                               text_color = ch[2..3].hex > 127 ? :black : :white
                                color = ['#', ch].join
                                label = {_: :a,  href: group.href, style: "border-color: #{color}; color: #{color}",
                                         class: :label, c: CGI.escapeHTML(name)}
 
                                {class: :group,
                                 c: [(label unless nogroup), '<br>',
-                                    {class: :resources, style: "background-color: #{color}; color: #{text_color}",
+                                    {class: :resources, style: "border-color: #{color}",
                                      c: case env[:view]
                                         when 'table'
                                           HTML.tabular resources, env
