@@ -16,7 +16,7 @@
 .file {position: relative}
 .greentext, .greenText {background-color: #af0; color: #000; padding-left: .3em}
 .group > .label {font-weight: bold; font-size: 1.1em; background-color: #000; border-width: .125em .125em 0 .125em; border-radius: .25em .25em 0 0; border-style: solid}
-.group > .resources {padding: .2em; border-radius: 0 .3em .3em .3em}
+.group > .resources {padding: .2em; border-radius: 0 .3em .3em .3em; border-width: .125em; border-style: solid}
 .group {margin: .2em}
 .id {color: #aaa; font-size: .72em; float: right}
 .images div {margin: .1em}
