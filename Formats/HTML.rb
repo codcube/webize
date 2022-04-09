@@ -341,7 +341,7 @@ module Webize
 
         # <body>
         if body = @doc.css('body')[0] # summarize to new content on origin refresh
-          unless !@base.host || ReaderHosts.member?(@base.host) || @env[:fullContent] || @env[:origin_status] == 304 || @env.has_key?(:offline)
+          unless !@base.host || ReaderHosts.member?(@base.host) || @env[:fullContent] || @env[:origin_status] == 304 || @base.offline?
             @env[:links][:down] = WebResource::HTTP.qs @env[:qs].merge({'offline' => nil})
             hashed_nodes = 'article, aside, div, footer, h1, h2, h3, nav, p, section, b, span, ul, li'
             hashs = {}
