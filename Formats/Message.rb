@@ -184,9 +184,8 @@ class WebResource
           markup creator, env
         end}}
 
-    MarkupPredicate[Abstract] = -> abstracts, env {
-      {class: :abstract, c: abstracts.map{|a|
-         [(markup a, env), ' ']}}}
+    MarkupPredicate[Abstract] = -> as, env {
+      {class: :abstract, c: as.map{|a|[(markup a, env), ' ']}}}
 
     MarkupPredicate[Schema + 'authToken'] = -> tokens, env {tokens.map{|t| '🪙 '}}
 
@@ -234,8 +233,8 @@ class WebResource
          c: [(link if titled),                                         # title + resource pointer
              {class: :content,
               c: [(link unless titled),                                # resource pointer (untitled)
-                  from,                                                # sender
                   p[Abstract],                                         # abstract
+                  from,                                                # creator
                   p[Image],                                            # image(s)
                   [Content, SIOC+'richContent'].map{|p|
                     (re.delete(p)||[]).map{|o|markup o,env}},          # body
