@@ -7,8 +7,8 @@
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #rootpath {float: left}
 #up {background-color: #222; color: #aaa; border-radius: 0 0 .5em .5em; font-size: 2em; position: fixed; right: 3em; top: 0; padding: 0 .8em 0 .8em}
-.abstract {background-color: #222; color: #fff; border-width: 0 0 0 .5em; border-style: solid; border-color: #555; border-radius: .38em}
-.abstract, .links, blockquote, ol, p, ul {max-width: 80ex}
+.abstract {background-color: #bbbbbb; color: #000; display: block; border-radius: 0 .4em 0 0; margin-left: -.2em; padding-left: .125em}
+.links, blockquote, ol, p, ul {max-width: 80ex}
 .blocked, a.blocked.uri {background: repeating-linear-gradient(90deg, #000, #000, 1em, #f00 1em, #f00 2em); color: #fff}
 .bold {font-weight: bold}
 .file > .icon {font-size: 4.2em; background-color: #000; color: #fff}

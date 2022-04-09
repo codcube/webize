@@ -40,4 +40,4 @@ in theory, this project can go away once clients and servers are [privacy respec
 
 # WHO
 
-someone on the internet. ix on EFNet and Rizon IRC. /msg me if you've sent an email or filed an issue so i know to check it. i am available for hire unless that involves NDAs, closed-source, or user ad-delivery/analytics/telemetry. pronouns he/him/they
+someone on the 'net. ix on EFNet and Rizon IRC. msg me if you've sent an email or filed an issue so i know to check it. i am available for hire unless that involves NDAs, closed-source, or user ad-delivery/analytics/telemetry. pronouns he/him/they
