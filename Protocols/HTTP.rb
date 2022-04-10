@@ -269,16 +269,22 @@ class WebResource
         fetchFTP                                            # fetch w/ FTP
       when 'gemini'
         fetchGemini                                         # fetch w/ Gemini
-      when /^http/i
-        fetchHTTP                                           # fetch w/ HTTP(S)
+      when 'http'
+        fetchHTTP                                           # fetch w/ HTTP
+      when 'https'
+        if ENV.has_key? 'HTTP_PROXY'
+          insecure.fetchHTTP
+        else
+          fetchHTTP                                         # fetch w/ HTTPS
+        end
       else
         puts "⚠️ unsupported scheme: #{uri}"; notfound       # unsupported scheme
       end
 
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
-      env[:warning] = [e.class, e.message].join ' '
-      if scheme == 'https'                                             # HTTPS failure?
-        (env[:base] = uri.sub('s','').R env).fetchHTTP rescue notfound # fallback to w/ HTTP
+      env[:warning] = [e.class, e.message].join ' '         # warn on error/fallback condition
+      if scheme == 'https'                                  # HTTPS failure?
+        insecure.fetchHTTP rescue notfound                  # fallback to HTTP
       else
         notfound
       end
@@ -426,7 +432,7 @@ class WebResource
         end
       end
     rescue Exception => e                                   # response codes mapped to exceptions by HTTP library
-      raise unless e.respond_to? :io
+      raise unless e.respond_to?(:io) && e.io.respond_to?(:status)
       status = e.io.status[0].to_i                          # response status
       case status.to_s
       when /30[12378]/                                      # redirected
@@ -612,6 +618,10 @@ class WebResource
       else                                                  # remote node
         fetch
       end
+    end
+
+    def insecure
+      env[:base] = uri.sub('s','').R env
     end
 
     def linkHeader

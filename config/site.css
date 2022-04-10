@@ -37,7 +37,6 @@
 .post > .content {border-radius: 0 .4em .38em .38em; border: 1px solid #999; margin: 0; padding-left: .2em}
 .post > .title { border-radius: .4em .4em 0 0}
 .post a.pointer {font-size: .8em; color: #aaa; font-weight: normal; margin: 0}
-.post td {border-width: 0 1px 1px 0; border-style: solid; border-color: #555}
 .post th {background-color: #ccc; color: #000}
 .post th[scope="row"] {background-color: #2d2d2d; color: #fff; border-style: solid; border-color: #555}
 .post {margin: 0 .25em 0 0}
@@ -82,7 +81,7 @@ table {border-radius: .2em; vertical-align: top;}
 table.kv {float: right}
 table.tabular td {padding: 0}
 table.tabular {border-spacing: 0}
-td {max-width: 255ex; overflow: hidden; vertical-align: top; border-radius: .2em}
+td {border-radius: .2em; border-width: 0 1px 1px 0; border-style: solid; border-color: #555}
 td.k a {color: #ccc; background-color: #000; max-width: 28ex; padding: 0 .1em 0 .1em}
 td.k {text-align: right; font-weight: bold}
 th {border-radius: 0; border-width: 0 0 1px 0}
