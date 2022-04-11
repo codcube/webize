@@ -112,11 +112,18 @@ class WebResource
       graphResponse                                         # graph response
     end
 
+    def self.bwPrint kv
+      kv.map{|k,v|
+        print "\e[38;5;15;7m#{k}\e[0m #{v} "
+      }
+      print "\n"
+    end
+
     # HTTP entry-point from Rack
     def self.call env
       return [405,{},[]] unless Methods.member? env['REQUEST_METHOD'] # allow HTTP methods
       if Verbose
-        puts "🗣 CLIENT >>> PROXY"; Pry::ColorPrinter.pp env # log request
+        puts "🗣 CLIENT >>> PROXY"; bwPrint env # log request
       end
       env[:start_time] = Time.now                           # start timer
       env['SERVER_NAME'].downcase!                          # normalize hostname
@@ -143,9 +150,11 @@ class WebResource
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|                                    # dispatch request
-        (puts "🗣 CLIENT <<< PROXY";Pry::ColorPrinter.pp head) if Verbose                                 # log response
+        (puts "🗣 CLIENT <<< PROXY"; bwPrint head) if Verbose                                             # log response
+
         fmt = uri.format_icon head['Content-Type']                                                       # iconify format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
+
         puts [[env[:base].scheme == 'http' ? '🔓' : nil,                                                 # denote insecure protocol
                (!env[:deny] && !uri.head? && head['Content-Type'] != env[:origin_format]) ? fmt : nil,   # downstream format unless same as upstream
                status == env[:origin_status] ? nil : StatusIcon[status],                                 # downstream status unless same as upstream
@@ -314,9 +323,9 @@ class WebResource
         h = headers response.meta                           # response metadata
         if Verbose
           puts '🗣 PROXY <<< ORIGIN raw'
-          Pry::ColorPrinter.pp response.meta
+          bwPrint response.meta
           puts '🗣 PROXY <<< ORIGIN cleaned'
-          Pry::ColorPrinter.pp h
+          bwPrint h
         end
         env[:origin_status] = response.status[0].to_i       # response status
         case env[:origin_status]
