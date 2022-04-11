@@ -114,8 +114,7 @@ class WebResource
 
     def self.bwPrint kv
       kv.map{|k,v|
-        print "\e[38;5;15;7m#{k}\e[0m #{v} "
-      }
+        print "\e[38;5;15;7m#{k}\e[0m #{v} "}
       print "\n"
     end
 
@@ -123,7 +122,7 @@ class WebResource
     def self.call env
       return [405,{},[]] unless Methods.member? env['REQUEST_METHOD'] # allow HTTP methods
       if Verbose
-        puts "🗣 CLIENT >>> PROXY"; bwPrint env # log request
+        print "🗣 CLIENT >>> PROXY "; bwPrint env # log request
       end
       env[:start_time] = Time.now                           # start timer
       env['SERVER_NAME'].downcase!                          # normalize hostname

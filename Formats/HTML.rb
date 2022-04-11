@@ -52,7 +52,7 @@ module Webize
         Webize::CSS.cleanAttr node if node['style'].match? CSSgunk}
 
       dropnodes = "amp-ad, amp-consent, .player-unavailable"
-      doc.css(dropnodes).map{|n| log['🧽', n, /amp-(ad|consent)/i]} if Verbose
+     #doc.css(dropnodes).map{|n| log['🧽', n, /amp-(ad|consent)/i]} if Verbose
       doc.css(dropnodes).remove                      # strip amp + popup gunk
 
       doc.css('[integrity]').map{|n|                 # content is being heavily modified,
@@ -75,7 +75,7 @@ module Webize
 
       # drop upstream formatting and scripts
       dropnodes = 'iframe, script, style, link[rel="stylesheet"], link[type="text/javascript"], link[as="script"]'  # a[href^="javascript"]
-      html.css(dropnodes).map{|n| puts ['🧽 ', n].join} if Verbose
+     #html.css(dropnodes).map{|n| puts ['🧽 ', n].join} if Verbose
       html.css(dropnodes).remove
 
       # <img> mapping
