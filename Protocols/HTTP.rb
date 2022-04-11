@@ -316,16 +316,16 @@ class WebResource
       puts "UNCACHED #{uri}" if head? && !head['If-Modified-Since']
       if Verbose
         puts "🗣 PROXY >>> ORIGIN #{uri}"
-        Pry::ColorPrinter.pp head
+        HTTP.bwPrint head
       end
       url = scheme ? uri : 'https:' +uri                    # HTTPS scheme selected by default
       URI.open(url, head) do |response|                     # HTTP(S) fetch
         h = headers response.meta                           # response metadata
         if Verbose
           puts '🗣 PROXY <<< ORIGIN raw'
-          bwPrint response.meta
+          HTTP.bwPrint response.meta
           puts '🗣 PROXY <<< ORIGIN cleaned'
-          bwPrint h
+          HTTP.bwPrint h
         end
         env[:origin_status] = response.status[0].to_i       # response status
         case env[:origin_status]
