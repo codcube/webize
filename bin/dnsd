@@ -67,7 +67,7 @@ class DNSRequest
 end
 class DNSServer
   attr_reader :port, :ttl
-  LocalHost = '127.0.0.1'
+  DefaultAddr = ENV['ADDR'] || '127.0.0.1'
   Cache = {}
   def initialize(options = {})
     options = {port: 1053, ttl: 600}.merge(options)
@@ -84,7 +84,7 @@ class DNSServer
         reverse = domain.index 'in-addr.arpa'
         domain = domain[0..reverse-2].split('.').reverse.join('.') if reverse
         deny = ['//', hostname].join.R.denyDNS?
-        result = Cache[domain] = (!ENV.has_key?('JUNK') && (deny || domain=='l')) ? LocalHost : Resolv.send((reverse ? :getname : :getaddress), domain) rescue LocalHost
+        result = Cache[domain] = (!ENV.has_key?('JUNK') && (deny || domain=='l')) ? DefaultAddr : Resolv.send((reverse ? :getname : :getaddress), domain) rescue DefaultAddr
         puts [Time.now.iso8601[11..18],
               ["\e[38;5;#{deny ? '196;7m' : '51mhttps://'}",
                hostname,

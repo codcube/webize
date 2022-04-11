@@ -272,11 +272,11 @@ class WebResource
       when 'http'
         fetchHTTP                                           # fetch w/ HTTP
       when 'https'
-        if ENV.has_key? 'HTTP_PROXY'
-          insecure.fetchHTTP
-        else
+#        if ENV.has_key? 'HTTP_PROXY'
+#          insecure.fetchHTTP
+#        else
           fetchHTTP                                         # fetch w/ HTTPS
-        end
+#        end
       else
         puts "⚠️ unsupported scheme: #{uri}"; notfound       # unsupported scheme
       end
@@ -305,7 +305,10 @@ class WebResource
         end
       end
       puts "UNCACHED #{uri}" if head? && !head['If-Modified-Since']
-      (puts '🗣 PROXY >>> ORIGIN'; Pry::ColorPrinter.pp head) if Verbose
+      if Verbose
+        puts "🗣 PROXY >>> ORIGIN #{uri}"
+        Pry::ColorPrinter.pp head
+      end
       url = scheme ? uri : 'https:' +uri                    # HTTPS scheme selected by default
       URI.open(url, head) do |response|                     # HTTP(S) fetch
         h = headers response.meta                           # response metadata
