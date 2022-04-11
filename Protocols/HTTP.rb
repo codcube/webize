@@ -1,5 +1,5 @@
 # coding: utf-8
-%w(brotli cgi digest/sha2 httparty open-uri pry rack).map{|_| require _}
+%w(brotli cgi digest/sha2 open-uri rack).map{|_| require _}
 
 class WebResource
   module URIs
@@ -673,75 +673,16 @@ class WebResource
     end
 
     def OPTIONS
-      unless !host || deny?                                 # OPTIONS allowed
-        head = headers                                      # read head
-        body = env['rack.input'].read                       # read body
-        env.delete 'rack.input'
-
-        if Verbose                                          # log request
-          puts 'OPTIONS ' + uri
-          head.map{|k,v| puts [k,v.to_s].join "\t" }
-          puts '>>>>>>>>', body
-        end
-
-        r = HTTParty.options uri, headers: head, body: body # OPTIONS request to origin
-        head = headers r.headers                            # response headers
-        body = r.body
-
-        if Verbose                                          # log response
-          puts '-' * 40
-          head.map{|k,v| puts [k,v.to_s].join "\t" }
-          puts '<<<<<<<<', body unless head['Content-Encoding']
-        end
-
-        [r.code, head, [body]]                              # response
-      else
-        env[:deny] = true
-        [202, {'Access-Control-Allow-Credentials' => 'true',
-               'Access-Control-Allow-Headers' => %w().join(', '),
-               'Access-Control-Allow-Origin' => origin}, []]
-      end
+      env[:deny] = true
+      [202, {'Access-Control-Allow-Credentials' => 'true',
+             'Access-Control-Allow-Headers' => %w().join(', '),
+             'Access-Control-Allow-Origin' => origin}, []]
     end
 
     def POST
-      unless !host || deny?                                 # POST allowed
-        head = headers                                      # read head
-        body = env['rack.input'].read                       # read body
-        env.delete 'rack.input'
-
-        if Verbose                                          # log request
-          puts 'POST ' + uri
-          head.map{|k,v| puts [k,v.to_s].join "\t" }
-          puts '>>>>>>>>', body
-        end
-
-        r = HTTParty.post uri, headers: head, body: body    # POST to origin
-        head = headers r.headers                            # response headers
-        body = r.body
-
-        if format = head['Content-Type']                    # response format
-          if reader = RDF::Reader.for(content_type: format) # reader defined for format?
-            env[:repository] ||= RDF::Repository.new        # initialize RDF repository
-            reader.new(HTTP.decompress({'Content-Encoding' => head['Content-Encoding']}, body), base_uri: self){|g|
-              env[:repository] << g}                        # read RDF
-            saveRDF                                         # cache RDF
-          else
-            puts "RDF::Reader undefined for #{format}"      # Reader undefined
-          end
-        end
-
-        if Verbose                                          # log response
-          puts '-' * 40
-          head.map{|k,v| puts [k,v.to_s].join "\t" }
-          puts '<<<<<<<<', body unless head['Content-Encoding']
-        end
-
-        [r.code, head, [body]]                              # response
-      else
-        env[:deny] = true
-        [202, {'Access-Control-Allow-Credentials' => 'true',
-               'Access-Control-Allow-Origin' => origin}, []]
-      end
+      env[:deny] = true
+      [202, {'Access-Control-Allow-Credentials' => 'true',
+             'Access-Control-Allow-Origin' => origin}, []]
     end
 
     def selectFormat default = nil                          # default-format argument
