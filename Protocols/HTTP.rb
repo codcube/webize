@@ -150,13 +150,13 @@ class WebResource
       env[:base] = uri.to_s.R env                           # base URI
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
 
-      uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|                                    # dispatch request
-        (print '💻 < 🖥 '; bwPrint head) if Verbose                                             # log response
+      uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|                                    # send request to handler
+        (print '💻 < 🖥 '; bwPrint head) if Verbose                                                       # log response
 
         fmt = uri.format_icon head['Content-Type']                                                       # iconify format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
 
-        puts [[env[:base].scheme == 'http' ? '🔓' : nil,                                                 # denote insecure protocol
+        puts [[(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                                    # denote insecure transport in log
                (!env[:deny] && !uri.head? && head['Content-Type'] != env[:origin_format]) ? fmt : nil,   # downstream format unless same as upstream
                status == env[:origin_status] ? nil : StatusIcon[status],                                 # downstream status unless same as upstream
                uri.action_icon,                                                                          # HTTP method
@@ -616,13 +616,13 @@ class WebResource
 
       if parts[-1]&.match? /^(gen(erate)?|log)_?204$/       # 204 response w/o origin roundtrip
         [204, {}, []]
-      elsif !ENV.has_key?('HTTP_PROXY') && handler = HostGET[host.downcase] # host handler
+      elsif !ENV.has_key?('HTTP_PROXY') && handler = HostGET[host.downcase] # host handler at first proxy in chain
         handler[self]
       elsif query&.match? Gunk                              # gunk in query
         [301,{'Location' => ['//',host,path].join.R(env).href},[]] # drop query
       elsif host.match?(/\.(amazonaws|cloudfront)\.(com|net)$/) && uri.match?(/\.(jpe?g|png|webp)$/i)
         fetch
-      elsif deny?                                           # denied request
+      elsif deny? && !LocalAllow.has_key?(host)             # denied request
         deny
       elsif offline? && directory? && !dirURI?              # enter directory
         enter_container
