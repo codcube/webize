@@ -10,12 +10,11 @@ class WebResource
 
     Args = %w(cookie find fullContent group notransform offline order sort view) # client<>proxy arguments
     HostGET = {}
-    Hosts = Hash[*File.open([ENV['PREFIX'],'/etc/hosts'].join).readlines.map(&:chomp).map{|l|
-                   addr, *names = l.split
-                   names.map{|host|
-                     [host, addr]}}.flatten]
-    Hosts['_gateway'] = '127.0.0.1'
-    Addrs = Hosts.invert
+    PeerHosts = Hash[*File.open([ENV['PREFIX'],'/etc/hosts'].join).readlines.map(&:chomp).map{|l|
+                       addr, *names = l.split
+                       names.map{|host|
+                         [host, addr]}}.flatten]
+    PeerAddrs = PeerHosts.invert
     LocalAddrs = Socket.ip_address_list.map &:ip_address
     Methods = %w(GET HEAD OPTIONS POST PUT)
     R304 = [304, {}, []]
@@ -128,16 +127,18 @@ class WebResource
       env[:start_time] = Time.now                           # start timer
       env['SERVER_NAME'].downcase!                          # normalize hostname
       env.update HTTP.env                                   # initialize environment
-      addr = Hosts[env['SERVER_NAME']] || env['SERVER_NAME']# map hostname to address
-      isPeer = Hosts.has_key?(env['SERVER_NAME'])           # peer cache?
-      uri = if LocalAddrs.member? addr                      # test for address locality
-              env[:proxy_href] = true                       # proxy remote refs in local URI space
+
+      isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer cache?
+      isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']]||env['SERVER_NAME']) # local cache?
+
+      uri = if isLocal
+              env[:proxy_href] = true                       # proxy remote refs to local URI space
               '/'                                           # local node
             else                                            # remote node
               env[:proxy_href] = isPeer
-              [isPeer ? :http : :https,                     # security at transport-level for peers, protocol-level for external hosts
-               '://', env['HTTP_HOST']].join
+              [isPeer ? :http : :https, '://', env['HTTP_HOST']].join
             end.R.join(env['REQUEST_PATH']).R env
+
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query
         env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {}
         qs = env[:qs].dup                                   # strip excess &s, parse and memoize query
@@ -279,7 +280,7 @@ class WebResource
       when 'http'
         fetchHTTP                                           # fetch w/ HTTP
       when 'https'
-        isPeer = Addrs.has_key?(Resolv.getaddress host) rescue false
+        isPeer = PeerAddrs.has_key? Resolv.getaddress host rescue false
         if ENV.has_key?('HTTP_PROXY') || isPeer             # request to private-network peer
           insecure.fetchHTTP                                # fetch w/ HTTP
         else
