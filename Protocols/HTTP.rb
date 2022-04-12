@@ -114,7 +114,7 @@ class WebResource
 
     def self.bwPrint kv
       kv.map{|k,v|
-        print "\e[38;5;15;7m#{k}\e[0m#{v}"}
+        print "\e[38;5;8m#{k}\e[0m#{v}"}
       print "\n"
     end
 
@@ -272,7 +272,11 @@ class WebResource
       env[:fetched] = true                                  # note fetch for logger
       case scheme                                           # request scheme
       when nil                                              # unspecified scheme
-        fetchHTTP                                           # fetch w/ HTTPS
+        if ENV.has_key? 'HTTP_PROXY'
+          insecure.fetchHTTP                                # fetch w/ HTTP proxy
+        else
+          fetchHTTP                                         # fetch w/ HTTPS
+        end
       when 'ftp'
         fetchFTP                                            # fetch w/ FTP
       when 'gemini'
