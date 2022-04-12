@@ -270,9 +270,9 @@ class WebResource
       end
 
       env[:fetched] = true                                  # note fetch for logger
-      case scheme                                           # scheme-specific fetch:
-      when nil                                              # unspecified
-        fetchHTTP                                           # fetch w/ HTTPS (default)
+      case scheme                                           # request scheme
+      when nil                                              # unspecified scheme
+        fetchHTTP                                           # fetch w/ HTTPS
       when 'ftp'
         fetchFTP                                            # fetch w/ FTP
       when 'gemini'
@@ -280,11 +280,11 @@ class WebResource
       when 'http'
         fetchHTTP                                           # fetch w/ HTTP
       when 'https'
-#        if ENV.has_key? 'HTTP_PROXY'
-#          insecure.fetchHTTP
-#        else
+        if ENV.has_key? 'HTTP_PROXY'
+          insecure.fetchHTTP                                # fetch w/ HTTP proxy
+        else
           fetchHTTP                                         # fetch w/ HTTPS
-#        end
+        end
       else
         puts "⚠️ unsupported scheme: #{uri}"; notfound       # unsupported scheme
       end
