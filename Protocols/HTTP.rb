@@ -123,7 +123,7 @@ class WebResource
     def self.call env
       return [405,{},[]] unless Methods.member? env['REQUEST_METHOD'] # allow HTTP methods
       if Verbose
-        print '💻 >>> 🖥 '; bwPrint env            # log request
+        print '💻 > 🖥 '; bwPrint env            # log request
       end
       env[:start_time] = Time.now                           # start timer
       env['SERVER_NAME'].downcase!                          # normalize hostname
@@ -150,7 +150,7 @@ class WebResource
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|                                    # dispatch request
-        (print '💻 <<< 🖥 '; bwPrint head) if Verbose                                             # log response
+        (print '💻 < 🖥 '; bwPrint head) if Verbose                                             # log response
 
         fmt = uri.format_icon head['Content-Type']                                                       # iconify format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
@@ -313,15 +313,15 @@ class WebResource
       end
       url = scheme ? uri : 'https:' +uri                    # HTTPS scheme selected by default
       if Verbose
-        print "🖥 >>> ☁️  #{uri} "
+        print "🖥 > ☁️  #{uri} "
         HTTP.bwPrint head
       end
       URI.open(url, head) do |response|                     # HTTP(S) fetch
         h = headers response.meta                           # response metadata
         if Verbose
-          print '🥩 <<< ☁️  '
+          print '🥩 < ☁️  '
           HTTP.bwPrint response.meta
-          print '🧽 <<< ☁️  '
+          print '🧽 < ☁️  '
           HTTP.bwPrint h
         end
         env[:origin_status] = response.status[0].to_i       # response status
