@@ -1,5 +1,5 @@
 # coding: utf-8
-%w(brotli cgi digest/sha2 open-uri rack).map{|_| require _}
+%w(brotli cgi digest/sha2 open-uri rack resolv).map{|_| require _}
 
 class WebResource
   module URIs
@@ -15,6 +15,7 @@ class WebResource
                    names.map{|host|
                      [host, addr]}}.flatten]
     Hosts['_gateway'] = '127.0.0.1'
+    Addrs = Hosts.invert
     LocalAddrs = Socket.ip_address_list.map &:ip_address
     Methods = %w(GET HEAD OPTIONS POST PUT)
     R304 = [304, {}, []]
@@ -128,7 +129,7 @@ class WebResource
       env['SERVER_NAME'].downcase!                          # normalize hostname
       env.update HTTP.env                                   # initialize environment
       addr = Hosts[env['SERVER_NAME']] || env['SERVER_NAME']# map hostname to address
-      isPeer = Hosts.has_key? env['SERVER_NAME']            # is host a peer-cache?
+      isPeer = Hosts.has_key?(env['SERVER_NAME'])           # peer cache?
       uri = if LocalAddrs.member? addr                      # test for address locality
               env[:proxy_href] = true                       # proxy remote refs in local URI space
               '/'                                           # local node
@@ -278,7 +279,7 @@ class WebResource
       when 'http'
         fetchHTTP                                           # fetch w/ HTTP
       when 'https'
-        if ENV.has_key? 'HTTP_PROXY'
+        if ENV.has_key?('HTTP_PROXY') || Addrs.has_key?(Resolv.getaddress host)
           insecure.fetchHTTP                                # fetch w/ HTTP proxy
         else
           fetchHTTP                                         # fetch w/ HTTPS
