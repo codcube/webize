@@ -222,7 +222,6 @@ class WebResource
     GET 'mixcloud.com', -> r {[301, {'Location' => ['//www.mixcloud.com', r.path].join.R(r.env).href}, []]}
     GET 'www.mixcloud.com', -> r {
       if !r.path || r.path == '/'
-        r.env[:group] = Type
         r.env[:sort] = Date
         r.env[:view] = 'table'
         SiteDir.join('mixcloud').readlines.map(&:chomp).map{|chan|
@@ -320,7 +319,6 @@ class WebResource
         ('https://api.twitter.com/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_ext_alt_text=true&include_quote_count=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&simple_quoted_tweet=true&q='+q+'&tweet_search_mode=live&count=20' + cursor + '&query_source=&pc=1&spelling_corrections=1&ext=mediaStats%2ChighlightedLabel').R(r.env)}
 
       if !r.path || r.path == '/'                          ## feed
-        r.env[:group] = Type
         users.shuffle.each_slice(18){|t| print '🐦'
           searchURL[t.map{|u|'from%3A'+u}.join('%2BOR%2B')].fetchHTTP thru: false}
         r.saveRDF.graphResponse
@@ -425,7 +423,6 @@ class WebResource
         when /attribution_link|redirect/
           [301, {'Location' => r.join(qs['q']||qs['u']).R(r.env).href}, []]
         when 'feed'
-          r.env[:group] = :none
           SiteDir.join('youtube').readlines.map(&:chomp).map{|chan| print "🎞️"
             id = chan.R.parts[-1]
             "https://www.youtube.com/feeds/videos.xml?channel_id=#{id}".R(r.env).fetchHTTP thru: false}

@@ -9,9 +9,14 @@ class WebResource
       tabular list, env}
 
     def self.group graph, env, attr=nil
-      attr ||= env[:group] || To                  # default grouping attribute
-      attr = MetaMap[attr] || attr                # map attribute to URI
-      graph.group_by{|r|(r.delete(attr)||[])[0]}  # group resources
+      attr ||= env[:group]
+      if attr                        # grouping attribute
+        attr = MetaMap[attr] || attr # attribute to URI
+        graph.group_by{|r|           # group resources
+          (r.delete(attr) || [])[0]}
+      else
+        {'' => graph}                # default group
+      end
     end
 
     def self.sort graph, env
