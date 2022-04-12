@@ -83,7 +83,7 @@ module Webize
               yield subject, Content, Webize::HTML.format(msg.to_s, @base), graph # message body
               post.remove}                                                        # GC raw post HTML emitted as RDF
           else
-            puts "identifier search failed for post:", post if Verbose
+            #puts "identifier search failed in:", post if Verbose
           end
         }
         @doc.css('#boardNavMobile, #delform, #absbot, #navtopright, #postForm, #postingForm, #actionsForm, #thread-interactions').map &:remove

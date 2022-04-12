@@ -41,7 +41,6 @@ bat signal not in presumably-RDFa content (Can we twiddle HTML datatypes beforeh
 more granular de-utmize - delete specific query keys
 ask all the peer-caches (pi/vps/phone from laptop) ahead of origin servers for static resources - HEAD All then cancel remaining HEADs on first response and GET winner? HEAD shouldnt trigger origin fetches on each remote..local existence check only. investigate Squid inter-cache-protocol
 syndicate tokens to peers (push/proactive caching vs pull/ondemand above)
-mastodon URLs showing UNCACHED on feed fetch - maybe escaped-vs-non @?
 investigate the http2/fibery servers some of them can replace squid with a bit of addition in the auto-certgen space
 offline mode for mult-fetch resources like soundcloud/youtube subscriptions - generic declarative multiple-URLs specification for GET?
 systemd + openrc unit files

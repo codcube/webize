@@ -122,7 +122,7 @@ class WebResource
     def self.call env
       return [405,{},[]] unless Methods.member? env['REQUEST_METHOD'] # allow HTTP methods
       if Verbose
-        print '🗣 CLIENT >>> PROXY '; bwPrint env            # log request
+        print '💻 >>> 🖥 '; bwPrint env            # log request
       end
       env[:start_time] = Time.now                           # start timer
       env['SERVER_NAME'].downcase!                          # normalize hostname
@@ -149,7 +149,7 @@ class WebResource
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|                                    # dispatch request
-        (print '🗣 CLIENT <<< PROXY '; bwPrint head) if Verbose                                             # log response
+        (print '💻 <<< 🖥 '; bwPrint head) if Verbose                                             # log response
 
         fmt = uri.format_icon head['Content-Type']                                                       # iconify format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
@@ -312,18 +312,17 @@ class WebResource
           head['If-None-Match'] = etag                      # cache ETag for conditional fetch
         end
       end
-      puts "UNCACHED #{uri}" if head? && !head['If-Modified-Since']
+      url = scheme ? uri : 'https:' +uri                    # HTTPS scheme selected by default
       if Verbose
-        print "🗣 PROXY >>> ORIGIN #{uri} "
+        print "🖥 >>> ☁️  #{uri} "
         HTTP.bwPrint head
       end
-      url = scheme ? uri : 'https:' +uri                    # HTTPS scheme selected by default
       URI.open(url, head) do |response|                     # HTTP(S) fetch
         h = headers response.meta                           # response metadata
         if Verbose
-          print '🗣 PROXY <<< ORIGIN (raw) '
+          print '🖥 <<< ☁️  🥩'
           HTTP.bwPrint response.meta
-          print '🗣 PROXY <<< ORIGIN (clean) '
+          print '🖥 <<< ☁️  🧽'
           HTTP.bwPrint h
         end
         env[:origin_status] = response.status[0].to_i       # response status

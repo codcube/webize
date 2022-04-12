@@ -85,7 +85,6 @@ module Webize
         else
           Webize::JSON.scan(@json){|h|
             if s = h['expanded_url'] || h['uri'] || h['url'] || h['link'] || h['canonical_url'] || h['src'] || ((h['id'] || h['ID'] || h['_id'] || h['id_str']) && ('#' + (h['id'] || h['ID'] || h['_id'] || h['id_str']).to_s))
-              puts ::JSON.pretty_generate h if Verbose
               s = @base.join(s).R
               if s.parts[0] == 'users'
                 host = ('https://' + s.host).R
