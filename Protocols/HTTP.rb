@@ -279,8 +279,9 @@ class WebResource
       when 'http'
         fetchHTTP                                           # fetch w/ HTTP
       when 'https'
-        if ENV.has_key?('HTTP_PROXY') || Addrs.has_key?(Resolv.getaddress(host) rescue '127.0.0.1')
-          insecure.fetchHTTP                                # fetch w/ HTTP proxy
+        isPeer = Addrs.has_key?(Resolv.getaddress host) rescue false
+        if ENV.has_key?('HTTP_PROXY') || isPeer             # request to private-network peer
+          insecure.fetchHTTP                                # fetch w/ HTTP
         else
           fetchHTTP                                         # fetch w/ HTTPS
         end
