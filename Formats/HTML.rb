@@ -390,7 +390,7 @@ class WebResource
     # Graph -> HTML
     def htmlDocument graph
       status = env[:origin_status]
-      elapsed = Time.now - env[:start_time]
+      elapsed = Time.now - env[:start_time] if env.has_key? :start_time
       icon = join('/favicon.ico').R env                                                            # well-known icon location
       if env[:links][:icon]                                                                        # icon reference in metadata
         env[:links][:icon] = env[:links][:icon].R env unless env[:links][:icon].class==WebResource # normalize iconref class
