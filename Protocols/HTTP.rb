@@ -279,7 +279,7 @@ class WebResource
       when 'http'
         fetchHTTP                                           # fetch w/ HTTP
       when 'https'
-        if ENV.has_key?('HTTP_PROXY') || Addrs.has_key?(Resolv.getaddress host)
+        if ENV.has_key?('HTTP_PROXY') || Addrs.has_key?(Resolv.getaddress(host) rescue '127.0.0.1')
           insecure.fetchHTTP                                # fetch w/ HTTP proxy
         else
           fetchHTTP                                         # fetch w/ HTTPS
@@ -630,7 +630,7 @@ class WebResource
     end
 
     def insecure
-      env[:base] = uri.sub('s','').R env
+      env[:base] = uri.sub(/^(https:)?\/\//,'http://').R env
     end
 
     def linkHeader
