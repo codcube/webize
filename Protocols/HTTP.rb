@@ -114,7 +114,7 @@ class WebResource
 
     def self.bwPrint kv
       kv.map{|k,v|
-        print "\e[38;5;15;7m#{k}\e[0m #{v} "}
+        print "\e[38;5;15;7m#{k}\e[0m#{v}"}
       print "\n"
     end
 
@@ -320,9 +320,9 @@ class WebResource
       URI.open(url, head) do |response|                     # HTTP(S) fetch
         h = headers response.meta                           # response metadata
         if Verbose
-          print '🖥 <<< ☁️  🥩'
+          print '🥩 <<< ☁️  '
           HTTP.bwPrint response.meta
-          print '🖥 <<< ☁️  🧽'
+          print '🧽 <<< ☁️  '
           HTTP.bwPrint h
         end
         env[:origin_status] = response.status[0].to_i       # response status
