@@ -270,13 +270,7 @@ class WebResource
       end
 
       env[:fetched] = true                                  # note fetch for logger
-      case scheme                                           # request scheme
-      when nil                                              # unspecified scheme
-        if ENV.has_key? 'HTTP_PROXY'
-          insecure.fetchHTTP                                # fetch w/ HTTP proxy
-        else
-          fetchHTTP                                         # fetch w/ HTTPS
-        end
+      case scheme || 'https'                                # request scheme
       when 'ftp'
         fetchFTP                                            # fetch w/ FTP
       when 'gemini'
@@ -619,11 +613,11 @@ class WebResource
 
       if parts[-1]&.match? /^(gen(erate)?|log)_?204$/       # 204 response w/o origin roundtrip
         [204, {}, []]
-      elsif handler = HostGET[host.downcase]                # host handler
+      elsif !ENV.has_key?('HTTP_PROXY') && handler = HostGET[host.downcase] # host handler
         handler[self]
       elsif query&.match? Gunk                              # gunk in query
         [301,{'Location' => ['//',host,path].join.R(env).href},[]] # drop query
-      elsif host.match?(/\.amazonaws.com$/) && uri.match?(/\.(jpe?g|png|webp)$/i)
+      elsif host.match?(/\.(amazonaws|cloudfront)\.(com|net)$/) && uri.match?(/\.(jpe?g|png|webp)$/i)
         fetch
       elsif deny?                                           # denied request
         deny
