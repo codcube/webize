@@ -249,7 +249,7 @@ class WebResource
                   (HTML.keyval(re,env) unless re.keys.size < 1), # key/val render remaining data
                   to,                                            # receiver
                   date,                                          # timestamp
-                 ]}.update(color ? {style: "border-color: #{color}"} : {}),
+                 ]}.update(color ? {style: "border-color: #{color}; border-style: dotted"} : {}),
              origin_ref,                                         # origin pointer
             ]}.update(id ? {id: id} : {})                        # representation identifier
       end}

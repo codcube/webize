@@ -46,6 +46,7 @@ class WebResource
       'forum.solidproject.org' => '#7c4dff',
       'i.redd.it' => '#000',
       'instagram.com' => '#fd7',
+      'news.ycombinator.com' => '#f60',
       'reddit.com' => '#f40',
       'soundcloud.com' => 'orange',
       't.co' => 'rgba(29,161,242,1.00)',
