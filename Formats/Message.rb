@@ -212,15 +212,16 @@ class WebResource
       titled = re.has_key? Title
       re.delete Date if im
 
-      if uri = re.delete('uri')                                        # unless blank node:
-        uri = uri.R env;  id = uri.local_id                            # origin and proxy URIs
-        blocked = uri.deny? && !LocalAllow.has_key?(uri.host)          # resource blocked?
-        origin_ref = {_: :a, class: :pointer, href: uri,               # origin pointer
-                      c: CGI.escapeHTML(uri.path || '')}               # cache pointer
+      if uri = re.delete('uri')                                  # unless blank node:
+        uri = uri.R env;  id = uri.local_id                      # origin and proxy URIs
+        blocked = uri.deny? && !LocalAllow.has_key?(uri.host)    # resource blocked?
+        origin_ref = {_: :a, class: :pointer, href: uri,         # origin pointer
+                      c: CGI.escapeHTML(uri.path || '')}         # cache pointer
         cache_ref = {_: :a, href: uri.href, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}
       end
 
-      p = -> a {MarkupPredicate[a][re.delete(a),env] if re.has_key? a} # predicate renderer
+      p = -> a {                                                 # predicate renderer lambda
+        MarkupPredicate[a][re.delete(a),env] if re.has_key? a}
       link = {class: titled ? :title : nil,c: titled ? p[Title] : :🔗}.# style+label resource pointer
                update(cache_ref || {})
       to = {class: :to, c: p[To]} if re.has_key? To
@@ -228,23 +229,23 @@ class WebResource
       date = p[Date]
       #text_color = ch[2..3].hex > 127 ? :black : :white
 
-      unless (re[Creator]||[]).find{|a| KillFile.member? a.to_s}       # sender killfiled?
-        {class: blocked ? 'blocked post' : (im ? 'post im' : 'post'),  # resource
-         c: [(link if titled),                                         # title + resource pointer
-             {class: :content,
-              c: [(link unless titled),                                # resource pointer (untitled)
-                  p[Abstract],                                         # abstract
-                  from,                                                # creator
-                  p[Image],                                            # image(s)
+      unless (re[Creator]||[]).find{|a| KillFile.member? a.to_s} # sender killfiled?
+        {class: im ? 'post im' : 'post',                         # resource
+         c: [(link if titled),                                   # title + resource pointer
+             {class: blocked ? 'blocked content' : :content,
+              c: [(link unless titled),                          # resource pointer (untitled)
+                  p[Abstract],                                   # abstract
+                  from,                                          # creator
+                  p[Image],                                      # image(s)
                   [Content, SIOC+'richContent'].map{|p|
-                    (re.delete(p)||[]).map{|o|markup o,env}},          # body
-                  p[Link],                                             # untyped links
-                  (HTML.keyval(re,env) unless re.keys.size < 1),       # key/val render remaining data
-                  date,                                                # timestamp
+                    (re.delete(p)||[]).map{|o|markup o,env}},    # body
+                  p[Link],                                       # untyped links
+                  (HTML.keyval(re,env) unless re.keys.size < 1), # key/val render remaining data
+                  date,                                          # timestamp
                  ]},
-             to,                                                       # receiver
-             origin_ref,                                               # origin pointer
-            ]}.update(id ? {id: id} : {})                              # representation identifier
+             to,                                                 # receiver
+             origin_ref,                                         # origin pointer
+            ]}.update(id ? {id: id} : {})                        # representation identifier
       end}
 
     Markup[Schema + 'InteractionCounter'] = -> counter, env {

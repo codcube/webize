@@ -52,6 +52,7 @@ class WebResource
       'twitch.tv' => '#9146ff',
       'twitter.com' => 'rgba(29,161,242,1.00)',
       'www.facebook.com' => '#3b5998',
+      'www.imdb.com' => '#f5c518',
       'www.instagram.com' => '#fd7',
       'www.mixcloud.com' => '#5000ff',
       'www.reddit.com' => '#f40',
