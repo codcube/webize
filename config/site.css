@@ -34,7 +34,7 @@
 .post .creator {float: right}
 .post > .content a {margin: .1em}
 .post > .content a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
-.post > .content {border-radius: 0 .4em .38em .38em; border: 1px solid #999; margin: 0; padding-left: .2em}
+.post > .content {border-radius: 0 .4em .38em .38em; border: 1px solid #999; margin: 0; padding-left: .2em; max-width: 88ex}
 .post > .title { border-radius: .4em .4em 0 0}
 .post a.pointer {font-size: .8em; color: #aaa; font-weight: normal; margin: 0}
 .post th {background-color: #ccc; color: #000}
@@ -72,7 +72,7 @@ div, a, svg, form, pre, table, textarea {display: inline-block}
 iframe, .preembed {border: .2em solid #fff}
 iframe.main_player {border: .25em solid red}
 img {border-radius: .3em}
-img, video {max-width: 100%}
+img, video, table {max-width: 100%}
 pre, code {white-space: pre-wrap; font-family: Consolas,'Courier New',Courier,monospace; max-width: 255ex}
 pre, p, ul, ol, blockquote, h1, h2, h3, h4, h5, h6 {margin: 0}
 span.uri {font-size: 0.8em; font-weight: normal}

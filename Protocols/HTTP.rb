@@ -321,8 +321,8 @@ class WebResource
       URI.open(url, head) do |response|                     # HTTP(S) fetch
         h = headers response.meta                           # response metadata
         if Verbose
-          print '🥩 < ☁️  '
-          HTTP.bwPrint response.meta
+#          print '🥩 < ☁️  '
+#          HTTP.bwPrint response.meta
           print '🧽 < ☁️  '
           HTTP.bwPrint h
         end

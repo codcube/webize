@@ -218,17 +218,20 @@ class WebResource
         origin_ref = {_: :a, class: :pointer, href: uri,         # origin pointer
                       c: CGI.escapeHTML(uri.path || '')}         # cache pointer
         cache_ref = {_: :a, href: uri.href, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}
+        color = HostColors[uri.host] if HostColors.has_key? uri.host
       end
 
       p = -> a {                                                 # predicate renderer lambda
         MarkupPredicate[a][re.delete(a),env] if re.has_key? a}
       link = {class: titled ? :title : nil,c: titled ? p[Title] : :🔗}.# style+label resource pointer
                update(cache_ref || {})
-      to = {class: :to, c: p[To]} if re.has_key? To
+      if re.has_key? To
+        color = Digest::SHA2.hexdigest(p[To][0].R.display_name)[0..5] if p[To].size == 1 && [WebResource, RDF::URI].member?(p[To][0].class)
+        to = {class: :to, c: p[To]}
+      end
       from = {class: :creator, c: p[Creator]} if re.has_key? Creator
       date = p[Date]
       #text_color = ch[2..3].hex > 127 ? :black : :white
-
       unless (re[Creator]||[]).find{|a| KillFile.member? a.to_s} # sender killfiled?
         {class: im ? 'post im' : 'post',                         # resource
          c: [(link if titled),                                   # title + resource pointer
@@ -241,9 +244,9 @@ class WebResource
                     (re.delete(p)||[]).map{|o|markup o,env}},    # body
                   p[Link],                                       # untyped links
                   (HTML.keyval(re,env) unless re.keys.size < 1), # key/val render remaining data
+                  to,                                            # receiver
                   date,                                          # timestamp
-                 ]},
-             to,                                                 # receiver
+                 ]}.update(color ? {style: "border-color: #{color}"} : {}),
              origin_ref,                                         # origin pointer
             ]}.update(id ? {id: id} : {})                        # representation identifier
       end}
