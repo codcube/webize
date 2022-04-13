@@ -647,7 +647,20 @@ class WebResource
 
     def notfound
       env.delete :view
-      [404, {'Content-Type' => 'text/html'}, head? ? nil : [htmlDocument({'#req'=>env})]]
+      format = selectFormat
+      body = case format                                    # response body
+             when /html/                                    # serialize HTML
+               htmlDocument treeFromGraph.update({'#request'=>env})
+             when /atom|rss|xml/                            # serialize Atom/RSS
+               feedDocument treeFromGraph
+             else                                           # serialize RDF
+               if writer = RDF::Writer.for(content_type: format)
+                 env[:repository].dump writer.to_sym, base_uri: self
+               else
+                 ''
+               end
+             end
+      [404, {'Content-Type' => format}, head? ? nil : [body]]
     end
 
     def offline?
