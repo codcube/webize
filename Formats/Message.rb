@@ -223,15 +223,18 @@ class WebResource
 
       p = -> a {                                                 # predicate renderer lambda
         MarkupPredicate[a][re.delete(a),env] if re.has_key? a}
-      link = {class: titled ? :title : nil,c: titled ? p[Title] : :🔗}.# style+label resource pointer
-               update(cache_ref || {})
+
+      from = {class: :creator, c: p[Creator]} if re.has_key? Creator
       if re.has_key? To
         color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5] if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
+        text_color = color[3..4].hex > 127 ? :black : :white
         to = {class: :to, c: p[To]}
       end
-      from = {class: :creator, c: p[Creator]} if re.has_key? Creator
+
       date = p[Date]
-      #text_color = ch[2..3].hex > 127 ? :black : :white
+      link = {class: titled ? :title : nil,c: titled ? p[Title] : :🔗}. # resource pointer
+               update(cache_ref || {}).update((titled && color) ? {style: "background-color: #{color}; color: #{text_color || :black}"} : {})
+
       unless (re[Creator]||[]).find{|a| KillFile.member? a.to_s} # sender killfiled?
         {class: im ? 'post im' : 'post',                         # resource
          c: [(link if titled),                                   # title + resource pointer

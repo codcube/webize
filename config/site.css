@@ -8,7 +8,6 @@
 #rootpath {float: left}
 #up {background-color: #222; color: #aaa; border-radius: 0 0 .5em .5em; font-size: 2em; position: fixed; right: 3em; top: 0; padding: 0 .8em 0 .8em}
 .abstract {background-color: #bbbbbb; color: #000; display: block; border-radius: 0 .4em 0 0; margin-left: -.2em; padding-left: .125em}
-.links, blockquote, ol, p, ul {max-width: 80ex}
 .blocked, a.blocked.uri {background: repeating-linear-gradient(90deg, #000, #000, 1em, #f00 1em, #f00 2em); color: #fff}
 .bold {font-weight: bold}
 .file > .icon {font-size: 4.2em; background-color: #000; color: #fff}
@@ -29,9 +28,11 @@
 .links .path a {font-weight: normal}
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .links {overflow: hidden}
+.links, blockquote, ol, p, ul {max-width: 80ex}
 .path_crumb {color: #bbb}
 .post .creator > a, .post .to > a {color: #000}
 .post .creator {float: right}
+.post .to {margin-left: -.2em; float: left}
 .post > .content a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
 .post > .content {border-radius: 0 .4em .38em .38em; border: 1px solid #999; margin: 0; padding: 0 0 0 .2em; max-width: 88ex}
 .post > .title { border-radius: .4em .4em 0 0}
