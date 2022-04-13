@@ -1011,6 +1011,7 @@ class WebResource
       'track_title' => Title,
       'track_url' => Audio,
       'translator_type' => :drop,
+      'travis/config/environment' => :drop,
       'trigrams' => Abstract,
       'truncated' => :drop,
       'turbolinks-cache-control' => :drop,
