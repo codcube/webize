@@ -226,8 +226,10 @@ class WebResource
 
       from = {class: :creator, c: p[Creator]} if re.has_key? Creator
       if re.has_key? To
-        color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5] if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
-        text_color = color[3..4].hex > 127 ? :black : :white
+        if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
+          color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5]
+          text_color = color[3..4].hex > 127 ? :black : :white
+        end
         to = {class: :to, c: p[To]}
       end
 
