@@ -74,7 +74,7 @@ class WebResource
   end
 
   # RDF::Repository -> JSON (s->p->o). input data-structure for Atom/HTML/RSS renderers
-  def treeFromGraph graph=nil; graph ||= env[:repository]
+  def treeFromGraph graph=nil; graph ||= env[:repository]; return {} unless graph
     tree = {}                    # initialize tree
     bnodes = []                  # blank nodes
     graph.each_triple{|subj,pred,o| # triples
