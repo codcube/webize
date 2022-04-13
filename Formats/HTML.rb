@@ -532,7 +532,7 @@ class WebResource
         o
       when RDF::Literal
         if [RDF.HTML, RDF.XMLLiteral].member? o.datatype
-          if env.has_key? :proxy_href   # rewrite hrefs
+          if env[:proxy_href]           # rewrite hrefs
             Webize::HTML.resolve_hrefs o.to_s, env
           else
             o.to_s                      # HTML literal

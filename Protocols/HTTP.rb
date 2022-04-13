@@ -431,7 +431,7 @@ class WebResource
           if env[:client_etags].include? h['ETag']          # client has entity
             R304                                            # no content
           elsif env[:notransform] || fixed_format           # static content
-            body = Webize::HTML.resolve_hrefs body, env, true if format == 'text/html' && env.has_key?(:proxy_href) # resolve proxy-hrefs
+            body = Webize::HTML.resolve_hrefs body, env, true if format == 'text/html' && env[:proxy_href] # resolve proxy-hrefs
             head = {'Content-Type' => format,               # response header
                     'Content-Length' => body.bytesize.to_s}
             %w(ETag Last-Modified).map{|k|head[k] = h[k] if h[k]} # upstream headers for caller
@@ -654,7 +654,7 @@ class WebResource
              when /atom|rss|xml/                            # serialize Atom/RSS
                feedDocument treeFromGraph
              else                                           # serialize RDF
-               if writer = RDF::Writer.for(content_type: format)
+               if env[:repository] && writer = RDF::Writer.for(content_type: format)
                  env[:repository].dump writer.to_sym, base_uri: self
                else
                  ''

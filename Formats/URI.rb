@@ -98,15 +98,15 @@ class WebResource < RDF::URI
 
   # output reference for current browsing context
   def href
-    if in_doc? && fragment         # local ref : in document graph, no fetch required
+    if in_doc? && fragment         # in-document ref
       '#' + fragment
-    elsif env.has_key? :proxy_href # proxy ref : host rebase
+    elsif env[:proxy_href]         # proxy ref
       if !host || env['SERVER_NAME'] == host # local node
         uri
-      else                                   # relocated node
+      else                                   # remote node
         ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join
       end
-    else                           # normal ref : URI <-> URL correspondence
+    else                           # URI <-> URL correspondence
       uri
     end
   end
