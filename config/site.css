@@ -34,7 +34,7 @@
 .post .creator {float: right}
 .post .to {margin-left: -.2em; float: left}
 .post > .content a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
-.post > .content {border-radius: 0 .4em .38em .38em; border: 1px solid #999; margin: 0; padding: 0 0 0 .2em; max-width: 88ex}
+.post > .content {border-radius: 0 .4em .38em .38em; border: 1px solid #999; margin: 0; padding: 0 0 0 .2em}
 .post > .title { border-radius: .4em .4em 0 0}
 .post a.pointer {font-size: .8em; color: #aaa; font-weight: normal; margin: 0}
 .post th {background-color: #ccc; color: #000}
