@@ -52,3 +52,4 @@ RDF::URI #query_values hates multiple/leading/trailing &s, submit patch upstream
 #preview isn't fully recursive on blank-node objects of blank-nodes. generalize out graphFomTree?
 strip IDs from inside HTML content.. yield each named section RDF content w/ appropriate subject URI
 shift-right/left pagination shortcuts interfere with text-selection adjustment
+re-parsing PDFs when offline http://l/http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date
