@@ -68,19 +68,19 @@ module Webize
               if count = c.inner_text.strip.match(/^(\d+) comments$/)
                 yield subject, 'https://schema.org/commentCount', count[1], graph
               end}
-
+                                                                                  # content
+            yield subject, Content, Webize::HTML.format(post.to_s, @base), graph if post['class'] == 'content'
             post.css(".body, .comment, .content, .e-content, .entry-content, .divMessage, .message, .messageContent, .message-body, .post-body, .postarea, .postbody, [id^='post_message'], .postMessage, .text, .views-field-body, span.sitestr, span.score").map{|msg|
               msg.css('a[class^="ref"], a[onclick*="Reply"], .post-link, .quote_link, .quotelink, .quoteLink, .reply a').map{|reply_of|
-                yield subject, To, (@base.join reply_of['href']), graph           # reply-of references
+                yield subject, To, (@base.join reply_of['href']), graph           # reply-of reference
                 reply_of.remove}
-
-              msg.traverse{|n|                                                    # references in text content
+              msg.traverse{|n|                                                    # hrefs in text nodes
                 if n.text? && n.to_s.match?(/https?:\/\//)
                   n.add_next_sibling (CGI.unescapeHTML n.to_s).hrefs{|p,o| yield subject, p, o}
                   n.remove
                 end}
+              yield subject, Content, Webize::HTML.format(msg.to_s, @base), graph
 
-              yield subject, Content, Webize::HTML.format(msg.to_s, @base), graph # message body
               post.remove}                                                        # GC raw post HTML emitted as RDF
           else
             #puts "identifier search failed in:", post if Verbose
