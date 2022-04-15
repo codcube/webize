@@ -1014,6 +1014,7 @@ class WebResource
       'travis/config/environment' => :drop,
       'trigrams' => Abstract,
       'truncated' => :drop,
+      'turbo-cache-control' => :drop,
       'turbolinks-cache-control' => :drop,
       'tweet_id' => :drop,
       'twitter' => Creator,
