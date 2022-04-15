@@ -251,7 +251,9 @@ class WebResource
                   (HTML.keyval(re,env) unless re.keys.size < 1), # key/val render remaining data
                   to,                                            # receiver
                   date,                                          # timestamp
-                 ]}.update(color ? {style: "border-color: #{color}; border-style: dotted"} : {}),
+                 ]}.update(color ? {style: ["border-color: #{color}",
+                                            'border-style: dotted',
+                                            blocked ? "background: repeating-linear-gradient(90deg, #000, #000, 1em, #{color} 1em, #{color} 2em" : nil].join('; ')} : {}),
              origin_ref,                                         # origin pointer
             ]}.update(id ? {id: id} : {})                        # representation identifier
       end}
