@@ -403,7 +403,11 @@ class WebResource
       end
       env[:links][:icon] ||= icon.node.exist? ? icon : '/favicon.ico'.R(env)                       # default icon
       bgcolor = if env[:deny]                                                                      # background color
-                  '#f00'                                                                           # deny -> red
+                  if HostColors.has_key? host
+                    HostColors[host]
+                  else
+                    '#f00'                                                                         # deny -> red
+                  end
                 elsif HTTP::StatusColor.has_key? status
                   HTTP::StatusColor[status]                                                        # status-code map
                 elsif !host || offline?
