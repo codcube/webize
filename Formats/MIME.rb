@@ -27,6 +27,7 @@ class WebResource
   end
 
   def fileMIMEsniff
+    return '' # Errno::EAGAIN when async
     puts "FILE(1) #{fsPath}"
     `file -b --mime-type #{shellPath}`.chomp
   end

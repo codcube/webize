@@ -388,8 +388,8 @@ class WebResource
               end
             end
 
-            `attr -s MIME -V #{Shellwords.escape format} #{Shellwords.escape file}` # cache MIME
-            `attr -s ETag -V #{Shellwords.escape h['ETag']} #{Shellwords.escape file}` if h['ETag'] # cache etag
+            #`attr -s MIME -V #{Shellwords.escape format} #{Shellwords.escape file}` # cache MIME  # Errno::EAGAIN when async
+            #`attr -s ETag -V #{Shellwords.escape h['ETag']} #{Shellwords.escape file}` if h['ETag'] # cache etag  # Errno::EAGAIN when async
 
             if reader = RDF::Reader.for(content_type: format) # reader defined for format?
               env[:repository] ||= RDF::Repository.new      # initialize RDF repository
@@ -568,7 +568,7 @@ class WebResource
     def head?; env['REQUEST_METHOD'] == 'HEAD' end
 
     # client<>proxy connection-specific headers not reused on proxy<>origin connection
-    SingleHopHeaders = %w(connection host if-modified-since if-none-match keep-alive path-info query-string
+    SingleHopHeaders = %w(async.http.request connection host if-modified-since if-none-match keep-alive path-info query-string
  remote-addr request-method request-path request-uri script-name server-name server-port server-protocol server-software
  te transfer-encoding unicorn.socket upgrade upgrade-insecure-requests version via x-forwarded-for)
 
