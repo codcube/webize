@@ -701,7 +701,7 @@ class WebResource
     def selectFormat default = nil                          # default-format argument
       default ||= 'text/html'                               # default when unspecified
       return default unless env.has_key? 'HTTP_ACCEPT'      # no preference specified
-      category = default.split('/')[0]+'/*'                 # format-category wildcard symbol
+      category = (default.split('/')[0] || '*') + '/*'      # format-category wildcard symbol
       all = '*/*'                                           # any-format wildcard symbol
 
       index = {}                                            # build (q-value -> format) index

@@ -22,7 +22,7 @@ class WebResource
             RDF::RDFa::Reader.new(File.open(fsPath).read, base_uri: env[:base]){|_|graph << _ } rescue puts :RDFa_error
           end
         else
-          puts "⚠️ no RDF reader for #{uri}" , options                # reader undefined for type
+          puts "⚠️ no RDF reader for #{fsPath}" , options                # reader undefined for type
         end
       end
     elsif node.directory?                                            # directory RDF
