@@ -1,5 +1,6 @@
 ajax.cloudflare.com
 ajax.googleapis.com
+api-v2.soundcloud.com
 archive.nytimes.com
 assets.bizjournals.com
 cdn.dashjs.org
@@ -10,6 +11,7 @@ encrypted-tbn1.gstatic.com
 encrypted-tbn2.gstatic.com
 encrypted-tbn3.gstatic.com
 feeds.bizjournals.com
+gist.github.com
 github.com
 gitlab.com
 i0.wp.com
