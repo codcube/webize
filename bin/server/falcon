@@ -1,1 +1,1 @@
-falcon -c ~/src/webize/config/rack.ru --bind http://localhost:8000
+cd ~/web && falcon -c ~/src/webize/config/rack.ru -n 1 --bind http://localhost:8000
