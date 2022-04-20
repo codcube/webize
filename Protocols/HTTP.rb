@@ -388,9 +388,6 @@ class WebResource
               end
             end
 
-            system 'attr', '-qs', 'MIME', '-V', format, file # cache MIME
-            system 'attr', '-qs', 'ETag', '-V', h['ETag'], file if h['ETag'] # cache etag
-
             if reader = RDF::Reader.for(content_type: format) # reader defined for format?
               env[:repository] ||= RDF::Repository.new      # initialize RDF repository
               if ts                                         # header to RDF
