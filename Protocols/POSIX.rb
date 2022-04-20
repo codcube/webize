@@ -70,9 +70,13 @@ class WebResource
     end
 
     def fileAttr key
-      return nil # Errno::EAGAIN when async
-      val = `attr -qg #{key} #{shellPath} 2> /dev/null`            # read file attribute
-      val if $?.success?
+      val = nil
+      Async.task do |task|
+              task.async {
+                result = `attr -qg #{key} #{shellPath} 2> /dev/null` # read file attribute
+                val = result if $?.success? }
+      end
+      val
     end
 
     # URI -> boolean

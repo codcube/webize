@@ -388,8 +388,12 @@ class WebResource
               end
             end
 
-            #`attr -s MIME -V #{Shellwords.escape format} #{Shellwords.escape file}` # cache MIME  # Errno::EAGAIN when async
-            #`attr -s ETag -V #{Shellwords.escape h['ETag']} #{Shellwords.escape file}` if h['ETag'] # cache etag  # Errno::EAGAIN when async
+            Async.task do |task|
+              task.async {
+                `attr -s MIME -V #{Shellwords.escape format} #{Shellwords.escape file}` # cache MIME
+                `attr -s ETag -V #{Shellwords.escape h['ETag']} #{Shellwords.escape file}` if h['ETag'] # cache etag
+              }
+            end
 
             if reader = RDF::Reader.for(content_type: format) # reader defined for format?
               env[:repository] ||= RDF::Repository.new      # initialize RDF repository
