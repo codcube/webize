@@ -148,7 +148,7 @@ class WebResource
 
       # request
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
-        (print "\e[7m💻 < 🖥\e[0m "; bwPrint head) if Verbose
+        (print "\e[7m💻 < 🖥 #{uri}\e[0m "; bwPrint head) if Verbose
 
         # request logger
         fmt = uri.format_icon head['Content-Type']                                                       # iconify format
