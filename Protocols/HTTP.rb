@@ -118,9 +118,6 @@ class WebResource
     # HTTP entry-point
     def self.call env
       # environment
-      if Verbose
-        print "\e[7m💻 > 🖥\e[0m "; bwPrint env
-      end
       env[:start_time] = Time.now                           # start timer
       env['SERVER_NAME'].downcase!                          # normalize hostname
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
@@ -147,8 +144,13 @@ class WebResource
       env[:base] = uri.to_s.R env                           # set base URI in environment
 
       # request
+      if Verbose
+        print "\e[7m💻 → 🖥 #{uri}\e[0m " ; bwPrint env
+      end
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
-        (print "\e[7m💻 < 🖥 #{uri}\e[0m "; bwPrint head) if Verbose
+        if Verbose
+          print "\e[7m💻 ← 🖥 #{uri}\e[0m " ; bwPrint head
+        end
 
         # request logger
         fmt = uri.format_icon head['Content-Type']                                                       # iconify format
@@ -271,7 +273,8 @@ class WebResource
       end
 
       env[:fetched] = true                                  # note fetch for logger
-      case scheme || 'https'                                # request scheme
+      scheme ||= 'https'                                    # default to HTTPS scheme
+      case scheme                                           # request scheme
       when 'ftp'
         fetchFTP                                            # fetch w/ FTP
       when 'gemini'
@@ -313,17 +316,17 @@ class WebResource
       end
       head['If-Modified-Since'] = env[:cache].mtime.httpdate if env[:cache] # timestamp for conditional fetch
 
-      url = scheme ? uri : 'https:' +uri                    # HTTPS scheme selected by default
+      url = scheme ? uri : 'https:' +uri                    # default to HTTPS scheme
       if Verbose
-        print "\e[7m🖥 > ☁️ \e[0m #{uri} "
+        print "\e[7m🖥 → ☁️ \e[0m #{uri} "
         HTTP.bwPrint head
       end
       URI.open(url, head) do |response|                     # HTTP(S) fetch
         h = headers response.meta                           # response metadata
         if Verbose
-#          print '🥩 < ☁️  '                                 # raw upstream headers
+#          print '🥩 ← ☁️  '                                 # raw upstream headers
 #          HTTP.bwPrint response.meta
-          print "\e[7m🧽 < ☁️ \e[0m "                        # clean headers
+          print "\e[7m🧽 ← ☁️ \e[0m "                        # clean headers
           HTTP.bwPrint h
         end
         env[:origin_status] = response.status[0].to_i       # response status
@@ -728,7 +731,9 @@ class WebResource
     end
 
     def unproxy schemeless = false
-      r = [schemeless ? ['/', path] : path[1..-1], query ? ['?', query] : nil].join.R env
+      r = [schemeless ? ['/', path] : path[1..-1],
+           query ? ['?', query] : nil].join.R env
+
       r.host = r.host.downcase if r.host.match? /[A-Z]/     # normalize host capitalization
       env[:base] = r.uri.R env                              # update base URI
       r                                                     # unproxied URI
