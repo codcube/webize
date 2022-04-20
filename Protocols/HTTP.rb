@@ -273,7 +273,6 @@ class WebResource
       end
 
       env[:fetched] = true                                  # note fetch for logger
-      scheme ||= 'https'                                    # default to HTTPS scheme
       case scheme                                           # request scheme
       when 'ftp'
         fetchFTP                                            # fetch w/ FTP
@@ -292,7 +291,7 @@ class WebResource
           fetchHTTP                                         # fetch w/ HTTPS
         end
       else
-        puts "⚠️ unsupported scheme: #{uri}"; notfound       # unsupported scheme
+        puts "⚠️ unsupported scheme in #{uri}"; notfound       # unsupported scheme
       end
 
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
@@ -315,13 +314,11 @@ class WebResource
         head['Accept'] = ['text/turtle', head['Accept']].join ',' unless head['Accept']&.match? /text\/turtle/ # accept 🐢/turtle files
       end
       head['If-Modified-Since'] = env[:cache].mtime.httpdate if env[:cache] # timestamp for conditional fetch
-
-      url = scheme ? uri : 'https:' +uri                    # default to HTTPS scheme
       if Verbose
         print "\e[7m🖥 → ☁️ \e[0m #{uri} "
         HTTP.bwPrint head
       end
-      URI.open(url, head) do |response|                     # HTTP(S) fetch
+      URI.open(uri, head) do |response|                     # HTTP(S) fetch
         h = headers response.meta                           # response metadata
         if Verbose
 #          print '🥩 ← ☁️  '                                 # raw upstream headers
@@ -687,7 +684,7 @@ class WebResource
       end
     end
 
-    # Hash -> querystring
+    # Hash → querystring
     def HTTP.qs h
       return '?' unless h
       '?' + h.map{|k,v|
@@ -714,7 +711,7 @@ class WebResource
       category = (default.split('/')[0] || '*') + '/*'      # format-category wildcard symbol
       all = '*/*'                                           # any-format wildcard symbol
 
-      index = {}                                            # build (q-value -> format) index
+      index = {}                                            # build (q-value → format) index
       env['HTTP_ACCEPT'].split(/,/).map{|e|                 # header values
         fmt, q = e.split /;/                                # (MIME, q-value) pair
         i = q && q.split(/=/)[1].to_f || 1                  # default q-value
@@ -731,7 +728,7 @@ class WebResource
     end
 
     def unproxy schemeless = false
-      r = [schemeless ? ['/', path] : path[1..-1],
+      r = [schemeless ? ['https:/', path] : path[1..-1],    # path → URI
            query ? ['?', query] : nil].join.R env
 
       r.host = r.host.downcase if r.host.match? /[A-Z]/     # normalize host capitalization
