@@ -27,7 +27,7 @@ class WebResource
   end
 
   def fileMIMEsniff
-    Async.task do |task|
+    Async do |task|
       task.async {
         puts "FILE(1) #{fsPath}"
         `file -b --mime-type #{shellPath}`.chomp }

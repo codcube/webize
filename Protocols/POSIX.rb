@@ -71,10 +71,10 @@ class WebResource
 
     def fileAttr key
       val = nil
-      Async.task do |task|
-              task.async {
-                result = `attr -qg #{key} #{shellPath} 2> /dev/null` # read file attribute
-                val = result if $?.success? }
+      Async do |task|
+        task.async {
+          result = `attr -qg #{key} #{shellPath} 2> /dev/null` # read file attribute
+          val = result if $?.success? }
       end
       val
     end

@@ -388,7 +388,7 @@ class WebResource
               end
             end
 
-            Async.task do |task|
+            Async do |task|
               task.async {
                 `attr -s MIME -V #{Shellwords.escape format} #{Shellwords.escape file}` # cache MIME
                 `attr -s ETag -V #{Shellwords.escape h['ETag']} #{Shellwords.escape file}` if h['ETag'] # cache etag
