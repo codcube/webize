@@ -261,12 +261,12 @@ class WebResource
     def fetch
       return cacheResponse if offline?                      # offline, return cache
       if file?                                              # cached file?
-        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return cached static-asset
-        env[:cache] = self                                  # cache reference for conditional fetch
+        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return cached static-file
+        env[:cache] = self                                  # reference for conditional fetch
       elsif directory?
-        if (🐢 = join('index.🐢').R(env)).exist?            # cached container-index?
-          env[:cache] = 🐢                                  # cache reference for conditional fetch
-          🐢.preview.loadRDF                                # merge container-index to response graph
+        if (🐢 = join('index.🐢').R env).exist?             # cached index?
+          env[:cache] = 🐢                                  # reference for conditional fetch
+          🐢.preview.loadRDF                                # merge index to graph
         end
       end
 
@@ -305,7 +305,7 @@ class WebResource
       fetchHTTP
     end
 
-    # fetch node to request-graph and update local cache
+    # fetch node to graph and cache
     def fetchHTTP format: nil, thru: true                   # options: MIME override (of erroneous remote), return HTTP response to caller
       head = headers.merge({redirect: false})               # client headers
       unless env[:notransform]                              # ?notransform to get upstream UI code on content-negotiating servers
@@ -368,9 +368,9 @@ class WebResource
             body = Webize.clean self, body, format          # clean upstream data
 
             file = fsPath                                   # cache storage
-            if file[-1] == '/'                              # directory URI
+            if file[-1] == '/'                              # container
               file += 'index'
-            elsif directory?                                # directory missing /
+            elsif directory?                                # container sans '/'
               file += '/index'
             end
 
