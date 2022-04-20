@@ -259,16 +259,14 @@ class WebResource
 
     # fetch data from cache and/or remote
     def fetch
-      return cacheResponse if offline?                      # return cache when offline
-      if file?                                              # cache exists?
+      return cacheResponse if offline?                      # offline, return cache
+      if file?                                              # cached file?
         return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return cached static-asset
-        env[:cache] = self                                  # cache-reference for conditional-fetcher
+        env[:cache] = self                                  # cache reference for conditional fetch
       elsif directory?
-        if (index = join('index').R).exist?                 # container-index cached
-          env[:cache] = index                               # cache-reference for conditional-fetcher
-        end
-        if (🐢 = join('index.🐢').R(env)).exist?
-          🐢.preview.loadRDF                                # merge container-index to request graph
+        if (🐢 = join('index.🐢').R(env)).exist?            # cached container-index?
+          env[:cache] = 🐢                                  # cache reference for conditional fetch
+          🐢.preview.loadRDF                                # merge container-index to response graph
         end
       end
 
@@ -315,7 +313,7 @@ class WebResource
       end
       head['If-Modified-Since'] = env[:cache].mtime.httpdate if env[:cache] # timestamp for conditional fetch
       if Verbose
-        print "\e[7m🖥 → ☁️ \e[0m #{uri} "
+        print "\e[7m🖥 → ☁️  #{uri}\e[0m "
         HTTP.bwPrint head
       end
       URI.open(uri, head) do |response|                     # HTTP(S) fetch
@@ -362,12 +360,12 @@ class WebResource
               body.encode! 'UTF-8', charset || 'UTF-8', invalid: :replace, undef: :replace
             end
             if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i)
-              format = 'text/html'                          # HTML served w/ XML MIME, update format symbol
+              format = 'text/html'                          # HTML served w/ XML MIME
             end
-            env[:origin_format] = format                    # record upstream format for log
-            fixed_format = format.match? FixedFormat
+            env[:origin_format] = format                    # upstream format
+            fixed_format = format.match? FixedFormat        # fixed format?
 
-            body = Webize.clean self, body, format          # sanitize upstream content
+            body = Webize.clean self, body, format          # clean upstream data
 
             file = fsPath                                   # cache storage
             if file[-1] == '/'                              # directory URI
