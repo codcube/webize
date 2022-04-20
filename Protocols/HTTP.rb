@@ -636,7 +636,9 @@ class WebResource
     end
 
     def insecure
-      env[:base] = uri.sub(/^(https:)?\/\//,'http://').R env
+      _ = dup
+      _.scheme = 'http' if _.scheme == 'https'
+      _.env[:base] = _
     end
 
     def linkHeader
