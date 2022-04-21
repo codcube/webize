@@ -10,7 +10,8 @@ class WebResource
     (!local && fileMIMEattr) ||   # MIME attribute
      (local && fileMIMEprefix) || # name prefix
       fileMIMEsuffix ||           # name suffix
-      fileMIMEsniff               # ask FILE(1)
+      fileMIMEsniff ||            # ask FILE(1)
+      'application/octet-stream'  # blob
   end
 
   def fileMIMEattr
@@ -27,11 +28,7 @@ class WebResource
   end
 
   def fileMIMEsniff
-    Async do |task|
-      task.async {
-        puts "FILE(1) #{fsPath}"
-        `file -b --mime-type #{shellPath}`.chomp }
-    end
+    IO.popen(['file', '-b', '--mime-type', fsPath]).read.chomp rescue nil
   end
 
   def fileMIMEsuffix

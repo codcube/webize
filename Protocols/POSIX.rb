@@ -70,13 +70,7 @@ class WebResource
     end
 
     def fileAttr key
-      val = nil
-      Async do |task|
-        task.async {
-          result = `attr -qg #{key} #{shellPath} 2> /dev/null` # read file attribute
-          val = result if $?.success? }
-      end
-      val
+      IO.popen(['attr', '-qg', key.to_s, fsPath]).read.chomp rescue nil
     end
 
     # URI -> boolean

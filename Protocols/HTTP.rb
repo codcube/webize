@@ -1,5 +1,5 @@
 # coding: utf-8
-%w(brotli cgi digest/sha2 open-uri rack resolv).map{|_| require _}
+%w(async brotli cgi digest/sha2 open-uri rack resolv).map{|_| require _}
 
 class WebResource
   module URIs
@@ -388,12 +388,8 @@ class WebResource
               end
             end
 
-            Async do |task|
-              task.async {
-                `attr -s MIME -V #{Shellwords.escape format} #{Shellwords.escape file}` # cache MIME
-                `attr -s ETag -V #{Shellwords.escape h['ETag']} #{Shellwords.escape file}` if h['ETag'] # cache etag
-              }
-            end
+            system 'attr', '-s', 'MIME', '-V', format, file # cache MIME
+            system 'attr', '-s', 'ETag', '-V', h['ETag'], file if h['ETag'] # cache etag
 
             if reader = RDF::Reader.for(content_type: format) # reader defined for format?
               env[:repository] ||= RDF::Repository.new      # initialize RDF repository
