@@ -282,9 +282,12 @@ class WebResource
       when 'http'
         fetchHTTP                                           # fetch w/ HTTP
       when 'https'
-        isPeer = PeerAddrs.has_key? Resolv.getaddress host rescue false
-        if ENV.has_key?('HTTP_PROXY') || isPeer             # request to private-network peer
-          insecure.fetchHTTP                                # fetch w/ HTTP
+        if ENV.has_key?('HTTP_PROXY')
+          insecure.fetchHTTP                                # fetch w/ HTTP to private-network peer
+        elsif (PeerAddrs.has_key? Resolv.getaddress host rescue false)
+          url = insecure
+          url.port = 8000
+          url.fetchHTTP                                     # fetch w/ HTTP to private-network peer
         else
           fetchHTTP                                         # fetch w/ HTTPS
         end
