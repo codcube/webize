@@ -139,6 +139,8 @@ class WebResource
               [isPeer ? :http : :https, '://', env['HTTP_HOST']].join
             end.R.join(env['REQUEST_PATH']).R env
 
+      uri.port = nil if [80,443,8000].member? uri.port      # drop default port
+
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query
         env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {}
         qs = env[:qs].dup                                   # strip excess &s, parse and memoize query
