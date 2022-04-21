@@ -150,12 +150,13 @@ class WebResource
       env[:base] = uri.to_s.R env                           # base URI
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
 
-      uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|                                    # send request to handler
-        (print '💻 < 🖥 '; bwPrint head) if Verbose                                                       # log response
+      # request
+      uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
+        (print '💻 < 🖥 '; bwPrint head) if Verbose
 
+        # logger
         fmt = uri.format_icon head['Content-Type']                                                       # iconify format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
-
         puts [[(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                                    # denote insecure transport in log
                (!env[:deny] && !uri.head? && head['Content-Type'] != env[:origin_format]) ? fmt : nil,   # downstream format unless same as upstream
                status == env[:origin_status] ? nil : StatusIcon[status],                                 # downstream status unless same as upstream
@@ -171,8 +172,9 @@ class WebResource
              ].flatten.compact.map{|t|
           t.to_s.encode 'UTF-8'}.join ' '
 
-        [status, head, body]}                                                                            # response
-    rescue Exception => e                                                                                # error handler
+        # response
+        [status, head, body]}
+    rescue Exception => e
       puts env[:base], e.class, e.message, e.backtrace
       [500, {'Content-Type' => 'text/html; charset=utf-8'}, uri.head? ? [] : ["<html><body class='error'>#{HTML.render [{_: :style, c: SiteCSS}, {_: :script, c: SiteJS}, uri.uri_toolbar]}500</body></html>"]]
     end
@@ -388,8 +390,8 @@ class WebResource
               end
             end
 
-            system 'attr', '-s', 'MIME', '-V', format, file # cache MIME
-            system 'attr', '-s', 'ETag', '-V', h['ETag'], file if h['ETag'] # cache etag
+            system 'attr', '-qs', 'MIME', '-V', format, file # cache MIME
+            system 'attr', '-qs', 'ETag', '-V', h['ETag'], file if h['ETag'] # cache etag
 
             if reader = RDF::Reader.for(content_type: format) # reader defined for format?
               env[:repository] ||= RDF::Repository.new      # initialize RDF repository
@@ -632,7 +634,7 @@ class WebResource
     end
 
     def insecure
-      _ = dup
+      _ = dup.env env
       _.scheme = 'http' if _.scheme == 'https'
       _.env[:base] = _
     end
