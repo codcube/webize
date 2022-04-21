@@ -96,27 +96,13 @@ class WebResource
     def node; Pathname.new fsPath end
 
     # URI -> [pathname]
-    def nodeFind q; `find #{Shellwords.escape fsPath} -iname #{Shellwords.escape q}`.lines.map &:chomp end
+    def nodeFind q; IO.popen(['find', fsPath, '-iname', q]).read.lines.map &:chomp rescue [] end
     def nodeGlob; Pathname.glob fsPath end
     def nodeGrep files = nil
       files = [fsPath] if !files || files.empty?
       q = env[:qs]['q'].to_s
       return [] if q.empty?
-      args = q.shellsplit rescue q.split(/\W/)
-      file_arg = files.map{|file| Shellwords.escape file.to_s }.join ' '
-      case args.size
-      when 0
-        return []
-      when 2 # two unordered terms
-        cmd = "grep -rilZ #{Shellwords.escape args[0]} #{file_arg} | xargs -0 grep -il #{Shellwords.escape args[1]}"
-      when 3 # three unordered terms
-        cmd = "grep -rilZ #{Shellwords.escape args[0]} #{file_arg} | xargs -0 grep -ilZ #{Shellwords.escape args[1]} | xargs -0 grep -il #{Shellwords.escape args[2]}"
-      when 4 # four unordered terms
-        cmd = "grep -rilZ #{Shellwords.escape args[0]} #{file_arg} | xargs -0 grep -ilZ #{Shellwords.escape args[1]} | xargs -0 grep -ilZ #{Shellwords.escape args[2]} | xargs -0 grep -il #{Shellwords.escape args[3]}"
-      else   # N ordered term
-        cmd = "grep -ril -- #{Shellwords.escape args.join '.*'} #{file_arg}"
-      end
-      `#{cmd} | head -n 1024`.lines.map &:chomp
+      IO.popen(['grep', '-ril', q, *files]).read.lines.map &:chomp rescue []
     end
 
   end
