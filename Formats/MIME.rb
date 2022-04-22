@@ -7,11 +7,11 @@ class WebResource
   # file -> MIME type
   def fileMIME
     local = !host
-    (!local && fileMIMEattr) ||   # MIME attribute
-     (local && fileMIMEprefix) || # name prefix
+    (!local && fileMIMEattr) ||   # MIME attribute from HTTP metadata
+     (local && fileMIMEprefix) || # name prefix from filesystem metadata
       fileMIMEsuffix ||           # name suffix
-      fileMIMEsniff ||            # ask FILE(1)
-      'application/octet-stream'  # blob
+      fileMIMEsniff ||            # FILE(1)
+      (puts "MIME search failed #{fsPath}"; 'application/octet-stream')  # blob
   end
 
   def fileMIMEattr
