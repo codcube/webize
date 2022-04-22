@@ -114,7 +114,7 @@ class WebResource
 
     def self.bwPrint kv
       kv.map{|k,v|
-        print "\e[38;5;8m#{k}\e[0m#{v}"}
+        print "\e[38;5;7;7m#{k}\e[0m#{v}"}
       print "\n"
     end
 
