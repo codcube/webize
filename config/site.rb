@@ -285,8 +285,8 @@ class WebResource
         r.env[:sort] = 'date'
         r.env[:view] = 'table'
         SiteDir.join('soundcloud').readlines.map(&:chomp).map{|chan|
-          client_id = 'Mzb67lB9FqZr7715IOsz17Bq13kU1COC'
-          version = 1647518909
+          client_id = 'qpb3ePPttWrQPwdAw7dRY7sxJCe6Z8pj'
+          version = 1650464268
           "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{client_id}&limit=20&offset=0&linked_partitioning=1&app_version=#{version}&app_locale=en".R(r.env).fetchHTTP thru: false}
         r.saveRDF.graphResponse
       else
