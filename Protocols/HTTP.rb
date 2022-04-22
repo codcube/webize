@@ -118,19 +118,20 @@ class WebResource
       print "\n"
     end
 
-    # HTTP entry-point from Rack
+    # HTTP entry-point
     def self.call env
-      return [405,{},[]] unless Methods.member? env['REQUEST_METHOD'] # allow HTTP methods
+      # environment
       if Verbose
-        print '💻 > 🖥 '; bwPrint env            # log request
+        print "\e[7m💻 > 🖥\e[0m "; bwPrint env
       end
       env[:start_time] = Time.now                           # start timer
       env['SERVER_NAME'].downcase!                          # normalize hostname
-      env.update HTTP.env                                   # initialize environment
+      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
+      env.update HTTP.env                                   # initialize storage
 
-      isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer cache?
-      isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']]||env['SERVER_NAME']) # local cache?
-
+      # base URI
+      isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
+      isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']]||env['SERVER_NAME']) # local node?
       uri = if isLocal
               env[:proxy_href] = true                       # proxy remote refs to local URI space
               '/'                                           # local node
@@ -138,23 +139,19 @@ class WebResource
               env[:proxy_href] = isPeer
               [isPeer ? :http : :https, '://', env['HTTP_HOST']].join
             end.R.join(env['REQUEST_PATH']).R env
-
-      uri.port = nil if [80,443,8000].member? uri.port      # drop default port
-
-      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query
+      uri.port = nil if [80,443,8000].member? uri.port      # drop redundant port information
+      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query string?
         env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {}
         qs = env[:qs].dup                                   # strip excess &s, parse and memoize query
         Args.map{|k|
-         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # set (client <> proxy) args in environment
-        uri.query_values = qs unless qs.empty?              # set (proxy <> origin) args in request URI
+         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # consume (client <> proxy) args, store in request environment
+        uri.query_values = qs unless qs.empty?              # retain (proxy <> origin) args, store in request URI
       end
-
-      env[:base] = uri.to_s.R env                           # base URI
-      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
+      env[:base] = uri.to_s.R env                           # set base URI in environment
 
       # request
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
-        (print '💻 < 🖥 '; bwPrint head) if Verbose
+        (print "\e[7m💻 < 🖥\e[0m "; bwPrint head) if Verbose
 
         # logger
         fmt = uri.format_icon head['Content-Type']                                                       # iconify format
