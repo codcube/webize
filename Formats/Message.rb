@@ -214,7 +214,7 @@ class WebResource
 
       if uri = re.delete('uri')                                  # unless blank node:
         uri = uri.R env;  id = uri.local_id                      # origin and proxy URIs
-        blocked = uri.deny? && !LocalAllow.has_key?(uri.host)    # resource blocked?
+        blocked = uri.deny? && !uri.has_handler?                 # resource blocked?
         origin_ref = {_: :a, class: :pointer, href: uri,         # origin pointer
                       c: CGI.escapeHTML(uri.path || '')}         # cache pointer
         cache_ref = {_: :a, href: uri.href, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}

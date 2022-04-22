@@ -38,7 +38,6 @@ end
 class WebResource
   module URIs
     DenyDomains = {}
-    LocalAllow = {}
 
     HostColors = {
       'www.behance.net' => '#0056ff',
@@ -153,11 +152,6 @@ class WebResource
       end}
 
     %w(bostonglobe-prod.cdn.arcpublishing.com).map{|host|GET host, Resizer}
-
-    # filter by redirecting to proxy in DNS (~ squid never-direct rule)
-    SiteDir.join('filter_hosts').readlines.map(&:chomp).map{|host|
-      LocalAllow[host] = true
-      GET host, NoGunk}
 
     # connectivity-check hosts
     GET 'detectportal.firefox.com', -> r {[200, {'Content-Type' => 'text/html'}, ['<meta http-equiv="refresh" content="0;url=https://support.mozilla.org/kb/captive-portal"/>']]}

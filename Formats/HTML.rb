@@ -118,7 +118,7 @@ module Webize
           ref = (base.join e['href']).R                           # resolve @href
           ref.query = nil if ref.query&.match?(/utm[^a-z]/)       # deutmize query (tracker gunk)
           ref.fragment = nil if ref.fragment&.match?(/utm[^a-z]/) # deutmize fragment
-          blocked = ref.deny? && !LocalAllow.has_key?(ref.host)
+          blocked = ref.deny? && !ref.has_handler?
           color = if HostColors.has_key? ref.host
                     HostColors[ref.host]
                   elsif blocked

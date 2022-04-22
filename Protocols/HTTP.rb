@@ -566,6 +566,10 @@ class WebResource
       [status, head, [body]]                                # response
     end
 
+    def has_handler?
+      HostGET.has_key? host.downcase
+    end
+
     def HEAD
       self.GET.yield_self{|s, h, _|
         puts "⚠️HEAD response body needlessly generated #{uri}" unless !_ || _.empty?
@@ -623,13 +627,17 @@ class WebResource
 
       if parts[-1]&.match? /^(gen(erate)?|log)_?204$/       # 204 response w/o origin roundtrip
         [204, {}, []]
-      elsif !ENV.has_key?('HTTP_PROXY') && handler = HostGET[host.downcase] # host handler at first proxy in chain
-        handler[self]
+      elsif has_handler?                                    # host handler exists?
+        if ENV.has_key? 'HTTP_PROXY'
+          fetch                                             # node at chained proxy
+        else
+          HostGET[host.downcase][self]                      # adaptor at origin-facing proxy
+        end
       elsif query&.match? Gunk                              # gunk in query
         [301,{'Location' => ['//',host,path].join.R(env).href},[]] # drop query
       elsif host.match?(/\.(amazonaws|cloudfront)\.(com|net)$/) && uri.match?(/\.(jpe?g|png|webp)$/i)
         fetch
-      elsif deny? && !LocalAllow.has_key?(host)             # denied request
+      elsif deny?                                           # denied request
         deny
       elsif offline? && directory? && !dirURI?              # enter directory
         enter_container
