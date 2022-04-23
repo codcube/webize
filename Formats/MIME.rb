@@ -28,7 +28,7 @@ class WebResource
   end
 
   def fileMIMEsniff
-    IO.popen(['file', '-b', '--mime-type', fsPath]).read.chomp rescue nil
+    IO.popen(['file', '-b', '--mime-type', fsPath]).read.chomp
   end
 
   def fileMIMEsuffix
