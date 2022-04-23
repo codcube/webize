@@ -319,15 +319,15 @@ class WebResource
       end
       url = scheme ? uri : 'https:' +uri                    # HTTPS scheme selected by default
       if Verbose
-        print "🖥 > ☁️  #{uri} "
+        print "\e[7m🖥 > ☁️ \e[0m #{uri} "
         HTTP.bwPrint head
       end
       URI.open(url, head) do |response|                     # HTTP(S) fetch
         h = headers response.meta                           # response metadata
         if Verbose
-#          print '🥩 < ☁️  '
+#          print '🥩 < ☁️  '                                 # raw upstream headers
 #          HTTP.bwPrint response.meta
-          print '🧽 < ☁️  '
+          print "\e[7m🧽 < ☁️ \e[0m "                        # clean headers
           HTTP.bwPrint h
         end
         env[:origin_status] = response.status[0].to_i       # response status
