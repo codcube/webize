@@ -68,9 +68,11 @@ class WebResource
 
     # respond from local cache
     def cacheResponse
-      return fileResponse if file? && (format = fileMIME) && (env[:notransform] || # static response if transform disabled,
-                                                              (format.match? FixedFormat) || # transform unavailable, or
-                                                              (format == (selectFormat format) && !ReFormat.member?(format))) # reformat unavailable
+      return fileResponse if file? && (format = fileMIME) && # static response if
+                             (env[:notransform] ||          # format-transform disabled,
+                              format.match?(FixedFormat) || # format-transform unavailable, or
+                              (format==selectFormat(format) && !ReFormat.member?(format))) # reformat unavailable
+
       q = env[:qs]                                          # query modes:
       nodes = if directory?
                 if q['f'] && !q['f'].empty?                 # FIND exact
@@ -100,11 +102,15 @@ class WebResource
               else
                 fromNodes Pathname.glob fsPath+'.*'         # default GLOB
               end
-      if summarize
-        env[:links][:down] = HTTP.qs q.merge({'fullContent' => nil}) # 👉 unsummarized
+
+      if summarize                                          # 👉 unsummarized
+        env[:links][:down] = HTTP.qs q.merge({'fullContent' => nil})
         nodes.map! &:preview
       end
-      env[:links][:up] = HTTP.qs q.except('fullContent') if env[:fullContent] && q.respond_to?(:except) # 👉 summarized
+      if env[:fullContent] && q.respond_to?(:except)        # 👉 summarized
+        env[:links][:up] = HTTP.qs q.except('fullContent')
+      end
+
       nodes.map &:loadRDF                                   # load node(s)
       graphResponse                                         # response
     end
@@ -123,7 +129,7 @@ class WebResource
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
       env.update HTTP.env                                   # initialize storage
 
-      # construct base URI from header fields
+      # construct URI from header fields
       isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']]||env['SERVER_NAME']) # local node?
       uri = if isLocal
@@ -263,11 +269,8 @@ class WebResource
       if file?                                              # cached file?
         return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return cached static-file
         env[:cache] = self                                  # reference for conditional fetch
-      elsif directory?
-        if (🐢 = join('index.🐢').R env).exist?             # cached index?
-          env[:cache] = 🐢                                  # reference for conditional fetch
-          🐢.preview.loadRDF                                # merge index to graph
-        end
+      elsif directory? && (🐢 = join('index.🐢').R env).exist? # cached index?
+        🐢.preview.loadRDF                                  # fetch index to graph
       end
 
       env[:fetched] = true                                  # note fetch for logger
@@ -289,7 +292,7 @@ class WebResource
           fetchHTTP                                         # fetch w/ HTTPS
         end
       else
-        puts "⚠️ unsupported scheme in #{uri}"; notfound       # unsupported scheme
+        puts "⚠️ unsupported scheme in #{uri}"; notfound     # unsupported scheme
       end
 
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
@@ -306,10 +309,10 @@ class WebResource
     end
 
     # fetch node to graph and cache
-    def fetchHTTP format: nil, thru: true                   # options: MIME override (of erroneous remote), return HTTP response to caller
-      head = headers.merge({redirect: false})               # client headers
-      unless env[:notransform]                              # ?notransform to get upstream UI code on content-negotiating servers
-        head['Accept'] = ['text/turtle', head['Accept']].join ',' unless head['Accept']&.match? /text\/turtle/ # accept 🐢/turtle files
+    def fetchHTTP format: nil, thru: true                   # options: MIME (override erroneous origin), HTTP response for caller
+      head = headers.merge({redirect: false})               # parse client headers, disable automagic/hidden redirect following
+      unless env[:notransform]                              # query ?notransform for upstream UI on content-negotiating servers
+        head['Accept'] = ['text/turtle', head['Accept']].join ',' unless head['Accept']&.match? /text\/turtle/ # accept 🐢/turtle
       end
       head['If-Modified-Since'] = env[:cache].mtime.httpdate if env[:cache] # timestamp for conditional fetch
       if Verbose
@@ -333,7 +336,7 @@ class WebResource
           [206, h, [response.read]]
         else                                                # full content
           body = HTTP.decompress h, response.read           # decompress content
-          format ||= if path == '/feed'                     # format fixed on remote /feed due to many erroneous text/html responses
+          format ||= if path == '/feed'                     # format fixed on remote /feed due to erroneous upstream text/html headers
                        'application/atom+xml'
                      elsif content_type = h['Content-Type'] # format defined in HTTP header
                        ct = content_type.split(/;/)

@@ -30,10 +30,13 @@ class WebResource
     (fileMIMEsuffixRDF  suffix)    # RDF list
   end
 
-  def fileMIMEsuffixRack suffix; Rack::Mime::MIME_TYPES[suffix] end
+  def fileMIMEsuffixRack suffix
+    Rack::Mime::MIME_TYPES[suffix]
+  end
 
   def fileMIMEsuffixRDF suffix
     if format = RDF::Format.file_extensions[suffix[1..-1].to_sym]
+      puts ['multiple formats match extension', suffix, format, ', using', format[0]].join ' ' if format.size > 1
       format[0].content_type[0]
     end
   end
