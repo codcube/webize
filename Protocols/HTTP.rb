@@ -106,7 +106,7 @@ class WebResource
       end
       env[:links][:up] = HTTP.qs q.except('fullContent') if env[:fullContent] && q.respond_to?(:except) # 👉 summarized
       nodes.map &:loadRDF                                   # load node(s)
-      graphResponse                                         # graph response
+      graphResponse                                         # response
     end
 
     def self.bwPrint kv
@@ -126,7 +126,7 @@ class WebResource
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
       env.update HTTP.env                                   # initialize storage
 
-      # base URI
+      # construct base URI from header fields
       isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']]||env['SERVER_NAME']) # local node?
       uri = if isLocal
@@ -150,7 +150,7 @@ class WebResource
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
         (print "\e[7m💻 < 🖥\e[0m "; bwPrint head) if Verbose
 
-        # logger
+        # request logger
         fmt = uri.format_icon head['Content-Type']                                                       # iconify format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
         puts [[(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                                    # denote insecure transport
