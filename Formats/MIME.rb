@@ -6,10 +6,10 @@ class WebResource
 
   # file -> MIME type
   def fileMIME
-    (!host && fileMIMEprefix) || # name prefix from filesystem metadata
+    (!host && fileMIMEprefix) ||  # name prefix
       fileMIMEsuffix ||           # name suffix
-      fileMIMEsniff ||            # FILE(1)
-      (puts "MIME search failed #{fsPath}"; 'application/octet-stream')  # blob
+      (puts "MIME search failed #{fsPath}"
+       'application/octet-stream') # unknown
   end
 
   def fileMIMEprefix
@@ -19,10 +19,6 @@ class WebResource
     elsif name.index('msg.')==0 || path.index('/sent/cur')==0
       'message/rfc822'            # procmail $PREFIX or maildir match
     end
-  end
-
-  def fileMIMEsniff
-    IO.popen(['file', '-b', '--mime-type', fsPath]).read.chomp
   end
 
   def fileMIMEsuffix
