@@ -59,7 +59,9 @@ class WebResource
         when /P(OS|U)T/
           '📝'
         when 'GET'
-          '🐕' if env[:fetched]
+          if env[:fetched] # denote middlebox or origin fetch
+            ENV.has_key?('HTTP_PROXY') ? '🖥' : '🐕'
+          end
         end
       end
     end
@@ -156,18 +158,19 @@ class WebResource
         # logger
         fmt = uri.format_icon head['Content-Type']                                                       # iconify format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
-        puts [[(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                                    # denote insecure transport in log
-               (!env[:deny] && !uri.head? && head['Content-Type'] != env[:origin_format]) ? fmt : nil,   # downstream format unless same as upstream
-               status == env[:origin_status] ? nil : StatusIcon[status],                                 # downstream status unless same as upstream
+        puts [[(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                                    # denote insecure transport
+               (!env[:deny] && !uri.head? && head['Content-Type'] != env[:origin_format]) ? fmt : nil,   # downstream format if != upstream format
+               status == env[:origin_status] ? nil : StatusIcon[status],                                 # downstream status if != upstream format
                uri.action_icon,                                                                          # HTTP method
                env[:origin_format] ? (uri.format_icon env[:origin_format]) : nil,                        # upstream format
                StatusIcon[env[:origin_status]],                                                          # upstream status
-               ([env[:repository].size,'⋮'].join if env[:repository] && env[:repository].size > 0)].join,# RDF graph size
-              env['HTTP_REFERER'] ? ["\e[#{color}m", env['HTTP_REFERER'], "\e[0m→"] : nil,               # referring location
-              "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert colors on off-site referrals
-              status==206 ? Rack::Utils.unescape_path(env[:base].basename) : env[:base], "\e[0m", head['Location'] ? ["→\e[#{color}m", head['Location'], "\e[0m"] : nil, # location
-              env[:warning] ? ["\e[38;5;226;7m⚠️", env[:warning], "\e[0m"] : nil,                         # warning from recovered error/failure
-              Verbose ? [env['HTTP_ACCEPT'], head['Content-Type']].compact.join(' → ') : nil,            # Accept header
+               ([env[:repository].size,'⋮'].join if env[:repository] && env[:repository].size > 0)].join,# RDF graph triple-size
+              env['HTTP_REFERER'] ? ["\e[#{color}m", env['HTTP_REFERER'], "\e[0m→"] : nil,               # referer location
+              "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert colors if off-site referer
+              status == 206 ? Rack::Utils.unescape_path(env[:base].basename) : env[:base], "\e[0m",      # request URI
+              head['Location'] ? ["→\e[#{color}m", head['Location'], "\e[0m"] : nil,                     # redirected location
+              env[:warning] ? ["\e[38;5;226;7m⚠️", env[:warning], "\e[0m"] : nil,                         # warnings
+              Verbose ? [env['HTTP_ACCEPT'], head['Content-Type']].compact.join(' → ') : nil,            # MIME headers
              ].flatten.compact.map{|t|
           t.to_s.encode 'UTF-8'}.join ' '
 
