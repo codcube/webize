@@ -71,8 +71,8 @@ class WebResource
       return fileResponse if file? && (format = fileMIME) && (env[:notransform] || # static response if transform disabled,
                                                               (format.match? FixedFormat) || # transform unavailable, or
                                                               (format == (selectFormat format) && !ReFormat.member?(format))) # reformat unavailable
-      q = env[:qs]
-      nodes = if directory? # various query modes
+      q = env[:qs]                                          # query modes:
+      nodes = if directory?
                 if q['f'] && !q['f'].empty?                 # FIND exact
                   summarize = !env[:fullContent]
                   find q['f']
@@ -81,10 +81,10 @@ class WebResource
                   find '*' + q['find'] + '*'
                 elsif q['q'] && !q['q'].empty?              # GREP
                   grep
-                else                                        # dir
+                else                                        # LS dir
                   [self, *join('{index,readme,README}*').R(env).glob]
                 end
-              elsif file?                                   # file
+              elsif file?                                   # LS file
                 [self]
               elsif fsPath.match? GlobChars                 # GLOB
                 if q['q'] && !q['q'].empty?
@@ -98,7 +98,7 @@ class WebResource
                   glob                                      # arbitrary GLOB
                 end
               else
-                fromNodes Pathname.glob fsPath+'.*'         # default document-set GLOB
+                fromNodes Pathname.glob fsPath+'.*'         # default GLOB
               end
       if summarize
         env[:links][:down] = HTTP.qs q.merge({'fullContent' => nil}) # 👉 unsummarized
