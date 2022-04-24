@@ -64,7 +64,7 @@ class WebResource
       end
     end
 
-    # respond from local cache with various query modes
+    # respond from local cache. various query modes
     def cacheResponse
       if file?                                              # resource cached?
         format = fileMIME                                   # file format
@@ -133,7 +133,7 @@ class WebResource
       isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']]||env['SERVER_NAME']) # local node?
       uri = if isLocal
-              env[:proxy_href] = true                       # proxy remote refs to local URI space
+              env[:proxy_href] = true                       # relocate hrefs to local URI space
               '/'                                           # local node
             else                                            # remote node
               env[:proxy_href] = isPeer
