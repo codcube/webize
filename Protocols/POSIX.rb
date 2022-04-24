@@ -69,10 +69,6 @@ class WebResource
       env[:links][:down] = '*' if (!host || offline?) && dirURI?   # down to child-nodes
     end
 
-    def fileAttr key
-      IO.popen(['attr', '-qg', key.to_s, fsPath]).read.chomp rescue nil
-    end
-
     # URI -> boolean
     def directory?; node.directory? end
     def exist?; node.exist? end

@@ -311,15 +311,13 @@ class WebResource
     end
 
     # fetch node to request-graph and update local cache
-    def fetchHTTP format: nil, thru: true                   # options: MIME override (of erroneous remote), HTTP response
+    def fetchHTTP format: nil, thru: true                   # options: MIME override (of erroneous remote), return HTTP response to caller
       head = headers.merge({redirect: false})               # client headers
-      head['Accept'] = ['text/turtle', head['Accept']].join ',' unless env[:notransform] || (head['Accept']||'').match?(/text\/turtle/) # we accept 🐢 even if proxy client is unfamiliar with it
-      if env[:cache]
-        head['If-Modified-Since'] = env[:cache].mtime.httpdate # cache timestamp for conditional fetch
-        if etag = env[:cache].fileETag(false)
-          head['If-None-Match'] = etag                      # cache ETag for conditional fetch
-        end
+      unless env[:notransform]                              # ?notransform to get upstream UI code on content-negotiating servers
+        head['Accept'] = ['text/turtle', head['Accept']].join ',' unless head['Accept']&.match? /text\/turtle/ # accept 🐢/turtle files
       end
+      head['If-Modified-Since'] = env[:cache].mtime.httpdate if env[:cache] # timestamp for conditional fetch
+
       url = scheme ? uri : 'https:' +uri                    # HTTPS scheme selected by default
       if Verbose
         print "\e[7m🖥 > ☁️ \e[0m #{uri} "
@@ -483,8 +481,8 @@ class WebResource
       end
     end
 
-    def fileETag create = true
-      (fileAttr :ETag) || (create ? (Digest::SHA2.hexdigest [uri, mtime, node.size].join) : nil) # optionally mint ETag
+    def fileETag
+      Digest::SHA2.hexdigest [uri, mtime, node.size].join         # mint ETag for file version
     end
 
     def fileResponse
