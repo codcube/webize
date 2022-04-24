@@ -376,6 +376,14 @@ class WebResource
             elsif directory?                                # container sans '/'
               file += '/index'
             end
+            ext = (File.extname(file)[1..-1] || '').to_sym  # name suffix
+            if (formats = RDF::Format.content_types[format]) && # content-type
+               (extensions = formats.map(&:file_extension).flatten) && # mapped name-suffixes for content-type
+               !extensions.member?(ext)
+              file = [(link = file), '.', extensions[0]].join
+              puts ["extension #{ext} not among (", extensions.join(', '), '), linking to', file]
+              FileUtils.ln_s file, link
+            end
 
             POSIX.container file                            # containing dir(s)
             File.open(file, 'w'){|f| f << body }            # update cache
