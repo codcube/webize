@@ -378,11 +378,11 @@ class WebResource
             end
             ext = (File.extname(file)[1..-1] || '').to_sym  # name suffix
             if (formats = RDF::Format.content_types[format]) && # content-type
-               (extensions = formats.map(&:file_extension).flatten) && # mapped name-suffixes for content-type
-               !extensions.member?(ext)
-              file = [(link = file), '.', extensions[0]].join
-              puts ["extension #{ext} not among (", extensions.join(', '), '), linking to', file]
-              FileUtils.ln_s file, link
+               (extensions = formats.map(&:file_extension).flatten) && # mapped suffixes for content-type
+               !extensions.member?(ext)                     # upstream suffix not mapped for content-type
+              file = [(link = file), '.', extensions[0]].join # append correct suffix and display notice
+              puts ["extension #{ext} not among (", extensions.join(', '), '), storing to ', file].join
+              FileUtils.ln_s file, link                     # link upstream path to storage location
             end
 
             POSIX.container file                            # containing dir(s)
