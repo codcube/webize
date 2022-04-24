@@ -66,18 +66,13 @@ class WebResource
       end
     end
 
-    # respond from local cache. various query modes
+    # respond from local cache
     def cacheResponse
-      if file?                                              # resource cached?
-        format = fileMIME                                   # file format
-        return fileResponse if env[:notransform] ||         # return if format-transform disabled,
-                               (format.match? FixedFormat) || # format-transform unavailable or
-                               (format == (selectFormat format) && !ReFormat.member?(format)) # in-format rewrite unavailable
-      elsif env[:notransform] && directory? && (index = join('index').R(env)).exist?
-        return index.fileResponse                           # origin index
-      end
+      return fileResponse if file? && (format = fileMIME) && (env[:notransform] || # static response if transform disabled,
+                                                              (format.match? FixedFormat) || # transform unavailable, or
+                                                              (format == (selectFormat format) && !ReFormat.member?(format))) # reformat unavailable
       q = env[:qs]
-      nodes = if directory?
+      nodes = if directory? # various query modes
                 if q['f'] && !q['f'].empty?                 # FIND exact
                   summarize = !env[:fullContent]
                   find q['f']
