@@ -595,11 +595,7 @@ class WebResource
 
       head['Referer'] = 'http://drudgereport.com/' if host&.match? /wsj\.com$/
       head['Referer'] = 'https://' + (host || env['HTTP_HOST']) + '/' if (path && %w(.gif .jpeg .jpg .png .svg .webp).member?(File.extname(path).downcase)) || parts.member?('embed')
-      head['User-Agent'] = if %w(po.st t.co).member? host   # prefer shortlink-expansion in HTTP HEAD over procedural Javascript - advertise a basic user-agent
-                             'curl/7.65.1'
-                           else
-                             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4535.0 Safari/537.36'
-                           end
+      head['User-Agent'] = 'curl/7.82.0' if %w(po.st t.co).member? host # to prefer HTTP HEAD redirections e over procedural Javascript, advertise a basic user-agent
       head
     end
 
@@ -626,8 +622,8 @@ class WebResource
         else
           HostGET[host.downcase][self]                      # adaptor at origin-facing proxy
         end
-      elsif query&.match? Gunk                              # gunk in query
-        [301,{'Location' => ['//',host,path].join.R(env).href},[]] # drop query
+      elsif query&.match? Gunk                              # drop gunked query
+        [301,{'Location' => ['//', host, path].join.R(env).href},[]]
       elsif host.match?(/\.(amazonaws|cloudfront)\.(com|net)$/) && uri.match?(/\.(jpe?g|png|webp)$/i)
         fetch
       elsif deny?                                           # denied request
