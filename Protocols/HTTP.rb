@@ -381,7 +381,7 @@ class WebResource
             if (formats = RDF::Format.content_types[format]) && # content-type
                (extensions = formats.map(&:file_extension).flatten) && # mapped suffixes for content-type
                !extensions.member?(ext)                     # upstream suffix not mapped for content-type
-              file = [(link = file), '.', extensions[-1]].join # append suffix and display notice
+              file = [(link = file), '.', extensions[0]].join # append suffix and display notice
               puts ["extension #{ext} not among (", extensions.join(', '), '), storing to ', file].join if Verbose
               FileUtils.ln_s file, link                     # link upstream path to storage path
             end
