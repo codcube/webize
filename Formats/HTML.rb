@@ -17,7 +17,7 @@ module Webize
         if e['src']                                  # src attribute
           src = (base.join e['src']).R               # resolve locator
           if src.deny?
-            puts "🚩 \e[38;5;196m#{src}\e[0m" if Verbose
+            #puts "🚩 \e[38;5;196m#{src}\e[0m" if Verbose
             e.remove                                 # strip gunk reference in src attribute
           end
         end
@@ -25,7 +25,7 @@ module Webize
         if (e.name=='link' && e['href']) || e['xlink:href'] # href attribute
           ref = (base.join (e['href'] || e['xlink:href'])).R # resolve location
           if ref.deny? || %w(dns-prefetch preconnect).member?(e['rel'])
-            puts "🚩 \e[38;5;196m#{ref}\e[0m" if Verbose
+            #puts "🚩 \e[38;5;196m#{ref}\e[0m" if Verbose
             e.remove                                 # strip gunk reference in href attribute
           end
         end}
@@ -33,7 +33,7 @@ module Webize
       doc.css('meta[content]').map{|meta|            # strip gunk reference in meta tag
         if meta['content'].match? /^https?:/
           if meta['content'].R.deny?
-            puts "🚩 #{meta['content']}" if Verbose
+            #puts "🚩 #{meta['content']}" if Verbose
             meta.remove
           end
         end}
@@ -41,7 +41,7 @@ module Webize
       doc.css('script').map{|s|                      # visit script-nodes
         s.attribute_nodes.map{|a|                    # @src and nonstandard attribute names
           if a.value.R.deny?                         # target denied?
-            puts "🚩 \e[38;5;196m#{a.value}\e[0m" if Verbose
+            #puts "🚩 \e[38;5;196m#{a.value}\e[0m" if Verbose
             s.remove                                 # strip gunk attribute
           end}}
 
@@ -52,7 +52,6 @@ module Webize
         Webize::CSS.cleanAttr node if node['style'].match? CSSgunk}
 
       dropnodes = "amp-ad, amp-consent, .player-unavailable"
-     #doc.css(dropnodes).map{|n| log['🧽', n, /amp-(ad|consent)/i]} if Verbose
       doc.css(dropnodes).remove                      # strip amp + popup gunk
 
       doc.css('[integrity]').map{|n|                 # content is being heavily modified,
@@ -75,7 +74,6 @@ module Webize
 
       # drop upstream formatting and scripts
       dropnodes = 'iframe, script, style, link[rel="stylesheet"], link[type="text/javascript"], link[as="script"]'  # a[href^="javascript"]
-     #html.css(dropnodes).map{|n| puts ['🧽 ', n].join} if Verbose
       html.css(dropnodes).remove
 
       # <img> mapping
@@ -105,7 +103,7 @@ module Webize
         if e['src']
           src = (base.join e['src']).R                            # resolve @src
           if src.deny?
-            puts "🚩 \e[31;1m#{src}\e[0m" if Verbose
+            #puts "🚩 \e[31;1m#{src}\e[0m" if Verbose
             e.remove
           else
             e['src'] = src.uri
