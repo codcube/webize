@@ -355,7 +355,7 @@ class WebResource
               charset = 'UTF-8' if charset.match? /utf.?8/i # normalize UTF-8 charset symbols
               charset = 'Shift_JIS' if charset.match? /s(hift)?.?jis/i # normalize Shift-JIS charset symbols
               unless Encoding.name_list.member? charset     # ensure charset is in encoding set
-                puts "⚠️ unsupported charset #{charset}"
+                puts "⚠️ unsupported charset #{charset}" if Verbose
                 charset = 'UTF-8'                           # default charset
               end
             end
@@ -382,8 +382,8 @@ class WebResource
                (extensions = formats.map(&:file_extension).flatten) && # mapped suffixes for content-type
                !extensions.member?(ext)                     # upstream suffix not mapped for content-type
               file = [(link = file), '.', extensions[0]].join # append suffix and display notice
-              puts ["extension #{ext} not among (", extensions.join(', '), '), storing to ', file].join if Verbose
               FileUtils.ln_s file, link                     # link upstream path to storage path
+              puts ['extension', ext, 'for', format, 'not in (', extensions.join(', '), '), linking', file].join ' 'if Verbose
             end
             File.open(file, 'w'){|f| f << body }            # cache
 
@@ -392,7 +392,7 @@ class WebResource
               if ts = Time.httpdate(timestamp) rescue nil   # parse timestamp
                 FileUtils.touch file, mtime: ts             # cache timestamp
               else
-                puts '⚠️ unparsed timestamp:' + h['Last-Modified']
+                puts '⚠️ unparsed timestamp:' + h['Last-Modified'] if Verbose
               end
             end
 
@@ -412,10 +412,10 @@ class WebResource
                 RDF::RDFa::Reader.new(body, base_uri: self){|g|env[:repository] << g} rescue puts :RDFa_error
               end
             else
-              puts "⚠️ Reader undefined for #{format}"       # ⚠️ undefined Reader
-            end unless format.match?(/octet-stream/)||body.empty? # binary blob
+              puts "⚠️ Reader undefined for #{format}" if Verbose
+            end unless format.match?(/octet-stream/) || body.empty?
           else
-            puts "⚠️ format undefined on #{uri}"             # ⚠️ undefined format
+            puts "⚠️ format undefined on #{uri}" if Verbose
           end
 
           return unless thru                                # HTTP response for caller?
@@ -430,7 +430,7 @@ class WebResource
             end}
           if h['Set-Cookie'] && CookieHosts.member?(host) && !(cookie = env[:base].join('/cookie').R).exist?
             cookie.writeFile h['Set-Cookie']                # update cookie-cache
-            puts [:🍯, host, h['Set-Cookie']].join ' '
+            puts [:🍯, host, h['Set-Cookie']].join ' ' if Verbose
           end
 
           if env[:client_etags].include? h['ETag']          # client has entity
@@ -566,13 +566,12 @@ class WebResource
 
     def HEAD
       self.GET.yield_self{|s, h, _|
-        puts "⚠️HEAD response body needlessly generated #{uri}" unless !_ || _.empty?
-        [s, h, []]} # status and header
+                          [s, h, []]} # header and status
     end
 
     def head?; env['REQUEST_METHOD'] == 'HEAD' end
 
-    # client<>proxy connection-specific headers not reused on proxy<>origin connection
+    # client<>proxy connection and server-specific headers not repeated on proxy<>origin connection
     SingleHopHeaders = %w(async.http.request connection host if-modified-since if-none-match keep-alive path-info query-string
  remote-addr request-method request-path request-uri script-name server-name server-port server-protocol server-software
  te transfer-encoding unicorn.socket upgrade upgrade-insecure-requests version via x-forwarded-for)
@@ -612,7 +611,7 @@ class WebResource
       cookie = join('/cookie').R                            # cookie-jar URI
       if env[:cookie] && !env[:cookie].empty?               # store cookie to jar
         cookie.writeFile env[:cookie]
-        puts [:🍯, host, env[:cookie]].join ' '
+        puts [:🍯, host, env[:cookie]].join ' ' if Verbose
       end
       if cookie.file?                                       # read cookie from jar
         env['HTTP_COOKIE'] = cookie.node.read
