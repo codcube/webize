@@ -23,7 +23,7 @@ class WebResource
   end
 
   def fileMIMEsuffix
-    suffix = File.extname fsPath
+    suffix = File.extname File.realpath fsPath
     return if suffix.empty?
     MimeTypes[suffix] ||                # webize list
       Rack::Mime::MIME_TYPES[suffix] || # Rack list
