@@ -123,11 +123,11 @@ class WebResource
 
     # HTTP entry-point
     def self.call env
-      # environment
+      # initialize environment
       env[:start_time] = Time.now                           # start timer
       env['SERVER_NAME'].downcase!                          # normalize hostname
-      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
-      env.update HTTP.env                                   # initialize storage
+      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
+      env.update HTTP.env                                   # storage fields
 
       # construct URI from header fields
       isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
@@ -158,7 +158,7 @@ class WebResource
           print "\e[7m💻 ← 🖥 #{uri}\e[0m " ; bwPrint head
         end
 
-        # request logger
+        # log request
         fmt = uri.format_icon head['Content-Type']                                                       # iconify format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
         puts [[(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                                    # denote insecure transport
@@ -453,9 +453,9 @@ class WebResource
       case status.to_s
       when /30[12378]/                                      # redirected
         dest = join(e.io.meta['location']).R env
-        if scheme != dest.scheme && host == dest.host && path == dest.path
-          puts "⚠️ #{uri} ➡️ #{dest}" if scheme == 'https' && dest.scheme == 'http'
-          dest.fetchHTTP                                    # redirected to alternate scheme
+        if no_scheme == dest.no_scheme                      # alternate scheme
+          puts "⚠️  downgrade #{uri} ➡️ #{dest}" if scheme == 'https' && dest.scheme == 'http'
+          dest.fetchHTTP
         else
           [status, {'Location' => dest.href}, []]
         end

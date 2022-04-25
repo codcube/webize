@@ -62,6 +62,8 @@ class WebResource < RDF::URI
 
     def imgURI?; imgPath? || (dataURI? && path.index('image') == 0) end
 
+    def no_scheme; uri.split('//',2)[1] end
+
     def parts; path ? (path.split('/') - ['']) : [] end
 
     def query_hash; Digest::SHA2.hexdigest(query)[0..15] end
