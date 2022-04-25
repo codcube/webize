@@ -380,9 +380,9 @@ class WebResource
             if (formats = RDF::Format.content_types[format]) && # content-type
                (extensions = formats.map(&:file_extension).flatten) && # mapped suffixes for content-type
                !extensions.member?(ext)                     # upstream suffix not mapped for content-type
-              file = [(link = file), '.', extensions[0]].join # append correct suffix and display notice
+              file = [(link = file), '.', extensions[-1]].join # append suffix and display notice
               puts ["extension #{ext} not among (", extensions.join(', '), '), storing to ', file].join
-              FileUtils.ln_s file, link                     # link upstream path to storage location
+              FileUtils.ln_s file, link                     # link upstream path to storage path
             end
 
             POSIX.container file                            # containing dir(s)
@@ -454,14 +454,10 @@ class WebResource
       case status.to_s
       when /30[12378]/                                      # redirected
         dest = join(e.io.meta['location']).R env
-        puts "#{uri} ➡️ #{dest}" if Verbose
-        if scheme != dest.scheme && host == dest.host && path == dest.path # alternate scheme
-          dest.fetchHTTP
-        else                                                # new location
-          unless exist? || symlink? || dest.fsPath.index(fsPath) # source-location available on fs
-            src = fsPath.sub /\/$/,''; POSIX.container src  # create containing node(s)
-            FileUtils.ln_s (dest.node.relative_path_from node.dirname), src # cache redirect locations
-          end
+        if scheme != dest.scheme && host == dest.host && path == dest.path
+          puts "⚠️ #{uri} ➡️ #{dest}" if scheme == 'https' && dest.scheme == 'http'
+          dest.fetchHTTP                                    # redirected to alternate scheme
+        else
           [status, {'Location' => dest.href}, []]
         end
       when /304/                                            # origin unmodified
