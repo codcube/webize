@@ -80,12 +80,8 @@ data-srcset
       content_type 'image/jpeg',
                    extensions: [:jpeg, :jpg, :JPG],
                    aliases: %w(
-                   application/x-icon;q=0.2
-                   image/avif;q=0.2
                    image/jpg;q=0.8
                    image/pjpeg;q=0.2
-                   image/x-icon;q=0.2
-                   image/vnd.microsoft.icon;q=0.2
 )
       reader { Reader }
     end
