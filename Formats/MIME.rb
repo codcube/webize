@@ -2,6 +2,7 @@
 class WebResource
                                   # non-transformable (MIMEa -> MIMEb) formats
   FixedFormat = /archive|audio|css|image|octet|package|script|video|xz|zip/
+  MimeTypes = {'.apk' => 'application/vnd.android.package-archive'}
   ReFormat = %w(text/html)        # reformatable (MIMEa -> MIMEa) formats
 
   # file -> MIME type
@@ -13,25 +14,20 @@ class WebResource
   end
 
   def fileMIMEprefix
-    name = basename.downcase      # case-normalized name
-    if TextFiles.member? name     # well-known textfile basename
+    name = basename.downcase      # normalize case
+    if TextFiles.member? name     # well-known textfiles
       'text/plain'
-    elsif name.index('msg.')==0 || path.index('/sent/cur')==0
-      'message/rfc822'            # procmail $PREFIX or maildir match
+    elsif name.index('msg.') == 0 || path.index('/sent/cur') == 0
+      'message/rfc822'            # procmail $PREFIX or maildir container
     end
   end
 
   def fileMIMEsuffix
     suffix = File.extname fsPath
     return if suffix.empty?
-    {'.apk' => 'application/vnd.android.package-archive',
-    }[suffix] ||                   # native list
-    (fileMIMEsuffixRack suffix) || # Rack list
-    (fileMIMEsuffixRDF  suffix)    # RDF list
-  end
-
-  def fileMIMEsuffixRack suffix
-    Rack::Mime::MIME_TYPES[suffix]
+    MimeTypes[suffix] ||                # webize list
+      Rack::Mime::MIME_TYPES[suffix] || # Rack list
+      fileMIMEsuffixRDF(suffix)         # RDF list
   end
 
   def fileMIMEsuffixRDF suffix
