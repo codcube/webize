@@ -482,13 +482,13 @@ class WebResource
     end
 
     def fileResponse
-      return R304 if env[:client_etags].include?(etag = fileETag) # file is in client cache
+      return R304 if env[:client_etags].include?(etag = fileETag) # cached at client
       Rack::Files.new('.').serving(Rack::Request.new(env), fsPath).yield_self{|s,h,b|
-        case s                                                    # local status
+        case s                                                    # status
         when 200
-          s = env[:origin_status] if env[:origin_status]          # proxy origin status
+          s = env[:origin_status] if env[:origin_status]          # upstream status
         when 304
-          return R304                                             # nothing to return
+          return R304                                             # cached at client
         end
         format = fileMIME                                         # file format
         h['Content-Type'] = format
