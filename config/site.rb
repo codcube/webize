@@ -192,9 +192,9 @@ class WebResource
         NoGunk[r]
       when 'search'
         r.fetch
-      when 'sorry' # won't let us search - switch to DuckduckGo
+      when 'sorry' # denied, switch to DuckduckGo
         q = r.query_values['continue'].R.query_values['q']
-        [302, {'Location' => 'https://html.duckduckgo.com/html/' + HTTP.qs({q: q})}, []]
+        [302, {'Location' => 'https://duckduckgo.com/' + HTTP.qs({q: q})}, []]
       when 'url'
         GotoURL[r]
       else
