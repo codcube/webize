@@ -104,18 +104,8 @@ module Webize
               yield s, Date, Time.parse(o).utc.iso8601 rescue nil
             end
           else
-            p = Content if [
-                'content',
-                'content:encoded',
-                'http://purl.org/atom/ns#content',
-                'http://search.yahoo.com/mrss/content',
-                'https://search.yahoo.com/mrss/content',
-                Atom + 'content',
-                Podcast + 'summary',
-                RSS + 'description',
-                RSS + 'encoded',
-                RSS + 'modules/content/encoded',
-              ].member? p
+            p = MetaMap[p] if MetaMap.has_key? p
+            puts [p, o].join "\t" unless p.match? /^https?:/
             yield s,p,o
           end
         }

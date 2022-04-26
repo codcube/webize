@@ -85,7 +85,7 @@ module Webize
         else
           Webize::JSON.scan(@json){|h|
             if s = h['expanded_url'] || h['uri'] || h['url'] || h['link'] || h['canonical_url'] || h['src'] || ((h['id'] || h['ID'] || h['_id'] || h['id_str']) && ('#' + (h['id'] || h['ID'] || h['_id'] || h['id_str']).to_s))
-              s = @base.join(s).R # TODO return object URI out to caller for triple pointing to inner resource
+              s = @base.join(s).R # TODO return subject URI out to caller for triple pointing to inner resource
               if s.parts[0] == 'users'
                 host = ('https://' + s.host).R
                 yield s, Creator, host.join(s.parts[0..1].join('/'))
