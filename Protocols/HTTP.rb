@@ -139,7 +139,7 @@ class WebResource
               env[:proxy_href] = isPeer
               [isPeer ? :http : :https, '://', env['HTTP_HOST']].join
             end.R.join(env['REQUEST_PATH']).R env
-      uri.port = nil if [80,443,8000].member? uri.port      # drop redundant port information
+      uri.port = nil if [80,443,8000].member? uri.port      # drop default port specification
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query string?
         env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {}
         qs = env[:qs].dup                                   # strip excess &s, parse and memoize query
@@ -272,7 +272,8 @@ class WebResource
       elsif directory? && (🐢 = join('index.🐢').R env).exist? # cached index?
         🐢.preview.loadRDF                                  # fetch index to graph
       end
-
+      addr = Resolv.getaddress host rescue '127.0.0.1'      # lookup server address
+      return cacheResponse if LocalAddrs.member? addr       # local node, return
       env[:fetched] = true                                  # note fetch for logger
       case scheme                                           # request scheme
       when 'ftp'
@@ -283,11 +284,9 @@ class WebResource
         fetchHTTP                                           # fetch w/ HTTP
       when 'https'
         if ENV.has_key?('HTTP_PROXY')
-          insecure.fetchHTTP                                # fetch w/ HTTP to private-network peer
-        elsif (PeerAddrs.has_key? Resolv.getaddress host rescue false)
-          url = insecure
-          url.port = 8000
-          url.fetchHTTP                                     # fetch w/ HTTP to private-network peer
+          insecure.fetchHTTP                                # fetch w/ HTTP to private-net peer
+        elsif PeerAddrs.has_key? addr
+          url = insecure; url.port = 8000; url.fetchHTTP    # fetch w/ HTTP to private-net peer
         else
           fetchHTTP                                         # fetch w/ HTTPS
         end
