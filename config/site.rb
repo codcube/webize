@@ -283,10 +283,16 @@ class WebResource
       if !r.path || r.path == '/'
         r.env[:sort] = 'date'
         r.env[:view] = 'table'
+        barrier = Async::Barrier.new
+	semaphore = Async::Semaphore.new(8, parent: barrier)
+        client_id = 'qpb3ePPttWrQPwdAw7dRY7sxJCe6Z8pj'
+        version = 1650464268
         SiteDir.join('soundcloud').readlines.map(&:chomp).map{|chan|
-          client_id = 'qpb3ePPttWrQPwdAw7dRY7sxJCe6Z8pj'
-          version = 1650464268
-          "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{client_id}&limit=20&offset=0&linked_partitioning=1&app_version=#{version}&app_locale=en".R(r.env).fetchHTTP thru: false}
+          semaphore.async do
+            print "🔊"
+            "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{client_id}&limit=20&offset=0&linked_partitioning=1&app_version=#{version}&app_locale=en".R(r.env).fetchHTTP thru: false
+          end}
+        barrier.wait
         r.saveRDF.graphResponse
       else
        NoGunk[r]
