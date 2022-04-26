@@ -78,18 +78,12 @@ class WebResource
     tree = {}                    # initialize tree
     bnodes = []                  # blank nodes
     graph.each_triple{|subj,pred,o| # triples
-      p = pred.to_s                 # predicate
-      p = MetaMap[p] if MetaMap.has_key? p
-      unless p == :drop
-        #puts [pred, p].join " -> " if Verbose && pred != p
-        puts [p, o].join "\t" unless p.match? /^https?:/
-        s = subj.to_s            # subject
-        tree[s] ||= subj.class==RDF::Node ? {} : {'uri' => s} # subject storage
-        tree[s][p] ||= []                                     # predicate storage
-        tree[s][p].push o.class==RDF::Node ? (bnodes.push o.to_s # bnode object
-                                              tree[o.to_s] ||= {}) : o unless tree[s][p].member? o # object
-      end}
-    bnodes.map{|n|tree.delete n} # sweep bnode-ids from index
+      s = subj.to_s; p = pred.to_s # stringify keys
+      tree[s] ||= subj.class==RDF::Node ? {} : {'uri' => s} # subject storage
+      tree[s][p] ||= []                                     # predicate storage
+      tree[s][p].push o.class==RDF::Node ? (bnodes.push o.to_s # blank-node
+                                            tree[o.to_s] ||= {}) : o unless tree[s][p].member? o} # object
+    bnodes.map{|n|tree.delete n} # sweep bnodes from subject index
     tree                         # output tree
   end
 
