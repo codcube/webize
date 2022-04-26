@@ -1,4 +1,3 @@
-# coding: utf-8
 %w(async brotli cgi digest/sha2 open-uri rack resolv).map{|_| require _}
 
 class WebResource
@@ -453,7 +452,8 @@ class WebResource
       when /30[12378]/                                      # redirected
         dest = join(e.io.meta['location']).R env
         if no_scheme == dest.no_scheme                      # alternate scheme
-          puts "⚠️  downgrade #{uri} ➡️ #{dest}" if scheme == 'https' && dest.scheme == 'http'
+          downgrade = scheme == 'https' && dest.scheme == 'http'
+          puts "⚠️  #{downgrade ? :downgrade : 'scheme switch redirect'} #{uri} ➡️ #{dest}"
           dest.fetchHTTP
         else
           [status, {'Location' => dest.href}, []]
