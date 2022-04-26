@@ -221,7 +221,7 @@ class WebResource
         r.env[:sort] = Date
         r.env[:view] = 'table'
         barrier = Async::Barrier.new
-	semaphore = Async::Semaphore.new(8, parent: barrier)
+	semaphore = Async::Semaphore.new(16, parent: barrier)
         SiteDir.join('mixcloud').readlines.map(&:chomp).map{|chan|
           semaphore.async do
             print "🔊"
@@ -284,7 +284,7 @@ class WebResource
         r.env[:sort] = 'date'
         r.env[:view] = 'table'
         barrier = Async::Barrier.new
-	semaphore = Async::Semaphore.new(8, parent: barrier)
+	semaphore = Async::Semaphore.new(16, parent: barrier)
         client_id = 'qpb3ePPttWrQPwdAw7dRY7sxJCe6Z8pj'
         version = 1650464268
         SiteDir.join('soundcloud').readlines.map(&:chomp).map{|chan|
@@ -431,7 +431,7 @@ class WebResource
           [301, {'Location' => r.join(qs['q']||qs['u']).R(r.env).href}, []]
         when 'feed'
           barrier = Async::Barrier.new
-	  semaphore = Async::Semaphore.new(8, parent: barrier)
+	  semaphore = Async::Semaphore.new(16, parent: barrier)
           SiteDir.join('youtube').readlines.map(&:chomp).map{|chan|
             id = chan.R.parts[-1]
             semaphore.async do
