@@ -85,7 +85,7 @@ module Webize
         else
           Webize::JSON.scan(@json){|h|
             if s = h['expanded_url'] || h['uri'] || h['url'] || h['link'] || h['canonical_url'] || h['src'] || ((h['id'] || h['ID'] || h['_id'] || h['id_str']) && ('#' + (h['id'] || h['ID'] || h['_id'] || h['id_str']).to_s))
-              s = @base.join(s).R
+              s = @base.join(s).R # TODO return object URI out to caller for triple pointing to inner resource
               if s.parts[0] == 'users'
                 host = ('https://' + s.host).R
                 yield s, Creator, host.join(s.parts[0..1].join('/'))
@@ -96,7 +96,11 @@ module Webize
                   (v.class == Array ? v : [v]).map{|o|
                     unless [Hash, NilClass].member?(o.class) || (o.class == String && o.empty?) # each non-nil terminal value
                       o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)       # resolve URI
-                      yield s, p, o
+                      p = MetaMap[p] if MetaMap.has_key? p
+                      unless p == :drop
+                        puts [p, o].join "\t" unless p.match? /^https?:/
+                        yield s, p, o
+                      end
                     end
                   }
                 end
@@ -110,7 +114,7 @@ module Webize
 end
 class WebResource
 
-  # read RDF from JSON embedded in HTML
+  # RDF from JSON embedded in HTML
   def JSONembed doc, pattern, &b
     doc.css('script').map{|script|
       script.inner_text.lines.grep(pattern).map{|line|
