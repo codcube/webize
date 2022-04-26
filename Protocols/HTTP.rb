@@ -143,8 +143,8 @@ class WebResource
         env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {}
         qs = env[:qs].dup                                   # strip excess &s, parse and memoize query
         Args.map{|k|
-         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # consume (client <> proxy) args, store in request environment
-        uri.query_values = qs unless qs.empty?              # retain (proxy <> origin) args, store in request URI
+         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # strip (client <> proxy) args, store in request environment
+        uri.query_values = qs unless qs.empty?              # retain (proxy <> origin) args request URI for follow-on requests
       end
       env[:base] = uri.to_s.R env                           # set base URI in environment
 
