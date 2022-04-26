@@ -75,12 +75,11 @@ class WebResource
 
   # RDF::Repository -> JSON (s->p->o). input data-structure for Atom/HTML/RSS renderers
   def treeFromGraph graph=nil; graph ||= env[:repository]; return {} unless graph
-    tree = {}                    # initialize tree
-    bnodes = []                  # blank nodes
-    graph.each_triple{|subj,pred,o| # triples
-      s = subj.to_s; p = pred.to_s # stringify keys
-      tree[s] ||= subj.class==RDF::Node ? {} : {'uri' => s} # subject storage
-      tree[s][p] ||= []                                     # predicate storage
+    tree = {}; bnodes = [] # initialize tree and bnode array
+    graph.each_triple{|subj,pred,o| # visit triples
+      s = subj.to_s; p = pred.to_s  # stringify keys
+      tree[s] ||= subj.class==RDF::Node ? {} : {'uri' => s}    # subject
+      tree[s][p] ||= []                                        # predicate
       tree[s][p].push o.class==RDF::Node ? (bnodes.push o.to_s # blank-node
                                             tree[o.to_s] ||= {}) : o unless tree[s][p].member? o} # object
     bnodes.map{|n|tree.delete n} # sweep bnodes from subject index
