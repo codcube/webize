@@ -1,4 +1,4 @@
-%w(async brotli cgi digest/sha2 open-uri rack resolv).map{|_| require _}
+%w(async async/barrier async/semaphore brotli cgi digest/sha2 open-uri rack resolv).map{|_| require _}
 
 class WebResource
   module URIs
