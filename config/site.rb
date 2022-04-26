@@ -419,17 +419,15 @@ class WebResource
         when /attribution_link|redirect/
           [301, {'Location' => r.join(qs['q']||qs['u']).R(r.env).href}, []]
         when 'feed'
-          Async do
-            barrier = Async::Barrier.new
-	    semaphore = Async::Semaphore.new(8, parent: barrier)
-            SiteDir.join('youtube').readlines.map(&:chomp).map{|chan|
-              print "🎞️"
-              id = chan.R.parts[-1]
-              semaphore.async do
-                "https://www.youtube.com/feeds/videos.xml?channel_id=#{id}".R(r.env).fetchHTTP thru: false
-              end}
-            barrier.wait
-          end
+          barrier = Async::Barrier.new
+	  semaphore = Async::Semaphore.new(8, parent: barrier)
+          SiteDir.join('youtube').readlines.map(&:chomp).map{|chan|
+            print "🎞️"
+            id = chan.R.parts[-1]
+            semaphore.async do
+              "https://www.youtube.com/feeds/videos.xml?channel_id=#{id}".R(r.env).fetchHTTP thru: false
+            end}
+          barrier.wait
           r.saveRDF.graphResponse
         when 'get_video_info'
           if r.query_values['el'] == 'adunit' # TODO ads
