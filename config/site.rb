@@ -220,9 +220,14 @@ class WebResource
       if !r.path || r.path == '/'
         r.env[:sort] = Date
         r.env[:view] = 'table'
+        barrier = Async::Barrier.new
+	semaphore = Async::Semaphore.new(8, parent: barrier)
         SiteDir.join('mixcloud').readlines.map(&:chomp).map{|chan|
-          print "🔊"
-          "https://api.mixcloud.com/#{chan}/cloudcasts/".R(r.env).fetchHTTP format: 'application/json', thru: false}
+          semaphore.async do
+            print "🔊"
+            "https://api.mixcloud.com/#{chan}/cloudcasts/".R(r.env).fetchHTTP format: 'application/json', thru: false
+          end}
+        barrier.wait
         r.saveRDF.graphResponse
       else
         r.env[:feeds].push "https://api.mixcloud.com/#{r.parts[0]}/cloudcasts/"
@@ -422,9 +427,9 @@ class WebResource
           barrier = Async::Barrier.new
 	  semaphore = Async::Semaphore.new(8, parent: barrier)
           SiteDir.join('youtube').readlines.map(&:chomp).map{|chan|
-            print "🎞️"
             id = chan.R.parts[-1]
             semaphore.async do
+              print "🎞️"
               "https://www.youtube.com/feeds/videos.xml?channel_id=#{id}".R(r.env).fetchHTTP thru: false
             end}
           barrier.wait
