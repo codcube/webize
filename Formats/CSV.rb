@@ -75,8 +75,7 @@ class WebResource
                        (resource[t]||[]).map{|i| Markup[t][i,env]}]},            # A/V reference
                     ([Content, SIOC+'richContent'].map{|p|
                        (resource[p]||[]).map{|o|                                 # HTML literal
-                         markup o,env}} unless (resource[Creator]||[]).find{|a|KillFile.member? a.to_s}),
-                    {_: :a, class: :pointer, href: re.uri}]
+                         markup o,env}} unless (resource[Creator]||[]).find{|a|KillFile.member? a.to_s})]
                  else
                    if Type == k && types&.find{|t| AV.member? t}                 # Audio/Video typed
                      playerType = Audio.R==resource[Type][0] ? 'audio' : 'video' # play-button for A/V resource
