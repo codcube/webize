@@ -455,6 +455,7 @@ class WebResource
         dest = join(location).R env
         if no_scheme == dest.no_scheme                      # alternate scheme
           downgrade = scheme == 'https' && dest.scheme == 'http'
+          HTTP.bwPrint e.io.meta
           puts "⚠️  #{downgrade ? :downgrade : 'scheme switch redirect'} #{uri} ➡️ #{location == dest ? nil : location} #{dest}"
           dest.fetchHTTP
         else
