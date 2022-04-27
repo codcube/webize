@@ -1,20 +1,29 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 # originally Simple DNS server by Peter Cooper w/ MIT license
+# typical usage is system resolver set to 127.0.0.1,
+# and script at ../proxy has enabled low-port 53 forwarding to us
+# prob will replace this w/ async-dns or smth but "it works fine"
+
+require_relative '../../index'
+
 require 'resolv'
-require 'socket'
-require_relative '../index'
 require 'resolv-replace'
+require 'socket'
+
 hosts_resolver = Resolv::Hosts.new('/etc/hosts')
 dns_resolver = Resolv::DNS.new nameserver: %w(8.8.8.8 9.9.9.9 1.1.1.1)
 Resolv::DefaultResolver.replace_resolvers([hosts_resolver, dns_resolver])
+
 class DNSRequest
   attr_reader :server, :data, :domain
+
   def initialize(server, data)
     @server = server
     @data = data
     extract_domain
   end
+
   def extract_domain
     @domain = ''
     # Check "Opcode" of question header for valid question
@@ -30,6 +39,7 @@ class DNSRequest
       end
     end
   end
+
   def response(val)
     return empty_response if domain.empty? || !val
     cname = val =~ /[a-z]/
@@ -58,6 +68,7 @@ class DNSRequest
     response += [rdata.length].pack("n")
     response += rdata
   end
+
   def empty_response
     # Empty response header [id * 2, flags, NXDOMAIN, qd count * 2, an count * 2, ns count * 2, ar count * 2]
     response = "#{data[0,2]}\x81\x03#{data[4,2]}\x00\x00\x00\x00\x00\x00"
@@ -69,10 +80,12 @@ class DNSServer
   attr_reader :port, :ttl
   DefaultAddr = ENV['ADDR'] || '127.0.0.1'
   Cache = {}
+
   def initialize(options = {})
     options = {port: 1053, ttl: 600}.merge(options)
     @port, @ttl = options[:port], options[:ttl]
   end
+
   def run
     Socket.udp_server_loop(@port) do |data, src|
       r = DNSRequest.new(self, data)
@@ -94,5 +107,5 @@ class DNSServer
     end
   end
 end
-puts "listening for DNS requests on port 1053"
+
 DNSServer.new.run
