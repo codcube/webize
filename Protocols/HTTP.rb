@@ -137,7 +137,8 @@ class WebResource
             else                                            # remote node
               env[:proxy_href] = isPeer
               ['//', env['HTTP_HOST']].join
-            end.R.join(env['REQUEST_PATH']).R env
+             end.R.join(env['REQUEST_PATH']).R env
+      uri.host = nil if isLocal                             # nullify host if in REQUEST_PATH
       uri.scheme = isPeer ? :http : :https                  # secure protocol unless private-net peer
       uri.port = nil if [80,443,8000].member? uri.port      # default ports
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query string?
