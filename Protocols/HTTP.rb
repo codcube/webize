@@ -451,10 +451,11 @@ class WebResource
       status = e.io.status[0].to_i                          # response status
       case status.to_s
       when /30[12378]/                                      # redirected
-        dest = join(e.io.meta['location']).R env
+        location = e.io.meta['location']
+        dest = join(location).R env
         if no_scheme == dest.no_scheme                      # alternate scheme
           downgrade = scheme == 'https' && dest.scheme == 'http'
-          puts "⚠️  #{downgrade ? :downgrade : 'scheme switch redirect'} #{uri} ➡️ #{dest}"
+          puts "⚠️  #{downgrade ? :downgrade : 'scheme switch redirect'} #{uri} ➡️ #{location == dest ? nil : location} #{dest}"
           dest.fetchHTTP
         else
           [status, {'Location' => dest.href}, []]
