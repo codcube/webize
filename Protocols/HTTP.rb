@@ -454,10 +454,16 @@ class WebResource
         location = e.io.meta['location']
         dest = join(location).R env
         if no_scheme == dest.no_scheme                      # alternate scheme
-          downgrade = scheme == 'https' && dest.scheme == 'http'
-          HTTP.bwPrint e.io.meta
-          puts "⚠️  #{downgrade ? :downgrade : 'scheme switch redirect'} #{uri} ➡️ #{location == dest ? nil : location} #{dest}"
-          dest.fetchHTTP
+          if scheme == 'https' && dest.scheme == 'http'     # downgrade
+            puts "⚠️  downgrade redirect #{dest}"
+            dest.fetchHTTP
+          elsif scheme == 'http' && dest.scheme == 'https'  # upgrade
+            puts "🔒 upgrade redirect #{dest}"
+            dest.fetchHTTP
+          else                                              # redirect loop
+            puts "discarding #{uri} -> #{location} redirect"
+            cacheResponse
+          end
         else
           [status, {'Location' => dest.href}, []]
         end
