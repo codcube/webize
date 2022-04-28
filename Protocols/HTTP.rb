@@ -133,12 +133,11 @@ class WebResource
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']]||env['SERVER_NAME']) # local node?
       uri = if isLocal
               env[:proxy_href] = true                       # relocate hrefs to local URI space
-              '/'                                           # local node
-            else                                            # remote node
+              '/'                                           # local host
+            else
               env[:proxy_href] = isPeer
-              ['//', env['HTTP_HOST']].join
-             end.R.join(env['REQUEST_PATH']).R env
-      uri.host = nil if isLocal                             # nullify host if in REQUEST_PATH
+              ['//', env['HTTP_HOST']].join                 # remote host
+            end.R.join(RDF::URI(env['REQUEST_PATH']).path).R env # path
       uri.scheme = isPeer ? :http : :https                  # secure protocol unless private-net peer
       uri.port = nil if [80,443,8000].member? uri.port      # default ports
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query string?
