@@ -83,7 +83,7 @@ class WebResource
                 elsif q['q'] && !q['q'].empty?              # GREP
                   grep
                 else                                        # LS dir
-                  [self, *join('{index,readme,README}*').R(env).glob]
+                  [self, *join((dirURI? ? '' : basename + '/' ) + '{index,readme,README}*').R(env).glob]
                 end
               elsif file?                                   # LS file
                 [self]

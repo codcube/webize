@@ -511,8 +511,8 @@ class WebResource
     items.map{|item|
       id = item['id']                              # message identifier
       room_id = parts[3]                           # room identifier
-      room = ('http://gitter.im/api/v1/rooms/'  + room_id).R # room URI
-      env[:links][:prev] ||= room.uri + '/chatMessages?lookups%5B%5D=user&includeThreads=false&beforeId=' + id + '&limit=31'
+      room = ('http://gitter.im/api/v1/rooms/'  + room_id + '/').R # room URI
+      env[:links][:prev] ||= room.uri + 'chatMessages?lookups%5B%5D=user&includeThreads=false&beforeId=' + id + '&limit=31'
       date = item['sent']
       uid = item['fromUser']
       user = tree['lookups']['users'][uid]
