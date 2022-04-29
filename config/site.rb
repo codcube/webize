@@ -165,8 +165,10 @@ class WebResource
         if !r.env.has_key?('x-access-token') && token.node.exist?
           r.env['x-access-token'] = token.node.read
         end
-      end
-      NoGunk[r]}
+        r.query ? NoGunk[r] : r.cacheResponse
+      else
+        NoGunk[r]
+      end}
 
     GotoAdURL =  -> r {
       if url = (r.query_values || {})['adurl']
@@ -497,7 +499,7 @@ class WebResource
           room_id = room[1]                         # room id
           room = ('http://gitter.im/api/v1/rooms/' + room_id).R # room URI
           env[:links][:prev] = room.uri + '/chatMessages?lookups%5B%5D=user&includeThreads=false&limit=31'
-          yield room, Schema + 'sameAs', self, room # link room (integer) id to URI
+          yield room, Schema + 'sameAs', self, room # link room API URI to canonical URI 
           yield room, Type, (SIOC + 'ChatChannel').R
         end
       end}
