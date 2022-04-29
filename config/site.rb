@@ -4,7 +4,6 @@ module Webize
     class Reader
       Triplr = {
         'apnews.com' => :AP,
-        'github.com' => :GitHub,
         'gitter.im' => :GitterHTML,
         'lobste.rs' => :Lobsters,
         'spinitron.com' => :Spinitron,
@@ -480,53 +479,6 @@ class WebResource
   def C2 tree, &b
     yield self, Date, tree['date']
     yield self, Content, (Webize::HTML.format tree['text'].hrefs, self)
-  end
-
-  def GitHub doc
-    if title = doc.css('.gh-header-title')[0]
-      yield self, Title, title.inner_text
-      title.remove
-    end
-    
-    if meta = doc.css('.gh-header-meta')[0]
-      if author = meta.css('author[href]')[0]
-        yield self, Creator, author['href'].R
-      end
-      meta.css('[datetime]').map{|date| yield self, Date, date['datetime'] }
-      yield self, Content, meta.inner_text
-      meta.remove
-    end
-
-    doc.css('.Box-row, .TimelineItem').map{|item|
-      timestamp = item.css('.js-timestamp')[0]
-      subject = join((timestamp && timestamp['href']) || item['href'] || ('#' + (item['id'] || (Digest::SHA2.hexdigest item.to_s))))
-      yield subject, Type, Post.R
-
-      item.css("div[role='rowheader'] a, [data-hovercard-type='issue']").map{|title|
-        yield subject, Title, title.inner_text
-        yield subject, Link, join(title['href'])
-        title.remove}
-
-      if time = item.css('[datetime]')[0]
-        yield subject, Date, time['datetime']
-      end
-
-      if author = item.css('.author, .opened-by > a')[0]
-        yield subject, Creator, join(author['href'])
-        yield subject, Creator, author.inner_text
-      end
-
-      yield subject, To, self
-
-      body = if comment = item.css('.comment-body')[0]
-               comment.inner_html
-             else
-               item
-             end
-      yield subject, Content, Webize::HTML.format(body, self)
-
-      item.remove
-    }
   end
 
   def GitterHTML doc

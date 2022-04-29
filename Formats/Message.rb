@@ -5,7 +5,7 @@ module Webize
 
       # item/message/post -> RDF
       def scanMessages
-        @doc.css("article, .athing, .comment, .entry, .message, [id^='post'], .post, .postCell, .post-container, .post_wrapper, td.subtext, .views-row").map{|post| # posts
+        @doc.css("article, .athing, .Box-row, .comment, .entry, .message, [id^='post'], .post, .postCell, .post-container, .post_wrapper, td.subtext, .views-row").map{|post| # posts
           links = post.css('a.linkSelf, a.post_no, a.titlelink, .age > a, .entry-title a, .postNum a, .views-field-title a, .u-url')
           subject = if !links.empty?
                       links[0]['href']                                            # identifier in link to self
@@ -40,13 +40,13 @@ module Webize
                 created.remove
               end}
 
-            post.css('.author, .bigusername, .comment-author, .name, .post_author, .poster, .poster-name, .postername, .username').map{|name|
+            post.css('.author, .bigusername, .comment-author, .name, .post_author, .poster, .poster-name, .postername, .username, [data-hovercard-type="user"]').map{|name|
               yield subject, Creator, name.inner_text, graph }                    # author name
 
             post.css('a.author, a.bigusername, a.hnuser, a.username, .author > a, .p-author > a, .poster a').map{|a|
               yield subject, Creator, (@base.join a['href']), graph; a.remove }   # author URI
 
-            post.css('.entry-title, .post-subject, .post_title, .subject, .title, .views-field-title').map{|subj|
+            post.css('[class*="subject"], [class*="title"]').map{|subj|
               yield subject, Title, subj.inner_text, graph }                      # title
 
             post.css('img').map{|i|
