@@ -501,26 +501,6 @@ class WebResource
           yield room, Type, (SIOC + 'ChatChannel').R
         end
       end}
-
-    # messages
-    messageCount = 0
-    doc.css('.chat-item').map{|msg|
-      id = msg.classes.grep(/^model-id/)[0].split('-')[-1] # find ID
-      subject = 'http://gitter.im' + path + '?at=' + id   # subject URI
-      yield subject, Type, Post.R
-      if from = msg.css('.chat-item__from')[0]
-        yield subject, Creator, from.inner_text
-      end
-      if username = msg.css('.chat-item__username')[0]
-        yield subject, Creator, ('https://github.com/' + username.inner_text.sub(/^@/,'')).R
-      end
-      if image = msg.css('.avatar__image')[0]
-        yield subject, Image, image['src'].R
-      end
-      yield subject, Date, '%03d' % messageCount += 1
-      yield subject, Content, (Webize::HTML.format msg.css('.chat-item__text')[0], self)
-      msg.remove }
-    doc.css('header').map &:remove
   end
 
   def GitterJSON tree, &b
