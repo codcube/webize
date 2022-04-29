@@ -72,7 +72,7 @@ class WebResource
                               format.match?(FixedFormat) || # format-transform unavailable, or
                               (format==selectFormat(format) && !ReFormat.member?(format))) # reformat unavailable
 
-      q = env[:qs]                                          # query modes:
+      q = env[:qs]                                          # query mode:
       nodes = if directory?
                 if q['f'] && !q['f'].empty?                 # FIND exact
                   summarize = !env[:fullContent]
@@ -83,7 +83,8 @@ class WebResource
                 elsif q['q'] && !q['q'].empty?              # GREP
                   grep
                 else                                        # LS dir
-                  [self, *join((dirURI? ? '' : basename + '/' ) + '{index,readme,README}*').R(env).glob]
+                  [self,                                    # include indexes and READMEs
+                   *join((dirURI? ? '' : basename + '/' ) + '{index,readme,README}*').R(env).glob]
                 end
               elsif file?                                   # LS file
                 [self]
