@@ -497,8 +497,8 @@ class WebResource
         end
         if room = text.match(/"id":"([^"]+)/)
           room_id = room[1]                         # room id
-          room = ('http://gitter.im/api/v1/rooms/' + room_id).R # room URI
-          env[:links][:prev] = room.uri + '/chatMessages?lookups%5B%5D=user&includeThreads=false&limit=31'
+          room = ('http://gitter.im/api/v1/rooms/' + room_id + '/').R # room URI
+          env[:links][:prev] = room.uri + 'chatMessages?lookups%5B%5D=user&includeThreads=false&limit=31'
           yield room, Schema + 'sameAs', self, room # link room API URI to canonical URI 
           yield room, Type, (SIOC + 'ChatChannel').R
         end
