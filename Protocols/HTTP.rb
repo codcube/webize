@@ -128,33 +128,30 @@ class WebResource
       env['SERVER_NAME'].downcase!                          # normalize hostname
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
       env.update HTTP.env                                   # storage fields
-
-      # construct URI from header fields
+      # find base URI
       isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
-      env[:proxy_href] = isPeer || isLocal                  # proxy hrefs in local/peer URI space?
       uri = (isLocal ? '/' : [isPeer ? :http : :https,'://',# request scheme
-                              env['HTTP_HOST'].join).R.join(RDF::URI(env['REQUEST_PATH']).path).R env # request path
+                              env['HTTP_HOST']].join).R.join(RDF::URI(env['REQUEST_PATH']).path).R env # request path
       uri.port = nil if [80,443,8000].member? uri.port      # request port if non-default
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # request query if non-empty
         env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {}
         qs = env[:qs].dup                                   # strip excess &s to not trip up URI libraries (TODO file PR), parse and memoize
-        Args.map{|k|                                        # (💻 <> 🖥) argument symbols
+        Args.map{|k|                                        # (💻 <> 🖥) argument names
          env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) arguments, store in environment
         uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) arguments, store in URI for follow-on requests
       end
-      env[:base] = uri.to_s.R env                           # set base URI in environment
-
-      # request
+      env[:base] = uri.to_s.R env                           # base URI
+      env[:proxy_href] = isPeer || isLocal                  # proxy hrefs in local URI space?
       if Verbose
         print "\e[7m💻 → 🖥 #{uri}\e[0m " ; bwPrint env
       end
+      # do request
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
+        # log response
         if Verbose
           print "\e[7m💻 ← 🖥 #{uri}\e[0m " ; bwPrint head
         end
-
-        # log request
         fmt = uri.format_icon head['Content-Type']                                                       # iconify format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
         puts [[(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                                    # denote insecure transport
