@@ -268,10 +268,10 @@ class WebResource
     def fetch
       return cacheResponse if offline?                      # offline, return cache
       if file?                                              # cached file?
-        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return cached static-file
+        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return cache if not transformable or directory index
         env[:cache] = self                                  # reference for conditional fetch
-      elsif directory? && (🐢 = join('index.🐢').R env).exist? # cached index?
-        🐢.preview.loadRDF                                  # fetch index to graph
+#      elsif directory? && (🐢 = join('index.🐢').R env).exist? # cached index?
+#        🐢.preview.loadRDF                                  # merge local index to graph
       end
       addr = Resolv.getaddress host rescue '127.0.0.1'      # lookup server address
       return cacheResponse if LocalAddrs.member? addr       # local node, return
@@ -379,12 +379,12 @@ class WebResource
             POSIX.container file                            # create container(s)
             ext = (File.extname(file)[1..-1] || '').to_sym  # upstream suffix
             if (formats = RDF::Format.content_types[format]) && # content-type
-               (extensions = formats.map(&:file_extension).flatten) && # mapped suffixes for content-type
-               !extensions.member?(ext)                     # upstream suffix not mapped for content-type
-              file = [(link = file), '.', extensions[0]].join # append suffix and display notice
-              FileUtils.ln_s File.basename(file), link      # link upstream name to local name
+               (extensions = formats.map(&:file_extension).flatten) && # suffixes for content-type
+               !extensions.member?(ext)                     # suffix not mapped to content-type
+              file = [(link = file),'.',extensions[0]].join # append suffix
+              FileUtils.ln_s File.basename(file), link unless File.basename(link) == 'index' # link path
             end
-            File.open(file, 'w'){|f| f << body }            # cache
+            File.open(file, 'w'){|f| f << body }            # cache static entity
 
             if timestamp = h['Last-Modified']               # HTTP provided timestamp
               timestamp.sub! /((ne|r)?s|ur)?day/, ''        # still full dayname declarations
@@ -528,8 +528,8 @@ class WebResource
           dateDir                                           # redirect to year/month/day/hour dir
         elsif p=='mailto' && parts.size==2                  # redirect to mailbox
           [302, {'Location' => ['/m/', (parts[1].split(/[\W_]/) - BasicSlugs).map(&:downcase).join('.'), '?view=table&sort=date'].join}, []]
-        elsif directory? && !dirURI?                        # container without trailing slash
-          enter_container                                   # redirect to container
+  #      elsif directory? && !dirURI?                        # container without trailing slash
+  #        enter_container                                   # redirect to container
         else
           dirMeta                                           # 👉 storage-adjacent nodes
           timeMeta                                          # 👉 timeline-adjacent nodes
@@ -636,8 +636,8 @@ class WebResource
         fetch
       elsif deny?                                           # denied request
         deny
-      elsif offline? && directory? && !dirURI?              # enter directory
-        enter_container
+#      elsif offline? && directory? && !dirURI?              # enter directory
+#        enter_container
       else                                                  # remote node
         fetch
       end
