@@ -383,7 +383,6 @@ class WebResource
                !extensions.member?(ext)                     # upstream suffix not mapped for content-type
               file = [(link = file), '.', extensions[0]].join # append suffix and display notice
               FileUtils.ln_s File.basename(file), link      # link upstream name to local name
-              puts ['extension', ext, 'for', format, 'not in (', extensions.join(', '), '), linking', file].compact.join ' 'if Verbose
             end
             File.open(file, 'w'){|f| f << body }            # cache
 
