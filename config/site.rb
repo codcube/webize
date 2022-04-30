@@ -658,9 +658,11 @@ class WebResource
     yield self, Title, tree['name']
     tree['data'].map{|mix|
       graph = subject = mix['url'].R
+      date = mix['created_time']
+      puts date.class,date
       yield subject, Type, Post.R, graph
       yield subject, Title, mix['name'], graph
-      yield subject, Date, mix['created_time'], graph
+      yield subject, Date, date, graph
       yield subject, Creator, mix['user']['name'], graph
       yield subject, To, mix['user']['url'].R, graph
       mix['pictures'].map{|_,i|
@@ -669,7 +671,8 @@ class WebResource
         yield subject, Schema+'duration', duration, graph
       end
       mix['tags'].map{|tag|
-        yield subject, Abstract, tag['name'], graph}}
+        yield subject, Abstract, tag['name'], graph}
+    }
     if pages = tree['paging']
       env[:links][:next] = pages['next'] if pages['next']
       env[:links][:prev] = pages['previous'] if pages['previous']

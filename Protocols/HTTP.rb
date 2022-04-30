@@ -84,7 +84,7 @@ class WebResource
                   grep
                 else                                        # LS dir
                   [self,                                    # include indexes and READMEs
-                   *join((dirURI? ? '' : basename + '/' ) + '{index,readme,README}*').R(env).glob]
+                   *join((dirURI? ? '' : (basename || '') + '/' ) + '{index,readme,README}*').R(env).glob]
                 end
               elsif file?                                   # LS file
                 [self]
