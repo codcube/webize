@@ -131,17 +131,17 @@ class WebResource
 
       # construct URI from header fields
       isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
-      isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']]||env['SERVER_NAME']) # local node?
-      env[:proxy_href] = true if isPeer || isLocal          # proxy hrefs in local URI space
-      uri = (isLocal ? '/' : [isPeer ? :http : :https, '://',
-                              env['HTTP_HOST'].join).R.join(RDF::URI(env['REQUEST_PATH']).path).R env # request URI
-      uri.port = nil if [80,443,8000].member? uri.port      # request port, unless implicit via default port for scheme
-      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # nonempty query string?
+      isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
+      env[:proxy_href] = isPeer || isLocal                  # proxy hrefs in local/peer URI space?
+      uri = (isLocal ? '/' : [isPeer ? :http : :https,'://',# request scheme
+                              env['HTTP_HOST'].join).R.join(RDF::URI(env['REQUEST_PATH']).path).R env # request path
+      uri.port = nil if [80,443,8000].member? uri.port      # request port if non-default
+      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # request query if non-empty
         env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {}
-        qs = env[:qs].dup                                   # strip excess &s to not trip up URI libraries (TODO file PR), parse and memoize query
-        Args.map{|k|                                        # (client <> 🖥) argument symbols
-         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # strip (client <> 🖥) args, store in request environment
-        uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) args, store in URI for follow-on requests
+        qs = env[:qs].dup                                   # strip excess &s to not trip up URI libraries (TODO file PR), parse and memoize
+        Args.map{|k|                                        # (💻 <> 🖥) argument symbols
+         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) arguments, store in environment
+        uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) arguments, store in URI for follow-on requests
       end
       env[:base] = uri.to_s.R env                           # set base URI in environment
 
