@@ -662,19 +662,20 @@ class WebResource
     tree['data'].map{|mix|
       graph = subject = mix['url'].R
       date = mix['created_time']
-      puts date.class,date
-      yield subject, Type, Post.R, graph
-      yield subject, Title, mix['name'], graph
-      yield subject, Date, date, graph
-      yield subject, Creator, mix['user']['name'], graph
-      yield subject, To, mix['user']['url'].R, graph
-      mix['pictures'].map{|_,i|
-        yield subject, Image, i.R, graph if i.match? /1024x1024/}
-      if duration = mix['audio_length']
-        yield subject, Schema+'duration', duration, graph
+      unless env.has_key?('HTTP_IF_MODIFIED_SINCE') && date < Time.httpdate(env['HTTP_IF_MODIFIED_SINCE']).iso8601
+        yield subject, Type, Post.R, graph
+        yield subject, Title, mix['name'], graph
+        yield subject, Date, date, graph
+        yield subject, Creator, mix['user']['name'], graph
+        yield subject, To, mix['user']['url'].R, graph
+        mix['pictures'].map{|_,i|
+          yield subject, Image, i.R, graph if i.match? /1024x1024/}
+        if duration = mix['audio_length']
+          yield subject, Schema+'duration', duration, graph
+        end
+        mix['tags'].map{|tag|
+          yield subject, Abstract, tag['name'], graph}
       end
-      mix['tags'].map{|tag|
-        yield subject, Abstract, tag['name'], graph}
     }
     if pages = tree['paging']
       env[:links][:next] = pages['next'] if pages['next']

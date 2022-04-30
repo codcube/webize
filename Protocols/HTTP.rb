@@ -135,8 +135,8 @@ class WebResource
       # find base URI
       isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
-      uri = (isLocal ? '/' : [isPeer ? :http : :https,'://',# request scheme
-                              env['HTTP_HOST']].join).R.join(RDF::URI(env['REQUEST_PATH']).path).R env # request path
+      uri = (isLocal ? '/' : [isPeer ? :http : :https,'://',# request scheme, host, path
+                              env['HTTP_HOST']].join).R.join(RDF::URI(env['REQUEST_PATH']).path).R env
       uri.port = nil if [80,443,8000].member? uri.port      # request port if non-default
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # request query if non-empty
         env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {}
@@ -170,7 +170,6 @@ class WebResource
               status == 206 ? Rack::Utils.unescape_path(env[:base].basename) : env[:base], "\e[0m",      # request URI
               head['Location'] ? ["→\e[#{color}m", head['Location'], "\e[0m"] : nil,                     # redirected location
               env[:warning] ? ["\e[38;5;226;7m⚠️", env[:warning], "\e[0m"] : nil,                         # warnings
-              Verbose ? [env['HTTP_ACCEPT'], head['Content-Type']].compact.join(' → ') : nil,            # MIME headers
              ].flatten.compact.map{|t|
           t.to_s.encode 'UTF-8'}.join ' '
 
