@@ -112,6 +112,10 @@ class WebResource
       end
 
       nodes.map &:loadRDF                                   # load node(s)
+      unless host                                           # if local (we could do this for cached remotes but prob want to bypass origin-requests as their dir-indexes are usually 404)
+        dirMeta                                             # 👉 storage-adjacent nodes
+        timeMeta                                            # 👉 timeline-adjacent nodes
+      end
       graphResponse                                         # response
     end
 
@@ -498,29 +502,24 @@ class WebResource
     end
 
     def GET
-      if !host
-        p = parts[0]                                        # read path selector
-        if !p                                               # root node
-          homepage
-        elsif p[-1] == ':'                                  # proxy URI with scheme
-          unproxy.hostHandler                               # remote node
-        elsif p == 'favicon.ico'                            # site icon
-          [200, {'Content-Type' => 'image/png'}, [SiteIcon]]
-        elsif %w(robots.txt).member? p                      # robots file
-          notfound
-        elsif p.index '.'                                   # proxy URI, undefined scheme
-          unproxy(true).hostHandler                         # remote node
-        elsif %w{m d h y}.member? p                         # year/month/day/hour abbr
-          dateDir                                           # redirect to year/month/day/hour dir
-        elsif p=='mailto' && parts.size==2                  # redirect to mailbox
-          [302, {'Location' => ['/m/', (parts[1].split(/[\W_]/) - BasicSlugs).map(&:downcase).join('.'), '?view=table&sort=date'].join}, []]
-        else
-          dirMeta                                           # 👉 storage-adjacent nodes
-          timeMeta                                          # 👉 timeline-adjacent nodes
-          cacheResponse                                     # local resource
-        end
+      return hostHandler if host                            # remote resource
+      p = parts[0]                                        # read path selector
+      if !p                                               # root node
+        homepage
+      elsif p[-1] == ':'                                  # proxy URI with scheme
+        unproxy.hostHandler                               # remote node
+      elsif p == 'favicon.ico'                            # site icon
+        [200, {'Content-Type' => 'image/png'}, [SiteIcon]]
+      elsif %w(robots.txt).member? p                      # robots file
+        notfound
+      elsif p.index '.'                                   # proxy URI, undefined scheme
+        unproxy(true).hostHandler                         # remote node
+      elsif %w{m d h y}.member? p                         # year/month/day/hour abbr
+        dateDir                                           # redirect to year/month/day/hour dir
+      elsif p=='mailto' && parts.size==2                  # redirect to mailbox
+        [302, {'Location' => ['/m/', (parts[1].split(/[\W_]/) - BasicSlugs).map(&:downcase).join('.'), '?view=table&sort=date'].join}, []]
       else
-        hostHandler                                         # remote resource
+        cacheResponse                                     # local resource
       end
     end
 
@@ -568,7 +567,8 @@ class WebResource
  remote-addr request-method request-path request-uri script-name server-name server-port server-protocol server-software
  te transfer-encoding unicorn.socket upgrade upgrade-insecure-requests version via x-forwarded-for)
 
-    # headers for export to external clients and servers
+    # recreate headers from their mangled CGI keynames
+    # PRs pending for rack/falcon, maybe we can finally remove this soon
     def headers raw = nil
       raw ||= env || {}                                     # raw headers
       head = {}                                             # cleaned headers
@@ -584,8 +584,7 @@ class WebResource
             end}.join '-'                                   # join words
           head[key] = (v.class == Array && v.size == 1 && v[0] || v) unless SingleHopHeaders.member? key.downcase # set header
         end}
-
-      head['Referer'] = 'http://drudgereport.com/' if host&.match? /wsj\.com$/
+      head['Referer'] = 'http://drudgereport.com/' if host&.match? /wsj\.com$/ # referer tweaks so stuff loads
       head['Referer'] = 'https://' + (host || env['HTTP_HOST']) + '/' if (path && %w(.gif .jpeg .jpg .png .svg .webp).member?(File.extname(path).downcase)) || parts.member?('embed')
       head['User-Agent'] = 'curl/7.82.0' if %w(po.st t.co).member? host # to prefer HTTP HEAD redirections e over procedural Javascript, advertise a basic user-agent
       head
