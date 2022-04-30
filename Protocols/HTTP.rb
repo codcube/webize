@@ -243,10 +243,6 @@ class WebResource
                       c.empty? }                            # domain leaf in deny tree?
     end
 
-    def enter_container
-      [301, {'Location' => [env['REQUEST_PATH'], '/', env['QUERY_STRING'] ? ['?', env['QUERY_STRING']] : nil].join}, []]
-    end
-
     def env e = nil
       if e
         @env = e
@@ -262,8 +258,6 @@ class WebResource
       if file?                                              # cached file?
         return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return cache if not transformable or directory index
         env[:cache] = self                                  # reference for conditional fetch
-#      elsif directory? && (🐢 = join('index.🐢').R env).exist? # cached index?
-#        🐢.preview.loadRDF                                  # merge local index to graph
       end
       addr = Resolv.getaddress host rescue '127.0.0.1'      # lookup server address
       return cacheResponse if LocalAddrs.member? addr       # local node, return
@@ -520,8 +514,6 @@ class WebResource
           dateDir                                           # redirect to year/month/day/hour dir
         elsif p=='mailto' && parts.size==2                  # redirect to mailbox
           [302, {'Location' => ['/m/', (parts[1].split(/[\W_]/) - BasicSlugs).map(&:downcase).join('.'), '?view=table&sort=date'].join}, []]
-  #      elsif directory? && !dirURI?                        # container without trailing slash
-  #        enter_container                                   # redirect to container
         else
           dirMeta                                           # 👉 storage-adjacent nodes
           timeMeta                                          # 👉 timeline-adjacent nodes
@@ -628,8 +620,6 @@ class WebResource
         fetch
       elsif deny?                                           # denied request
         deny
-#      elsif offline? && directory? && !dirURI?              # enter directory
-#        enter_container
       else                                                  # remote node
         fetch
       end
