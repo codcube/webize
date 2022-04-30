@@ -609,9 +609,9 @@ class WebResource
         [204, {}, []]
       elsif has_handler?                                    # host handler exists?
         if ENV.has_key? 'HTTP_PROXY'
-          fetch                                             # node at chained proxy
+          fetch                                             # generic node if chained proxy
         else
-          HostGET[host.downcase][self]                      # adaptor at origin-facing proxy
+          HostGET[host.downcase][self]                      # host adaptor if origin-facing proxy
         end
       elsif query&.match? Gunk                              # drop gunked query
         [301,{'Location' => ['//', host, path].join.R(env).href},[]]
@@ -645,7 +645,7 @@ class WebResource
       format = selectFormat
       body = case format                                    # response body
              when /html/                                    # serialize HTML
-               htmlDocument treeFromGraph.update({'#request'=>env})
+               htmlDocument treeFromGraph.update({'#request' => env}) # show environment
              when /atom|rss|xml/                            # serialize Atom/RSS
                feedDocument treeFromGraph
              else                                           # serialize RDF
