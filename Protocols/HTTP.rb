@@ -89,18 +89,18 @@ class WebResource
               elsif file?                                   # LS file
                 [self]
               elsif fsPath.match? GlobChars                 # GLOB
-                if q['q'] && !q['q'].empty?
+                if q['q'] && !q['q'].empty?                 # GREP in GLOB
                   if (g = nodeGlob).empty?
                     []
                   else
-                    fromNodes nodeGrep g[0..999]            # GREP in GLOB
+                    fromNodes nodeGrep g[0..999]
                   end
-                else
+                else                                        # arbitrary GLOB
                   summarize = !env[:fullContent]
-                  glob                                      # arbitrary GLOB
+                  glob
                 end
-              else
-                fromNodes Pathname.glob fsPath+'.*'         # default GLOB
+              else                                          # default GLOB
+                fromNodes Pathname.glob fsPath + '.*'
               end
 
       if summarize                                          # 👉 unsummarized
@@ -112,7 +112,7 @@ class WebResource
       end
 
       nodes.map &:loadRDF                                   # load node(s)
-      unless host                                           # if local (we could do this for cached remotes but prob want to bypass origin-requests as their dir-indexes are usually 404)
+      unless host
         dirMeta                                             # 👉 storage-adjacent nodes
         timeMeta                                            # 👉 timeline-adjacent nodes
       end
@@ -509,7 +509,9 @@ class WebResource
       elsif p[-1] == ':'                                  # proxy URI with scheme
         unproxy.hostHandler                               # remote node
       elsif p == 'favicon.ico'                            # site icon
-        [200, {'Content-Type' => 'image/png'}, [SiteIcon]]
+        [200, {'Content-Type' => 'image/png',
+               'Expires' => (Time.now + 86400).httpdate},
+         [SiteIcon]]
       elsif %w(robots.txt).member? p                      # robots file
         notfound
       elsif p.index '.'                                   # proxy URI, undefined scheme

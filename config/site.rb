@@ -215,8 +215,11 @@ class WebResource
 
     GET 'instagram.com', -> r {[301, {'Location' => ['//www.instagram.com', r.path].join.R(r.env).href}, []]}
 
-    GET 'api.mixcloud.com', -> r {r.fetchHTTP format: 'application/json'}
+    GET 'api.mixcloud.com', -> r {
+      r.offline? ? r.cacheResponse : r.fetchHTTP(format: 'application/json')}
+
     GET 'mixcloud.com', -> r {[301, {'Location' => ['//www.mixcloud.com', r.path].join.R(r.env).href}, []]}
+
     GET 'www.mixcloud.com', -> r {
       if !r.path || r.path == '/'
         r.env[:sort] = Date
@@ -246,7 +249,7 @@ class WebResource
       r.fetch.yield_self{|status,head,body|
         if status.to_s.match? /^30/
           [status, head, body]
-        else # read page pointer, missing in HEAD and <head> old and new UI and in HEAD and HTML/RSS <body> in new UI
+        else # find page pointers in <body> (old UI) as they're missing in HEAD and <head> (old and main UI) and <body> (main UI)
           links = []
           body[0].scan(/href="([^"]+after=[^"]+)/){|link|links << CGI.unescapeHTML(link[0]).R} if body.class == Array && body[0].class == String # find page references
           [302, {'Location' => (links.empty? ? r.href : links.sort_by{|r|r.query_values['count'].to_i}[-1]).to_s.sub('old','www')}, []] # goto link with highest count
