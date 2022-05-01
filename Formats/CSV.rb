@@ -21,14 +21,14 @@ class WebResource
 
     def self.sort graph, env
       attr = env[:sort] || Date                   # default to timestamp sorting
-      attr = MetaMap[attr] || attr                # map sort attribute to URI
+      attr = MetaMap[attr] || attr                # map sort-attribute to URI
       numeric = true if attr == Schema+'position' # numeric sort types
       sortable, unsorted = graph.partition{|r|    # to be sortable,
-        r.class == Hash && (r.has_key? attr)}     # object needs attribute
+        r.class == Hash && (r.has_key? attr)}     # object needs sort-attribute
       sorted = sortable.sort_by{|r|               # sort the sortable objects
         numeric ? r[attr][0].yield_self{|i| i.class == Integer ? i : i.to_s.to_i} : r[attr][0].to_s}
       sorted.reverse! unless env[:order] == 'asc' # default to descending order
-      [*sorted, *unsorted]                        # append unsorted to end of list
+      [*sorted, *unsorted]                        # preserve unsorted to end of list
     end
 
     # tree -> HTML table

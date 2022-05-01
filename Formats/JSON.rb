@@ -84,8 +84,9 @@ module Webize
           @base.send hostTriples, @json, &f
         else
           Webize::JSON.scan(@json){|h|
-            if s = h['expanded_url'] || h['uri'] || h['url'] || h['link'] || h['canonical_url'] || h['src'] || ((h['id'] || h['ID'] || h['_id'] || h['id_str']) && ('#' + (h['id'] || h['ID'] || h['_id'] || h['id_str']).to_s))
-              s = @base.join(s).R # TODO return subject URI out to caller for triple pointing to inner resource
+            if s = h['expanded_url']||h['uri']||h['url']||h['link']||h['canonical_url']||h['src']|| # URL attribute
+                   ((id = h['id'] || h['ID'] || h['_id'] || h['id_str']) && ['#', id].join)         # id attribute
+              s = @base.join(s).R                                                                   # subject URI. TODO return to caller for triple pointing to inner resource
               if s.parts[0] == 'users'
                 host = ('https://' + s.host).R
                 yield s, Creator, host.join(s.parts[0..1].join('/'))
@@ -94,8 +95,8 @@ module Webize
               h.map{|p, v|
                 unless %w(_id id id_str uri).member? p
                   (v.class == Array ? v : [v]).map{|o|
-                    unless [Hash, NilClass].member?(o.class) || (o.class == String && o.empty?) # each non-nil terminal value
-                      o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)       # resolve URI
+                    unless [Hash, NilClass].member?(o.class) || (o.class == String && o.empty?)     # each non-nil terminal value
+                      o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)           # resolve URI
                       p = MetaMap[p] if MetaMap.has_key? p
                       unless p == :drop
                         puts [p, o].join "\t" unless p.match? /^https?:/
