@@ -255,12 +255,14 @@ class WebResource
       end
     end
 
-    # fetch data from cache and/or remote
+    # fetch data from cache or remote
     def fetch
       return cacheResponse if offline?                      # offline, return cache
       if file?                                              # cached file?
-        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return cache if not transformable or directory index
+        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return cache if not transformable
         env[:cache] = self                                  # reference for conditional fetch
+      elsif directory? && (🐢 = join('index.ttl').R).exist? # cached directory?
+        env[:cache] = 🐢                                    # reference for conditional fetch
       end
       addr = Resolv.getaddress host rescue '127.0.0.1'      # lookup server address
       return cacheResponse if LocalAddrs.member? addr       # local node, return
@@ -501,26 +503,24 @@ class WebResource
     end
 
     def GET
-      return hostHandler if host                            # remote resource
-      p = parts[0]                                        # read path selector
-      if !p                                               # root node
+      return hostHandler if host                          # remote node
+      p = parts[0]                                        # path selector
+      if !p                                               # root local node
         homepage
-      elsif p[-1] == ':'                                  # proxy URI with scheme
+      elsif p[-1] == ':'                                  # proxy URI w/ scheme
         unproxy.hostHandler                               # remote node
-      elsif p == 'favicon.ico'                            # site icon
+      elsif p == 'favicon.ico'                            # local icon
         [200, {'Content-Type' => 'image/png',
                'Expires' => (Time.now + 86400).httpdate},
          [SiteIcon]]
-      elsif %w(robots.txt).member? p                      # robots file
-        notfound
-      elsif p.index '.'                                   # proxy URI, undefined scheme
+      elsif p.index '.'                                   # proxy URI w/o scheme
         unproxy(true).hostHandler                         # remote node
-      elsif %w{m d h y}.member? p                         # year/month/day/hour abbr
-        dateDir                                           # redirect to year/month/day/hour dir
-      elsif p=='mailto' && parts.size==2                  # redirect to mailbox
+      elsif %w{m d h y}.member? p                         # year/month/day/hour abbreviators
+        dateDir                                           # redirect to year/month/day/hour node
+      elsif p == 'mailto' && parts.size == 2              # redirect to mailbox
         [302, {'Location' => ['/m/', (parts[1].split(/[\W_]/) - BasicSlugs).map(&:downcase).join('.'), '?view=table&sort=date'].join}, []]
       else
-        cacheResponse                                     # local resource
+        cacheResponse                                     # generic local node
       end
     end
 
@@ -610,17 +610,17 @@ class WebResource
         [204, {}, []]
       elsif has_handler?                                    # host handler exists?
         if ENV.has_key? 'HTTP_PROXY'
-          fetch                                             # generic node if chained proxy
+          fetch                                             # generic remote node via proxy
         else
-          HostGET[host.downcase][self]                      # host adaptor if origin-facing proxy
+          HostGET[host.downcase][self]                      # host-adapted remote node
         end
-      elsif query&.match? Gunk                              # drop gunked query
+      elsif query&.match? Gunk                              # denied query
         [301,{'Location' => ['//', host, path].join.R(env).href},[]]
       elsif host.match?(/\.(amazonaws|cloudfront)\.(com|net)$/) && uri.match?(/\.(jpe?g|png|webp)$/i)
         fetch
-      elsif deny?                                           # denied request
+      elsif deny?                                           # denied URI
         deny
-      else                                                  # remote node
+      else                                                  # generic remote node
         fetch
       end
     end
