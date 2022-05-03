@@ -12,10 +12,10 @@ command -v crew && crew install buildessential libexif parallel taglib
 command -v apt-get && sudo apt-get install build-essential parallel ruby ruby-dev grep file libexif-dev libssl-dev libtag1-dev libxslt-dev libzip-dev make libffi-dev
 
 # Gentoo https://www.gentoo.org/
-command -v emerge && sudo emerge libexif nokogiri sys-process/parallel taglib
+command -v emerge && sudo emerge libexif sys-process/parallel taglib
 
 # Termux https://termux.com/
-command -v pkg && pkg install binutils ruby grep gumbo-parser-static file findutils pkg-config libiconv libexif libprotobuf libxslt parallel poppler clang taglib make libffi libcap libcrypt openssl-tool zlib && gem install --platform=ruby nokogiri -- --use-system-libraries
+command -v pkg && pkg install binutils ruby grep gumbo-parser-static file findutils pkg-config libiconv libexif libprotobuf libxslt parallel poppler clang taglib make libffi libcap libcrypt openssl-tool zlib
 
 # Void https://voidlinux.org
 command -v xbps-install && sudo xbps-install -S base-devel curl libexif-devel libltdl-devel libressl-devel parallel poppler-utils ruby ruby-devel taglib-devel
@@ -23,3 +23,4 @@ command -v xbps-install && sudo xbps-install -S base-devel curl libexif-devel li
 # Ruby https://www.ruby-lang.org/
 command -v bundle || gem install bundler
 bundle install
+gem install --platform=ruby nokogiri -- --use-system-libraries
