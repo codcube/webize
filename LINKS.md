@@ -1,22 +1,6 @@
-# INSTALL
-``` sh
-mkdir ~/src
-cd ~/src
-git clone git://mw.logbook.am/webize.git
-cd webize && ./INSTALL # DEPENDENCIES only
-```
-# USAGE
-``` sh
-cd bin/server
-./dnsd   # DNS service
-./httpd  # HTTP service
-```
-
-edit behaviors in [site.rb](config/site.rb). declarative [config](config/) mostly updates at runtime. [bookmarklet](config/bookmarklet) jumps from origin to local-preference UI w/ origin cookies.
-
 # WHAT
 
-fix the web in post-production. some suggest we [abandon it](https://drewdevault.com/2020/11/01/What-is-Gemini-anyway.html), i'm fixing it with format and protocol bridging to servers of the desired capability while inserting a graph cache [into the hierarchy](https://gist.github.com/paniq/bf5b291949be14771344b19a38f042c0), facilitating offline scenarios and [automatic archiving](https://beepb00p.xyz/sad-infra.html)
+fix the web in post-production. some suggest we abandon it, i'm fixing it (creating the "web i want") with format and protocol bridging to servers of the desired capability by adding a graph cache [to the hierarchy](https://gist.github.com/paniq/bf5b291949be14771344b19a38f042c0), facilitating offline scenarios and [automatic archiving](https://beepb00p.xyz/sad-infra.html)
 
 # WHY
 
