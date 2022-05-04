@@ -2,5 +2,5 @@
 SRC=$HOME/src
 test -d $SRC || mkdir $SRC
 cd $SRC
-test -d webize || git clone git://mw.logbook.am/webize.git
+test -d webize || git clone https://gitlab.com/ix/webize.git
 cd webize && ./DEPENDENCIES.sh
