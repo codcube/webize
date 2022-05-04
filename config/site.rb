@@ -397,7 +397,10 @@ class WebResource
     GET 's.yimg.com', ImgRehost
 
     GET 'news.ycombinator.com', -> r {
-      r.env[:group] ||= 'from'
+      r.env[:group] ||= 'to'
+      r.env[:order] ||= 'asc'
+      r.env[:sort] ||= 'date'
+      r.env[:view] ||= 'table'
       NoGunk[r]}
 
     GET 'youtu.be', -> r {[301, {'Location' => ['https://www.youtube.com/watch?v=', r.path[1..-1]].join.R(r.env).href}, []]}

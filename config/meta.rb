@@ -861,6 +861,7 @@ class WebResource
       'request-id' => :drop,
       'require_some_consent' => :drop,
       'resource-type' => Type,
+      'rest_id' => :drop,
       'retweet_count' => :drop,
       'retweeted' => :drop,
       'revisit-after' => :drop,
