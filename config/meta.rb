@@ -273,6 +273,7 @@ class WebResource
       'conversation_id_str' => SIOC + 'has_discussion',
       'cooked' => Content,
       'copyright' => DC + 'rights',
+      'country' => Schema + 'country',
       'country_code' => Schema + 'country',
       'crdt' => Creator,
       'createDate' => Date,
