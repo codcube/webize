@@ -246,6 +246,7 @@ class WebResource
       'citation_date' => Date,
       'citation_journal_title' => To,
       'citation_title' => Title,
+      'city' => 'https://schema.org/city',
       'color-scheme' => :drop,
       'commentCount' => 'https://schema.org/commentCount',
       'comment_count' => 'https://schema.org/commentCount',
