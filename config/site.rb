@@ -426,8 +426,7 @@ class WebResource
                 if s.inner_text.match? js
                   edited = true
                   s.content = s.inner_text.gsub(js,'#')
-                end
-                puts s.inner_text}
+                end}
               if edited
                 b = [doc.to_html]
                 h.delete 'Content-Length'
@@ -452,9 +451,7 @@ class WebResource
             [200, {"Access-Control-Allow-Origin"=>"https://www.youtube.com", "Content-Type"=>"application/x-www-form-urlencoded", "Content-Length"=>"0"}, ['']]
           else
             r.env[:notransform] = true
-            r.fetch.yield_self{|s,h,b|
-              puts h, Rack::Utils.parse_query(b[0])
-              [s,h,b]}
+            r.fetch
           end
         when 'v'
           [301, {'Location' => r.join('/watch?v='+r.parts[1]).R(r.env).href}, []]
