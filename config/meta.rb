@@ -603,6 +603,7 @@ class WebResource
       'lastMajorModification' => Date,
       'lastModified' => Date,
       'last_modified' => Date,
+      'last_name' => Schema + 'lastName',
       'last_status_at' => Date,
       'last_updated_date' => Date,
       'lastmod' => Date,
