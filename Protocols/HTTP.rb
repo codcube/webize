@@ -67,12 +67,12 @@ class WebResource
 
     # respond from local cache
     def cacheResponse
-      return fileResponse if file? && (format = fileMIME) && # static response if
-                             (env[:notransform] ||          # format-transform disabled,
-                              format.match?(FixedFormat) || # format-transform unavailable, or
+      return fileResponse if file? && (format=fileMIME) &&  # static response if:
+                             (env[:notransform] ||          # MIME transform disabled,
+                              format.match?(FixedFormat) || # MIME transform unavailable, or
                               (format==selectFormat(format) && !ReFormat.member?(format))) # reformat unavailable
 
-      q = env[:qs]                                          # query mode:
+      q = env[:qs]                                          # query modes:
       nodes = if directory?
                 if q['f'] && !q['f'].empty?                 # FIND exact
                   summarize = !env[:fullContent]
@@ -83,7 +83,7 @@ class WebResource
                 elsif q['q'] && !q['q'].empty?              # GREP
                   grep
                 else                                        # LS dir
-                  [self,                                    # include indexes and READMEs
+                  [self,                                    # inline indexes and READMEs to result set
                    *join((dirURI? ? '' : (basename || '') + '/' ) + '{index,readme,README}*').R(env).glob]
                 end
               elsif file?                                   # LS file
@@ -618,7 +618,7 @@ class WebResource
         end
       elsif query&.match? Gunk                              # denied query
         [301,{'Location' => ['//', host, path].join.R(env).href},[]]
-      elsif host.match?(/\.(amazonaws|cloudfront)\.(com|net)$/) && uri.match?(/\.(jpe?g|p(df|ng)|webp)$/i)
+      elsif host.match?(/\.(amazonaws|cloudfront|github)\.(com|io|net)$/) && uri.match?(/(\/|\.(jpe?g|p(df|ng)|webp))$/i)
         fetch
       elsif deny?                                           # denied URI
         deny
