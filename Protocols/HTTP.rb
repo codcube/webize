@@ -127,6 +127,8 @@ class WebResource
 
     # HTTP entry-point
     def self.call env
+      return [403,{},[]] unless Methods.member? env['REQUEST_METHOD']
+
       # initialize environment
       env[:start_time] = Time.now                           # start timer
       env['SERVER_NAME'].downcase!                          # normalize hostname
@@ -141,9 +143,9 @@ class WebResource
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # request query if non-empty
         env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {}
         qs = env[:qs].dup                                   # strip excess &s to not trip up URI libraries (TODO file PR), parse and memoize
-        Args.map{|k|                                        # (💻 <> 🖥) argument names
-         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) arguments, store in environment
-        uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) arguments, store in URI for follow-on requests
+        Args.map{|k|                                        # allowed (💻 <> 🖥) argument names
+         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) arguments from client for us, store in request environment
+        uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) arguments for origin, store in URI for follow-on requests
       end
       env[:base] = uri.to_s.R env                           # base URI
       env[:proxy_href] = isPeer || isLocal                  # proxy hrefs in local URI space?
