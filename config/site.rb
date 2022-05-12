@@ -62,10 +62,10 @@ class WebResource
 
     # site config
     SiteDir  = Pathname.new(__dir__).relative_path_from Pathname.new Dir.pwd
-    AllowHosts = SiteDir.join('allow_hosts').readlines.map &:chomp
-    BlockedSchemes = SiteDir.join('deny_schemes').readlines.map &:chomp
-    CookieHosts = SiteDir.join('cookie_hosts').readlines.map &:chomp
-    DenyFile = SiteDir.join 'deny_domains'
+    AllowHosts = SiteDir.join('hosts/allow').readlines.map &:chomp
+    BlockedSchemes = SiteDir.join('blocklist/scheme').readlines.map &:chomp
+    CookieHosts = SiteDir.join('hosts/cookie').readlines.map &:chomp
+    DenyFile = SiteDir.join 'blocklist/domain'
     FeedIcon = SiteDir.join('feed.svg').read
     Gunk = Regexp.new SiteDir.join('gunk.regex').read.chomp, Regexp::IGNORECASE
     SiteFont = SiteDir.join('fonts/hack-regular-subset.woff2').read
@@ -118,7 +118,7 @@ class WebResource
       end}
 
     # shortURL hosts
-    SiteDir.join('shorturl_hosts').readlines.map(&:chomp).map{|host|GET host, NoQuery}
+    SiteDir.join('hosts/shorturl').readlines.map(&:chomp).map{|host|GET host, NoQuery}
 
     GET 'bos.gl', -> r {r.scheme = 'http'; r.fetch} # hangs on HTTPS, use HTTP
 
@@ -130,7 +130,7 @@ class WebResource
       dest = q['url'] || q['u'] || q['q']
       dest ? [301, {'Location' => dest.R(r.env).href}, []] : r.notfound}
 
-    SiteDir.join('url_hosts').readlines.map(&:chomp).map{|host|GET host, GotoURL}
+    SiteDir.join('hosts/url').readlines.map(&:chomp).map{|host|GET host, GotoURL}
 
     GET 'urldefense.com', -> r {[302, {'Location' => r.path.split('__')[1].R(r.env).href}, []]}
 
