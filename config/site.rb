@@ -48,7 +48,7 @@ class WebResource
     DenyFile = SiteDir.join 'blocklist/domain'
     FeedIcon = SiteDir.join('feed.svg').read
     Gunk = Regexp.new SiteDir.join('gunk.regex').read.chomp, Regexp::IGNORECASE
-    HostColors = WebResource.configHash 'colors/host'
+    HostColors = Webize.configHash 'colors/host'
     KillFile = SiteDir.join('killfile').readlines.map &:chomp
     ReaderHosts = %w(en.wikipedia.org)
     SiteCSS = SiteDir.join('site.css').read

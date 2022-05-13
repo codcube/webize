@@ -1,7 +1,13 @@
-class WebResource
+module Webize
 
-  def self.configHash file
-    Hash[*File.open([__dir__, '../config', file].join '/').readlines.map(&:chomp).map(&:split).flatten]
+  ConfigPath = [__dir__, '../config'].join '/'
+
+  def self.configData path
+    File.open([ConfigPath, path].join '/').read
+  end
+
+  def self.configHash path
+    Hash[*configData(path).lines.map(&:chomp).map(&:split).flatten]
   end
 
 end
