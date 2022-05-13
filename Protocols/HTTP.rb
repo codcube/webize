@@ -2,47 +2,27 @@
 
 class WebResource
   module URIs
+
     FileModified = {deny: 0}
+
   end
   module HTTP
     include URIs
 
-    Args = %w(cookie find fullContent group notransform offline order sort view) # client<>proxy arguments
-    HostGET = {}
+    Args = %w(cookie find fullContent group notransform offline order sort view) # allowed query arguments
+    Methods = %w(GET HEAD OPTIONS POST PUT)                                      # allowed HTTP methods
+
+    HostGET = {}                                                                 # handler-lambda storage
+
     PeerHosts = Hash[*File.open([ENV['PREFIX'],'/etc/hosts'].join).readlines.map(&:chomp).map{|l|
                        addr, *names = l.split
                        names.map{|host|
-                         [host, addr]}}.flatten]
-    PeerAddrs = PeerHosts.invert
-    LocalAddrs = Socket.ip_address_list.map &:ip_address
-    Methods = %w(GET HEAD OPTIONS POST PUT)
-    R304 = [304, {}, []]
+                         [host, addr]}}.flatten]                                 # peer host -> peer addr map
+    PeerAddrs = PeerHosts.invert                                                 # peer addr -> peer host map
+    LocalAddrs = Socket.ip_address_list.map &:ip_address                         # local addresses
 
-    StatusColor = {
-      200 => '#333',
-      304 => :green,
-      401 => :orange,
-      403 => :yellow,
-      404 => :gray,
-      503 => '#fff',
-      504 => '#f0c'}
-
-    StatusIcon = {
-      200 => nil,
-      202 => '➕',
-      204 => '✅',
-      206 => '🧩',
-      301 => '➡️',
-      302 => '➡️',
-      303 => '➡️',
-      304 => '✅',
-      401 => '🚫',
-      403 => '🚫',
-      404 => '❓',
-      410 => '❌',
-      500 => '🚩',
-      503 => '🔌',
-      504 => '🔌'}
+    StatusColor = WebResource.configHash 'colors/status'                         # status-code -> color
+    StatusIcon = WebResource.configHash 'icons/status'                           # status-code -> icon
 
     def action_icon
       if env[:deny]
@@ -429,7 +409,7 @@ class WebResource
           end
 
           if env[:client_etags].include? h['ETag']          # client has entity
-            R304                                            # no content
+            [304, {}, []]                                   # no content
           elsif env[:notransform] || fixed_format           # static content
             body = Webize::HTML.resolve_hrefs body, env, true if format == 'text/html' && env[:proxy_href] # resolve proxy-hrefs
             head = {'Content-Type' => format,               # response header
@@ -486,13 +466,16 @@ class WebResource
     end
 
     def fileResponse
-      return R304 if env[:client_etags].include?(etag = fileETag) # cached at client
+      if env[:client_etags].include?(etag = fileETag)             # cached at client
+        return [304, {}, []]
+      end
+
       Rack::Files.new('.').serving(Rack::Request.new(env), fsPath).yield_self{|s,h,b|
         case s                                                    # status
         when 200
           s = env[:origin_status] if env[:origin_status]          # upstream status
         when 304
-          return R304                                             # cached at client
+          return [304, {}, []]                                    # cached at client
         end
         format = fileMIME                                         # file format
         h['Content-Type'] = format
@@ -552,7 +535,7 @@ class WebResource
                if writer = RDF::Writer.for(content_type: format)
                  env[:repository].dump writer.to_sym, base_uri: self
                else
-                 puts "no Writer for #{format}"
+                 puts "⚠️  RDF::Writer undefined for #{format}"
                  ''
                end
              end

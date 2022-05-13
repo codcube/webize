@@ -38,43 +38,24 @@ class WebResource
   module URIs
     DenyDomains = {}
 
-    HostColors = {
-      'www.behance.net' => '#0056ff',
-      'facebook.com' => '#3b5998',
-      'forum.solidproject.org' => '#7c4dff',
-      'i.redd.it' => '#000',
-      'instagram.com' => '#fd7',
-      'news.ycombinator.com' => '#f60',
-      'reddit.com' => '#f40',
-      'soundcloud.com' => 'orange',
-      't.co' => 'rgba(29,161,242,1.00)',
-      'twitch.tv' => '#9146ff',
-      'twitter.com' => 'rgba(29,161,242,1.00)',
-      'www.facebook.com' => '#3b5998',
-      'www.imdb.com' => '#f5c518',
-      'www.instagram.com' => '#fd7',
-      'www.mixcloud.com' => '#5000ff',
-      'www.reddit.com' => '#f40',
-      'www.twitter.com' => 'rgba(29,161,242,1.00)',
-      'www.youtube.com' => '#f00',
-      'youtube.com' => '#f00',
-    }
-
     # site config
     SiteDir  = Pathname.new(__dir__).relative_path_from Pathname.new Dir.pwd
+
     AllowHosts = SiteDir.join('hosts/allow').readlines.map &:chomp
     BlockedSchemes = SiteDir.join('blocklist/scheme').readlines.map &:chomp
+    CodeCSS = SiteDir.join('code.css').read
     CookieHosts = SiteDir.join('hosts/cookie').readlines.map &:chomp
     DenyFile = SiteDir.join 'blocklist/domain'
     FeedIcon = SiteDir.join('feed.svg').read
     Gunk = Regexp.new SiteDir.join('gunk.regex').read.chomp, Regexp::IGNORECASE
-    SiteFont = SiteDir.join('fonts/hack-regular-subset.woff2').read
-    SiteIcon = SiteDir.join('favicon.ico').read
-    SiteCSS = SiteDir.join('site.css').read
-    CodeCSS = SiteDir.join('code.css').read
-    SiteJS  = SiteDir.join('site.js').read
+    HostColors = WebResource.configHash 'colors/host'
     KillFile = SiteDir.join('killfile').readlines.map &:chomp
     ReaderHosts = %w(en.wikipedia.org)
+    SiteCSS = SiteDir.join('site.css').read
+    SiteFont = SiteDir.join('fonts/hack-regular-subset.woff2').read
+    SiteIcon = SiteDir.join('favicon.ico').read
+    SiteJS  = SiteDir.join('site.js').read
+
     def self.denylist
       ts = DenyFile.mtime.to_i
       return unless ts > FileModified[:deny]
