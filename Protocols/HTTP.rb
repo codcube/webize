@@ -261,13 +261,14 @@ class WebResource
     def fetch
       return cacheResponse if offline?                      # offline, return cache
       if file?                                              # cached file?
-        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return cache if not transformable
+        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return node if immutable / non-transformable
         env[:cache] = self                                  # reference for conditional fetch
-      elsif directory? && (🐢 = join('index.ttl').R).exist? # cached directory?
+      elsif directory? && (🐢 = join('index.ttl').R).exist? # cached directory index?
         env[:cache] = 🐢                                    # reference for conditional fetch
       end
       addr = Resolv.getaddress host rescue '127.0.0.1'      # lookup server address
-      return cacheResponse if LocalAddrs.member? addr       # local node, return
+      return cacheResponse if LocalAddrs.member? addr       # return local node
+
       env[:fetched] = true                                  # note fetch for logger
       case scheme                                           # request scheme
       when 'ftp'
@@ -278,12 +279,14 @@ class WebResource
         fetchHTTP                                           # fetch w/ HTTP
       when 'https'
         if ENV.has_key?('HTTP_PROXY')
-          insecure.fetchHTTP                                # fetch w/ HTTP to private-net peer
+          insecure.fetchHTTP                                # fetch w/ HTTP from private-network proxy
         elsif PeerAddrs.has_key? addr
-          url = insecure; url.port = 8000; url.fetchHTTP    # fetch w/ HTTP to private-net peer
+          url = insecure; url.port = 8000; url.fetchHTTP    # fetch w/ HTTP from private-network peer
         else
-          fetchHTTP                                         # fetch w/ HTTPS
+          fetchHTTP                                         # fetch w/ HTTPS from origin
         end
+      when 'spartan'
+        fetchSpartan
       else
         puts "⚠️ unsupported scheme in #{uri}"; notfound     # unsupported scheme
       end
@@ -509,17 +512,17 @@ class WebResource
       p = parts[0]                                        # path selector
       if !p                                               # root local node
         homepage
-      elsif p[-1] == ':'                                  # proxy URI w/ scheme
+      elsif p[-1] == ':'                                  # proxy URI with scheme
         unproxy.hostHandler                               # remote node
       elsif p == 'favicon.ico'                            # local icon
         [200, {'Content-Type' => 'image/png',
                'Expires' => (Time.now + 86400).httpdate},
          [SiteIcon]]
-      elsif p.index '.'                                   # proxy URI w/o scheme
+      elsif p.index '.'                                   # proxy URI without scheme
         unproxy(true).hostHandler                         # remote node
-      elsif %w{m d h y}.member? p                         # year/month/day/hour abbreviators
+      elsif %w{m d h y}.member? p                         # year/month/day/hour paths
         dateDir                                           # redirect to year/month/day/hour node
-      elsif p == 'mailto' && parts.size == 2              # redirect to mailbox
+      elsif p == 'mailto' && parts.size == 2              # redirect from email-address URI to current month's mailbox
         [302, {'Location' => ['/m/', (parts[1].split(/[\W_]/) - BasicSlugs).map(&:downcase).join('.'), '?view=table&sort=date'].join}, []]
       else
         cacheResponse                                     # generic local node
@@ -527,12 +530,16 @@ class WebResource
     end
 
     def graphResponse defaultFormat = 'text/html'
-      return notfound if !env.has_key?(:repository)||env[:repository].empty? # nothing found
+      if !env.has_key?(:repository) || env[:repository].empty? # no graph-data found
+        return notfound
+      end
+
       status = env[:origin_status] || 200                   # response status
       format = selectFormat defaultFormat                   # response format
       format += '; charset=utf-8' if %w{text/html text/turtle}.member? format
       head = {'Access-Control-Allow-Origin' => origin,      # response header
               'Content-Type' => format,
+              'Last-Modified' => Time.now.httpdate,
               'Link' => linkHeader}
       return [status, head, nil] if head?                   # header-only response
 
