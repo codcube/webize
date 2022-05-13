@@ -385,18 +385,28 @@ end
 class WebResource
   module HTML
 
+    HostColors = Webize.configHash 'colors/host'
+    CodeCSS = Webize.configData 'stylesheets/code.css'
+    FeedIcon = Webize.configData 'feed.svg'
+    SiteCSS = Webize.configData 'stylesheets/site.css'
+    SiteFont = Webize.configData 'fonts/hack.woff2'
+    SiteIcon = Webize.configData 'icons/favicon.ico'
+    SiteJS = Webize.configData 'site.js'
+
+    ReaderHosts = %w(en.wikipedia.org)
+
     # Graph -> HTML
     def htmlDocument graph
       status = env[:origin_status]
       elapsed = Time.now - env[:start_time] if env.has_key? :start_time
       icon = join('/favicon.ico').R env                                                            # well-known icon location
       if env[:links][:icon]                                                                        # icon reference in metadata
-        env[:links][:icon] = env[:links][:icon].R env unless env[:links][:icon].class==WebResource # normalize iconref class
-        if !env[:links][:icon].dataURI? &&                                                         # icon reference exists
-           env[:links][:icon].path != icon.path && env[:links][:icon] != self &&                   # icon isn't at well-known location
-           !env[:links][:icon].node.directory? && !icon.node.exist? && !icon.node.symlink?         # target location unlinked
+        env[:links][:icon] = env[:links][:icon].R env unless env[:links][:icon].class==WebResource # normalize icon class
+        if !env[:links][:icon].dataURI? &&                                                         # icon ref isn't data URI,
+           env[:links][:icon].path != icon.path && env[:links][:icon] != self &&                   # isn't at well-known location, and
+           !env[:links][:icon].node.directory? && !icon.node.exist? && !icon.node.symlink?         # target location is unlinked?
           POSIX.container icon.fsPath                                                              # create container(s)
-          FileUtils.ln_s (env[:links][:icon].node.relative_path_from icon.node.dirname), icon.node # link icon to well-known location
+          FileUtils.ln_s (env[:links][:icon].node.relative_path_from icon.node.dirname), icon.node # link well-known location
         end
       end
       env[:links][:icon] ||= icon.node.exist? ? icon : '/favicon.ico'.R(env)                       # default icon

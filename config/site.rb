@@ -43,18 +43,11 @@ class WebResource
 
     AllowHosts = SiteDir.join('hosts/allow').readlines.map &:chomp
     BlockedSchemes = SiteDir.join('blocklist/scheme').readlines.map &:chomp
-    CodeCSS = SiteDir.join('code.css').read
+
     CookieHosts = SiteDir.join('hosts/cookie').readlines.map &:chomp
     DenyFile = SiteDir.join 'blocklist/domain'
-    FeedIcon = SiteDir.join('feed.svg').read
     Gunk = Regexp.new SiteDir.join('gunk.regex').read.chomp, Regexp::IGNORECASE
-    HostColors = Webize.configHash 'colors/host'
-    KillFile = SiteDir.join('killfile').readlines.map &:chomp
-    ReaderHosts = %w(en.wikipedia.org)
-    SiteCSS = SiteDir.join('site.css').read
-    SiteFont = SiteDir.join('fonts/hack-regular-subset.woff2').read
-    SiteIcon = SiteDir.join('favicon.ico').read
-    SiteJS  = SiteDir.join('site.js').read
+    KillFile = Webize.configList 'blocklist/sender'
 
     def self.denylist
       ts = DenyFile.mtime.to_i
