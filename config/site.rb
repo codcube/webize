@@ -37,16 +37,6 @@ end
 class WebResource
   module HTTP
 
-    def homepage
-      #mail = Time.now.strftime('/%Y/%m/%d').R(env).find('msg*').map &:preview
-      files = [%w(bookmarks.u search.html).map{|n|
-                 (SiteDir + n).R env},
-               #mail
-              ].flatten
-      files.map &:loadRDF
-      graphResponse
-    end
-
     NoGunk  = -> r {r.send r.uri.match?(Gunk) ? :deny : :fetch}
 
     # strip query from request and response

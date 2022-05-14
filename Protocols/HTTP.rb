@@ -457,28 +457,28 @@ class WebResource
     end
 
     def fileETag
-      Digest::SHA2.hexdigest [uri, mtime, node.size].join         # mint ETag for file version
+      Digest::SHA2.hexdigest [uri, mtime, node.size].join # mint ETag for file
     end
 
     def fileResponse
-      if env[:client_etags].include?(etag = fileETag)             # cached at client
+      if env[:client_etags].include?(etag = fileETag)     # cached at client
         return [304, {}, []]
       end
 
       Rack::Files.new('.').serving(Rack::Request.new(env), fsPath).yield_self{|s,h,b|
-        case s                                                    # status
+        case s                                            # status
         when 200
-          s = env[:origin_status] if env[:origin_status]          # upstream status
+          s = env[:origin_status] if env[:origin_status]  # upstream status
         when 304
-          return [304, {}, []]                                    # cached at client
+          return [304, {}, []]                            # cached at client
         end
-        format = fileMIME                                         # file format
+        format = fileMIME                                 # file format
         h['Content-Type'] = format
         h['Content-Type'] = 'application/javascript; charset=utf-8' if h['Content-Type']=='application/javascript'
         h['ETag'] = etag
         h['Expires'] = (Time.now + 3e7).httpdate if format.match? FixedFormat
         h['Last-Modified'] ||= mtime.httpdate
-        [s, h, b]}                                                # response
+        [s, h, b]}
     end
 
     def self.GET arg, lambda = NoGunk
@@ -486,25 +486,15 @@ class WebResource
     end
 
     def GET
-      return hostHandler if host                          # remote node
-      p = parts[0]                                        # path selector
-      if !p                                               # root local node
-        homepage
-      elsif p[-1] == ':'                                  # proxy URI with scheme
-        unproxy.hostHandler                               # remote node
-      elsif p == 'favicon.ico'                            # local icon
-        [200, {'Content-Type' => 'image/png',
-               'Expires' => (Time.now + 86400).httpdate},
-         [SiteIcon]]
-      elsif p.index '.'                                   # proxy URI without scheme
-        unproxy(true).hostHandler                         # remote node
-      elsif %w{m d h y}.member? p                         # year/month/day/hour paths
-        dateDir                                           # redirect to year/month/day/hour node
-      elsif p == 'mailto' && parts.size == 2              # redirect from email-address URI to current month's mailbox
-        [302, {'Location' => ['/m/', (parts[1].split(/[\W_]/) - BasicSlugs).map(&:downcase).join('.'), '?view=table&sort=date'].join}, []]
-      else
-        cacheResponse                                     # generic local node
-      end
+      return hostHandler if host                      # remote node
+      p = parts[0]                                    # path selector
+      return cacheResponse unless p                   # root local node
+      return unproxy.hostHandler if p[-1] == ':'      # remote node - proxy URI with scheme
+      return icon if p == 'favicon.ico'               # icon at well-known location (serve from RAM)
+      return unproxy(true).hostHandler if p.index '.' # remote node - proxy URI without scheme
+      return dateDir if %w{m d h y}.member? p         # current year/month/day/hour contianer
+      return inbox if p == 'mailto'                   # inbox redirect
+      cacheResponse                                   # local node
     end
 
     def graphResponse defaultFormat = 'text/html'
@@ -512,21 +502,21 @@ class WebResource
         return notfound
       end
 
-      status = env[:origin_status] || 200                   # response status
-      format = selectFormat defaultFormat                   # response format
+      status = env[:origin_status] || 200             # response status
+      format = selectFormat defaultFormat             # response format
       format += '; charset=utf-8' if %w{text/html text/turtle}.member? format
-      head = {'Access-Control-Allow-Origin' => origin,      # response header
+      head = {'Access-Control-Allow-Origin' => origin,# response header
               'Content-Type' => format,
               'Last-Modified' => Time.now.httpdate,
               'Link' => linkHeader}
-      return [status, head, nil] if head?                   # header-only response
+      return [status, head, nil] if head?             # header-only response
 
-      body = case format                                    # response body
+      body = case format                              # response body
              when /html/
-               htmlDocument treeFromGraph                   # serialize HTML
+               htmlDocument treeFromGraph             # serialize HTML
              when /atom|rss|xml/
-               feedDocument treeFromGraph                   # serialize Atom/RSS
-             else                                           # serialize RDF
+               feedDocument treeFromGraph             # serialize Atom/RSS
+             else                                     # serialize RDF
                if writer = RDF::Writer.for(content_type: format)
                  env[:repository].dump writer.to_sym, base_uri: self
                else
@@ -535,8 +525,8 @@ class WebResource
                end
              end
 
-      head['Content-Length'] = body.bytesize.to_s           # response size
-      [status, head, [body]]                                # response
+      head['Content-Length'] = body.bytesize.to_s     # response size
+      [status, head, [body]]                          # response
     end
 
     def has_handler?
@@ -558,18 +548,18 @@ class WebResource
     # recreate headers from their mangled CGI keynames
     # PRs pending for rack/falcon, maybe we can finally remove this soon
     def headers raw = nil
-      raw ||= env || {}                                     # raw headers
-      head = {}                                             # cleaned headers
-      raw.map{|k,v|                                         # inspect (k,v) pairs
-        unless k.class != String || k.index('rack.') == 0   # skip internal headers
+      raw ||= env || {}                               # raw headers
+      head = {}                                       # cleaned headers
+      raw.map{|k,v|                                   # inspect (k,v) pairs
+        unless k.class!=String || k.index('rack.')==0 # skip internal headers
           key = k.downcase.sub(/^http_/,'').split(/[-_]/).map{|t| # strip prefix and tokenize
             if %w{cf cl csrf ct dfe dnt id spf utc xss xsrf}.member? t
-              t.upcase                                      # upcase acronym
+              t.upcase                                # upcase acronym
             elsif 'etag' == t
-              'ETag'                                        # partial acronym
+              'ETag'                                  # partial acronym
             else
-              t.capitalize                                  # capitalize word
-            end}.join '-'                                   # join words
+              t.capitalize                            # capitalize word
+            end}.join '-'                             # join words
           head[key] = (v.class == Array && v.size == 1 && v[0] || v) unless SingleHopHeaders.member? key.downcase # set header
         end}
       head['Referer'] = 'http://drudgereport.com/' if host&.match? /wsj\.com$/ # referer tweaks so stuff loads
@@ -579,37 +569,51 @@ class WebResource
     end
 
     def hostHandler
-      URIs.denylist                                         # refresh denylist
-      qs = query_values || {}                               # parse query
+      URIs.denylist                                   # refresh denylist
+      qs = query_values || {}                         # parse query
       dirMeta
 
-      cookie = join('/cookie').R                            # cookie-jar URI
-      if env[:cookie] && !env[:cookie].empty?               # store cookie to jar
+      cookie = join('/cookie').R                      # cookie-jar URI
+      if env[:cookie] && !env[:cookie].empty?         # store cookie to jar
         cookie.writeFile env[:cookie]
         puts [:🍯, host, env[:cookie]].join ' ' if Verbose
       end
-      if cookie.file?                                       # read cookie from jar
+      if cookie.file?                                 # read cookie from jar
         env['HTTP_COOKIE'] = cookie.node.read
         puts [:🍪, host, env['HTTP_COOKIE']].join ' ' if Verbose
       end
 
-      if parts[-1]&.match? /^(gen(erate)?|log)_?204$/       # 204 response w/o origin roundtrip
+      if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # 204 response w/o origin roundtrip
         [204, {}, []]
-      elsif has_handler?                                    # host handler exists?
+      elsif has_handler?                              # host handler exists?
         if ENV.has_key? 'HTTP_PROXY'
-          fetch                                             # generic remote node via proxy
+          fetch                                       # generic remote node via proxy
         else
-          HostGET[host.downcase][self]                      # host-adapted remote node
+          HostGET[host.downcase][self]                # host-adapted remote node
         end
-      elsif query&.match? Gunk                              # denied query
+      elsif query&.match? Gunk                        # denied query
         [301,{'Location' => ['//', host, path].join.R(env).href},[]]
       elsif host.match?(/\.(amazonaws|cloudfront|github)\.(com|io|net)$/) && uri.match?(/(\/|\.(jpe?g|p(df|ng)|webp))$/i)
         fetch
-      elsif deny?                                           # denied URI
+      elsif deny?                                     # denied URI
         deny
-      else                                                  # generic remote node
+      else                                            # generic remote node
         fetch
       end
+    end
+
+    def icon
+      [200,
+       {'Content-Type' => 'image/png',
+        'Expires' => (Time.now + 86400).httpdate},
+       [SiteIcon]]      
+    end
+
+    def inbox # redirect from email-address URI to current month's mailbox
+      [302,
+       {'Location' => ['/m/',                                                            # current month (change to day if heavy email user)
+                       (parts[1].split(/[\W_]/) - BasicSlugs).map(&:downcase).join('.'), # address slug
+                       '?view=table&sort=date'].join}, []]
     end
 
     def insecure
@@ -629,21 +633,18 @@ class WebResource
     end
 
     def notfound
-      env.delete :view
       format = selectFormat
-      body = case format                                    # response body
-             when /html/                                    # serialize HTML
+      body = case format
+             when /html/                                              # serialize HTML
                htmlDocument treeFromGraph.update({'#request' => env}) # show environment
-             when /atom|rss|xml/                            # serialize Atom/RSS
-               feedDocument treeFromGraph
-             else                                           # serialize RDF
+             when /atom|rss|xml/
+               feedDocument treeFromGraph                             # serialize Atom/RSS
+             else
                if env[:repository] && writer = RDF::Writer.for(content_type: format)
-                 env[:repository].dump writer.to_sym, base_uri: self
-               else
-                 ''
+                 env[:repository].dump writer.to_sym, base_uri: self  # serialize RDF
                end
              end
-      [404, {'Content-Type' => format}, head? ? nil : [body]]
+      [404, {'Content-Type' => format}, head? ? nil : [body ? body : '']]
     end
 
     def offline?
