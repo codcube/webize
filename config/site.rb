@@ -35,32 +35,6 @@ module Webize
   end
 end
 class WebResource
-  module URIs
-    DenyDomains = {}
-
-    # site config
-    SiteDir  = Pathname.new(__dir__).relative_path_from Pathname.new Dir.pwd
-
-    AllowHosts = SiteDir.join('hosts/allow').readlines.map &:chomp
-    BlockedSchemes = SiteDir.join('blocklist/scheme').readlines.map &:chomp
-
-    CookieHosts = SiteDir.join('hosts/cookie').readlines.map &:chomp
-    DenyFile = SiteDir.join 'blocklist/domain'
-    Gunk = Regexp.new SiteDir.join('gunk.regex').read.chomp, Regexp::IGNORECASE
-    KillFile = Webize.configList 'blocklist/sender'
-
-    def self.denylist
-      ts = DenyFile.mtime.to_i
-      return unless ts > FileModified[:deny]
-      FileModified[:deny] = ts
-      DenyFile.each_line{|l|
-        cursor = DenyDomains
-        l.chomp.sub(/^\./,'').split('.').reverse.map{|name|
-          cursor = cursor[name] ||= {}}}
-    end
-    self.denylist
-
-  end
   module HTTP
 
     def homepage

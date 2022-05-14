@@ -5,6 +5,29 @@ class WebResource
 
     FileModified = {deny: 0}
 
+    DenyDomains = {}
+
+    # host configuration
+    AllowHosts = SiteDir.join('hosts/allow').readlines.map &:chomp
+    CookieHosts = SiteDir.join('hosts/cookie').readlines.map &:chomp
+
+    # blocklists in various contexts
+    BlockedSchemes = SiteDir.join('blocklist/scheme').readlines.map &:chomp
+    DenyFile = SiteDir.join 'blocklist/domain'
+    Gunk = Regexp.new Webize.configData('blocklist/regex'), Regexp::IGNORECASE
+    KillFile = Webize.configList 'blocklist/sender'
+
+    def self.denylist
+      ts = DenyFile.mtime.to_i
+      return unless ts > FileModified[:deny]
+      FileModified[:deny] = ts
+      DenyFile.each_line{|l|
+        cursor = DenyDomains
+        l.chomp.sub(/^\./,'').split('.').reverse.map{|name|
+          cursor = cursor[name] ||= {}}}
+    end
+    self.denylist
+
   end
   module HTTP
     include URIs
@@ -363,11 +386,11 @@ class WebResource
             File.open(file, 'w'){|f| f << body }            # cache static entity
 
             if timestamp = h['Last-Modified']               # HTTP provided timestamp
-              timestamp.sub! /((ne|r)?s|ur)?day/, ''        # still full dayname declarations
-              if ts = Time.httpdate(timestamp) rescue nil   # parse timestamp
-                FileUtils.touch file, mtime: ts             # cache timestamp
+              timestamp.sub! /((ne|r)?s|ur)?day/, ''        # strip day name to 3-letter abbr
+              if t = Time.httpdate(timestamp) rescue nil    # parse timestamp
+                FileUtils.touch file, mtime: t              # cache timestamp
               else
-                puts '⚠️ unparsed timestamp:' + h['Last-Modified'] if Verbose
+                puts ['⚠️  timestamp:', h['Last-Modified'], timestamp != h['Last-Modified'] ? [:→, timestamp] : nil].join ' ' #if Verbose
               end
             end
 
@@ -437,7 +460,7 @@ class WebResource
             puts "🔒 upgrade redirect #{dest}"
             dest.fetchHTTP
           else                                              # redirect loop
-            puts "discarding #{uri} -> #{location} redirect"
+            puts "discarding #{uri} → #{location} redirect"
             cacheResponse
           end
         else

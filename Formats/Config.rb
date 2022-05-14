@@ -4,7 +4,7 @@ module Webize
 
   # path -> String
   def self.configData path
-    File.open([ConfigPath, path].join '/').read
+    File.open([ConfigPath, path].join '/').read.chomp
   end
 
   # path -> Hash
