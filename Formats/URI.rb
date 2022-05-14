@@ -40,6 +40,20 @@ class WebResource < RDF::URI
     Video    = DC + 'Video'
     Resource = RDFs + 'Resource'
 
+    # config
+    AllowHosts = Webize.configList 'hosts/allow'
+    CookieHosts = Webize.configList 'hosts/cookie'
+    BlockedSchemes = Webize.configList 'blocklist/scheme'
+    Gunk = Regexp.new Webize.configData('blocklist/regex'), Regexp::IGNORECASE
+    KillFile = Webize.configList 'blocklist/sender'
+
+    # populate blocklist tree
+    DenyDomains = {}
+    Webize.configList('blocklist/domain').map{|l|
+      cursor = DenyDomains
+      l.chomp.sub(/^\./,'').split('.').reverse.map{|name|
+        cursor = cursor[name] ||= {}}}
+
     def basename; File.basename path if path end
 
     def dataURI?; scheme == 'data' end

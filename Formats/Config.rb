@@ -1,3 +1,7 @@
+
+# configuration for logger verbosity
+Verbose = ENV.has_key? 'VERBOSE'
+
 module Webize
 
   ConfigPath = [__dir__, '../config'].join '/'

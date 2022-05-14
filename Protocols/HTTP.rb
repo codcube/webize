@@ -1,34 +1,6 @@
 %w(async async/barrier async/semaphore brotli cgi digest/sha2 open-uri rack resolv).map{|_| require _}
 
 class WebResource
-  module URIs
-
-    FileModified = {deny: 0}
-
-    DenyDomains = {}
-
-    # host configuration
-    AllowHosts = SiteDir.join('hosts/allow').readlines.map &:chomp
-    CookieHosts = SiteDir.join('hosts/cookie').readlines.map &:chomp
-
-    # blocklists in various contexts
-    BlockedSchemes = SiteDir.join('blocklist/scheme').readlines.map &:chomp
-    DenyFile = SiteDir.join 'blocklist/domain'
-    Gunk = Regexp.new Webize.configData('blocklist/regex'), Regexp::IGNORECASE
-    KillFile = Webize.configList 'blocklist/sender'
-
-    def self.denylist
-      ts = DenyFile.mtime.to_i
-      return unless ts > FileModified[:deny]
-      FileModified[:deny] = ts
-      DenyFile.each_line{|l|
-        cursor = DenyDomains
-        l.chomp.sub(/^\./,'').split('.').reverse.map{|name|
-          cursor = cursor[name] ||= {}}}
-    end
-    self.denylist
-
-  end
   module HTTP
     include URIs
 
