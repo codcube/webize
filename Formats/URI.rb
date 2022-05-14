@@ -7,7 +7,7 @@ class WebResource < RDF::URI
     RegexChars = /[\^\(\)\|\[\]\$]/
     ImgExt = %w(.jpeg .jpg .png .webp)
 
-    # common RDF base-URI constants
+    # common base-URI constants
     DC       = 'http://purl.org/dc/terms/'
     DOAP     = 'http://usefulinc.com/ns/doap#'
     FOAF     = 'http://xmlns.com/foaf/0.1/'
@@ -18,7 +18,6 @@ class WebResource < RDF::URI
     Schema   = 'http://schema.org/'
     Schemas  = 'https://schema.org/'
     W3       = 'http://www.w3.org/'
-
     Abstract = DC + 'abstract'
     Atom     = W3 + '2005/Atom#'
     Audio    = DC + 'Audio'
@@ -40,16 +39,14 @@ class WebResource < RDF::URI
     Video    = DC + 'Video'
     Resource = RDFs + 'Resource'
 
-    # config
+    # URI-blocklist config
     AllowHosts = Webize.configList 'hosts/allow'
     CookieHosts = Webize.configList 'hosts/cookie'
     BlockedSchemes = Webize.configList 'blocklist/scheme'
     Gunk = Regexp.new Webize.configData('blocklist/regex'), Regexp::IGNORECASE
     KillFile = Webize.configList 'blocklist/sender'
-
-    # populate blocklist tree
     DenyDomains = {}
-    Webize.configList('blocklist/domain').map{|l|
+    Webize.configList('blocklist/domain').map{|l| # populate blocklist tree
       cursor = DenyDomains
       l.chomp.sub(/^\./,'').split('.').reverse.map{|name|
         cursor = cursor[name] ||= {}}}
@@ -112,23 +109,23 @@ class WebResource < RDF::URI
 
   alias_method :uri, :to_s
 
-  # output reference for current browsing context
-  def href
-    if in_doc? && fragment         # in-document ref
-      '#' + fragment
-    elsif env[:proxy_href]         # proxy ref
-      if !host || env['SERVER_NAME'] == host # local node
-        uri
-      else                                   # remote node
-        ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join
-      end
-    else                           # URI <-> URL correspondence
-      uri
-    end
-  end
-
   module HTML
     include URIs
+
+    # relocate reference for current browsing context
+    def href
+      if in_doc? && fragment         # in-document ref
+        '#' + fragment
+      elsif env[:proxy_href]         # proxy ref
+        if !host || env['SERVER_NAME'] == host # local node
+          uri
+        else                                   # remote node
+          ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join
+        end
+      else                           # URI <-> URL correspondence
+        uri
+      end
+    end
 
     def uri_toolbar breadcrumbs=nil
       bc = ''                                                       # breadcrumb path
