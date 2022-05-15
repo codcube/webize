@@ -87,3 +87,6 @@ class WebResource
   end
 
 end
+
+# add 🐢 name-suffix
+RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl]

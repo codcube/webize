@@ -1,9 +1,10 @@
 # coding: utf-8
 class WebResource
-                                  # non-transformable (MIMEa -> MIMEb) formats
-  FixedFormat = /archive|audio|css|image|octet|package|script|video|xz|zip/
+
+  FixedFormat = /archive|audio|css|image|octet|package|script|video|xz|zip/ # MIMEs we can't transform (TODO ffmpeg/imagemagick backends for conneg media-transcode)
   MimeTypes = {'.apk' => 'application/vnd.android.package-archive'}
-  ReFormat = %w(text/html)        # reformatable (MIMEa -> MIMEa) formats
+  ReFormat = %w(text/html) # perform parse->serialize steps for cleanup when MIME is static
+  AV = [Audio, Video, 'RECTANGULAR', 'FORMAT_STREAM_TYPE_OTF'] # audio/video RDF types
 
   # file -> MIME type
   def fileMIME

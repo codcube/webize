@@ -190,6 +190,9 @@ class WebResource
  v videos
  watch wordpress wp www xml}]
 
+    # plaintext MIME hint for names without extensions, avoids FILE(1) call
+    TextFiles = %w(changelog copying license readme todo)
+
     def slugs
       re = /[\W_]/
       [(host&.split re),

@@ -1,13 +1,11 @@
 # coding: utf-8
 
-# add 🐢 name-suffix
-RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl]
+
 
 class WebResource
   module URIs
 
-    AV = [Audio, Video, 'RECTANGULAR', 'FORMAT_STREAM_TYPE_OTF']
-    TextFiles = %w(changelog copying license readme todo)
+
 
     # string -> URI
     MetaMap = {
