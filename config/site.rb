@@ -56,7 +56,7 @@ class WebResource
       end}
 
     # shortURL hosts
-    SiteDir.join('hosts/shorturl').readlines.map(&:chomp).map{|host|GET host, NoQuery}
+    Webize.configList('hosts/shorturl').map{|h| GET h, NoQuery}
 
     GET 'bos.gl', -> r {r.scheme = 'http'; r.fetch} # hangs on HTTPS, use HTTP
 
@@ -68,7 +68,7 @@ class WebResource
       dest = q['url'] || q['u'] || q['q']
       dest ? [301, {'Location' => dest.R(r.env).href}, []] : r.notfound}
 
-    SiteDir.join('hosts/url').readlines.map(&:chomp).map{|host|GET host, GotoURL}
+    Webize.configList('hosts/url').map{|h| GET h, GotoURL}
 
     GET 'urldefense.com', -> r {[302, {'Location' => r.path.split('__')[1].R(r.env).href}, []]}
 
@@ -164,7 +164,7 @@ class WebResource
         r.env[:view] = 'table'
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
-        SiteDir.join('mixcloud').readlines.map(&:chomp).map{|chan|
+        Webize.configList('subscriptions/mixcloud').map{|chan|
           semaphore.async do
             print "🔊"
             "https://api.mixcloud.com/#{chan}/cloudcasts/".R(r.env).fetchHTTP format: 'application/json', thru: false
@@ -229,7 +229,7 @@ class WebResource
 	semaphore = Async::Semaphore.new(16, parent: barrier)
         client_id = 'qpb3ePPttWrQPwdAw7dRY7sxJCe6Z8pj'
         version = 1650464268
-        SiteDir.join('soundcloud').readlines.map(&:chomp).map{|chan|
+        Webize.configList('subscriptions/soundcloud').map{|chan|
           semaphore.async do
             print "🔊"
             "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{client_id}&limit=20&offset=0&linked_partitioning=1&app_version=#{version}&app_locale=en".R(r.env).fetchHTTP thru: false
@@ -251,7 +251,7 @@ class WebResource
       parts = r.parts
       qs = r.query_values || {}
       cursor = qs.has_key?('cursor') ? ('&cursor=' + qs['cursor']) : ''
-      users = SiteDir.join('twitter').readlines.map &:chomp
+      users = Webize.configList 'subscriptions/twitter'
       notusers = %w(favicon.ico manifest.json push_service_worker.js search sw.js users)
 
       if r.env['HTTP_COOKIE'] # auth headers
@@ -376,7 +376,7 @@ class WebResource
         when 'feed'
           barrier = Async::Barrier.new
 	  semaphore = Async::Semaphore.new(16, parent: barrier)
-          SiteDir.join('youtube').readlines.map(&:chomp).map{|chan|
+          Webize.configList('subscriptions/youtube').map{|chan|
             id = chan.R.parts[-1]
             semaphore.async do
               print "🎞️"
