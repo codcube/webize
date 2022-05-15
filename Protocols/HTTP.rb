@@ -486,7 +486,7 @@ class WebResource
     end
 
     def GET
-      return hostHandler if host                      # remote node
+      return hostHandler if host                      # remote node - canonical URI
       p = parts[0]                                    # path selector
       return cacheResponse unless p                   # root local node
       return unproxy.hostHandler if p[-1] == ':'      # remote node - proxy URI with scheme
@@ -520,8 +520,7 @@ class WebResource
                if writer = RDF::Writer.for(content_type: format)
                  env[:repository].dump writer.to_sym, base_uri: self
                else
-                 puts "⚠️  RDF::Writer undefined for #{format}"
-                 ''
+                 puts "⚠️  RDF::Writer undefined for #{format}" ; ''
                end
              end
 
@@ -569,7 +568,6 @@ class WebResource
     end
 
     def hostHandler
-      URIs.denylist                                   # refresh denylist
       qs = query_values || {}                         # parse query
       dirMeta
 
