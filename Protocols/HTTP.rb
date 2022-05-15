@@ -154,7 +154,8 @@ class WebResource
         [status, head, body]}
     rescue Exception => e
       puts env[:base], e.class, e.message, e.backtrace
-      [500, {'Content-Type' => 'text/html; charset=utf-8'}, uri.head? ? [] : ["<html><body class='error'>#{HTML.render [{_: :style, c: Webize::HTML::SiteCSS}, {_: :script, c: Webize::Code::SiteJS}, uri.uri_toolbar]}500</body></html>"]]
+      [500, {'Content-Type' => 'text/html; charset=utf-8'},
+       uri.head? ? [] : ["<html><body class='error'>#{HTML.render [{_: :style, c: Webize::CSS::SiteCSS}, {_: :script, c: Webize::Code::SiteJS}, uri.uri_toolbar]}500</body></html>"]]
     end
 
     def HTTP.decompress head, body

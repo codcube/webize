@@ -435,7 +435,7 @@ class WebResource
                     c: [{_: :head,
                          c: [{_: :meta, charset: 'utf-8'},
                             ({_: :title, c: CGI.escapeHTML(graph[uri][Title].join ' ')} if graph.has_key?(uri) && graph[uri].has_key?(Title)),
-                             {_: :style, c: [Webize::HTML::SiteCSS, css]},
+                             {_: :style, c: [Webize::CSS::SiteCSS, css]},
                              env[:links].map{|type, resource|
                                {_: :link, rel: type, href: CGI.escapeHTML(resource.R(env).href)}}]},
                         {_: :body,
