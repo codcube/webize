@@ -191,9 +191,9 @@ class WebResource
       type, content = if type == :stylesheet || ext == '.css'
                         ['text/css', '']
                       elsif type == :font || %w(.eot .otf .ttf .woff .woff2).member?(ext)
-                        ['font/woff2', SiteFont]
+                        ['font/woff2', WebResource::HTML::SiteFont]
                       elsif type == :image || %w(.bmp .ico .gif .jpg .png).member?(ext)
-                        ['image/png', SiteIcon]
+                        ['image/png', WebResource::HTML::SiteIcon]
                       elsif type == :script || ext == '.js'
                         ['application/javascript', "// URI: #{uri.match(Gunk) || host}"]
                       elsif type == :JSON || ext == '.json'
@@ -603,7 +603,7 @@ class WebResource
       [200,
        {'Content-Type' => 'image/png',
         'Expires' => (Time.now + 86400).httpdate},
-       [SiteIcon]]      
+       [WebResource::HTML::SiteIcon]]
     end
 
     def inbox # redirect from email-address URI to current month's mailbox
