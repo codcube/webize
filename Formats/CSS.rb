@@ -2,6 +2,8 @@
 module Webize
   module CSS
 
+    SiteCSS = Webize.configData 'stylesheets/site.css'
+
     def self.clean str
       str.gsub(/@font-face\s*{[^}]+}/, '').gsub(/url\([^\)]+\)/,'url()') # drop fonts and recursive includes (tracker links in background: URL field)
     end

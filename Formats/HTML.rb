@@ -389,10 +389,8 @@ class WebResource
     FeedIcon = Webize.configData 'icons/feed.svg'
     HostColors = Webize.configHash 'colors/host'
     ReaderHosts = Webize.configList 'hosts/reader'
-    SiteCSS = Webize.configData 'stylesheets/site.css'
     SiteFont = Webize.configData 'fonts/hack.woff2'
     SiteIcon = Webize.configData 'icons/favicon.ico'
-    SiteJS = Webize.configData 'site.js'
 
     # Graph -> HTML
     def htmlDocument graph
@@ -437,7 +435,7 @@ class WebResource
                     c: [{_: :head,
                          c: [{_: :meta, charset: 'utf-8'},
                             ({_: :title, c: CGI.escapeHTML(graph[uri][Title].join ' ')} if graph.has_key?(uri) && graph[uri].has_key?(Title)),
-                             {_: :style, c: [SiteCSS, css]},
+                             {_: :style, c: [Webize::HTML::SiteCSS, css]},
                              env[:links].map{|type, resource|
                                {_: :link, rel: type, href: CGI.escapeHTML(resource.R(env).href)}}]},
                         {_: :body,
@@ -472,7 +470,7 @@ class WebResource
                                         end}]}},
 
                              link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
-                             {_: :script, c: SiteJS}]}]}]
+                             {_: :script, c: Webize::Code::SiteJS}]}]}]
     end
 
     def htmlGrep graph

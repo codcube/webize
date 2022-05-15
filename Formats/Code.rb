@@ -4,6 +4,8 @@ module Webize
   module Code
     include WebResource::URIs
 
+    SiteJS = Webize.configData 'site.js'
+
     class Format < RDF::Format
       content_type 'application/ruby',
                    aliases: %w(
