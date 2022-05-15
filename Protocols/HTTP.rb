@@ -369,14 +369,12 @@ class WebResource
 
             if reader = RDF::Reader.for(content_type: format) # reader defined for format?
               env[:repository] ||= RDF::Repository.new      # initialize RDF repository
-              if ts                                         # header to RDF
-                env[:repository] << RDF::Statement.new(self, Date.R, ts.iso8601)
-                case format
-                when /image/
-                  env[:repository] << RDF::Statement.new(self, Type.R, Image.R)
-                when /video/
-                  env[:repository] << RDF::Statement.new(self, Type.R, Video.R)
-                end
+              env[:repository] << RDF::Statement.new(self, Date.R, t.iso8601) if t
+              case format
+              when /image/
+                env[:repository] << RDF::Statement.new(self, Type.R, Image.R)
+              when /video/
+                env[:repository] << RDF::Statement.new(self, Type.R, Video.R)
               end
               reader.new(body, base_uri: self, path: file){|g|env[:repository] << g} # read RDF
               if format == 'text/html' && reader != RDF::RDFa::Reader                # read RDFa
