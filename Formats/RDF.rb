@@ -93,11 +93,9 @@ RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl]
 
 module Webize
 
-  # populate predicate-normalization map
-  MetaMap = {}
+  MetaMap = {}                                                          # predicate map
 
   Dir.children([ConfigPath, :meta].join '/').map{|vocab|                # vocabulary prefix
-
     vocabulary = if vocab == 'rdf'                                      # symbol collision preventing this in vocab_map?
                    {uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}
                  else
@@ -112,5 +110,8 @@ module Webize
     else
       puts "undefined prefix #{vocab}"
     end}
+
+  configList('blocklist/predicate').map{|p|                             # map dropped predicates
+    MetaMap[p] = :drop}
 
 end
