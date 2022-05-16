@@ -1,7 +1,7 @@
 # coding: utf-8
 class WebResource
 
-  # file -> RDF::Repository
+  # file -> (in-memory) Repository
   def loadRDF graph: env[:repository] ||= RDF::Repository.new
     options = {}
     if node.file?                                                    # file
@@ -31,7 +31,7 @@ class WebResource
     self
   end
 
-  # RDF::Repository -> 🐢 file(s)
+  # Repository -> 🐢 file(s)
   def saveRDF repository = nil
     return self unless repository || env[:repository]                # repository
 
@@ -73,7 +73,7 @@ class WebResource
     self
   end
 
-  # RDF::Repository -> JSON (s->p->o). input data-structure for Atom/HTML/RSS renderers
+  # Repository -> JSON (s -> p -> o) input datastructure for non-RDF renderers
   def treeFromGraph graph=nil; graph ||= env[:repository]; return {} unless graph
     tree = {}; bnodes = [] # initialize tree and bnode array
     graph.each_triple{|subj,pred,o| # visit triples
@@ -88,5 +88,12 @@ class WebResource
 
 end
 
-# add 🐢 name-suffix
+# add 🐢 name-suffix for Turtle
 RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl]
+
+# populate predicate-normalization map
+mDir = [Webize::ConfigPath, :meta].join '/' # meta-map directory
+(Dir.children mDir).map{|vocab|
+  vDir = [mDir, vocab].join '/'             # vocabulary directory
+  (Dir.children vDir).map{|predicate|
+    [].join ' '}}
