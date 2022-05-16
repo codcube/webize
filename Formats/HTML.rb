@@ -389,6 +389,7 @@ class WebResource
     CodeCSS = Webize.configData 'stylesheets/code.css'
     FeedIcon = Webize.configData 'icons/feed.svg'
     HostColors = Webize.configHash 'colors/host'
+    Icons = Webize.configHash 'icons/map'
     SiteFont = Webize.configData 'fonts/hack.woff2'
     SiteIcon = Webize.configData 'icons/favicon.ico'
 
