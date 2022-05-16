@@ -10,18 +10,18 @@ class WebResource
 
     def self.group graph, env, attr=nil
       attr ||= env[:group]
-      if attr                        # grouping attribute
-        attr = MetaMap[attr] || attr # attribute to URI
-        graph.group_by{|r|           # group resources
+      if attr                                # grouping attribute
+        attr = Webize::MetaMap[attr] || attr # normalize grouping attribute
+        graph.group_by{|r|                   # group resources
           (r.delete(attr) || [])[0]}
       else
-        {'' => graph}                # default group
+        {'' => graph}                        # default group
       end
     end
 
     def self.sort graph, env
       attr = env[:sort] || Date                   # default to timestamp sorting
-      attr = MetaMap[attr] || attr                # map sort-attribute to URI
+      attr = Webize::MetaMap[attr] || attr        # map sort-attribute to URI
       numeric = true if attr == Schema+'position' # numeric sort types
       sortable, unsorted = graph.partition{|r|    # to be sortable,
         r.class == Hash && (r.has_key? attr)}     # object needs sort-attribute

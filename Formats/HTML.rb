@@ -529,7 +529,7 @@ class WebResource
         {_: :input, type: :checkbox}
       when Hash                         # Hash
         return if o.empty?
-        types = (o[Type]||[]).map{|t|MetaMap[t.to_s] || t.to_s} # map to rendered type
+        types = (o[Type]||[]).map{|t|Webize::MetaMap[t.to_s] || t.to_s} # map to rendered type
         seen = false
         [types.map{|type|               # typetag(s)
           if f = Markup[type]           # renderer defined for type
