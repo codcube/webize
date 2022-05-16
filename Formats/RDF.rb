@@ -92,14 +92,21 @@ end
 RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl]
 
 module Webize
-  puts RDF.vocab_map
+
   # populate predicate-normalization map
   MetaMap = {}
-  mDir = [ConfigPath, :meta].join '/' # vocabularies dir
-  (Dir.children mDir).map{|vocab|
-    vDir = [mDir, vocab].join '/'     # vocabulary dir
-    (Dir.children vDir).map{|p|
-      pFile = [vDir, p].join '/'      # predicate file
-      configList(pFile).map{|uri|
-        MetaMap}}}
+
+  dir = [ConfigPath, :meta].join '/'
+  (Dir.children dir).map{|vocab| # vocabulary
+    if vocabulary = RDF.vocab_map[vocab.to_sym]
+      (Dir.children [dir, vocab].join '/').map{|p| # predicate
+        predicateURI = vocabulary[:uri] + p
+        configList([:meta, vocab, p].join '/').map{|uri|
+          MetaMap[uri] = predicateURI}
+      }
+    else
+      puts "undefined prefix #{vocab}"
+    end}
+
+  puts MetaMap.values.uniq
 end
