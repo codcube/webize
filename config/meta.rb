@@ -1218,3 +1218,10 @@ class WebResource
     }
   end
 end
+
+WebResource::URIs::MetaMap.sort_by{|k,v|k}.map{|uri, p|
+  next if p == :drop
+  path = [:config, :meta, p.R.qname].join '/'
+  FileUtils.mkdir_p File.dirname path
+  File.open(path, 'a'){|f|
+    f << uri << "\n"}}

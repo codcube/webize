@@ -1,0 +1,13 @@
+DC.format
+contentType
+content_type
+dcterms.format
+filetype
+http://ogp.me/ns#audio:type
+http://ogp.me/ns#image:type
+mimeType
+mime_type
+og:audio:type
+og:image:type
+og:video:type
+video_type

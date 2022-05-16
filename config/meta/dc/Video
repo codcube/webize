@@ -1,0 +1,17 @@
+FORMAT_STREAM_TYPE_OTF
+PlaybackURL
+RECTANGULAR
+VideoRendition
+http://ogp.me/ns#video
+http://ogp.me/ns#video:secure_url
+http://ogp.me/ns#video:url
+http://schema.org/VideoObject
+http://schema.org/embedUrl
+http://schema.org/video
+mp4Url
+og:video
+og:video:secure_url
+og:video:url
+twitter:player
+twitter:player:stream
+videoUrl
