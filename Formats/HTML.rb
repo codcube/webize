@@ -118,8 +118,8 @@ module Webize
           ref.query = nil if ref.query&.match?(/utm[^a-z]/)       # deutmize query (tracker gunk)
           ref.fragment = nil if ref.fragment&.match?(/utm[^a-z]/) # deutmize fragment
           blocked = ref.deny?
-          color = if HostColors.has_key? ref.host
-                    HostColors[ref.host]
+          color = if WebResource::HTML::HostColors.has_key? ref.host
+                    WebResource::HTML::HostColors[ref.host]
                   elsif blocked
                     'red'
                   end
