@@ -96,19 +96,19 @@ module Webize
   # populate predicate-normalization map
   MetaMap = {}
 
-  Dir.children([ConfigPath, :meta].join '/').map{|vocab|                   # vocabulary
+  Dir.children([ConfigPath, :meta].join '/').map{|vocab|                # vocabulary prefix
 
-    vocabulary = if vocab == 'rdf'
-                   {uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'} # why is this not in vocab_map?
+    vocabulary = if vocab == 'rdf'                                      # symbol collision preventing this in vocab_map?
+                   {uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}
                  else
-                   RDF.vocab_map[vocab.to_sym]
+                   RDF.vocab_map[vocab.to_sym]                          # expand prefix
                  end
 
     if vocabulary
-      Dir.children([ConfigPath, :meta, vocab].join '/').map{|p| # predicate
-        destURI = [vocabulary[:uri], p].join
-        configList([:meta, vocab, p].join '/').map{|srcURI|
-          MetaMap[srcURI] = destURI}}              # mapped predicate
+      Dir.children([ConfigPath, :meta, vocab].join '/').map{|predicate|
+        destURI = [vocabulary[:uri], predicate].join
+        configList([:meta, vocab, predicate].join '/').map{|srcURI|     # find mapping list
+          MetaMap[srcURI] = destURI}}                                   # map predicate
     else
       puts "undefined prefix #{vocab}"
     end}
