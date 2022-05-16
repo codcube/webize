@@ -59,14 +59,15 @@ class WebResource
       FileUtils.mkdir_p dir # create containing dir
     end
 
-    # HTTP-level pointers for basic directory navigation
+    # HTTP-header pointers for basic directory navigation
     def dirMeta
-      env[:links][:up] = if !path || path == '/'                   # up to parent of subdomain
-                           '//' + host.split('.')[1..-1].join('.') if host
-                         else                                      # up to parent container
-                           [File.dirname(env['REQUEST_PATH']), '/', (env['QUERY_STRING'] && !env['QUERY_STRING'].empty?) ? ['?',env['QUERY_STRING']] : nil].join
-                         end
-      env[:links][:down] = '*' if (!host || offline?) && dirURI?   # down to child-nodes
+      root = !path || path == '/'
+      if host && root                                            # up to parent domain
+        env[:links][:up] = '//' + host.split('.')[1..-1].join('.')
+      elsif !root                                                # up to parent path
+        env[:links][:up] = [File.dirname(env['REQUEST_PATH']), '/', (env['QUERY_STRING'] && !env['QUERY_STRING'].empty?) ? ['?',env['QUERY_STRING']] : nil].join
+      end
+      env[:links][:down] = '*' if (!host || offline?) && dirURI? # down to children
     end
 
     # URI -> boolean
