@@ -40,7 +40,12 @@ class WebResource
       end
     end
 
-    # respond from local cache
+    def self.bwPrint kv
+      kv.map{|k,v|
+        print "\e[38;5;7;7m#{k}\e[0m#{v}"}
+      print "\n"
+    end
+
     def cacheResponse
       return fileResponse if file? && (format=fileMIME) &&  # static response if:
                              (env[:notransform] ||          # MIME transform disabled,
@@ -90,12 +95,6 @@ class WebResource
       dirMeta                                               # 👉 storage-adjacent nodes
       timeMeta unless host                                  # 👉 timeline-adjacent nodes
       graphResponse                                         # response
-    end
-
-    def self.bwPrint kv
-      kv.map{|k,v|
-        print "\e[38;5;7;7m#{k}\e[0m#{v}"}
-      print "\n"
     end
 
     # HTTP entry-point
