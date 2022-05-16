@@ -5,6 +5,7 @@ module Webize
 
     CSSURL = /url\(['"]*([^\)'"]+)['"]*\)/
     CSSgunk = /font-face|url/
+    ReaderHosts = Webize.configList 'hosts/reader'
 
     # clean HTML document
     def self.clean doc, base
@@ -388,7 +389,6 @@ class WebResource
     CodeCSS = Webize.configData 'stylesheets/code.css'
     FeedIcon = Webize.configData 'icons/feed.svg'
     HostColors = Webize.configHash 'colors/host'
-    ReaderHosts = Webize.configList 'hosts/reader'
     SiteFont = Webize.configData 'fonts/hack.woff2'
     SiteIcon = Webize.configData 'icons/favicon.ico'
 

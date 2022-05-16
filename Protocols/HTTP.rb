@@ -87,10 +87,8 @@ class WebResource
       end
 
       nodes.map &:loadRDF                                   # load node(s)
-      unless host
-        dirMeta                                             # 👉 storage-adjacent nodes
-        timeMeta                                            # 👉 timeline-adjacent nodes
-      end
+      dirMeta                                               # 👉 storage-adjacent nodes
+      timeMeta unless host                                  # 👉 timeline-adjacent nodes
       graphResponse                                         # response
     end
 

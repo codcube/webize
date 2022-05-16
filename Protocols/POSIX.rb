@@ -62,7 +62,7 @@ class WebResource
     # HTTP-level pointers for basic directory navigation
     def dirMeta
       env[:links][:up] = if !path || path == '/'                   # up to parent of subdomain
-                           '//' + host.split('.')[1..-1].join('.')
+                           '//' + host.split('.')[1..-1].join('.') if host
                          else                                      # up to parent container
                            [File.dirname(env['REQUEST_PATH']), '/', (env['QUERY_STRING'] && !env['QUERY_STRING'].empty?) ? ['?',env['QUERY_STRING']] : nil].join
                          end
