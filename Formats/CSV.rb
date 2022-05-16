@@ -38,7 +38,7 @@ class WebResource
       keys.unshift 'uri' unless keys.member? 'uri'
       keys = [Creator, *(keys - [Creator])] if keys.member? Creator
       env[:sort] ||= Date
-      sortAttr = MetaMap[env[:sort]] || env[:sort]
+      sortAttr = Webize::MetaMap[env[:sort]] || env[:sort]
 
       {_: :table, class: :tabular,            # table
        c: [{_: :thead,
