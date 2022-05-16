@@ -99,7 +99,7 @@ module Webize
                       o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)           # resolve URI
                       p = MetaMap[p] if MetaMap.has_key? p
                       unless p == :drop
-                        puts [p, o].join "\t" unless p.match? /^https?:/
+                        puts [p, o].join " \t" unless p.match? /^https?:/
                         yield s, p, o
                       end
                     end

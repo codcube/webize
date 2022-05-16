@@ -105,7 +105,7 @@ module Webize
             end
           else
             p = MetaMap[p] if MetaMap.has_key? p
-            puts [p, o].join "\t" unless p.match? /^https?:/
+            puts [p, o].join " \t" unless p.match? /^https?:/
             yield s,p,o
           end
         }
