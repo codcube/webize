@@ -160,8 +160,6 @@ class WebResource
 
     GET 'www.mixcloud.com', -> r {
       if !r.path || r.path == '/'
-        r.env[:sort] = Date
-        r.env[:view] = 'table'
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
         Webize.configList('subscriptions/mixcloud').map{|chan|
@@ -223,8 +221,6 @@ class WebResource
 
     GET 'soundcloud.com', -> r {
       if !r.path || r.path == '/'
-        r.env[:sort] = 'date'
-        r.env[:view] = 'table'
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
         client_id = 'qpb3ePPttWrQPwdAw7dRY7sxJCe6Z8pj'
