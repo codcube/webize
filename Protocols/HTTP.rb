@@ -120,15 +120,17 @@ class WebResource
         uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) arguments for origin, store in URI for follow-on requests
       end
       env[:base] = uri.to_s.R env                           # base URI
-      env[:proxy_href] = isPeer || isLocal                  # proxy hrefs in local URI space?
+      env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
       if Verbose
-        print "\e[7m💻 → 🖥 #{uri}\e[0m " ; bwPrint env
+        print "\e[7m💻 → 🖥 #{uri}\e[0m "
+        bwPrint env
       end
       # do request
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
         # log response
         if Verbose
-          print "\e[7m💻 ← 🖥 #{uri}\e[0m " ; bwPrint head
+          print "\e[7m💻 ← 🖥 #{uri}\e[0m "
+          bwPrint head
         end
         fmt = uri.format_icon head['Content-Type']                                                       # iconify format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
