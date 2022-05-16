@@ -75,7 +75,7 @@ class WebResource
 
   # Repository -> JSON (s -> p -> o) input datastructure for non-RDF renderers
   def treeFromGraph graph=nil; graph ||= env[:repository]; return {} unless graph
-    tree = {}; bnodes = [] # initialize tree and bnode array
+    tree = {}; bnodes = [] # initialize tree and bnode list
     graph.each_triple{|subj,pred,o| # visit triples
       s = subj.to_s; p = pred.to_s  # stringify keys
       tree[s] ||= subj.class==RDF::Node ? {} : {'uri' => s}    # subject
@@ -91,9 +91,15 @@ end
 # add 🐢 name-suffix for Turtle
 RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl]
 
-# populate predicate-normalization map
-mDir = [Webize::ConfigPath, :meta].join '/' # meta-map directory
-(Dir.children mDir).map{|vocab|
-  vDir = [mDir, vocab].join '/'             # vocabulary directory
-  (Dir.children vDir).map{|predicate|
-    [].join ' '}}
+module Webize
+  puts RDF.vocab_map
+  # populate predicate-normalization map
+  MetaMap = {}
+  mDir = [ConfigPath, :meta].join '/' # vocabularies dir
+  (Dir.children mDir).map{|vocab|
+    vDir = [mDir, vocab].join '/'     # vocabulary dir
+    (Dir.children vDir).map{|p|
+      pFile = [vDir, p].join '/'      # predicate file
+      configList(pFile).map{|uri|
+        MetaMap}}}
+end
