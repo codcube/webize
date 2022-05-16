@@ -16,7 +16,9 @@ class WebResource
     # URI -> pathname. a one way map, though path-hierarchy is often preserved
     def fsPath
       @fsPath ||= if !host                                ## local
-                    if parts[0] == 'msg'                   # Message-ID -> sharded containers
+                    if parts.empty?
+                      %w(.)
+                    elsif parts[0] == 'msg'                # Message-ID -> sharded containers
                       id = Digest::SHA2.hexdigest Rack::Utils.unescape_path parts[1]
                       ['mail', id[0..1], id[2..-1]]
                     else                                   # path map

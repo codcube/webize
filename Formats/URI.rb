@@ -75,7 +75,7 @@ class WebResource < RDF::URI
 
     def no_scheme; uri.split('//',2)[1] end
 
-    def parts; path ? (path.split('/') - ['']) : [] end
+    def parts; @parts ||= path ? (path.split('/') - ['']) : [] end
 
     def query_hash; Digest::SHA2.hexdigest(query)[0..15] end
 
@@ -188,14 +188,10 @@ class WebResource < RDF::URI
   end
 end
 
-# cast to WebResource (URI subclass)
+# cast to WebResource (URI, environment) tuple
 class Pathname
   def R env=nil; env ? WebResource.new(to_s).env(env) : WebResource.new(to_s) end
 end
-
-#class RDF::Literal
-#  def R env=nil; env ? WebResource.new(to_s).env(env) : WebResource.new(to_s) end
-#end
 
 class RDF::URI
   def R env=nil; env ? WebResource.new(to_s).env(env) : WebResource.new(to_s) end
