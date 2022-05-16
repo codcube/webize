@@ -116,8 +116,8 @@ class WebResource
         env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {}
         qs = env[:qs].dup                                   # strip excess &s to not trip up URI libraries (TODO file PR), parse and memoize
         Args.map{|k|                                        # allowed (💻 <> 🖥) argument names
-         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) arguments from client for us, store in request environment
-        uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) arguments for origin, store in URI for follow-on requests
+         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) args for us, store in env vars
+        uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) args for origin, store in URI for follow-on requests
       end
       env[:base] = uri.to_s.R env                           # base URI
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
