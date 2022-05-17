@@ -10,7 +10,7 @@ module Webize
           subject = if !links.empty?
                       links[0]['href']                                            # identifier in link to self
                     else
-                      post['data-post-no'] || post['id']                          # identifier in node attribute
+                      post['data-post-no'] || post['id'] || post['itemid']        # identifier in node attribute
                     end
           if subject                                                              # subject identifier found
             subject = @base.join subject                                          # resolve subject URI
@@ -46,7 +46,7 @@ module Webize
             post.css('a.author, a.bigusername, a.hnuser, a.username, .author > a, .p-author > a, .poster a').map{|a|
               yield subject, Creator, (@base.join a['href']), graph; a.remove }   # author URI
 
-            post.css('[class*="subject"], [class*="title"]').map{|subj|
+            post.css('[class*="subject"], [class*="title"], h1').map{|subj|
               yield subject, Title, subj.inner_text, graph }                      # title
 
             post.css('img').map{|i|
@@ -70,7 +70,7 @@ module Webize
               end}
                                                                                   # content
             yield subject, Content, Webize::HTML.format(post.to_s, @base), graph if post['class'] == 'content'
-            post.css(".body, .comment, .content, .e-content, .entry-content, .divMessage, .message, .messageContent, .message-body, .post-body, .postarea, .postbody, [id^='post_message'], .postMessage, .text, .views-field-body, span.sitestr, span.score").map{|msg|
+            post.css(".body, .comment, .content, .e-content, .entry-content, .divMessage, .message, .messageContent, .message-body, p, .post-body, .postarea, .postbody, [id^='post_message'], .postMessage, .text, .views-field-body, span.sitestr, span.score").map{|msg|
               msg.css('a[class^="ref"], a[onclick*="Reply"], .post-link, .quote_link, .quotelink, .quoteLink, .reply a').map{|reply_of|
                 yield subject, To, (@base.join reply_of['href']), graph           # reply-of reference
                 reply_of.remove}
@@ -81,7 +81,7 @@ module Webize
                 end}
               yield subject, Content, Webize::HTML.format(msg.to_s, @base), graph
 
-              post.remove}                                                        # GC raw post HTML emitted as RDF
+              post.remove}                                                        # sweep raw HTML-in-RDF content if body found
           else
             #puts "identifier search failed in:", post if Verbose
           end
