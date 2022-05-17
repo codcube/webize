@@ -5,6 +5,7 @@ al:ios:app_name
 al:ios:app_store_id
 al:ios:url
 apple-itunes-app
+apple-mobile-web-app-title
 apple-touch-fullscreen
 canHaveEpisodes
 color-scheme
@@ -18,6 +19,7 @@ github-keyboard-shortcuts
 go-import
 google
 google-site-verification
+googlebot
 hovercard-subject-tag
 html-safe-nonce
 menuPosition
