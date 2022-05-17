@@ -15,6 +15,8 @@ http://opengraphprotocol.org/schema/type
 http://purl.org/dc/elements/1.1/type
 https://ogp.me/ns#type
 image_type
+imdb:pageType
+imdb:subPageType
 item-type
 kind
 linkType

@@ -5,9 +5,12 @@ al:ios:app_name
 al:ios:app_store_id
 al:ios:url
 apple-itunes-app
+canHaveEpisodes
 color-scheme
+enabled
 enabled-features
 expected-hostname
+externalLink
 fb:app_id
 generated
 github-keyboard-shortcuts
@@ -16,10 +19,13 @@ google
 google-site-verification
 hovercard-subject-tag
 html-safe-nonce
+menuPosition
 monetization_model
 mw-deduplicated-inline-style
 norton-safeweb-site-verification
+openNewTab
 optimizely-datafile
+pagePosition
 preload
 request-id
 robots
