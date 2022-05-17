@@ -276,7 +276,7 @@ module Webize
                 @env[:links][:icon] ||= v if k.match? /^(fav)?icon?$/i
                 @env[:feeds].push v if k == 'alternate' && ((m['type']&.match?(/atom|rss/)) || (v.path&.match?(/^\/feed\/?$/))) && !@env[:feeds].member?(v)
                 k = MetaMap[k] || k
-                puts [k, v].join " \t" unless k.to_s.match? /^(drop|http)/
+                puts [k, v].join "\t " unless k.to_s.match? /^(drop|http)/
                 yield @base, k, v unless k == :drop || v.R.deny?}
             end
           end}
@@ -305,7 +305,7 @@ module Webize
               else
                 v = @base.join v if v.match? /^(http|\/)\S+$/
               end
-              puts [k,v].join " \t" unless k.to_s.match? /^(drop|http)/
+              puts [k,v].join "\t " unless k.to_s.match? /^(drop|http)/
               yield @base, k, v unless k == :drop
             end
           elsif m['http-equiv'] == 'refresh'
