@@ -5,6 +5,7 @@ al:ios:app_name
 al:ios:app_store_id
 al:ios:url
 apple-itunes-app
+apple-touch-fullscreen
 canHaveEpisodes
 color-scheme
 enabled
@@ -21,6 +22,7 @@ hovercard-subject-tag
 html-safe-nonce
 menuPosition
 monetization_model
+msapplication-TileColor
 mw-deduplicated-inline-style
 norton-safeweb-site-verification
 openNewTab
@@ -47,3 +49,4 @@ user-login
 viewport
 visitor-hmac
 visitor-payload
+yandex-verification

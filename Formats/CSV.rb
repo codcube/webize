@@ -71,7 +71,7 @@ class WebResource
                    [{_: :a, class: :title, href: re.href, c: resource.has_key?(Title) ? predicate[Title] : :🔗, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}, # title
                     predicate[Abstract],                                         # abstract
                     [*AV, Image].map{|t|
-                      [(Markup[ MetaMap[t] || t ][re, env] if types&.member? t), # A/V inlined resource
+                      [(Markup[Webize::MetaMap[t] || t][re, env] if types&.member? t), # A/V inlined resource
                        (resource[t]||[]).map{|i| Markup[t][i,env]}]},            # A/V reference
                     ([Content, SIOC+'richContent'].map{|p|
                        (resource[p]||[]).map{|o|                                 # HTML literal

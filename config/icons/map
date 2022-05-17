@@ -21,11 +21,11 @@ http://rdfs.org/sioc/ns#Post 📝
 http://rdfs.org/sioc/ns#UserAccount 👤
 http://rdfs.org/sioc/ns#addressed_to ☇
 http://rdfs.org/sioc/ns#attachment ✉
-http://rdfs.org/sioc/ns#content 
+http://rdfs.org/sioc/ns#content 📝
 http://rdfs.org/sioc/ns#has_creator 👤
 http://rdfs.org/sioc/ns#has_discussion 🗨️
 http://rdfs.org/sioc/ns#reply_of ↩
-http://rdfs.org/sioc/ns#richContent 
+http://rdfs.org/sioc/ns#richContent 📝
 http://schema.org/AggregateOffer 🏷
 http://schema.org/AggregateRating 🎖
 http://schema.org/BreadcrumbList ☰
