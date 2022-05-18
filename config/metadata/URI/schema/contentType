@@ -10,4 +10,5 @@ mime_type
 og:audio:type
 og:image:type
 og:video:type
+twitter:player:stream:content_type
 video_type
