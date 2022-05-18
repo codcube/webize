@@ -386,7 +386,6 @@ end
 class WebResource
   module HTML
 
-    CodeCSS = Webize.configData 'stylesheets/code.css'
     FeedIcon = Webize.configData 'icons/feed.svg'
     HostColors = Webize.configHash 'colors/host'
     Icons = Webize.configHash 'icons/map'

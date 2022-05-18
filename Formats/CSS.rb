@@ -1,7 +1,9 @@
 #require 'crass'
 module Webize
+
   module CSS
 
+    CodeCSS = Webize.configData 'stylesheets/code.css'
     SiteCSS = Webize.configData 'stylesheets/site.css'
 
     def self.clean str
