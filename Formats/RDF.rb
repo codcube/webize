@@ -96,16 +96,16 @@ module Webize
   VocabPath = %w(metadata URI)
 
   # read metadata map from configuration files
-  Dir.children([ConfigPath, VocabPath].join '/').map{|vocab|
-    if vocabulary = vocab == 'rdf' ? {uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'} : RDF.vocab_map[vocab.to_sym] # find vocab
+  Dir.children([ConfigPath, VocabPath].join '/').map{|vocab|                # find vocab
+    if vocabulary = vocab == 'rdf' ? {uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'} : RDF.vocab_map[vocab.to_sym]
       Dir.children([ConfigPath, VocabPath, vocab].join '/').map{|predicate| # find predicate
         destURI = [vocabulary[:uri], predicate].join
-        configList([VocabPath, vocab, predicate].join '/').map{|srcURI|     # find mapping list
+        configList([VocabPath, vocab, predicate].join '/').map{|srcURI|     # find mapping
           MetaMap[srcURI] = destURI}}                                       # map predicate
     else
       puts "❓ undefined prefix #{vocab} referenced by vocab map"
     end}
 
-  configList('blocklist/predicate').map{|p|MetaMap[p] = :drop}              # map predicate blocklist
+  configList('blocklist/predicate').map{|p|MetaMap[p] = :drop}              # load predicate blocklist
 
 end
