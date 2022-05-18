@@ -2,7 +2,7 @@
  CSV Feed Form Gemini HTML Image JSON Mail Markdown Message
  MIME Org PDF POSIX RDF Subtitle Text Video),
  Protocols: %w(POSIX Gemini HTTP),
- config: %w(site)}.
+ config: %w(scripts/site)}.
   map{|category, components|
   components.map{|component|
     require_relative "#{category}/#{component}"}}

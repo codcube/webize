@@ -4,7 +4,7 @@ module Webize
   module Code
     include WebResource::URIs
 
-    SiteJS = Webize.configData 'site.js'
+    SiteJS = Webize.configData 'scripts/site.js'
 
     class Format < RDF::Format
       content_type 'application/ruby',
@@ -55,7 +55,6 @@ module Webize
 
         # Rouge
         if lexer = Rouge::Lexer.guess_by_filename(@base.basename) rescue nil
-         # puts "rouge #{lexer} #{@base.basename}"
           html = Rouge::Formatters::HTMLPygments.new(Rouge::Formatters::HTML.new).format(lexer.lex(@doc))
         else
           puts "can't determine lexer for #{@base}"
