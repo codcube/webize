@@ -88,30 +88,24 @@ class WebResource
 
 end
 
-# add 🐢 name-suffix for Turtle
-RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl]
+RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl] # add 🐢 suffix for Turtle
 
 module Webize
 
-  MetaMap = {}                                                          # predicate map
+  MetaMap = {}
+  VocabPath = %w(metadata URI)
 
-  Dir.children([ConfigPath, :meta].join '/').map{|vocab|                # vocabulary prefix
-    vocabulary = if vocab == 'rdf'                                      # symbol collision preventing this in vocab_map?
-                   {uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}
-                 else
-                   RDF.vocab_map[vocab.to_sym]                          # expand prefix
-                 end
-
-    if vocabulary
-      Dir.children([ConfigPath, :meta, vocab].join '/').map{|predicate|
+  # read metadata map from configuration files
+  Dir.children([ConfigPath, VocabPath].join '/').map{|vocab|
+    if vocabulary = vocab == 'rdf' ? {uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'} : RDF.vocab_map[vocab.to_sym] # find vocab
+      Dir.children([ConfigPath, VocabPath, vocab].join '/').map{|predicate| # find predicate
         destURI = [vocabulary[:uri], predicate].join
-        configList([:meta, vocab, predicate].join '/').map{|srcURI|     # find mapping list
-          MetaMap[srcURI] = destURI}}                                   # map predicate
+        configList([VocabPath, vocab, predicate].join '/').map{|srcURI|     # find mapping list
+          MetaMap[srcURI] = destURI}}                                       # map predicate
     else
-      puts "undefined prefix #{vocab}"
+      puts "❓ undefined prefix #{vocab} referenced by vocab map"
     end}
 
-  configList('blocklist/predicate').map{|p|                             # map dropped predicates
-    MetaMap[p] = :drop}
+  configList('blocklist/predicate').map{|p|MetaMap[p] = :drop}              # map predicate blocklist
 
 end

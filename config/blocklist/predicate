@@ -6,6 +6,7 @@ al:ios:app_name
 al:ios:app_store_id
 al:ios:url
 apple-itunes-app
+apple-mobile-web-app-status-bar-style
 apple-mobile-web-app-title
 apple-touch-fullscreen
 canHaveEpisodes
@@ -35,6 +36,7 @@ optimizely-datafile
 p:domain_verify
 pagePosition
 pingback
+prefetch
 preload
 request-id
 robots
