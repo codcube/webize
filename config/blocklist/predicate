@@ -1,3 +1,4 @@
+EditURI
 al:android:app_name
 al:android:package
 al:android:url
@@ -28,9 +29,12 @@ monetization_model
 msapplication-TileColor
 mw-deduplicated-inline-style
 norton-safeweb-site-verification
+openid.server
 openNewTab
 optimizely-datafile
+p:domain_verify
 pagePosition
+pingback
 preload
 request-id
 robots
@@ -52,4 +56,5 @@ user-login
 viewport
 visitor-hmac
 visitor-payload
+wlwmanifest
 yandex-verification
