@@ -1,4 +1,5 @@
 EditURI
+ahrefs-site-verification
 al:android:app_name
 al:android:package
 al:android:url
@@ -6,6 +7,7 @@ al:ios:app_name
 al:ios:app_store_id
 al:ios:url
 apple-itunes-app
+apple-mobile-web-app-capable
 apple-mobile-web-app-status-bar-style
 apple-mobile-web-app-title
 apple-touch-fullscreen
@@ -15,6 +17,7 @@ enabled
 enabled-features
 expected-hostname
 externalLink
+facebook-domain-verification
 fb:app_id
 generated
 github-keyboard-shortcuts
@@ -27,7 +30,9 @@ html-safe-nonce
 menuPosition
 monetization
 monetization_model
+msapplication-config
 msapplication-TileColor
+msvalidate.01
 mw-deduplicated-inline-style
 norton-safeweb-site-verification
 openid.server
