@@ -589,7 +589,7 @@ class WebResource
         end
       elsif query&.match? Gunk                        # denied query
         [301,{'Location' => ['//', host, path].join.R(env).href},[]]
-      elsif host.match?(/\.(amazonaws|cloudfront|github)\.(com|io|net)$/) && uri.match?(/(\/|\.(jpe?g|p(df|ng)|webp))$/i)
+      elsif host.match?(CDNhost) && uri.match?(CDNdoc)
         fetch
       elsif deny?                                     # denied URI
         deny

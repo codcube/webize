@@ -37,6 +37,8 @@ end
 class WebResource
   module HTTP
 
+    CDNhost = /\.(amazonaws|cloudfront|github)\.(com|io|net)$/
+    CDNdoc = /(\/|\.(html|jpe?g|p(df|ng)|webp))$/i
     NoGunk  = -> r {r.send r.uri.match?(Gunk) ? :deny : :fetch}
 
     # strip query from request and response
