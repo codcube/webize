@@ -386,11 +386,11 @@ end
 class WebResource
   module HTML
 
-    FeedIcon = Webize.configData 'icons/feed.svg'
-    HostColors = Webize.configHash 'colors/host'
-    Icons = Webize.configHash 'icons/map'
-    SiteFont = Webize.configData 'fonts/hack.woff2'
-    SiteIcon = Webize.configData 'icons/favicon.ico'
+    FeedIcon = Webize.configData 'style/icons/feed.svg'
+    HostColors = Webize.configHash 'style/color/host'
+    Icons = Webize.configHash 'style/icons/map'
+    SiteFont = Webize.configData 'style/fonts/hack.woff2'
+    SiteIcon = Webize.configData 'style/icons/favicon.ico'
 
     # Graph -> HTML
     def htmlDocument graph

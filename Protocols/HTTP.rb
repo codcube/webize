@@ -16,8 +16,8 @@ class WebResource
     PeerAddrs = PeerHosts.invert                                                 # peer addr -> peer host map
     LocalAddrs = Socket.ip_address_list.map &:ip_address                         # local addresses
 
-    StatusColor = Webize.configHash 'colors/status'                              # status code -> color
-    StatusIcon = Webize.configHash 'icons/status'                                # status code -> icon
+    StatusColor = Webize.configHash 'style/color/status'                         # status code -> color
+    StatusIcon = Webize.configHash 'style/icons/status'                          # status code -> icon
 
     def action_icon
       if env[:deny]
