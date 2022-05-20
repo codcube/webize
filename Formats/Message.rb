@@ -2,7 +2,9 @@
 module Webize
   module HTML
     class Reader
-
+      MessageCSS = {}
+      %w(content creator creatorHref date freeformDate gunk imgHref imgSrc imgParent imgGParent link post reply title video)
+      creator: Webize.configList('metadata/CSS/creator').join(', ')}
       # item/message/post -> RDF
       def scanMessages
         @doc.css("article, .athing, .Box-row, .comment, .entry, .message, [id^='post'], .post, .postCell, .post-container, .post_wrapper, td.subtext, .views-row").map{|post| # posts
@@ -40,8 +42,7 @@ module Webize
                 created.remove
               end}
 
-            post.css('.author, .bigusername, .comment-author, .name, .post_author, .poster, .poster-name, .postername, .username, [data-hovercard-type="user"]').map{|name|
-              yield subject, Creator, name.inner_text, graph }                    # author name
+            post.css(MessageCSS[:creator]).map{|name| yield subject, Creator, name.inner_text, graph} # author name
 
             post.css('a.author, a.bigusername, a.hnuser, a.username, .author > a, .p-author > a, .poster a').map{|a|
               yield subject, Creator, (@base.join a['href']), graph; a.remove }   # author URI
