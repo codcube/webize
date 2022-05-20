@@ -180,7 +180,7 @@ class WebResource < RDF::URI
                           c: [{_: :td, class: :host,
                                c: host ? {_: :a, href: h.href,
                                           c: {_: :img, alt: h.display_host, src: h.join('/favicon.ico').R(env).href},
-                                          style: "background-color: #{HostColors[host] || '#000'}; color: #fff"} : []},
+                                          style: "background-color: #{HostColor[host] || '#000'}; color: #fff"} : []},
                               {_: :td, class: :path,
                                c: paths.map{|p| markup p, env }}]}}}},
                   '</tr></table>']}}]}, '&nbsp;']}}

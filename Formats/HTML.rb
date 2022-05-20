@@ -118,8 +118,8 @@ module Webize
           ref.query = nil if ref.query&.match?(/utm[^a-z]/)       # deutmize query (tracker gunk)
           ref.fragment = nil if ref.fragment&.match?(/utm[^a-z]/) # deutmize fragment
           blocked = ref.deny?
-          color = if WebResource::HTML::HostColors.has_key? ref.host
-                    WebResource::HTML::HostColors[ref.host]
+          color = if WebResource::HTML::HostColor.has_key? ref.host
+                    WebResource::HTML::HostColor[ref.host]
                   elsif blocked
                     'red'
                   end
@@ -387,10 +387,11 @@ class WebResource
   module HTML
 
     FeedIcon = Webize.configData 'style/icons/feed.svg'
-    HostColors = Webize.configHash 'style/color/host'
+    HostColor = Webize.configHash 'style/color/host'
     Icons = Webize.configHash 'style/icons/map'
     SiteFont = Webize.configData 'style/fonts/hack.woff2'
     SiteIcon = Webize.configData 'style/icons/favicon.ico'
+    StatusColor = Webize.configHash 'style/color/status'
 
     # Graph -> HTML
     def htmlDocument graph
@@ -408,13 +409,13 @@ class WebResource
       end
       env[:links][:icon] ||= icon.node.exist? ? icon : '/favicon.ico'.R(env)                       # default icon
       bgcolor = if env[:deny]                                                                      # background color
-                  if HostColors.has_key? host
-                    HostColors[host]
+                  if HostColor.has_key? host
+                    HostColor[host]
                   else
                     '#f00'                                                                         # deny -> red
                   end
-                elsif HTTP::StatusColor.has_key? status
-                  HTTP::StatusColor[status]                                                        # status-code map
+                elsif StatusColor.has_key? status
+                  StatusColor[status]                                                              # status-code color
                 elsif !host || offline?
                   '#000'                                                                           # offline -> black
                 else

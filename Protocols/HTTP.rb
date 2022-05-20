@@ -3,21 +3,16 @@
 class WebResource
   module HTTP
     include URIs
-
-    Args = %w(cookie find fullContent group notransform offline order sort view) # allowed query arguments
-    Methods = %w(GET HEAD OPTIONS POST PUT)                                      # allowed HTTP methods
-
-    HostGET = {}                                                                 # handler-lambda storage
-
+    Args = Webize.configList 'HTTP/arguments'            # permitted query arguments
+    Methods = Webize.configList 'HTTP/methods'           # permitted HTTP methods
+    HostGET = {}                                         # handler-lambda storage
     PeerHosts = Hash[*File.open([ENV['PREFIX'],'/etc/hosts'].join).readlines.map(&:chomp).map{|l|
                        addr, *names = l.split
                        names.map{|host|
-                         [host, addr]}}.flatten]                                 # peer host -> peer addr map
-    PeerAddrs = PeerHosts.invert                                                 # peer addr -> peer host map
-    LocalAddrs = Socket.ip_address_list.map &:ip_address                         # local addresses
-
-    StatusColor = Webize.configHash 'style/color/status'                         # status code -> color
-    StatusIcon = Webize.configHash 'style/icons/status'                          # status code -> icon
+                         [host, addr]}}.flatten]         # peer host -> peer addr map
+    PeerAddrs = PeerHosts.invert                         # peer addr -> peer host map
+    LocalAddrs = Socket.ip_address_list.map &:ip_address # local addresses
+    StatusIcon = Webize.configHash 'style/icons/status'  # status code -> character
 
     def action_icon
       if env[:deny]

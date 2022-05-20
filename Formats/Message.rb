@@ -218,7 +218,7 @@ class WebResource
         origin_ref = {_: :a, class: :pointer, href: uri,         # origin pointer
                       c: CGI.escapeHTML(uri.path || '')}         # cache pointer
         cache_ref = {_: :a, href: uri.href, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}
-        color = HostColors[uri.host] if HostColors.has_key? uri.host
+        color = HostColors[uri.host] if HostColor.has_key? uri.host
       end
 
       p = -> a {                                                 # predicate renderer lambda
