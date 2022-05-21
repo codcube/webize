@@ -12,27 +12,14 @@ class WebResource
                          [host, addr]}}.flatten]         # peer host -> peer addr map
     PeerAddrs = PeerHosts.invert                         # peer addr -> peer host map
     LocalAddrs = Socket.ip_address_list.map &:ip_address # local addresses
+    ActionIcon = Webize.configHash 'style/icons/action'  # HTTP method -> character
     StatusIcon = Webize.configHash 'style/icons/status'  # status code -> character
 
     def action_icon
-      if env[:deny]
-        '🛑'
-      elsif offline?
-        '🔌'
-      else
-        case env['REQUEST_METHOD']
-        when 'HEAD'
-          '🗣'
-        when 'OPTIONS'
-          '🔧'
-        when /P(OS|U)T/
-          '📝'
-        when 'GET'
-          if env[:fetched] # denote middlebox or origin fetch
-            ENV.has_key?('HTTP_PROXY') ? '🖥' : '🐕'
-          end
-        end
-      end
+      return '🛑' if env[:deny]
+      return '🔌' if offline?
+      return ENV.has_key?('HTTP_PROXY') ? '🖥' : '🐕' if env[:fetched] # denote middlebox or origin fetch
+      ActionIcon[env['REQUEST_METHOD']]
     end
 
     def self.bwPrint kv
