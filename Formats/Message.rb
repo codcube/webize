@@ -5,7 +5,7 @@ module Webize
 
       MsgCSS = {}
 
-      %w(content creator creatorHref date freeformDate gunk image imageP imagePP link post reply title video).map{|attr|
+      %w(content creator creatorHref date freeformDate gunk image imageP imagePP link post reply title video).map{|attr| # attribute selectors
         MsgCSS[attr.to_sym] = Webize.configList('metadata/CSS/' + attr).join ', '}
 
       def scanMessages
@@ -47,7 +47,8 @@ module Webize
               yield subject, Creator, name.inner_text, graph}              # author name
 
            post.css(MsgCSS[:creatorHref]).map{|a|
-              yield subject, Creator, (@base.join a['href']), graph; a.remove } # author URI
+             yield subject, Creator, (@base.join a['href']), graph         # author URI
+             a.remove }
 
             post.css(MsgCSS[:title]).map{|subj|
               yield subject, Title, subj.inner_text, graph }               # title
@@ -64,7 +65,7 @@ module Webize
             post.css(MsgCSS[:imagePP]).map{|img|                           # image reference on grandparent node
               yield subject, Image, (@base.join img.parent.parent['href']), graph }
 
-            post.css(MsgCSS[:video]).map{|a|                               # videos
+            post.css(MsgCSS[:video]).map{|a|                               # video
               yield subject, Video, (@base.join a['href']), graph }
 
             post.css('.comment-comments').map{|c|                          # comment count
@@ -84,9 +85,7 @@ module Webize
                 end}
               yield subject, Content, Webize::HTML.format(msg.to_s, @base), graph
 
-              post.remove}                                                 # sweep raw HTML-in-RDF content if body found
-          else
-            #puts "identifier search failed in:", post if Verbose
+              post.remove}                                                 # sweep HTML emitted as RDF content
           end
         }
         @doc.css(MsgCSS[:gunk]).map &:remove
