@@ -19,7 +19,7 @@ module Webize
           if subject                                                       # identifier found?
             subject = @base.join subject                                   # resolve subject URI
             graph = ['//', subject.host, subject.path&.sub(/\.html$/, ''), # resolve graph URI
-                     '/', subject.fragment].join.R                         # fragment URIs to container/doc path (posts/replies get their own files when storing)
+                     '/', subject.fragment].join.R                         # fragment URI to graph path (posts/replies to their own files)
 
             yield subject, Type, (SIOC + 'BoardPost').R, graph             # RDF type
             post.css(MsgCSS[:date]).map{|date|
@@ -37,7 +37,7 @@ module Webize
 
               yield subject, Date, ts, graph if ts}                        # ISO8601 and UNIX (integer since 1970 epoch) timestamp
 
-            post.css(Msg[:freeformDate]).map{|created|                     # freeform timestamp
+            post.css(MsgCSS[:freeformDate]).map{|created|                  # freeform timestamp
               if date = Chronic.parse(created['data-content'] || created.inner_text)
                 yield subject, Date, date.iso8601, graph
                 created.remove
