@@ -24,8 +24,6 @@ hash fetched entities to prevent redundant parsing/extraction work when origin c
 log byte-range req
 populate geographic index from encountered RDF https://www.jphs.org/20th-century/2017/11/13/boston-remembers-kurt-cobain
 multiple videos, using first:https://www.youtube.com/opensearch?locale=en_US, https://www.youtube.com/watch?v=k2sIDDco5xg, http://www.youtube.com/watch?v=k2sIDDco5xg&feature=applinks, @youtube
-parallelization in multi-fetch GETs
-spray multi-GETs out to proxy's on nebula net for less IP based antibot garbage
 don't return login redirect to client, return proxy cache
 long-running channel tab, for occasional updates from heavily-spaced origin-queries - full subscriptionlist triggers antibot & 60s rack timeout
 history -  store and browse versions, eg full blogpost and preview from feed
@@ -41,10 +39,9 @@ more granular de-utmize - delete specific query keys
 ask all the peer-caches (pi/vps/phone from laptop) ahead of origin servers for static resources - HEAD All then cancel remaining HEADs on first response and GET winner? HEAD shouldnt trigger origin fetches on each remote..local existence check only. investigate Squid inter-cache-protocol
 syndicate tokens to peers (push/proactive caching vs pull/ondemand above)
 investigate the http2/fibery servers some of them can replace squid with a bit of addition in the auto-certgen space
-offline mode for mult-fetch resources like soundcloud/youtube subscriptions - generic declarative multiple-URLs specification for GET?
+offline mode for mult-GET
 systemd + openrc unit files
 next/prev links in HTML not lifted to HTTP metadata and/or collide with proxy-added #next/#prev http://l/techrights.org/2021/11/30/freedom-respecting-internet/?offline
-'thru' option only seems to be used in multiget scenarios - write multiget and remove it from fetchHTTP
 link gemini posts to timeline - use current timestamp if server doesn't provide
 ruby-net-text is failing on URI parse errors all the time - it shouldn't even parse the body
 RDF::URI #query_values hates multiple/leading/trailing &s, submit patch upstream and/or define new method ... 'https://minnit.chat/DOYOUFAMILY?embed&&nickname='.R.query_values
