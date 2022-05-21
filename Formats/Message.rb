@@ -2,22 +2,24 @@
 module Webize
   module HTML
     class Reader
+
       MsgCSS = {}
-      %w(content creator creatorHref date freeformDate gunk image imageP imagePP link post reply title video)
-      creator: Webize.configList('metadata/CSS/creator').join(', ')}
-      # item/message/post -> RDF
+
+      %w(content creator creatorHref date freeformDate gunk image imageP imagePP link post reply title video).map{|attr|
+        MsgCSS[attr.to_sym] = Webize.configList('metadata/CSS/' + attr).join ', '}
+
       def scanMessages
-        @doc.css("").map{|post| # posts
+        @doc.css(MsgCSS[:post]).map{|post|                                 # post
           links = post.css(MsgCSS[:link])
           subject = if !links.empty?
-                      links[0]['href']                                     # identifier in link to self
+                      links[0]['href']                                     # identifier in self-referential link
                     else
-                      post['data-post-no'] || post['id'] || post['itemid'] # identifier in node attribute
+                      post['data-post-no'] || post['id'] || post['itemid'] # identifier attribute
                     end
-          if subject                                                       # subject identifier found
+          if subject                                                       # identifier found?
             subject = @base.join subject                                   # resolve subject URI
-            graph = ['//', subject.host, subject.path&.sub(/\.html$/, ''), # construct graph URI
-                     '/', subject.fragment].join.R                         # store fragment-URIs in thread container (break out to discrete doc)
+            graph = ['//', subject.host, subject.path&.sub(/\.html$/, ''), # resolve graph URI
+                     '/', subject.fragment].join.R                         # fragment URIs to container/doc path (posts/replies get their own files when storing)
 
             yield subject, Type, (SIOC + 'BoardPost').R, graph             # RDF type
             post.css(MsgCSS[:date]).map{|date|
