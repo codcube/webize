@@ -13,6 +13,8 @@ apple-mobile-web-app-title
 apple-touch-fullscreen
 canHaveEpisodes
 color-scheme
+csrf-param
+csrf-token
 enabled
 enabled-features
 expected-hostname
