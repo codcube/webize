@@ -1,0 +1,13 @@
+.Box-row
+.athing
+.comment
+.entry
+.message
+.post
+.post-container
+.postCell
+.post_wrapper
+.views-row
+[id^='post']
+article
+td.subtext

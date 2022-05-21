@@ -1,0 +1,7 @@
+.post-link
+.quoteLink
+.quote_link
+.quotelink
+.reply a
+a[class^="ref"]
+a[onclick*="Reply"]
