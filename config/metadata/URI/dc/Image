@@ -56,16 +56,17 @@ mask-icon
 media_url
 media_url_https
 msapplication-TileImage
-msapplication-tileimage
 msapplication-square150x150logo
 msapplication-square310x310logo
 msapplication-square70x70logo
+msapplication-tileimage
 msapplication-wide310x150logo
 og:image
 og:image:secure_url
 og:image:url
 og:images
 parsely-image-url
+pinterest:image
 profilePicture
 profilePictureUrl
 profile_background_image_url
@@ -73,6 +74,7 @@ profile_background_image_url_https
 profile_banner_url
 profile_image_url
 profile_image_url_https
+rich-pin-icon
 sailthru.image.full
 sailthru.image.thumb
 sailthru.lead_image

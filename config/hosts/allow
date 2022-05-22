@@ -4,12 +4,19 @@ api-v2.soundcloud.com
 api.imgur.com
 api.soundcloud.com
 api.twitter.com
+api.weather.com
+api0.weather.com
+api1.weather.com
+api2.weather.com
+api3.weather.com
 archive.nytimes.com
 assets.bizjournals.com
 camo.githubusercontent.com
 cdn.dashjs.org
 cdnjs.cloudflare.com
 cgi.ebay.com
+d1ymi26ma8va5x.cloudfront.net
+d3aqoihi2n8ty8.cloudfront.net
 dorian.substack.com
 duckduckgo.com
 encrypted-tbn0.gstatic.com
@@ -30,6 +37,7 @@ medium.com
 miro.medium.com
 news.yahoo.com
 nypost.com
+oauth.reddit.com
 old.reddit.com
 pbs.twimg.com
 ruby-rdf.github.io
@@ -62,5 +70,3 @@ www.the-sun.com
 www.washingtonpost.com
 www.wsj.com
 www.youtube.com
-d1ymi26ma8va5x.cloudfront.net
-d3aqoihi2n8ty8.cloudfront.net
