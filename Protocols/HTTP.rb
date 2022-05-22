@@ -228,8 +228,6 @@ class WebResource
 
       env[:fetched] = true                                  # note fetch for logger
       case scheme                                           # request scheme
-      when 'ftp'
-        fetchFTP                                            # fetch w/ FTP
       when 'gemini'
         fetchGemini                                         # fetch w/ Gemini
       when 'http'
@@ -255,10 +253,6 @@ class WebResource
       else
         notfound
       end
-    end
-
-    def fetchFTP
-      fetchHTTP
     end
 
     # fetch node to graph and cache
