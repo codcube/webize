@@ -139,6 +139,18 @@ class WebResource
        uri.head? ? [] : ["<html><body class='error'>#{HTML.render [{_: :style, c: Webize::CSS::SiteCSS}, {_: :script, c: Webize::Code::SiteJS}, uri.uri_toolbar]}500</body></html>"]]
     end
 
+    def cookieCache
+      cookie = join('/cookie').R                      # cookie-jar URI
+      if env[:cookie] && !env[:cookie].empty?         # store cookie to jar
+        cookie.writeFile env[:cookie]
+        puts [:🍯, host, env[:cookie]].join ' ' if Verbose
+      end
+      if cookie.file?                                 # read cookie from jar
+        env['HTTP_COOKIE'] = cookie.node.read
+        puts [:🍪, host, env['HTTP_COOKIE']].join ' ' if Verbose
+      end
+    end
+
     def HTTP.decompress head, body
       encoding = head.delete 'Content-Encoding'
       return body unless encoding
@@ -544,34 +556,12 @@ class WebResource
     def hostHandler
       qs = query_values || {}                         # parse query
       dirMeta
-
-      cookie = join('/cookie').R                      # cookie-jar URI
-      if env[:cookie] && !env[:cookie].empty?         # store cookie to jar
-        cookie.writeFile env[:cookie]
-        puts [:🍯, host, env[:cookie]].join ' ' if Verbose
-      end
-      if cookie.file?                                 # read cookie from jar
-        env['HTTP_COOKIE'] = cookie.node.read
-        puts [:🍪, host, env['HTTP_COOKIE']].join ' ' if Verbose
-      end
-
-      if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # 204 response w/o origin roundtrip
-        [204, {}, []]
-      elsif has_handler?                              # host handler exists?
-        if ENV.has_key? 'HTTP_PROXY'
-          fetch                                       # generic remote node via proxy
-        else
-          HostGET[host.downcase][self]                # host-adapted remote node
-        end
-      elsif query&.match? Gunk                        # denied query
-        [301,{'Location' => ['//', host, path].join.R(env).href},[]]
-      elsif host.match?(CDNhost) && uri.match?(CDNdoc)
-        fetch
-      elsif deny?                                     # denied URI
-        deny
-      else                                            # generic remote node
-        fetch
-      end
+      cookieCache
+      return [204, {}, []] if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # "connectivity check" 204 response
+      return ENV.has_key?('HTTP_PROXY') ? fetch : HostGET[host.downcase][self] if has_handler? # host adaptor if origin-facing (no intermediary proxy)
+      return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop gunked-up query
+      return fetch if host.match?(CDNhost) && uri.match?(CDNdoc) # allow CDN content
+      deny? ? deny : fetch
     end
 
     def icon
