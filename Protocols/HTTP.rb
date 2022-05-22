@@ -555,13 +555,13 @@ class WebResource
 
     def hostHandler
       qs = query_values || {}                         # parse query
-      dirMeta
-      cookieCache
+      dirMeta                                         # add directory metadata
+      cookieCache                                     # load/save cookies
       return [204, {}, []] if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # "connectivity check" 204 response
       return ENV.has_key?('HTTP_PROXY') ? fetch : HostGET[host.downcase][self] if has_handler? # host adaptor if origin-facing (no intermediary proxy)
       return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop gunked-up query
       return fetch if host.match?(CDNhost) && uri.match?(CDNdoc) # allow CDN content
-      deny? ? deny : fetch
+      deny? ? deny : fetch                            # generic remote node
     end
 
     def icon
