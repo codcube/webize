@@ -82,13 +82,11 @@ class WebResource
     # HTTP entry-point
     def self.call env
       return [403,{},[]] unless Methods.member? env['REQUEST_METHOD']
-
-      # initialize environment
       env[:start_time] = Time.now                           # start timer
       env['SERVER_NAME'].downcase!                          # normalize hostname
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
+      URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist
       env.update HTTP.env                                   # storage fields
-      # find base URI
       isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
       uri = (isLocal ? '/' : [isPeer ? :http : :https,'://',# request scheme, host, path
@@ -107,9 +105,7 @@ class WebResource
         print "\e[7m💻 → 🖥 #{uri}\e[0m "
         bwPrint env
       end
-      # do request
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
-        # log response
         if Verbose
           print "\e[7m💻 ← 🖥 #{uri}\e[0m "
           bwPrint head
@@ -122,17 +118,15 @@ class WebResource
                uri.action_icon,                                                                          # HTTP method
                env[:origin_format] ? (uri.format_icon env[:origin_format]) : nil,                        # upstream format
                StatusIcon[env[:origin_status]],                                                          # upstream status
-               ([env[:repository].size,'⋮'].join if env[:repository] && env[:repository].size > 0)].join,# RDF graph triple-size
+               ([env[:repository].size,'⋮'].join if env[:repository] && env[:repository].size > 0)].join,# RDF graph size
               env['HTTP_REFERER'] ? ["\e[#{color}m", env['HTTP_REFERER'], "\e[0m→"] : nil,               # referer location
               "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert colors if off-site referer
               status == 206 ? Rack::Utils.unescape_path(env[:base].basename) : env[:base], "\e[0m",      # request URI
               head['Location'] ? ["→\e[#{color}m", head['Location'], "\e[0m"] : nil,                     # redirected location
               env[:warning] ? ["\e[38;5;226;7m⚠️", env[:warning], "\e[0m"] : nil,                         # warnings
              ].flatten.compact.map{|t|
-          t.to_s.encode 'UTF-8'}.join ' '
-
-        # response
-        [status, head, body]}
+          t.to_s.encode 'UTF-8'}.join ' '                                                                # log response
+        [status, head, body]}                                                                            # response
     rescue Exception => e
       puts env[:base], e.class, e.message, e.backtrace
       [500, {'Content-Type' => 'text/html; charset=utf-8'},
