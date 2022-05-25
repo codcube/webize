@@ -46,10 +46,15 @@ class WebResource < RDF::URI
     Gunk = Regexp.new Webize.configData('blocklist/regex'), Regexp::IGNORECASE
     KillFile = Webize.configList 'blocklist/sender'
     DenyDomains = {}
-    Webize.configList('blocklist/domain').map{|l| # populate blocklist tree
-      cursor = DenyDomains
-      l.chomp.sub(/^\./,'').split('.').reverse.map{|name|
-        cursor = cursor[name] ||= {}}}
+
+    def self.blocklist
+      DenyDomains.clear
+      Webize.configList('blocklist/domain').map{|l|         # parse blocklist
+        cursor = DenyDomains                                # reset cursor
+        l.chomp.sub(/^\./,'').split('.').reverse.map{|name| # parse domains
+          cursor = cursor[name] ||= {}}}                    # creat domain entries
+    end
+    self.blocklist
 
     def basename; File.basename path if path end
 
