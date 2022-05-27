@@ -18,7 +18,7 @@ class WebResource
     def action_icon
       return '🛑' if env[:deny]
       return '🔌' if offline?
-      return ENV.has_key?('HTTP_PROXY') ? '🖥' : '🐕' if env[:fetched] # denote middlebox or origin fetch
+      return ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched] # denote middlebox or origin fetch
       ActionIcon[env['REQUEST_METHOD']]
     end
 
@@ -239,7 +239,7 @@ class WebResource
       when 'http'
         fetchHTTP                                           # fetch w/ HTTP
       when 'https'
-        if ENV.has_key?('HTTP_PROXY')
+        if ENV.has_key?('http_proxy')
           insecure.fetchHTTP                                # fetch w/ HTTP from private-network proxy
         elsif PeerAddrs.has_key? addr
           url = insecure; url.port = 8000; url.fetchHTTP    # fetch w/ HTTP from private-network peer
@@ -552,7 +552,7 @@ class WebResource
       dirMeta                                         # add directory metadata
       cookieCache                                     # load/save cookies
       return [204, {}, []] if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # "connectivity check" 204 response
-      return ENV.has_key?('HTTP_PROXY') ? fetch : HostGET[host.downcase][self] if has_handler? # host adaptor if origin-facing (no intermediary proxy)
+      return ENV.has_key?('http_proxy') ? fetch : HostGET[host.downcase][self] if has_handler? # host adaptor if origin-facing (no intermediary proxy)
       return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop gunked-up query
       return fetch if host.match?(CDNhost) && uri.match?(CDNdoc) # allow CDN content
       deny? ? deny : fetch                            # generic remote node

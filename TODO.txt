@@ -17,7 +17,6 @@ gack (gemini) server
 serve gemini from cache when gone missing localhost:8000/gemini://rfmpie.smol.pub/reviving-macbook-with-linux
 histogram on datedir per slice-resolution
 commandline util to update static HTML for nginx
-allow other hosts foe getfeeds - http_proxy env-var?
 link to local-archive URL from timeline http://localhost/2021/07/04/12/*#r5a53af0e893adbe0f1d10a3825eb1ceb7c28829a120be8a93d3dff98dc93046c
 IRC linepointers #hashonly
 hash fetched entities to prevent redundant parsing/extraction work when origin caching is broken - fixes 'non update triggers summarization to changes' which doesnt happen w/ upstream 304 or offline
