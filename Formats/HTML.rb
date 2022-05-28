@@ -163,8 +163,7 @@ module Webize
           e['href'] = ref.to_s                                    # resolved href
           e['class'] = css.join ' '                               # add CSS classes
 
-        elsif e['id'] && !reader                                  # identified node w/o href attribute
-          e.set_attribute 'class', 'identified'                   # style
+        elsif e['id'] && !reader                                  # identified node and verbose mode
           e.add_child " <span class='id'>#{e['id']}</span> "      # show identifier
         end}
 
