@@ -584,6 +584,10 @@ class WebResource
         "<#{uri}>; rel=#{type}"}.join(', ')
     end
 
+    def mergeGET
+      
+    end
+
     def mtime
       node.mtime
     end
