@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function(){
     // construct node-ring
     var first = null;
     var last = null;
-    document.querySelectorAll('a[id]').map(function(e){
+    document.querySelectorAll('[id]').map(function(e){
 	if(!first)
 	    first = this;	
 	if(last){ // link to prior node
