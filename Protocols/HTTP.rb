@@ -28,42 +28,42 @@ class WebResource
       print "\n"
     end
 
-    def cacheResponse
-      return fileResponse if file? && (format=fileMIME) &&  # static response if:
-                             (env[:notransform] ||          # MIME transform disabled,
-                              format.match?(FixedFormat) || # MIME transform unavailable, or
-                              (format==selectFormat(format) && !ReFormat.member?(format))) # reformat unavailable
+    def cacheResponse nodes = nil
+      return fileResponse if !nodes && (file? || symlink?) && (format = fileMIME) && # file at canonical location and one of:
+                             (env[:notransform] ||          # (mimeA → mimeB) transforms disabled
+                              format.match?(FixedFormat) || # (mimeA → mimeB) transforms unimplemented
+                              (format==selectFormat(format) && !ReFormat.member?(format))) # (mimeB → mimeB) reformats disabled
 
       q = env[:qs]                                          # query modes:
-      nodes = if directory?
-                if q['f'] && !q['f'].empty?                 # FIND exact
-                  summarize = !env[:fullContent]
-                  find q['f']
-                elsif q['find'] && !q['find'].empty?        # FIND substring
-                  summarize = !env[:fullContent]
-                  find '*' + q['find'] + '*'
-                elsif q['q'] && !q['q'].empty?              # GREP
-                  grep
-                else                                        # LS dir
-                  [self,                                    # inline indexes and READMEs to result set
-                   *join((dirURI? ? '' : (basename || '') + '/' ) + '{index,readme,README}*').R(env).glob]
-                end
-              elsif file?                                   # LS file
-                [self]
-              elsif fsPath.match? GlobChars                 # GLOB
-                if q['q'] && !q['q'].empty?                 # GREP in GLOB
-                  if (g = nodeGlob).empty?
-                    []
-                  else
-                    fromNodes nodeGrep g[0..999]
+      nodes ||= if directory?
+                  if q['f'] && !q['f'].empty?               # FIND exact
+                    summarize = !env[:fullContent]
+                    find q['f']
+                  elsif q['find'] && !q['find'].empty?      # FIND substring
+                    summarize = !env[:fullContent]
+                    find '*' + q['find'] + '*'
+                  elsif q['q'] && !q['q'].empty?            # GREP
+                    grep
+                  else                                      # LS dir
+                    [self,                                  # inline indexes and READMEs to result set
+                     *join((dirURI? ? '' : (basename || '') + '/' ) + '{index,readme,README}*').R(env).glob]
                   end
-                else                                        # arbitrary GLOB
-                  summarize = !env[:fullContent]
-                  glob
+                elsif file?                                 # LS file
+                  [self]
+                elsif fsPath.match? GlobChars               # GLOB
+                  if q['q'] && !q['q'].empty?               # GREP in GLOB
+                    if (g = nodeGlob).empty?
+                      []
+                    else
+                      fromNodes nodeGrep g[0..999]
+                    end
+                  else                                      # arbitrary GLOB
+                    summarize = !env[:fullContent]
+                    glob
+                  end
+                else                                        # default GLOB
+                  fromNodes Pathname.glob fsPath + '.*'
                 end
-              else                                          # default GLOB
-                fromNodes Pathname.glob fsPath + '.*'
-              end
 
       if summarize                                          # 👉 unsummarized
         env[:links][:down] = HTTP.qs q.merge({'fullContent' => nil})
