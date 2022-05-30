@@ -32,7 +32,7 @@ class WebResource
       return fileResponse if !nodes && (file? || symlink?) && (format = fileMIME) && # file at canonical location and one of:
                              (env[:notransform] ||          # (mimeA → mimeB) transforms disabled
                               format.match?(FixedFormat) || # (mimeA → mimeB) transforms unimplemented
-                              (format==selectFormat(format) && !ReFormat.member?(format))) # (mimeB → mimeB) reformats disabled
+                              (format==selectFormat(format) && !ReFormat.member?(format))) # (mimeA → mimeA) reformats disabled
 
       q = env[:qs]                                          # query modes:
       nodes ||= if directory?

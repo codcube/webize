@@ -74,7 +74,9 @@ class WebResource < RDF::URI
 
     def domains; host.split('.').reverse end
 
-    def imgPath?; path && ImgExt.member?(File.extname(path).downcase) end
+    def extname; File.extname path if path end
+
+    def imgPath?; path && (ImgExt.member? extname.downcase) end
 
     def imgURI?; imgPath? || (dataURI? && path.index('image') == 0) end
 
