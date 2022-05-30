@@ -29,12 +29,12 @@ class WebResource
     end
 
     def cacheResponse nodes = nil
-      return fileResponse if !nodes && (file? || symlink?) && (format = fileMIME) && # file at canonical location and one of:
+      return fileResponse if !nodes && (file? || symlink?) && (format = fileMIME) && # file if cached and one of:
                              (env[:notransform] ||          # (mimeA → mimeB) transforms disabled
                               format.match?(FixedFormat) || # (mimeA → mimeB) transforms unimplemented
                               (format==selectFormat(format) && !ReFormat.member?(format))) # (mimeA → mimeA) reformats disabled
 
-      q = env[:qs]                                          # query modes:
+      q = env[:qs]                                          # query
       nodes ||= if directory?
                   if q['f'] && !q['f'].empty?               # FIND exact
                     summarize = !env[:fullContent]
