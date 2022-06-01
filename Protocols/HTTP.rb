@@ -33,47 +33,7 @@ class WebResource
                              (env[:notransform] ||          # (mimeA → mimeB) transforms disabled
                               format.match?(FixedFormat) || # (mimeA → mimeB) transforms unimplemented
                               (format==selectFormat(format) && !ReFormat.member?(format))) # (mimeA → mimeA) reformats disabled
-
-      q = env[:qs]                                          # query
-      nodes ||= if directory?
-                  if q['f'] && !q['f'].empty?               # FIND exact
-                    summarize = !env[:fullContent]
-                    find q['f']
-                  elsif q['find'] && !q['find'].empty?      # FIND substring
-                    summarize = !env[:fullContent]
-                    find '*' + q['find'] + '*'
-                  elsif q['q'] && !q['q'].empty?            # GREP
-                    grep
-                  else                                      # LS dir
-                    [self,                                  # inline indexes and READMEs to result set
-                     *join((dirURI? ? '' : (basename || '') + '/' ) + '{index,readme,README}*').R(env).glob]
-                  end
-                elsif file?                                 # LS file
-                  [self]
-                elsif fsPath.match? GlobChars               # GLOB
-                  if q['q'] && !q['q'].empty?               # GREP in GLOB
-                    if (g = nodeGlob).empty?
-                      []
-                    else
-                      fromNodes nodeGrep g[0..999]
-                    end
-                  else                                      # arbitrary GLOB
-                    summarize = !env[:fullContent]
-                    glob
-                  end
-                else                                        # default GLOB
-                  fromNodes Pathname.glob fsPath + '.*'
-                end
-
-      if summarize                                          # 👉 unsummarized
-        env[:links][:down] = HTTP.qs q.merge({'fullContent' => nil})
-        nodes.map! &:preview
-      end
-      if env[:fullContent] && q.respond_to?(:except)        # 👉 summarized
-        env[:links][:up] = HTTP.qs q.except('fullContent')
-      end
-
-      nodes.map &:loadRDF                                   # load node(s)
+      (nodes || fsNodes).map &:loadRDF                      # load node(s)
       dirMeta                                               # 👉 storage-adjacent nodes
       timeMeta unless host                                  # 👉 timeline-adjacent nodes
       graphResponse                                         # response
@@ -222,13 +182,13 @@ class WebResource
 
     # fetch data from cache or remote
     def fetch
-      return fetchLocal if offline?                      # offline, return cache
+      return fetchLocal if offline?                         # offline, return cache
       if file?                                              # cached file?
         return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return node if immutable / non-transformable
         env[:cache] = self                                  # reference for conditional fetch
       elsif directory? && (🐢 = join('index.ttl').R).exist? # cached directory index?
         env[:cache] = 🐢                                    # reference for conditional fetch
-      end
+      end # DNS may point to localhost. a local host defined in HOSTS shouldn't incur this lookup (HTTP#call mints a path-only URI)
       LocalAddrs.member?(Resolv.getaddress host rescue '127.0.0.1') ? fetchLocal : fetchRemote
     end
 

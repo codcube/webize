@@ -13,6 +13,53 @@ class WebResource
 
   module URIs
 
+    # find filesystem nodes and map to URI space
+    # (URI, env) -> [URI, URI, ..]
+    def fsNodes
+      q = env[:qs]                                        # query
+
+      nodes = if directory?
+                if q['f'] && !q['f'].empty?               # FIND exact
+                  summarize = !env[:fullContent]
+                  find q['f']
+                elsif q['find'] && !q['find'].empty?      # FIND substring
+                  summarize = !env[:fullContent]
+                  find '*' + q['find'] + '*'
+                elsif q['q'] && !q['q'].empty?            # GREP
+                  grep
+                else                                      # LS dir
+                  [self,                                  # inline indexes and READMEs to result set
+                   *join((dirURI? ? '' : (basename || '') + '/' ) + '{index,readme,README}*').R(env).glob]
+                end
+              elsif file?                                 # LS file
+                [self]
+              elsif fsPath.match? GlobChars               # GLOB
+                if q['q'] && !q['q'].empty?               # GREP in GLOB
+                  if (g = nodeGlob).empty?
+                    []
+                  else
+                    fromNodes nodeGrep g[0..999]
+                  end
+                else                                      # arbitrary GLOB
+                  summarize = !env[:fullContent]
+                  glob
+                end
+              else                                        # default GLOB
+                fromNodes Pathname.glob fsPath + '.*'
+              end
+
+      if summarize                                          # 👉 unsummarized
+        env[:links][:down] = HTTP.qs q.merge({'fullContent' => nil})
+        nodes.map! &:preview
+      end
+
+      if env[:fullContent] && q.respond_to?(:except)        # 👉 summarized
+        env[:links][:up] = HTTP.qs q.except('fullContent')
+      end
+
+      nodes
+    end
+
     # URI -> pathname. a one way map, though path-hierarchy is often preserved
     def fsPath
       @fsPath ||= if !host                                ## local
@@ -83,7 +130,7 @@ class WebResource
     def glob; fromNodes nodeGlob end
     def grep; fromNodes nodeGrep end
 
-    # pathnames -> URIs
+    # [path,..] -> [URI,..]
     def fromNodes ps
       base = host ? self : '/'.R
       pathbase = host ? host.size : 0
@@ -94,7 +141,7 @@ class WebResource
     # URI -> Pathname
     def node; Pathname.new fsPath end
 
-    # URI -> [pathname]
+    # URI -> [path]
     def nodeFind q; IO.popen(['find', fsPath, '-iname', q]).read.lines.map &:chomp rescue [] end
     def nodeGlob; Pathname.glob fsPath end
     def nodeGrep files = nil
