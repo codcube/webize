@@ -60,9 +60,9 @@ class WebResource
       nodes
     end
 
-    # URI -> pathname. a one way map, though path-hierarchy is often preserved
+    # URI -> pathname
     def fsPath
-      @fsPath ||= if !host                                ## local
+      @fsPath ||= if !host                                ## local URI
                     if parts.empty?
                       %w(.)
                     elsif parts[0] == 'msg'                # Message-ID -> sharded containers
@@ -71,7 +71,7 @@ class WebResource
                     else                                   # path map
                       parts.map{|part| Rack::Utils.unescape_path part}
                     end
-                  else                                    ## remote
+                  else                                    ## global URI
                     [host.split('.').reverse,              # domain-name containers
                      if (path && path.size > 496) || parts.find{|p|p.size > 127}
                        hash = Digest::SHA2.hexdigest uri   # huge name, hash and shard
@@ -95,6 +95,29 @@ class WebResource
     File.open(fsPath,'w'){|f| f << o }
     self
   end
+  module HTTP
+
+    def fileResponse
+      if env[:client_etags].include?(etag = fileETag)     # cached at client
+        return [304, {}, []]
+      end
+
+      Rack::Files.new('.').serving(Rack::Request.new(env), fsPath).yield_self{|s,h,b|
+        case s                                            # status
+        when 200
+          s = env[:origin_status] if env[:origin_status]  # upstream status
+        when 304
+          return [304, {}, []]                            # cached at client
+        end
+        format = fileMIME                                 # file format
+        h['Content-Type'] = format
+        h['Content-Type'] = 'application/javascript; charset=utf-8' if h['Content-Type']=='application/javascript'
+        h['ETag'] = etag
+        h['Expires'] = (Time.now + 3e7).httpdate if format.match? FixedFormat
+        h['Last-Modified'] ||= mtime.httpdate
+        [s, h, b]}
+    end
+  end
 
   module POSIX
 
@@ -108,7 +131,7 @@ class WebResource
       FileUtils.mkdir_p dir # create containing dir
     end
 
-    # HTTP-header pointers for basic directory navigation
+    # HTTP-level pointers for directory navigation
     def dirMeta
       root = !path || path == '/'
       if host && root                                            # up to parent domain
@@ -125,12 +148,17 @@ class WebResource
     def file?; node.file? end
     def symlink?; node.symlink? end
 
-    # URI -> URIs
+    # URI -> [URI,URI..]
     def find q; fromNodes nodeFind q end
     def glob; fromNodes nodeGlob end
     def grep; fromNodes nodeGrep end
 
-    # [path,..] -> [URI,..]
+    # URI -> ETag
+    def fileETag
+      Digest::SHA2.hexdigest [uri, mtime, node.size].join
+    end
+
+    # [path,path..] -> [URI,URI..]
     def fromNodes ps
       base = host ? self : '/'.R
       pathbase = host ? host.size : 0
@@ -138,10 +166,12 @@ class WebResource
         base.join(p.to_s[pathbase..-1].gsub(':','%3A').gsub(' ','%20').gsub('#','%23')).R env}
     end
 
+    def mtime; node.mtime end
+
     # URI -> Pathname
     def node; Pathname.new fsPath end
 
-    # URI -> [path]
+    # URI -> [path,path..]
     def nodeFind q; IO.popen(['find', fsPath, '-iname', q]).read.lines.map &:chomp rescue [] end
     def nodeGlob; Pathname.glob fsPath end
     def nodeGrep files = nil

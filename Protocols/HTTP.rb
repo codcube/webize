@@ -30,9 +30,9 @@ class WebResource
 
     def fetchLocal nodes = nil
       return fileResponse if !nodes && (file? || symlink?) && (format = fileMIME) && # file if cached and one of:
-                             (env[:notransform] ||          # (mimeA → mimeB) transforms disabled
-                              format.match?(FixedFormat) || # (mimeA → mimeB) transforms unimplemented
-                              (format==selectFormat(format) && !ReFormat.member?(format))) # (mimeA → mimeA) reformats disabled
+                             (env[:notransform] ||          # (mimeA → mimeB) transform disabled
+                              format.match?(FixedFormat) || # (mimeA → mimeB) transform unimplemented
+                              (format==selectFormat(format) && !ReFormat.member?(format))) # (mimeA) reformat disabled
       (nodes || fsNodes).map &:loadRDF                      # load node(s)
       dirMeta                                               # 👉 storage-adjacent nodes
       timeMeta unless host                                  # 👉 timeline-adjacent nodes
@@ -42,6 +42,7 @@ class WebResource
     # HTTP entry-point
     def self.call env
       return [403,{},[]] unless Methods.member? env['REQUEST_METHOD']
+
       env[:start_time] = Time.now                           # start timer
       env['SERVER_NAME'].downcase!                          # normalize hostname
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
@@ -61,10 +62,12 @@ class WebResource
       end
       env[:base] = uri.to_s.R env                           # base URI
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
+
       if Verbose
         print "\e[7m💻 → 🖥 #{uri}\e[0m "
         bwPrint env
       end
+
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
         if Verbose
           print "\e[7m💻 ← 🖥 #{uri}\e[0m "
@@ -72,6 +75,7 @@ class WebResource
         end
         fmt = uri.format_icon head['Content-Type']                                                       # iconify format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
+
         puts [[(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                                    # denote insecure transport
                (!env[:deny] && !uri.head? && head['Content-Type'] != env[:origin_format]) ? fmt : nil,   # downstream format if != upstream format
                status == env[:origin_status] ? nil : StatusIcon[status],                                 # downstream status if != upstream format
@@ -86,6 +90,7 @@ class WebResource
               env[:warning] ? ["\e[38;5;226;7m⚠️", env[:warning], "\e[0m"] : nil,                         # warnings
              ].flatten.compact.map{|t|
           t.to_s.encode 'UTF-8'}.join ' '                                                                # log response
+
         [status, head, body]}                                                                            # response
     rescue Exception => e
       puts env[:base], e.class, e.message, e.backtrace
@@ -125,50 +130,12 @@ class WebResource
       body
     end
 
+    # initialize environment storage
     def HTTP.env
       {client_etags: [],
        feeds: [],
        links: {},
        qs: {}}
-    end
-
-    def deny status = 200, type = nil
-      env[:deny] = true
-      ext = File.extname basename if path
-      type, content = if type == :stylesheet || ext == '.css'
-                        ['text/css', '']
-                      elsif type == :font || %w(.eot .otf .ttf .woff .woff2).member?(ext)
-                        ['font/woff2', WebResource::HTML::SiteFont]
-                      elsif type == :image || %w(.bmp .ico .gif .jpg .png).member?(ext)
-                        ['image/png', WebResource::HTML::SiteIcon]
-                      elsif type == :script || ext == '.js'
-                        ['application/javascript', "// URI: #{uri.match(Gunk) || host}"]
-                      elsif type == :JSON || ext == '.json'
-                        ['application/json','{}']
-                      else
-                        env.delete :view
-                        env[:qs].map{|k,v|
-                          env[:qs][k] = v.R if v && v.index('http')==0 && !v.index(' ')}
-                        ['text/html; charset=utf-8', htmlDocument({'#req'=>env})]
-                      end
-      [status,
-       {'Access-Control-Allow-Credentials' => 'true',
-        'Access-Control-Allow-Origin' => origin,
-        'Content-Type' => type},
-       head? ? [] : [content]]
-    end
-
-    def deny?
-      return true if BlockedSchemes.member? scheme          # scheme filter
-      denyDNS?                                              # domain filter
-    end
-
-    def denyDNS?
-      return if !host || AllowHosts.member?(host)           # explicitly allowed hostname
-      c = DenyDomains                                       # cursor at base
-      domains.find{|n|                                      # tokenize domains, init iterative search
-        return unless c = c[n]                              # advance cursor to domain
-                      c.empty? }                            # domain leaf in deny tree?
     end
 
     def env e = nil
@@ -180,16 +147,20 @@ class WebResource
       end
     end
 
-    # fetch data from cache or remote
-    def fetch
-      return fetchLocal if offline?                         # offline, return cache
+    # fetch data from local or remote host
+    def fetch nodes = nil
+      return fetchLocal nodes if offline?                   # offline, return cache
       if file?                                              # cached file?
         return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return node if immutable / non-transformable
         env[:cache] = self                                  # reference for conditional fetch
       elsif directory? && (🐢 = join('index.ttl').R).exist? # cached directory index?
         env[:cache] = 🐢                                    # reference for conditional fetch
-      end # DNS may point to localhost. a local host defined in HOSTS shouldn't incur this lookup (HTTP#call mints a path-only URI)
-      LocalAddrs.member?(Resolv.getaddress host rescue '127.0.0.1') ? fetchLocal : fetchRemote
+      end
+      if nodes
+      else # fetch canonical node
+        # DNS may point to localhost. a local host defined in HOSTS shouldn't incur this lookup (HTTP#call mints a path-only URI)
+        LocalAddrs.member?(Resolv.getaddress host rescue '127.0.0.1') ? fetchLocal : fetchRemote
+      end
     end
 
     def fetchRemote
@@ -396,31 +367,6 @@ class WebResource
       end
     end
 
-    def fileETag
-      Digest::SHA2.hexdigest [uri, mtime, node.size].join # mint ETag for file
-    end
-
-    def fileResponse
-      if env[:client_etags].include?(etag = fileETag)     # cached at client
-        return [304, {}, []]
-      end
-
-      Rack::Files.new('.').serving(Rack::Request.new(env), fsPath).yield_self{|s,h,b|
-        case s                                            # status
-        when 200
-          s = env[:origin_status] if env[:origin_status]  # upstream status
-        when 304
-          return [304, {}, []]                            # cached at client
-        end
-        format = fileMIME                                 # file format
-        h['Content-Type'] = format
-        h['Content-Type'] = 'application/javascript; charset=utf-8' if h['Content-Type']=='application/javascript'
-        h['ETag'] = etag
-        h['Expires'] = (Time.now + 3e7).httpdate if format.match? FixedFormat
-        h['Last-Modified'] ||= mtime.httpdate
-        [s, h, b]}
-    end
-
     def self.GET arg, lambda = NoGunk
       HostGET[arg] = lambda
     end
@@ -437,40 +383,7 @@ class WebResource
       fetchLocal                                   # local node
     end
 
-    def graphResponse defaultFormat = 'text/html'
-      if !env.has_key?(:repository) || env[:repository].empty? # no graph-data found
-        return notfound
-      end
-
-      status = env[:origin_status] || 200             # response status
-      format = selectFormat defaultFormat             # response format
-      format += '; charset=utf-8' if %w{text/html text/turtle}.member? format
-      head = {'Access-Control-Allow-Origin' => origin,# response header
-              'Content-Type' => format,
-              'Last-Modified' => Time.now.httpdate,
-              'Link' => linkHeader}
-      return [status, head, nil] if head?             # header-only response
-
-      body = case format                              # response body
-             when /html/
-               htmlDocument treeFromGraph             # serialize HTML
-             when /atom|rss|xml/
-               feedDocument treeFromGraph             # serialize Atom/RSS
-             else                                     # serialize RDF
-               if writer = RDF::Writer.for(content_type: format)
-                 env[:repository].dump writer.to_sym, base_uri: self
-               else
-                 puts "⚠️  RDF::Writer undefined for #{format}" ; ''
-               end
-             end
-
-      head['Content-Length'] = body.bytesize.to_s     # response size
-      [status, head, [body]]                          # response
-    end
-
-    def has_handler?
-      HostGET.has_key? host.downcase
-    end
+    def has_handler?; HostGET.has_key? host.downcase end
 
     def HEAD
       self.GET.yield_self{|s, h, _|
@@ -532,24 +445,10 @@ class WebResource
                        '?view=table&sort=date'].join}, []]
     end
 
-    def insecure
-      _ = dup.env env
-      _.scheme = 'http' if _.scheme == 'https'
-      _.env[:base] = _
-    end
-
     def linkHeader
       return unless env.has_key? :links
       env[:links].map{|type,uri|
         "<#{uri}>; rel=#{type}"}.join(', ')
-    end
-
-    def mergeGET
-      
-    end
-
-    def mtime
-      node.mtime
     end
 
     def notfound
@@ -581,14 +480,6 @@ class WebResource
       end
     end
 
-    # Hash → querystring
-    def HTTP.qs h
-      return '?' unless h
-      '?' + h.map{|k,v|
-        CGI.escape(k.to_s) + (v ? ('=' + CGI.escape([*v][0].to_s)) : '')
-      }.join("&")
-    end
-
     def OPTIONS
       env[:deny] = true
       [202, {'Access-Control-Allow-Credentials' => 'true',
@@ -601,38 +492,8 @@ class WebResource
       [202, {'Access-Control-Allow-Credentials' => 'true',
              'Access-Control-Allow-Origin' => origin}, []]
     end
-
-    def selectFormat default = nil                          # default-format argument
-      default ||= 'text/html'                               # default when unspecified
-      return default unless env.has_key? 'HTTP_ACCEPT'      # no preference specified
-      category = (default.split('/')[0] || '*') + '/*'      # format-category wildcard symbol
-      all = '*/*'                                           # any-format wildcard symbol
-
-      index = {}                                            # build (q-value → format) index
-      env['HTTP_ACCEPT'].split(/,/).map{|e|                 # header values
-        fmt, q = e.split /;/                                # (MIME, q-value) pair
-        i = q && q.split(/=/)[1].to_f || 1                  # default q-value
-        index[i] ||= []                                     # q-value entry
-        index[i].push fmt.strip}                            # insert format at q-value
-
-      index.sort.reverse.map{|_, accepted|                  # search in descending q-value order
-        return default if accepted.member? all              # anything accepted here
-        return default if accepted.member? category         # category accepted here
-        accepted.map{|format|
-          return format if RDF::Writer.for(:content_type => format) || # RDF writer available for format
-             ['application/atom+xml','text/html'].member?(format)}}    # non-RDF writer available
-      default                                               # search failure, use default
-    end
-
-    def unproxy schemeless = false
-      r = [schemeless ? ['https:/', path] : path[1..-1],    # path → URI
-           query ? ['?', query] : nil].join.R env
-
-      r.host = r.host.downcase if r.host.match? /[A-Z]/     # normalize host capitalization
-      env[:base] = r.uri.R env                              # update base URI
-      r                                                     # unproxied URI
-    end
   end
 
   include HTTP
+
 end

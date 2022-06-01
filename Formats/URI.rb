@@ -2,12 +2,10 @@
 require 'linkeddata'
 class WebResource < RDF::URI
   module URIs
-
     GlobChars = /[\*\{\[]/
     RegexChars = /[\^\(\)\|\[\]\$]/
-    ImgExt = %w(.jpeg .jpg .png .webp)
 
-    # common base-URI constants
+    # base-URI constants. TODO benchmark RDF::Vocab for string vs URI performance, maybe we can remove these definitions
     DC       = 'http://purl.org/dc/terms/'
     DOAP     = 'http://usefulinc.com/ns/doap#'
     FOAF     = 'http://xmlns.com/foaf/0.1/'
@@ -44,6 +42,7 @@ class WebResource < RDF::URI
     CookieHosts = Webize.configList 'hosts/cookie'
     BlockedSchemes = Webize.configList 'blocklist/scheme'
     Gunk = Regexp.new Webize.configData('blocklist/regex'), Regexp::IGNORECASE
+    ImgExt = Webize.configList 'metadata/image_extension'
     KillFile = Webize.configList 'blocklist/sender'
     DenyDomains = {}
 
@@ -59,6 +58,19 @@ class WebResource < RDF::URI
     def basename; File.basename path if path end
 
     def dataURI?; scheme == 'data' end
+
+    def deny?
+      return true if BlockedSchemes.member? scheme          # scheme filter
+      denyDNS?                                              # domain filter
+    end
+
+    def denyDNS?
+      return if !host || AllowHosts.member?(host)           # explicitly allowed hostname
+      c = DenyDomains                                       # cursor at base
+      domains.find{|n|                                      # tokenize domains, init iterative search
+        return unless c = c[n]                              # advance cursor to domain
+                      c.empty? }                            # domain leaf in deny tree?
+    end
 
     def dirURI?; path && path[-1] == '/' end
 
@@ -162,7 +174,7 @@ class WebResource < RDF::URI
            ({_: :a, href: HTTP.qs(env[:qs].except('offline')), c: '🔌', id: :offline} if offline? && env[:qs].respond_to?(:except))]}  # 👉 online version
     end
     
-    # URI -> render-lambda
+    # URI -> lambda
     Markup = {}          # mark up resource of RDF type
     MarkupPredicate = {} # mark up objects of predicate
 
@@ -193,9 +205,62 @@ class WebResource < RDF::URI
                   '</tr></table>']}}]}, '&nbsp;']}}
 
   end
+  module HTTP
+
+    def deny status = 200, type = nil
+      env[:deny] = true
+      ext = File.extname basename if path
+      type, content = if type == :stylesheet || ext == '.css'
+                        ['text/css', '']
+                      elsif type == :font || %w(.eot .otf .ttf .woff .woff2).member?(ext)
+                        ['font/woff2', WebResource::HTML::SiteFont]
+                      elsif type == :image || %w(.bmp .ico .gif .jpg .png).member?(ext)
+                        ['image/png', WebResource::HTML::SiteIcon]
+                      elsif type == :script || ext == '.js'
+                        ['application/javascript', "// URI: #{uri.match(Gunk) || host}"]
+                      elsif type == :JSON || ext == '.json'
+                        ['application/json','{}']
+                      else
+                        env.delete :view
+                        env[:qs].map{|k,v|
+                          env[:qs][k] = v.R if v && v.index('http')==0 && !v.index(' ')}
+                        ['text/html; charset=utf-8', htmlDocument({'#req'=>env})]
+                      end
+      [status,
+       {'Access-Control-Allow-Credentials' => 'true',
+        'Access-Control-Allow-Origin' => origin,
+        'Content-Type' => type},
+       head? ? [] : [content]]
+    end
+
+    def insecure
+      _ = dup.env env
+      _.scheme = 'http' if _.scheme == 'https'
+      _.env[:base] = _
+    end
+
+    # Hash → querystring
+    def HTTP.qs h
+      return '?' unless h
+      '?' + h.map{|k,v|
+        CGI.escape(k.to_s) + (v ? ('=' + CGI.escape([*v][0].to_s)) : '')
+      }.join("&")
+    end
+
+    def unproxy schemeless = false
+      r = [schemeless ? ['https:/', path] : path[1..-1],    # path → URI
+           query ? ['?', query] : nil].join.R env
+
+      r.host = r.host.downcase if r.host.match? /[A-Z]/     # normalize host capitalization
+      env[:base] = r.uri.R env                              # update base URI
+      r                                                     # unproxied URI
+    end
+
+  end
 end
 
-# cast to WebResource (URI, environment) tuple
+# class -> WebResource (URI, environment)
+
 class Pathname
   def R env=nil; env ? WebResource.new(to_s).env(env) : WebResource.new(to_s) end
 end
