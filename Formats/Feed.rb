@@ -1,6 +1,9 @@
 # coding: utf-8
 module Webize
   module Feed
+
+    Subscriptions = {} # hostname -> [feedURL,..]
+
     class Format < RDF::Format
       content_type 'application/rss+xml',
                    extensions: [:atom, :rss, :rss2, :xml],
