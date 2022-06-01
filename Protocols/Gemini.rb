@@ -47,7 +47,7 @@ class WebResource
       end
     rescue Exception => e
       puts e.class, e.message, e.backtrace
-      cacheResponse
+      fetchLocal
     end
   end
 

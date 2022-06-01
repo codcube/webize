@@ -28,7 +28,7 @@ class WebResource
       print "\n"
     end
 
-    def cacheResponse nodes = nil
+    def fetchLocal nodes = nil
       return fileResponse if !nodes && (file? || symlink?) && (format = fileMIME) && # file if cached and one of:
                              (env[:notransform] ||          # (mimeA → mimeB) transforms disabled
                               format.match?(FixedFormat) || # (mimeA → mimeB) transforms unimplemented
@@ -222,17 +222,18 @@ class WebResource
 
     # fetch data from cache or remote
     def fetch
-      return cacheResponse if offline?                      # offline, return cache
+      return fetchLocal if offline?                      # offline, return cache
       if file?                                              # cached file?
         return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return node if immutable / non-transformable
         env[:cache] = self                                  # reference for conditional fetch
       elsif directory? && (🐢 = join('index.ttl').R).exist? # cached directory index?
         env[:cache] = 🐢                                    # reference for conditional fetch
       end
-      addr = Resolv.getaddress host rescue '127.0.0.1'      # lookup server address
-      return cacheResponse if LocalAddrs.member? addr       # return local node
+      LocalAddrs.member?(Resolv.getaddress host rescue '127.0.0.1') ? fetchLocal : fetchRemote
+    end
 
-      env[:fetched] = true                                  # note fetch for logger
+    def fetchRemote
+      env[:fetched] = true                                  # denote network-fetch for logger
       case scheme                                           # request scheme
       when 'gemini'
         fetchGemini                                         # fetch w/ Gemini
@@ -251,7 +252,6 @@ class WebResource
       else
         puts "⚠️ unsupported scheme in #{uri}"; notfound     # unsupported scheme
       end
-
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
       env[:warning] = [e.class, e.message].join ' '         # warn on error/fallback condition
       if scheme == 'https'                                  # HTTPS failure?
@@ -413,13 +413,13 @@ class WebResource
             dest.fetchHTTP
           else                                              # redirect loop
             puts "discarding #{uri} → #{location} redirect"
-            cacheResponse
+            fetchLocal
           end
         else
           [status, {'Location' => dest.href}, []]
         end
       when /304/                                            # origin unmodified
-        cacheResponse
+        fetchLocal
       when /300|[45]\d\d/                                   # not allowed/available/found
         env[:origin_status] = status
         head = headers e.io.meta
@@ -430,7 +430,7 @@ class WebResource
           RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|env[:repository] << g} # read origin RDF
         end
         head['Content-Length'] = body.bytesize.to_s
-        env[:notransform] ? [status, head, [body]] : env[:base].cacheResponse # origin or cache response
+        env[:notransform] ? [status, head, [body]] : env[:base].fetchLocal # origin or cache response
       else
         raise
       end
@@ -468,13 +468,13 @@ class WebResource
     def GET
       return hostHandler if host                      # remote node - canonical URI
       p = parts[0]                                    # path selector
-      return cacheResponse unless p                   # root node
+      return fetchLocal unless p                   # root node
       return unproxy.hostHandler if p[-1] == ':'      # remote node - proxy URI with scheme
       return icon if p == 'favicon.ico'               # well-known icon location - serve from RAM
       return unproxy(true).hostHandler if p.index '.' # remote node - proxy URI without scheme
       return dateDir if %w{m d h y}.member? p         # current year/month/day/hour container
       return inbox if p == 'mailto'                   # inbox redirect
-      cacheResponse                                   # local node
+      fetchLocal                                   # local node
     end
 
     def graphResponse defaultFormat = 'text/html'

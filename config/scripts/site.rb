@@ -105,7 +105,7 @@ class WebResource
         if !r.env.has_key?('x-access-token') && token.node.exist?
           r.env['x-access-token'] = token.node.read
         end
-        r.query ? NoGunk[r] : r.cacheResponse
+        r.query ? NoGunk[r] : r.fetchLocal
       else
         NoGunk[r]
       end}
@@ -156,7 +156,7 @@ class WebResource
     GET 'instagram.com', -> r {[301, {'Location' => ['//www.instagram.com', r.path].join.R(r.env).href}, []]}
 
     GET 'api.mixcloud.com', -> r {
-      r.offline? ? r.cacheResponse : r.fetchHTTP(format: 'application/json')}
+      r.offline? ? r.fetchLocal : r.fetchHTTP(format: 'application/json')}
 
     GET 'mixcloud.com', -> r {[301, {'Location' => ['//www.mixcloud.com', r.path].join.R(r.env).href}, []]}
 
@@ -271,7 +271,7 @@ class WebResource
         r.saveRDF.graphResponse
       elsif parts.size == 1 && !notusers.member?(parts[0]) ## user
         if qs.has_key? 'q'                                  # query user tweet cache
-          r.cacheResponse
+          r.fetchLocal
         elsif qs.has_key? 'ref_src'                         # drop tracking-gunk to prevent URI-filtering
           [301, {'Location' => r.join(r.path).R(r.env).href}, []]
         else                                                # find uid, then fetch tweets and profile
