@@ -148,7 +148,16 @@ class WebResource
       elsif directory? && (🐢 = join('index.ttl').R).exist? # cached directory index?
         env[:cache] = 🐢                                    # reference node for conditional fetch
       end
-      if nodes # nodes to fetch
+      if nodes # fetch nodes
+        barrier = Async::Barrier.new
+	semaphore = Async::Semaphore.new(16, parent: barrier)
+        nodes.map{|n|
+          semaphore.async do
+            n.fetchRemote
+            print :🐕
+          end}
+        barrier.wait
+        r.saveRDF.graphResponse
       else # fetch canonical node
         # name may resolve to localhost. define name in HOSTS to get a path-URI and not reach this lookup
         env[:addr] = Resolv.getaddress host rescue '127.0.0.1'
