@@ -151,7 +151,7 @@ class WebResource
     def fetch nodes = nil
       return fetchLocal nodes if offline?                   # offline, return cache
       if file?                                              # cached file?
-        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return node if immutable / non-transformable
+        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return immutable / non-transformable node
         env[:cache] = self                                  # reference for conditional fetch
       elsif directory? && (🐢 = join('index.ttl').R).exist? # cached directory index?
         env[:cache] = 🐢                                    # reference for conditional fetch
@@ -428,15 +428,14 @@ class WebResource
       return [204, {}, []] if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # "connectivity check" 204 response
       return ENV.has_key?('http_proxy') ? fetch : HostGET[host.downcase][self] if has_handler? # host adaptor if origin-facing (no intermediary proxy)
       return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop gunked-up query
-      return fetch if host.match?(CDNhost) && uri.match?(CDNdoc) # allow CDN content
+      return fetch if host.match?(CDNhost) && (!path || uri.match?(CDNdoc)) # allow CDN content
       deny? ? deny : fetch                            # generic remote node
     end
 
     def icon
       [200,
        {'Content-Type' => 'image/png',
-        'Expires' => (Time.now + 86400).httpdate},
-       [WebResource::HTML::SiteIcon]]
+        'Expires' => (Time.now + 86400).httpdate}, [WebResource::HTML::SiteIcon]]
     end
 
     def inbox # redirect from email-address URI to current month's mailbox
