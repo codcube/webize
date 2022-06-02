@@ -156,10 +156,11 @@ class WebResource
       elsif directory? && (🐢 = join('index.ttl').R).exist? # cached directory index?
         env[:cache] = 🐢                                    # reference for conditional fetch
       end
-      if nodes
-      else # fetch canonical node
-        # DNS may point to localhost. a local host defined in HOSTS shouldn't incur this lookup (HTTP#call mints a path-only URI)
-        LocalAddrs.member?(Resolv.getaddress host rescue '127.0.0.1') ? fetchLocal : fetchRemote
+      if nodes # arbitrary nodes
+      else # canonical node
+        # addr may resolve to localhost. define in HOSTS to get a path-only URI to jump to #fetchLocal and bypass this lookup
+        addr = Resolv.getaddress host rescue '127.0.0.1'
+        (LocalAddrs.member? addr) ? fetchLocal : fetchRemote
       end
     end
 
