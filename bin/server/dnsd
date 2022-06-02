@@ -97,11 +97,18 @@ class DNSServer
         reverse = domain.index 'in-addr.arpa'
         domain = domain[0..reverse-2].split('.').reverse.join('.') if reverse
         deny = ['//', hostname].join.R.denyDNS?
-        result = Cache[domain] = deny ? DefaultAddr : Resolv.send((reverse ? :getname : :getaddress), domain) rescue DefaultAddr
+        result = Cache[domain] = deny ? DefaultAddr : Resolv.send((reverse ? :getname : :getaddress), domain) rescue (failed = true; DefaultAddr)
+        color = if deny
+                  "\e[38;5;196;7m"
+                elsif failed
+                  nil
+                else
+                  "\e[38;5;51m"
+                end
         puts [Time.now.iso8601[11..18],
-              ["\e[38;5;#{deny ? '196;7m' : '51mhttps://'}",
-               hostname,
-               "\e[0m"].join].join ' '
+              [color,
+               deny ? nil : 'https://',
+               hostname, "\e[0m"].join].join ' '
       end
       src.reply r.response(result)
     end
