@@ -158,9 +158,9 @@ class WebResource
       end
       if nodes # arbitrary nodes
       else # canonical node
-        # addr may resolve to localhost. define in HOSTS to get a path-only URI to jump to #fetchLocal and bypass this lookup
-        addr = Resolv.getaddress host rescue '127.0.0.1'
-        (LocalAddrs.member? addr) ? fetchLocal : fetchRemote
+        # DNS may resolve to localhost. define in HOSTS file to get a path-only URI which jumps to #fetchLocal bypassing this lookup
+        env[:addr] = Resolv.getaddress host rescue '127.0.0.1'
+        (LocalAddrs.member? env[:addr]) ? fetchLocal : fetchRemote
       end
     end
 
@@ -174,12 +174,12 @@ class WebResource
       when 'https'
         if ENV.has_key?('http_proxy')
           insecure.fetchHTTP                                # fetch w/ HTTP from private-network proxy
-        elsif PeerAddrs.has_key? addr
+        elsif PeerAddrs.has_key? env[:addr]
           url = insecure; url.port = 8000; url.fetchHTTP    # fetch w/ HTTP from private-network peer
         else
           fetchHTTP                                         # fetch w/ HTTPS from origin
         end
-      when 'spartan'
+      when 'spartan'                                        # fetch w/ Spartan
         fetchSpartan
       else
         puts "⚠️ unsupported scheme in #{uri}"; notfound     # unsupported scheme
