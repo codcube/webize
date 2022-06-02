@@ -28,17 +28,6 @@ class WebResource
       print "\n"
     end
 
-    def fetchLocal nodes = nil
-      return fileResponse if !nodes && (file? || symlink?) && (format = fileMIME) && # file if cached and one of:
-                             (env[:notransform] ||          # (mimeA → mimeB) transform disabled
-                              format.match?(FixedFormat) || # (mimeA → mimeB) transform unimplemented
-                              (format==selectFormat(format) && !ReFormat.member?(format))) # (mimeA) reformat disabled
-      (nodes || fsNodes).map &:loadRDF                      # load node(s)
-      dirMeta                                               # 👉 storage-adjacent nodes
-      timeMeta unless host                                  # 👉 timeline-adjacent nodes
-      graphResponse                                         # response
-    end
-
     # HTTP entry-point
     def self.call env
       return [403,{},[]] unless Methods.member? env['REQUEST_METHOD']
@@ -147,11 +136,11 @@ class WebResource
       end
     end
 
-    # fetch data from local or remote host
+    # fetch node(s) from local or remote host
     def fetch nodes = nil
-      return fetchLocal nodes if offline?                   # offline, return cache
+      return fetchLocal nodes if offline?                   # offline cache
       if file?                                              # cached file?
-        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return immutable / non-transformable node
+        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # immutable / non-transformable node exists locally
         env[:cache] = self                                  # reference for conditional fetch
       elsif directory? && (🐢 = join('index.ttl').R).exist? # cached directory index?
         env[:cache] = 🐢                                    # reference for conditional fetch
@@ -161,35 +150,6 @@ class WebResource
         # DNS may resolve to localhost. define in HOSTS file to get a path-only URI which jumps to #fetchLocal bypassing this lookup
         env[:addr] = Resolv.getaddress host rescue '127.0.0.1'
         (LocalAddrs.member? env[:addr]) ? fetchLocal : fetchRemote
-      end
-    end
-
-    def fetchRemote
-      env[:fetched] = true                                  # denote network-fetch for logger
-      case scheme                                           # request scheme
-      when 'gemini'
-        fetchGemini                                         # fetch w/ Gemini
-      when 'http'
-        fetchHTTP                                           # fetch w/ HTTP
-      when 'https'
-        if ENV.has_key?('http_proxy')
-          insecure.fetchHTTP                                # fetch w/ HTTP from private-network proxy
-        elsif PeerAddrs.has_key? env[:addr]
-          url = insecure; url.port = 8000; url.fetchHTTP    # fetch w/ HTTP from private-network peer
-        else
-          fetchHTTP                                         # fetch w/ HTTPS from origin
-        end
-      when 'spartan'                                        # fetch w/ Spartan
-        fetchSpartan
-      else
-        puts "⚠️ unsupported scheme in #{uri}"; notfound     # unsupported scheme
-      end
-    rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
-      env[:warning] = [e.class, e.message].join ' '         # warn on error/fallback condition
-      if scheme == 'https'                                  # HTTPS failure?
-        insecure.fetchHTTP rescue notfound                  # fallback to HTTP
-      else
-        notfound
       end
     end
 
@@ -365,6 +325,46 @@ class WebResource
         env[:notransform] ? [status, head, [body]] : env[:base].fetchLocal # origin or cache response
       else
         raise
+      end
+    end
+
+    def fetchLocal nodes = nil
+      return fileResponse if !nodes && (file? || symlink?) && (format = fileMIME) && # file if cached and one of:
+                             (env[:notransform] ||          # (mimeA → mimeB) transform disabled
+                              format.match?(FixedFormat) || # (mimeA → mimeB) transform unimplemented
+                              (format==selectFormat(format) && !ReFormat.member?(format))) # (mimeA) reformat disabled
+      (nodes || fsNodes).map &:loadRDF                      # load node(s)
+      dirMeta                                               # 👉 storage-adjacent nodes
+      timeMeta unless host                                  # 👉 timeline-adjacent nodes
+      graphResponse                                         # response
+    end
+
+    def fetchRemote
+      env[:fetched] = true                                  # denote network-fetch for logger
+      case scheme                                           # request scheme
+      when 'gemini'
+        fetchGemini                                         # fetch w/ Gemini
+      when 'http'
+        fetchHTTP                                           # fetch w/ HTTP
+      when 'https'
+        if ENV.has_key?('http_proxy')
+          insecure.fetchHTTP                                # fetch w/ HTTP from private-network proxy
+        elsif PeerAddrs.has_key? env[:addr]
+          url = insecure; url.port = 8000; url.fetchHTTP    # fetch w/ HTTP from private-network peer
+        else
+          fetchHTTP                                         # fetch w/ HTTPS from origin
+        end
+      when 'spartan'                                        # fetch w/ Spartan
+        fetchSpartan
+      else
+        puts "⚠️ unsupported scheme in #{uri}"; notfound     # unsupported scheme
+      end
+    rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
+      env[:warning] = [e.class, e.message].join ' '         # warn on error/fallback condition
+      if scheme == 'https'                                  # HTTPS failure?
+        insecure.fetchHTTP rescue notfound                  # fallback to HTTP
+      else
+        notfound
       end
     end
 
