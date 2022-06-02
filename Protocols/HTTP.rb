@@ -34,28 +34,31 @@ class WebResource
 
       env[:start_time] = Time.now                           # start timer
       env['SERVER_NAME'].downcase!                          # normalize hostname
-      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
-      URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist
       env.update HTTP.env                                   # storage fields
+
       isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
-      uri = (isLocal ? '/' : [isPeer ? :http : :https,'://',# request scheme, host, path
+
+      uri = (isLocal ? '/' : [isPeer ? :http : :https,'://',# scheme if non-local
                               env['HTTP_HOST']].join).R.join(RDF::URI(env['REQUEST_PATH']).path).R env
-      uri.port = nil if [80,443,8000].member? uri.port      # request port if non-default
-      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # request query if non-empty
+      uri.port = nil if [80,443,8000].member? uri.port      # port if non-default
+      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query if non-empty
         env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {}
         qs = env[:qs].dup                                   # strip excess &s to not trip up URI libraries (TODO file PR), parse and memoize
         Args.map{|k|                                        # allowed (💻 <> 🖥) argument names
          env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) args for us, store in env vars
         uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) args for origin, store in URI for follow-on requests
       end
+
       env[:base] = uri.to_s.R env                           # base URI
+      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
 
       if Verbose
         print "\e[7m💻 → 🖥 #{uri}\e[0m "
         bwPrint env
       end
+      URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
         if Verbose
