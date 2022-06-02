@@ -375,13 +375,13 @@ class WebResource
     def GET
       return hostHandler if host                      # remote node - canonical URI
       p = parts[0]                                    # path selector
-      return fetchLocal unless p                   # root node
+      return fetchLocal unless p                      # root local node
       return unproxy.hostHandler if p[-1] == ':'      # remote node - proxy URI with scheme
-      return icon if p == 'favicon.ico'               # well-known icon location - serve from RAM
+      return icon if p == 'favicon.ico'               # icon served from RAM
       return unproxy(true).hostHandler if p.index '.' # remote node - proxy URI without scheme
       return dateDir if %w{m d h y}.member? p         # current year/month/day/hour container
       return inbox if p == 'mailto'                   # inbox redirect
-      fetchLocal                                   # local node
+      fetchLocal                                      # local node
     end
 
     def has_handler?; HostGET.has_key? host.downcase end
