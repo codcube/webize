@@ -28,7 +28,7 @@ class WebResource
       print "\n"
     end
 
-    # HTTP entry-point
+    # Rack entry-point
     def self.call env
       return [403,{},[]] unless Methods.member? env['REQUEST_METHOD']
 
@@ -341,7 +341,7 @@ class WebResource
     end
 
     def fetchLocal nodes = nil
-      return fileResponse if !nodes && (file? || symlink?) && (format = fileMIME) && # file if cached and one of:
+      return fileResponse if !nodes && file? && (format = fileMIME) && # file if cached and one of:
                              (env[:notransform] ||          # (mimeA → mimeB) transform disabled
                               format.match?(FixedFormat) || # (mimeA → mimeB) transform unimplemented
                               (format==selectFormat(format) && !ReFormat.member?(format))) # (mimeA) reformat disabled
