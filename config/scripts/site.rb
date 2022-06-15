@@ -37,8 +37,8 @@ end
 class WebResource
   module HTTP
 
-    CDNhost = /\.(amazonaws|cloudfront|g(it(hu|la)b|oogle)(usercontent)?|medium|substack)\.(com|io|net)$/
-    CDNdoc = /(\/|\.(html|jpe?g|p(df|ng)|webp))$/i
+    CDNhost = /\.(amazonaws|cloudfront|discordapp|g(it(hu|la)b|oogle)(usercontent)?|medium|substack)\.(com|io|net)$/
+    CDNdoc = /(\/|\.(html|jpe?g|mp4|p(df|ng)|webp))$/i
     NoGunk  = -> r {r.send r.uri.match?(Gunk) ? :deny : :fetch}
 
     # strip query from request and response
@@ -183,14 +183,17 @@ class WebResource
         NoGunk[r]
       end}
 
-    GET 'old.reddit.com', -> r {
+    GET 'old.reddit.com', -> r { # use this host to read page pointers visible in <body> (oldUI) as they're missing in HEAD and <head> (oldUI/newUI) and <body> (newUI)
       r.fetch.yield_self{|status,head,body|
         if status.to_s.match? /^30/
           [status, head, body]
-        else # find page pointers in <body> (old UI) as they're missing in HEAD and <head> (old and main UI) and <body> (main UI)
+        else
           links = []
-          body[0].scan(/href="([^"]+after=[^"]+)/){|link|links << CGI.unescapeHTML(link[0]).R} if body.class == Array && body[0].class == String # find page references
-          [302, {'Location' => (links.empty? ? r.href : links.sort_by{|r|r.query_values['count'].to_i}[-1]).to_s.sub('old','www')}, []] # goto link with highest count
+          if body.class == Array && body[0].class == String # find page pointers in <body>
+            body[0].scan(/href="([^"]+after=[^"]+)/){|link|
+              links << CGI.unescapeHTML(link[0]).R}
+          end
+          [302, {'Location' => (links.empty? ? r.href : links.sort_by{|r|r.query_values['count'].to_i}[-1]).to_s.sub('old','www')}, []] # redirect to page with highest count
         end}}
 
     GET 'www.reddit.com', -> r {
