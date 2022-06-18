@@ -74,7 +74,7 @@ class WebResource < RDF::URI
 
     def dirURI?; path && path[-1] == '/' end
 
-    def display_host; host.sub(/^www\./,'').sub /\.com$/, '' end
+    def display_host; host.sub(/^www\./,'').sub /\.(com|net|org)$/, '' end
 
     def display_name
       return fragment if fragment && !fragment.empty?                     # fragment
@@ -198,7 +198,7 @@ class WebResource < RDF::URI
                          {_: :tr,
                           c: [{_: :td, class: :host,
                                c: host ? {_: :a, href: h.href,
-                                          c: {_: :img, alt: h.display_host, src: h.join('/favicon.ico').R(env).href},
+                                          c: {_: :img, alt: h.host && h.display_host, src: h.join('/favicon.ico').R(env).href},
                                           style: "background-color: #{HostColor[host] || '#000'}; color: #fff"} : []},
                               {_: :td, class: :path,
                                c: paths.map{|p| markup p, env }}]}}}},
