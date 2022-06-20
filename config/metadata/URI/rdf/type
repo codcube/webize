@@ -1,3 +1,4 @@
+@type
 DC.Type
 DC.type
 __typename
@@ -26,11 +27,14 @@ objectType
 og:type
 page:type
 pagetype
+pageType
 parsely-type
 preset
 projectionType
 resource-type
 sailthru.contenttype
+subpageType
+subType
 trackType
 type
 typename

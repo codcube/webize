@@ -19,7 +19,15 @@ class WebResource
         if reader ||= RDF::Reader.for(**options)                     # instantiate reader
           reader.new(File.open(fsPath).read, base_uri: self){|_|graph << _} # read
           if options[:content_type]=='text/html' && reader != RDF::RDFa::Reader  # secondary reader (RDFa) on HTML
-            RDF::RDFa::Reader.new(File.open(fsPath).read, base_uri: env[:base]){|_|graph << _ } rescue puts :RDFa_error
+            RDF::RDFa::Reader.new(File.open(fsPath).read, base_uri: env[:base]){|_|
+              _.each_statement{|s|
+                if Webize::MetaMap.has_key? s.predicate.to_s
+                  puts "#{s.predicate} -> #{Webize::MetaMap[s.predicate.to_s]}"
+                  s.predicate = RDF::URI Webize::MetaMap[s.predicate.to_s]
+                end
+                graph << s
+              }
+            } #rescue puts :RDFa_error
           end
         else
           puts "⚠️ no RDF reader for #{fsPath}" , options if Verbose  # reader undefined for type
