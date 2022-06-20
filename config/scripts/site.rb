@@ -202,9 +202,9 @@ class WebResource
       r.env[:links][:prev] = ['//old.reddit.com', (r.path || '/').sub('.rss',''), '?',r.query].join.R r.env # previous-page pointer
       if !ps[0] || %w(comments r u user).member?(ps[0])
         r.path += '.rss' unless r.offline? || !r.path || r.path.index('.rss')
-        NoGunk[r]
+        r.fetch
       elsif %w(favicon.ico gallery wiki video).member? ps[0]
-        NoGunk[r]
+        r.fetch
       else
         r.deny
       end}
