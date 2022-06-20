@@ -39,12 +39,10 @@ class WebResource
 
     CDNhost = /\.(amazonaws|cloudfront|discordapp|g(it(hu|la)b|oogle)(usercontent)?|medium|substack)\.(com|io|net)$/
     CDNdoc = /(\/|\.(html|jpe?g|mp4|p(df|ng)|webp))$/i
-    NoGunk  = -> r {r.send r.uri.match?(Gunk) ? :deny : :fetch}
 
-    # strip query from request and response
-    NoQuery = -> r {
+    NoQuery = -> r { # strip query from request and response (redirect location) URIs
       if !r.query                         # URL is query-free
-        NoGunk[r].yield_self{|s,h,b|      # call origin
+        r.fetch.yield_self{|s,h,b|        # call origin
           h.keys.map{|k|                  # strip redirected-location query
             if k.downcase == 'location' && h[k].match?(/\?/)
               puts "dropping query from #{h[k]}"
@@ -77,7 +75,7 @@ class WebResource
     # image-specific URL-in-URL hosts
     ImgRehost = -> r {
       ps = r.path.split /https?:\/+/
-      ps.size > 1 ? [301, {'Location' => ('https://' + ps[-1]).R(r.env).href}, []] : NoGunk[r]}
+      ps.size > 1 ? [301, {'Location' => ('https://' + ps[-1]).R(r.env).href}, []] : r.fetch}
 
     GET 'res.cloudinary.com', ImgRehost
     GET 'dynaimage.cdn.cnn.com', GotoBase
@@ -85,9 +83,9 @@ class WebResource
     Resizer = -> r {
       if r.parts[0] == 'resizer'
         parts = r.path.split /\/\d+x\d+\/((filter|smart)[^\/]*\/)?/
-        parts.size > 1 ? [302, {'Location' => 'https://' + parts[-1]}, []] : NoGunk[r]
+        parts.size > 1 ? [302, {'Location' => 'https://' + parts[-1]}, []] : r.fetch
       else
-        NoGunk[r]
+        r.fetch
       end}
 
     %w(bostonglobe-prod.cdn.arcpublishing.com).map{|host|GET host, Resizer}
@@ -96,8 +94,8 @@ class WebResource
     GET 'detectportal.firefox.com', -> r {[200, {'Content-Type' => 'text/html'}, ['<meta http-equiv="refresh" content="0;url=https://support.mozilla.org/kb/captive-portal"/>']]}
 
     # misc
-    GET 'www.facebook.com', NoGunk
-    GET 'feeds.feedburner.com', -> r {r.parts[0].index('~') ? r.deny : NoGunk[r]}
+    GET 'www.facebook.com'
+    GET 'feeds.feedburner.com', -> r {r.parts[0].index('~') ? r.deny : r.fetch}
 
     GET 'gitter.im', -> r {
       if r.parts[0] == 'api'
@@ -105,9 +103,9 @@ class WebResource
         if !r.env.has_key?('x-access-token') && token.node.exist?
           r.env['x-access-token'] = token.node.read
         end
-        r.query ? NoGunk[r] : r.fetchLocal
+        r.query ? r.fetch : r.fetchLocal
       else
-        NoGunk[r]
+        r.fetch
       end}
 
     GotoAdURL =  -> r {
@@ -129,11 +127,9 @@ class WebResource
         r.path.index('/amp/s/') == 0 ? [301, {'Location' => ('https://' + r.path[7..-1]).R(r.env).href}, []] : r.deny
       when 'imgres'
         [301, {'Location' => r.query_values['imgurl'].R(r.env).href}, []]
-      when /^(dl|images|x?js|maps)$/
-        NoGunk[r]
-      when 'search'
+      when /^(dl|images|x?js|maps|search)$/
         r.fetch
-      when 'sorry' # denied, switch to DuckduckGo
+      when 'sorry' # denied by antibot, goto DDG
         q = r.query_values['continue'].R.query_values['q']
         [302, {'Location' => 'https://duckduckgo.com/' + HTTP.qs({q: q})}, []]
       when 'url'
@@ -148,7 +144,7 @@ class WebResource
       when /^(a|gallery)$/
         [302, {'Location' => "https://api.imgur.com/post/v1/albums/#{p[1]}?client_id=546c25a59c58ad7&include=media%2Cadconfig%2Caccount".R(r.env).href}, []]
       else
-        NoGunk[r]
+        r.fetch
       end}
 
     GET 'us.conv.indeed.com', -> r {[301, {'Location' => ['//www.indeed.com/viewjob?jk=', r.query_values['jk']].join.R(r.env).href}, []]}
@@ -173,14 +169,14 @@ class WebResource
         r.saveRDF.graphResponse
       else
         r.env[:feeds].push "https://api.mixcloud.com/#{r.parts[0]}/cloudcasts/"
-        NoGunk[r]
+        r.fetch
       end}
 
     GET 'outline.com', -> r {
       if r.parts.size == 1
         (r.join ['/stat1k/', r.parts[0], '.html'].join).R(r.env).fetch
       else
-        NoGunk[r]
+        r.fetch
       end}
 
     GET 'old.reddit.com', -> r { # use this host to read page pointers visible in <body> (oldUI) as they're missing in HEAD and <head> (oldUI/newUI) and <body> (newUI)
@@ -219,7 +215,7 @@ class WebResource
         args.delete 'w'
         [301, {'Location' => (qs args)}, []]
       else
-        NoGunk[r]
+        r.fetch
       end}
 
     GET 'cdn.shortpixel.ai', ImgRehost
@@ -238,7 +234,7 @@ class WebResource
         barrier.wait
         r.saveRDF.graphResponse
       else
-       NoGunk[r]
+        r.fetch
       end}
 
     GET 'go.theregister.com', -> r {
@@ -318,7 +314,7 @@ class WebResource
           r.env[:repository] << RDF::Statement.new(r, Link.R, ['//twitter.com/',u].join.R)}
         r.graphResponse
       else
-        NoGunk[r]
+        r.fetch
       end}
 
     GET 'twitter.com', Twitter
@@ -340,7 +336,7 @@ class WebResource
       r.env[:order] ||= 'asc'
       r.env[:sort] ||= 'date'
       r.env[:view] ||= 'table'
-      NoGunk[r]}
+      r.fetch}
 
     GET 'youtu.be', -> r {[301, {'Location' => ['https://www.youtube.com/watch?v=', r.path[1..-1]].join.R(r.env).href}, []]}
     GotoYT = -> r {[301, {'Location' => ['//www.youtube.com', r.path, '?', r.query].join.R(r.env).href}, []]}
@@ -395,7 +391,7 @@ class WebResource
         when 'v'
           [301, {'Location' => r.join('/watch?v='+r.parts[1]).R(r.env).href}, []]
         else
-          NoGunk[r]
+          r.fetch
         end
       else
         r.deny

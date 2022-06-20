@@ -380,7 +380,7 @@ class WebResource
       end
     end
 
-    def self.GET arg, lambda = NoGunk
+    def self.GET arg, lambda = -> r {r.send r.uri.match?(Gunk) ? :deny : :fetch}
       HostGET[arg] = lambda
     end
 
