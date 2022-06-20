@@ -263,7 +263,13 @@ class WebResource
               end
               reader.new(body, base_uri: self, path: file){|g|env[:repository] << g} # read RDF
               if format == 'text/html' && reader != RDF::RDFa::Reader                # read RDFa
-                RDF::RDFa::Reader.new(body, base_uri: self){|g|env[:repository] << g} rescue puts :RDFa_error
+                RDF::RDFa::Reader.new(body, base_uri: self){|g|
+                  g.each_statement{|statement|
+                    if predicate = Webize::MetaMap[statement.predicate.to_s]
+                      next if predicate == :drop
+                      statement.predicate = predicate.R
+                    end
+                    env[:repository] << statement }}
               end
             else
               puts "⚠️ Reader undefined for #{format}" if Verbose

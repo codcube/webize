@@ -16,18 +16,16 @@ class WebResource
         graph << RDF::Statement.new(self, Type.R, Video.R)
         graph << RDF::Statement.new(self, Title.R, basename)
       else
-        if reader ||= RDF::Reader.for(**options)                     # instantiate reader
-          reader.new(File.open(fsPath).read, base_uri: self){|_|graph << _} # read
-          if options[:content_type]=='text/html' && reader != RDF::RDFa::Reader  # secondary reader (RDFa) on HTML
-            RDF::RDFa::Reader.new(File.open(fsPath).read, base_uri: env[:base]){|_|
-              _.each_statement{|statement|
+        if reader ||= RDF::Reader.for(**options)                     # find reader
+          reader.new(File.open(fsPath).read, base_uri: self){|_|graph << _}     # read RDF
+          if options[:content_type]=='text/html' && reader != RDF::RDFa::Reader # read RDFa
+            RDF::RDFa::Reader.new(File.open(fsPath).read, base_uri: env[:base]){|g|
+              g.each_statement{|statement|
                 if predicate = Webize::MetaMap[statement.predicate.to_s]
                   next if predicate == :drop
                   statement.predicate = predicate.R
                 end
-                graph << statement
-              }
-            } #rescue puts :RDFa_error
+                graph << statement }}
           end
         else
           puts "⚠️ no RDF reader for #{fsPath}" , options if Verbose  # reader undefined for type
