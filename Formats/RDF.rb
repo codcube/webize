@@ -25,7 +25,7 @@ class WebResource
                   next if predicate == :drop
                   statement.predicate = predicate.R
                 end
-                graph << statement }}
+                graph << statement }} rescue (puts "⚠️ RDFa::Reader failed")
           end
         else
           puts "⚠️ no RDF reader for #{fsPath}" , options if Verbose  # reader undefined for type

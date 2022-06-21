@@ -269,7 +269,7 @@ class WebResource
                       next if predicate == :drop
                       statement.predicate = predicate.R
                     end
-                    env[:repository] << statement }}
+                    env[:repository] << statement }} rescue (puts "⚠️ RDFa::Reader failed")
               end
             else
               puts "⚠️ Reader undefined for #{format}" if Verbose
