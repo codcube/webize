@@ -6,6 +6,7 @@ module Webize
     CSSURL = /url\(['"]*([^\)'"]+)['"]*\)/
     CSSgunk = /font-face|url/
     ReaderHosts = Webize.configList 'hosts/reader'
+    NewsHosts = Webize.configList 'hosts/news'
 
     # clean HTML document
     def self.clean doc, base
@@ -337,8 +338,8 @@ module Webize
           Webize::JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
         # <body>
-        if body = @doc.css('body')[0] # summarize to new content on origin refresh
-          unless !@base.host || ReaderHosts.member?(@base.host) || @env[:fullContent] || @env[:origin_status] == 304 || @base.offline?
+        if body = @doc.css('body')[0] # only emit new content on origin refresh
+          if NewsHosts.member? @base.host
             @env[:links][:down] = WebResource::HTTP.qs @env[:qs].merge({'offline' => nil})
             hashed_nodes = 'article, aside, div, footer, h1, h2, h3, nav, p, section, b, span, ul, li'
             hashs = {}
