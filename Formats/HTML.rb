@@ -410,6 +410,8 @@ class WebResource
       bgcolor = if env[:deny]                                                                      # background color
                   if HostColor.has_key? host
                     HostColor[host]
+                  elsif host&.match? Gunk
+                    '#f80'
                   else
                     '#f00'                                                                         # deny -> red
                   end
