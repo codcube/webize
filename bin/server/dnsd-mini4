@@ -96,7 +96,7 @@ class DNSServer
       else
         reverse = domain.index 'in-addr.arpa'
         domain = domain[0..reverse-2].split('.').reverse.join('.') if reverse
-        deny = ['//', hostname].join.R.denyDNS?
+        deny = ['//', hostname].join.R.deny?
         result = Cache[domain] = deny ? DefaultAddr : Resolv.send((reverse ? :getname : :getaddress), domain) rescue (failed = true; DefaultAddr)
         color = if deny
                   "\e[38;5;196;7m"
