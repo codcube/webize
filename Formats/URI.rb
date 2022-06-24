@@ -67,9 +67,9 @@ class WebResource < RDF::URI
     end
 
     def deny_domain?
-      d = DenyDomains                               # root of domain tree
-      domains.find{|name| return unless d = d[name] # iterative domain lookup
-        d.empty? }                                  # is name a leaf on deny tree?
+      d = DenyDomains                               # domain tree
+      domains.find{|name| return unless d = d[name] # iterative name lookup
+        d.empty? }                                  # deny if name is leaf on deny tree
     end
 
     def dirURI?; path && path[-1] == '/' end
