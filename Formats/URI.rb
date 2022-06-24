@@ -60,10 +60,10 @@ class WebResource < RDF::URI
     def dataURI?; scheme == 'data' end
 
     def deny?
-      return true if BlockedSchemes.member? scheme  # scheme blocklist
-      return if !host || (AllowHosts.member? host)  # allowed host
+      return true if BlockedSchemes.member? scheme  # scheme filter
+      return if !host || (AllowHosts.member? host)  # allow hosts
       return true if host.match? Gunk               # hostname-regex filter
-      return deny_domain?
+      return deny_domain?                           # domain-tree filter
     end
 
     def deny_domain?
@@ -248,12 +248,13 @@ class WebResource < RDF::URI
     end
 
     def unproxy schemeless = false
-      r = [schemeless ? ['https:/', path] : path[1..-1],    # path → URI
+      r = [schemeless ? ['https:/', path] : path[1..-1],    # proxy URI -> canonical URI
            query ? ['?', query] : nil].join.R env
 
       r.host = r.host.downcase if r.host.match? /[A-Z]/     # normalize host capitalization
       env[:base] = r.uri.R env                              # update base URI
-      r                                                     # unproxied URI
+
+      r                                                     # URI
     end
 
   end
