@@ -143,10 +143,10 @@ class WebResource
     def fetch nodes = nil
       return fetchLocal nodes if offline?                   # offline cache
       if file?                                              # cached file?
-        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # immutable node always up-to-date
-        env[:cache] = self                                  # reference node for conditional fetch
-      elsif directory? && (🐢 = join('index.ttl').R).exist? # cached directory index?
-        env[:cache] = 🐢                                    # reference node for conditional fetch
+        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # immutable nodes are always up-to-date
+        env[:cache] = self                                  # cache reference for conditional fetch
+      elsif directory? && (🐢 = join('index.ttl').R).exist? # cached dir-index?
+        env[:cache] = 🐢                                    # cache reference for conditional fetch
       end
       if nodes # fetch nodes
         barrier = Async::Barrier.new
@@ -158,8 +158,8 @@ class WebResource
           end}
         barrier.wait
         r.saveRDF.graphResponse
-      else # fetch canonical node
-        # name may resolve to localhost. define name in HOSTS to get a path-URI and not reach this lookup
+      else # fetch node
+        # name may resolve to localhost. define hostname in HOSTS to get a path-only URI in #call and not reach this lookup
         env[:addr] = Resolv.getaddress host rescue '127.0.0.1'
         (LocalAddrs.member? env[:addr]) ? fetchLocal : fetchRemote
       end
