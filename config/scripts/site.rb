@@ -37,7 +37,7 @@ end
 class WebResource
   module HTTP
 
-    CDNhost = /\.(amazonaws|cloudfront|discordapp|g(it(hu|la)b|oogle)(usercontent)?|medium|substack)\.(com|io|net)$/
+    CDNhost = /\.(amazonaws|cloudfront|discordapp|g(it(hu|la)b|oogle)(usercontent)?|medium|substack|tumblr)\.(com|io|net)$/
     CDNdoc = /(\/|\.(html|jpe?g|mp4|p(df|ng)|webp))$/i
 
     NoQuery = -> r { # strip query from request and response (redirect location) URIs
