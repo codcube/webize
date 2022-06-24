@@ -5,7 +5,7 @@ class WebResource < RDF::URI
     GlobChars = /[\*\{\[]/
     RegexChars = /[\^\(\)\|\[\]\$]/
 
-    # base-URI constants. TODO benchmark RDF::Vocab for string vs URI performance, maybe we can remove these definitions
+    # base-URI constants. TODO benchmark RDF::Vocab, maybe we can remove these without notable performance impacts
     DC       = 'http://purl.org/dc/terms/'
     DOAP     = 'http://usefulinc.com/ns/doap#'
     FOAF     = 'http://xmlns.com/foaf/0.1/'
@@ -37,7 +37,7 @@ class WebResource < RDF::URI
     Video    = DC + 'Video'
     Resource = RDFs + 'Resource'
 
-    # URI-blocklist config
+    # declarative config
     AllowHosts = Webize.configList 'hosts/allow'
     CookieHosts = Webize.configList 'hosts/cookie'
     BlockedSchemes = Webize.configList 'blocklist/scheme'
@@ -51,9 +51,9 @@ class WebResource < RDF::URI
       Webize.configList('blocklist/domain').map{|l|         # parse blocklist
         cursor = DenyDomains                                # reset cursor
         l.chomp.sub(/^\./,'').split('.').reverse.map{|name| # parse domains
-          cursor = cursor[name] ||= {}}}                    # creat domain entries
+          cursor = cursor[name] ||= {}}}                    # create domain entries
     end
-    self.blocklist
+    self.blocklist                                          # load blocklist
 
     def basename; File.basename path if path end
 
@@ -63,6 +63,10 @@ class WebResource < RDF::URI
       return true if BlockedSchemes.member? scheme  # scheme blocklist
       return if !host || (AllowHosts.member? host)  # allowed host
       return true if host.match? Gunk               # hostname-regex filter
+      return deny_domain?
+    end
+
+    def deny_domain?
       d = DenyDomains                               # root of domain tree
       domains.find{|name| return unless d = d[name] # iterative domain lookup
         d.empty? }                                  # is name a leaf on deny tree?
