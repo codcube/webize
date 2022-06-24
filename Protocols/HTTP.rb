@@ -148,7 +148,7 @@ class WebResource
       elsif directory? && (🐢 = join('index.ttl').R).exist? # cached dir-index?
         env[:cache] = 🐢                                    # cache reference for conditional fetch
       end
-      if nodes # fetch nodes
+      if nodes # fetch node(s)
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
         nodes.map{|n|
