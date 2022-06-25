@@ -260,6 +260,7 @@ class WebResource < RDF::URI
     # proxy URI -> canonical URI
     def unproxyURI
       p = parts[0]
+      return self unless p&.index /[\.:]/ # scheme or DNS name required
       [(p && p[-1] == ':') ? path[1..-1] : ['/', path], query ? ['?', query] : nil].join.R env
     end
 
