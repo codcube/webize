@@ -250,6 +250,7 @@ class WebResource < RDF::URI
     # unproxy request/environment URLs
     def unproxy
       r = unproxyURI                                                                             # unproxy URI
+      r.scheme ||= 'https'                                                                       # default scheme
       r.host = r.host.downcase if r.host.match? /[A-Z]/                                          # normalize hostname
       env[:base] = r.uri.R env                                                                   # unproxy base URI
       env['HTTP_REFERER'] = env['HTTP_REFERER'].R.unproxyURI.to_s if env.has_key? 'HTTP_REFERER' # unproxy referer URI
