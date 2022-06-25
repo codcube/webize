@@ -249,16 +249,18 @@ class WebResource < RDF::URI
 
     # unproxy request/environment URLs
     def unproxy schemeless = false
-      r = unproxyURL schemeless                         # unproxy URI
+      r = unproxyURI schemeless                         # unproxy URI
 
       r.host = r.host.downcase if r.host.match? /[A-Z]/ # normalize host capitalization
       env[:base] = r.uri.R env                          # update base URI
-
+      if env.has_key? 'HTTP_REFERER'                    # unproxy referer URI
+        env['HTTP_REFERER'] = env['HTTP_REFERER'].R.unproxyURI schemeless
+      end
       r                                                 # origin URI
     end
 
-    # unproxy URL
-    def unproxyURL schemeless = false
+    # unproxy URI
+    def unproxyURI schemeless = false
       [schemeless ? ['https:/', path] : path[1..-1],    # proxy URI -> canonical URI
        query ? ['?', query] : nil].join.R env
     end
