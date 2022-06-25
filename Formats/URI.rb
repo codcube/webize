@@ -259,7 +259,7 @@ class WebResource < RDF::URI
     # proxy URI -> canonical URI
     def unproxyURI
       p = parts[0]
-      [(p && p[-1] != ':') ? ['/', path] : path[1..-1], query ? ['?', query] : nil].join.R env
+      [(p && p[-1] == ':') ? path[1..-1] : ['/', path], query ? ['?', query] : nil].join.R env
     end
 
   end
