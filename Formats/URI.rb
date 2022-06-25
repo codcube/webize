@@ -256,14 +256,10 @@ class WebResource < RDF::URI
       r                                                                                          # origin URI
     end
 
-    # unproxy URI
+    # proxy URI -> canonical URI
     def unproxyURI
       p = parts[0]
-      originURI = [(p && p[-1] != ':') ? ['/', path] : path[1..-1], # proxy URI -> canonical URI
-                   query ? ['?', query] : nil].join.R env
-
-      puts "UNPROXY #{uri} -> #{originURI}"
-      originURI
+      [(p && p[-1] != ':') ? ['/', path] : path[1..-1], query ? ['?', query] : nil].join.R env
     end
 
   end
