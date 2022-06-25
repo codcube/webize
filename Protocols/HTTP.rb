@@ -43,11 +43,11 @@ class WebResource
                               env['HTTP_HOST']].join).R.join(RDF::URI(env['REQUEST_PATH']).path).R env
       uri.port = nil if [80,443,8000].member? uri.port      # port if non-default
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query if non-empty
-        env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {}
-        qs = env[:qs].dup                                   # strip excess &s to not trip up URI libraries (TODO file PR), parse and memoize
-        Args.map{|k|                                        # allowed (💻 <> 🖥) argument names
-         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) args for us, store in env vars
-        uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) args for origin, store in URI for follow-on requests
+        env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {} # strip excess &s to not trip up URI libraries
+        qs = env[:qs].dup                                   # full query - proxy and origin args - parsed and memoized
+        Args.map{|k|                                        # (💻 <> 🖥) argnames
+         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) args for request in environment
+        uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) args for follow-on requests in URI
       end
 
       env[:base] = uri.to_s.R env                           # base URI
@@ -77,7 +77,8 @@ class WebResource
                ([env[:repository].size,'⋮'].join if env[:repository] && env[:repository].size > 0)].join,# RDF graph size
               env['HTTP_REFERER'] ? ["\e[#{color}m", env['HTTP_REFERER'].R.display_host, "\e[0m→"] : nil,# referer location
               "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert colors if off-site referer
-              status == 206 ? Rack::Utils.unescape_path(env[:base].basename) : env[:base], "\e[0m",      # request URI
+              env[:base].host, env[:base].path, "\e[0m",                                                 # request path
+              (qs.map{|k,v|"\e[38;5;7;7m#{k}\e[0m#{v}"} if qs),                                          # query
               head['Location'] ? ["→\e[#{color}m", head['Location'], "\e[0m"] : nil,                     # redirected location
               env[:warning] ? ["\e[38;5;226;7m⚠️", env[:warning], "\e[0m"] : nil,                         # warnings
              ].flatten.compact.map{|t|
