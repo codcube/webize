@@ -50,6 +50,7 @@ date_modified
 date_published
 datemodified
 datepublished
+datetime
 dc.date
 dct:created
 dct:modified

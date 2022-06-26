@@ -35,6 +35,11 @@ module Webize
   end
 end
 class WebResource
+
+  NoSummary = [Image,                      # don't summarize these resource-types
+               Schema + 'ItemList',
+               SIOC + 'MicroPost'].map &:R
+
   module HTTP
 
     CDNhost = /\.(amazonaws|cloudfront|discordapp|g(it(hu|la)b|oogle)(usercontent)?|medium|substack|tumblr)\.(com|io|net)$/
