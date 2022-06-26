@@ -13,6 +13,7 @@ abstract
 alt
 altText
 alt_text
+ariaLabel
 article.summary
 article.tag
 article.type.display
@@ -37,6 +38,7 @@ dc.description
 dcterms.Description
 dcterms.abstract
 dcterms.description
+definition
 des
 desc
 description
@@ -119,6 +121,7 @@ subheadline
 subject
 subtitle
 summary
+tab
 tag
 tagIds
 tagList
