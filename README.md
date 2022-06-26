@@ -2,4 +2,4 @@
 
 [USAGE](USAGE.md)
 
-[NOTES](LINKS.md)
+[LINKS](LINKS.md)

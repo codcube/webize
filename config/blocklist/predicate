@@ -30,6 +30,7 @@ facebook-domain-verification
 fb:admins
 fb:app_id
 fb:pages
+format-detection
 generated
 github-keyboard-shortcuts
 go-import
