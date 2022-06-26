@@ -44,6 +44,7 @@ module Webize
       end
 
       def markdown_triples
+        yield @subject, Type, (Schema+'Readme').R if File.basename(@base.path, '.md') == 'README'
         yield @subject, Content, (Webize::HTML.format ::Redcarpet::Markdown.new(Renderer, fenced_code_blocks: true).render(@doc), @base)
       end
     end

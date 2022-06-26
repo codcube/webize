@@ -38,6 +38,7 @@ class WebResource
 
   NoSummary = [Image,                      # don't summarize these resource-types
                Schema + 'ItemList',
+               Schema + 'Readme',
                SIOC + 'MicroPost'].map &:R
 
   module HTTP
