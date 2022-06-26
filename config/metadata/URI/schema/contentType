@@ -10,5 +10,6 @@ mime_type
 og:audio:type
 og:image:type
 og:video:type
+sailthru.contenttype
 twitter:player:stream:content_type
 video_type

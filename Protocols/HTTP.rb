@@ -77,7 +77,7 @@ class WebResource
                ([env[:repository].size,'⋮'].join if env[:repository] && env[:repository].size > 0)].join,# RDF graph size
               env['HTTP_REFERER'] ? ["\e[#{color}m", env['HTTP_REFERER'].R.display_host, "\e[0m→"] : nil,# referer location
               "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert colors if off-site referer
-              [env[:base].host && env[:base].display_host, env[:base].path].join, "\e[0m",               # request path
+              [env[:base].host && env[:base].display_host, env[:base].path, "\e[0m"].join,               # request path
               (qs.map{|k,v|"\e[38;5;7;7m#{k}\e[0m#{v}"} if qs && !qs.empty?),                            # query
               head['Location'] ? ["→\e[#{color}m", head['Location'], "\e[0m"] : nil,                     # redirected location
               env[:warning] ? ["\e[38;5;226;7m⚠️", env[:warning], "\e[0m"] : nil,                         # warnings
