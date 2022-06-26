@@ -1,4 +1,3 @@
-read http://l/2021/*/*/*/*noteflakes*?fullContent
 finger URIs gemini://freeshell.de/gemlog/2022-01-11.gmi
 try some newer ruby webservers from ericwong etc, maybe get around the 250M-RAM-per-worker issue 
 generate preview at resource caching time
@@ -26,7 +25,6 @@ multiple videos, using first:https://www.youtube.com/opensearch?locale=en_US, ht
 don't return login redirect to client, return proxy cache
 long-running channel tab, for occasional updates from heavily-spaced origin-queries - full subscriptionlist triggers antibot & 60s rack timeout
 history -  store and browse versions, eg full blogpost and preview from feed
-unproxy referer url in the log
 remember insecure hosts so we don't keep trying HTTPS
 more compliant cookie caching on allowed domains
 backlink indexing and more indexing in general - frequently linked posts, daily heat

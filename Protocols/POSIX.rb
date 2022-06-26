@@ -20,10 +20,10 @@ class WebResource
 
       nodes = if directory?
                 if q['f'] && !q['f'].empty?               # FIND exact
-                  summarize = !env[:fullContent]
+                  summarize = true
                   find q['f']
                 elsif q['find'] && !q['find'].empty?      # FIND substring
-                  summarize = !env[:fullContent]
+                  summarize = true
                   find '*' + q['find'] + '*'
                 elsif q['q'] && !q['q'].empty?            # GREP
                   grep
@@ -41,23 +41,14 @@ class WebResource
                     fromNodes nodeGrep g[0..999]
                   end
                 else                                      # arbitrary GLOB
-                  summarize = !env[:fullContent]
+                  summarize = true
                   glob
                 end
               else                                        # default GLOB
                 fromNodes Pathname.glob fsPath + '.*'
               end
-
-      if summarize                                          # 👉 unsummarized
-        env[:links][:down] = HTTP.qs q.merge({'fullContent' => nil})
-        nodes.map! &:preview
-      end
-
-      if env[:fullContent] && q.respond_to?(:except)        # 👉 summarized
-        env[:links][:up] = HTTP.qs q.except('fullContent')
-      end
-
-      nodes
+      nodes.map! &:preview if summarize                   # summarize nodes
+      nodes                                               # nodes
     end
 
     # URI -> pathname
