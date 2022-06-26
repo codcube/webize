@@ -28,8 +28,12 @@ class WebResource
                 elsif q['q'] && !q['q'].empty?            # GREP
                   grep
                 else                                      # LS dir
-                  [self,                                  # inline indexes and READMEs to result set
-                   *join((dirURI? ? '' : (basename || '') + '/' ) + '{index,readme,README}*').R(env).glob]
+                  pat = if dirURI?                        # content included w/ trailing-slash
+                          '*'
+                        else                              # overview: index and README
+                          [basename, '/{index,readme,README}*'].join
+                        end
+                  [self, *join(pat).R(env).glob]          # expand pattern
                 end
               elsif file?                                 # LS file
                 [self]
