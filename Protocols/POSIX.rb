@@ -17,23 +17,15 @@ class WebResource
     # (URI, env) -> [URI, URI, ..]
     def fsNodes
       q = env[:qs]                                        # query
-
       nodes = if directory?
                 if q['f'] && !q['f'].empty?               # FIND exact
-                  summarize = true
-                  find q['f']
+                  summarize = true; find q['f']
                 elsif q['find'] && !q['find'].empty?      # FIND substring
-                  summarize = true
-                  find '*' + q['find'] + '*'
+                  summarize = true; find '*' + q['find'] + '*'
                 elsif q['q'] && !q['q'].empty?            # GREP
                   grep
                 else                                      # LS dir
-                  pat = if dirURI?                        # content included w/ trailing-slash
-                          '*'
-                        else                              # overview: index and README
-                          [basename, '/{index,readme,README}*'].join
-                        end
-                  [self, *join(pat).R(env).glob]          # expand pattern
+                  [self, *join(dirURI? ? '*' : [basename, '/{index,readme,README}*'].join).R(env).glob]
                 end
               elsif file?                                 # LS file
                 [self]
@@ -45,8 +37,7 @@ class WebResource
                     fromNodes nodeGrep g[0..999]
                   end
                 else                                      # arbitrary GLOB
-                  summarize = true
-                  glob
+                  summarize = true; glob
                 end
               else                                        # default GLOB
                 fromNodes Pathname.glob fsPath + '.*'
