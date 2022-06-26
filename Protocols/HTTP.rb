@@ -75,7 +75,7 @@ class WebResource
                env[:origin_format] ? (uri.format_icon env[:origin_format]) : nil,                        # upstream format
                StatusIcon[env[:origin_status]],                                                          # upstream status
                ([env[:repository].size,'⋮'].join if env[:repository] && env[:repository].size > 0)].join,# RDF graph size
-              env['HTTP_REFERER'] ? ["\e[#{color}m", env['HTTP_REFERER'].R.display_host, "\e[0m→"] : nil,# referer location
+              env['HTTP_REFERER'] ? ["\e[#{color}m", env['HTTP_REFERER'].R.display_host, "\e[0m →"].join : nil,# referer
               ["\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert colors if off-site referer
                env[:base].host && env[:base].display_host, env[:base].path, "\e[0m"].join,               # request path
               (qs.map{|k,v|"\e[38;5;7;7m#{k}\e[0m#{v}"} if qs && !qs.empty?),                            # query
