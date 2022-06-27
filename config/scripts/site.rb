@@ -230,8 +230,8 @@ class WebResource
       if !r.path || r.path == '/'
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
-        client_id = 'qpb3ePPttWrQPwdAw7dRY7sxJCe6Z8pj'
-        version = 1650464268
+        client_id = 'cvRAZnbmwcaau0MyfJTGwtUjhQNvQlio'
+        version = 1655977444
         Webize.configList('subscriptions/soundcloud').map{|chan|
           semaphore.async do
             print "🔊"
