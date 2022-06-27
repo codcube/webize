@@ -75,10 +75,10 @@ class WebResource
                env[:origin_format] ? (uri.format_icon env[:origin_format]) : nil,                        # upstream format
                StatusIcon[env[:origin_status]],                                                          # upstream status
                ([env[:repository].size,'⋮'].join if env[:repository] && env[:repository].size > 0)].join,# graph size
-              env['HTTP_REFERER'] ? ["\e[#{color}m", env['HTTP_REFERER'].R.display_host, "\e[0m →"].join : nil,# referer
+              env['HTTP_REFERER'] ? ["\e[#{color}m", env['HTTP_REFERER'].R.display_host, "\e[0m →"].join : nil, # referer
               ["\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert color of off-site referer
                env[:base].host && env[:base].display_host, env[:base].path, "\e[0m",                     # path
-               (qs.map{|k,v|"\e[38;5;7;7m#{k}\e[0m#{v} "} if qs && !qs.empty?)].join,                     # query
+               (qs.map{|k,v|"\e[38;5;7;7m#{k}\e[0m#{v} "} if qs && !qs.empty?)].join,                    # query
               head['Location'] ? ["→\e[#{color}m", head['Location'], "\e[0m"] : nil,                     # redirected location
               env[:warning] ? ["\e[38;5;226;7m⚠️", env[:warning], "\e[0m"] : nil,                         # warning
              ].flatten.compact.map{|t|
