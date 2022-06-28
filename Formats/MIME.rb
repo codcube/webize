@@ -1,12 +1,14 @@
 # coding: utf-8
 class WebResource
 
-  FixedFormat = /archive|audio|css|image|octet|package|script|video|xz|zip/ # MIMEs we can't transform (TODO ffmpeg/imagemagick backends for conneg media-transcode)
-  MimeTypes = {'.apk' => 'application/vnd.android.package-archive'}
-  ReFormat = %w(text/html) # perform parse->serialize steps for cleanup when MIME is static
-  AV = [Audio, Video, 'RECTANGULAR', 'FORMAT_STREAM_TYPE_OTF'] # audio/video RDF types
+  FixedFormat = /archive|audio|css|image|octet|package|video|xz|zip/ # formats we can't currently transform. TODO ffmpeg backend for conneg media-transcode
+  ReFormat = %w(text/html)                                           # formats we transform even if MIME stays the same, aka reformat
+  AV = [Audio, Video, 'RECTANGULAR', 'FORMAT_STREAM_TYPE_OTF']       # audio/video RDF types
 
-  # file -> MIME type
+  # filename -> MIME type mappings
+
+  MimeTypes = {'.apk' => 'application/vnd.android.package-archive'}
+
   def fileMIME
     (!host && fileMIMEprefix) ||  # name prefix
       fileMIMEsuffix ||           # name suffix
@@ -26,9 +28,9 @@ class WebResource
   def fileMIMEsuffix
     suffix = File.extname File.realpath fsPath
     return if suffix.empty?
-    MimeTypes[suffix] ||                # webize list
-      Rack::Mime::MIME_TYPES[suffix] || # Rack list
-      fileMIMEsuffixRDF(suffix)         # RDF list
+    MimeTypes[suffix] ||                # local preference
+      Rack::Mime::MIME_TYPES[suffix] || # Rack library
+      fileMIMEsuffixRDF(suffix)         # RDF library
   end
 
   def fileMIMEsuffixRDF suffix
