@@ -489,7 +489,7 @@ class WebResource
     end
 
     def offline?
-      ENV.has_key?('OFFLINE') || env.has_key?(:offline)
+      ENV.has_key? 'OFFLINE'
     end
 
     def origin

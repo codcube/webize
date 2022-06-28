@@ -340,7 +340,6 @@ module Webize
         # <body>
         if body = @doc.css('body')[0] # only emit new content on origin refresh
           if NewsHosts.member? @base.host
-            @env[:links][:down] = WebResource::HTTP.qs @env[:qs].merge({'offline' => nil})
             hashed_nodes = 'article, aside, div, footer, h1, h2, h3, nav, p, section, b, span, ul, li'
             hashs = {}
             links = {}

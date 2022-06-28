@@ -171,7 +171,8 @@ class WebResource < RDF::URI
              feed = feed.R(env)
              {_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'feed' + Digest::SHA2.hexdigest(feed.uri)}.
                update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {})}, # highlight canonical feed
-           ({_: :a, href: HTTP.qs(env[:qs].except('offline')), c: '🔌', id: :offline} if offline? && env[:qs].respond_to?(:except))]}  # 👉 online version
+           #({_: :a, href: HTTP.qs(env[:qs].except('offline')), c: '🔌', id: :offline} if offline? && env[:qs].respond_to?(:except))   # 👉 online version
+          ]}
     end
     
     # URI -> lambda
