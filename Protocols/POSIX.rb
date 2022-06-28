@@ -19,9 +19,11 @@ class WebResource
       q = env[:qs]                                        # query
       nodes = if directory?
                 if q['f'] && !q['f'].empty?               # FIND exact
-                  summarize = true; find q['f']
+                  summarize = true
+                  find q['f']
                 elsif q['find'] && !q['find'].empty?      # FIND substring
-                  summarize = true; find '*' + q['find'] + '*'
+                  summarize = true
+                  find '*' + q['find'] + '*'
                 elsif q['q'] && !q['q'].empty?            # GREP
                   grep
                 else                                      # LS dir
@@ -31,16 +33,16 @@ class WebResource
               elsif file?                                 # LS file
                 [self]
               elsif fsPath.match? GlobChars               # GLOB
-                if q['q'] && !q['q'].empty?               # GREP in GLOB
+                if q['q'] && !q['q'].empty?               # GREP inside GLOB
                   if (g = nodeGlob).empty?
                     []
                   else
                     fromNodes nodeGrep g[0..999]
                   end
-                else                                      # arbitrary GLOB
-                  summarize = true; glob
+                else                                      # parametric GLOB
+                  glob
                 end
-              else                                        # default GLOB
+              else                                        # default document-set
                 fromNodes Pathname.glob fsPath + '.*'
               end
       nodes.map! &:preview if summarize                   # summarize nodes
