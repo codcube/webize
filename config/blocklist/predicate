@@ -78,6 +78,7 @@ rootVe
 stylesheet
 theme-color
 token
+turbo-body-classes
 turbo-cache-control
 twitter:app:id:googleplay
 twitter:app:id:ipad
