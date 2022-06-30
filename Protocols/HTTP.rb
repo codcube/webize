@@ -50,17 +50,17 @@ class WebResource
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
 
-      #Console.logger.debug ["\e[7m💻 → 🖥 #{uri}\e[0m ", bwPrint(env)].join
+      #logger.debug ["\e[7m💻 → 🖥 #{uri}\e[0m ", bwPrint(env)].join
 
       URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
-        #Console.logger.debug ["\e[7m💻 ← 🖥 #{uri}\e[0m ", bwPrint(head)].join
+        #logger.debug ["\e[7m💻 ← 🖥 #{uri}\e[0m ", bwPrint(head)].join
 
         fmt = uri.format_icon head['Content-Type']                                                       # iconize format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
 
-        puts [[(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                                    # denote insecure transport
+        logger.info [[(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                             # denote insecure transport
                (!env[:deny] && !uri.head? && head['Content-Type'] != env[:origin_format]) ? fmt : nil,   # downstream format if != upstream format
                status == env[:origin_status] ? nil : StatusIcon[status],                                 # downstream status if != upstream format
                uri.action_icon,                                                                          # method
@@ -78,7 +78,7 @@ class WebResource
 
         [status, head, body]}                                                                            # response
     rescue Exception => e
-      puts env[:base], e.class, e.message, e.backtrace
+      logger.failure env[:base], e
       [500, {'Content-Type' => 'text/html; charset=utf-8'},
        uri.head? ? [] : ["<html><body class='error'>#{HTML.render [{_: :style, c: Webize::CSS::SiteCSS}, {_: :script, c: Webize::Code::SiteJS}, uri.uri_toolbar]}500</body></html>"]]
     end
@@ -87,11 +87,11 @@ class WebResource
       cookie = join('/cookie').R                      # cookie-jar URI
       if env[:cookie] && !env[:cookie].empty?         # store cookie to jar
         cookie.writeFile env[:cookie]
-         Console.logger.info [:🍯, host, env[:cookie]].join ' '
+         logger.info [:🍯, host, env[:cookie]].join ' '
       end
       if cookie.file?                                 # read cookie from jar
         env['HTTP_COOKIE'] = cookie.node.read
-         Console.logger.info [:🍪, host, env['HTTP_COOKIE']].join ' '
+        logger.info [:🍪, host, env['HTTP_COOKIE']].join ' '
       end
     end
 
@@ -166,12 +166,12 @@ class WebResource
       end
       head['If-Modified-Since'] = env[:cache].mtime.httpdate if env[:cache] # timestamp for conditional fetch
 
-      #Console.logger.debug ["\e[7m🖥 → ☁️  #{uri}\e[0m ", HTTP.bwPrint(head)].join
+      #logger.debug ["\e[7m🖥 → ☁️  #{uri}\e[0m ", HTTP.bwPrint(head)].join
 
       URI.open(uri, head) do |response|                     # HTTP(S) fetch
         h = headers response.meta                           # response metadata
 
-        #Console.logger.debug ["\e[7m🧽 ← ☁️ \e[0m ", HTTP.bwPrint(h)].join # cleaned upstream response headers
+        #logger.debug ["\e[7m🧽 ← ☁️ \e[0m ", HTTP.bwPrint(h)].join # cleaned upstream response headers
 
         env[:origin_status] = response.status[0].to_i       # response status
         case env[:origin_status]
@@ -201,7 +201,7 @@ class WebResource
               charset = 'UTF-8' if charset.match? /utf.?8/i # normalize UTF-8 charset symbols
               charset = 'Shift_JIS' if charset.match? /s(hift)?.?jis/i # normalize Shift-JIS charset symbols
               unless Encoding.name_list.member? charset     # ensure charset is in encoding set
-                Console.logger.warn "⚠️ unsupported charset #{charset} in #{uri}"
+                logger.warn "⚠️ unsupported charset #{charset} in #{uri}"
                 charset = 'UTF-8'                           # default charset
               end
             end
@@ -261,10 +261,10 @@ class WebResource
                     env[:repository] << statement }} rescue (puts "⚠️ RDFa::Reader failed")
               end
             else
-              Console.logger.warn "⚠️ Reader undefined for #{format}"
+              logger.warn "⚠️ Reader undefined for #{format}"
             end unless format.match?(/octet-stream/) || body.empty?
           else
-             Console.logger.warn "⚠️ format undefined on #{uri}"
+            logger.warn "⚠️ format undefined on #{uri}"
           end
 
           return unless thru                                # HTTP response for caller?
@@ -279,7 +279,7 @@ class WebResource
             end}
           if h['Set-Cookie'] && CookieHosts.member?(host) && !(cookie = env[:base].join('/cookie').R).exist?
             cookie.writeFile h['Set-Cookie']                # update cookie-cache
-            Console.logger.info [:🍯, host, h['Set-Cookie']].join ' '
+            logger.info [:🍯, host, h['Set-Cookie']].join ' '
           end
 
           if env[:client_etags].include? h['ETag']          # client has entity

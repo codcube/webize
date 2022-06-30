@@ -124,7 +124,9 @@ class WebResource < RDF::URI
       end
     end
   end
+
   include URIs
+  include Console
 
   alias_method :uri, :to_s
 
