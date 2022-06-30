@@ -50,11 +50,13 @@ class WebResource
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
 
-      Console.logger.info "\e[7m💻 → 🖥 #{uri}\e[0m ", (bwPrint env)
+      #Console.logger.debug ["\e[7m💻 → 🖥 #{uri}\e[0m ", bwPrint(env)].join
+
       URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
-        Console.logger.info "\e[7m💻 ← 🖥 #{uri}\e[0m ", (bwPrint head)
+        #Console.logger.debug ["\e[7m💻 ← 🖥 #{uri}\e[0m ", bwPrint(head)].join
+
         fmt = uri.format_icon head['Content-Type']                                                       # iconize format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
 
@@ -163,10 +165,14 @@ class WebResource
         head['Accept'] = ['text/turtle', head['Accept']].join ',' unless head['Accept']&.match? /text\/turtle/ # accept 🐢/turtle
       end
       head['If-Modified-Since'] = env[:cache].mtime.httpdate if env[:cache] # timestamp for conditional fetch
-      Console.logger.info "\e[7m🖥 → ☁️  #{uri}\e[0m ", (HTTP.bwPrint head)
+
+      #Console.logger.debug ["\e[7m🖥 → ☁️  #{uri}\e[0m ", HTTP.bwPrint(head)].join
+
       URI.open(uri, head) do |response|                     # HTTP(S) fetch
         h = headers response.meta                           # response metadata
-        Console.logger.info "\e[7m🧽 ← ☁️ \e[0m ", (HTTP.bwPrint h)                        # clean headers
+
+        #Console.logger.debug ["\e[7m🧽 ← ☁️ \e[0m ", HTTP.bwPrint(h)].join # cleaned upstream response headers
+
         env[:origin_status] = response.status[0].to_i       # response status
         case env[:origin_status]
         when 204                                            # no content
