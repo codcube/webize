@@ -166,12 +166,13 @@ class WebResource
       end
       head['If-Modified-Since'] = env[:cache].mtime.httpdate if env[:cache] # timestamp for conditional fetch
 
-      #logger.debug ["\e[7m🖥 → ☁️  #{uri}\e[0m ", HTTP.bwPrint(head)].join
+      #logger.debug ["\e[7m🖥 → ☁️  #{uri}\e[0m ", HTTP.bwPrint(head)].join # request headers
 
       URI.open(uri, head) do |response|                     # HTTP(S) fetch
         h = headers response.meta                           # response metadata
 
-        #logger.debug ["\e[7m🧽 ← ☁️ \e[0m ", HTTP.bwPrint(h)].join # cleaned upstream response headers
+        #logger.debug ["\e[7m🥩 ← ☁️ \e[0m ", HTTP.bwPrint(response.meta)].join # raw upstream headers
+        #logger.debug ["\e[7m🧽 ← ☁️ \e[0m ", HTTP.bwPrint(h)].join # cleaned upstream headers
 
         env[:origin_status] = response.status[0].to_i       # response status
         case env[:origin_status]
