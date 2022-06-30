@@ -215,13 +215,13 @@ class WebResource
     Markup[Audio] = -> audio, env {
       if audio.class == Hash
         audio = audio['https://schema.org/url'] || audio[Schema+'contentURL'] || audio[Schema+'url'] || audio[Link] || audio['uri']
-        (puts "no audio URI!"; audio = '#audio') unless audio
+        (Console.logger.warn "no audio URI!"; audio = '#audio') unless audio
       end
 
       if audio.class == Array
-        puts "multiple audio files: ", audio if audio.size > 1
+        Console.logger.warn ["multiple audio files: ", audio].join if audio.size > 1
         audio = audio[0]
-        (puts "no audio reference!"; audio = '#audio') unless audio
+        (Console.logger.warn "no audio reference!"; audio = '#audio') unless audio
       end
 
       src = env[:base].join(audio).R env

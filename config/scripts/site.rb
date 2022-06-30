@@ -51,13 +51,13 @@ class WebResource
         r.fetch.yield_self{|s,h,b|        # call origin
           h.keys.map{|k|                  # strip redirected-location query
             if k.downcase == 'location' && h[k].match?(/\?/)
-              puts "dropping query from #{h[k]}"
+              Console.logger.info "dropping query from #{h[k]}"
               h[k] = h[k].split('?')[0]
             end
           }
           [s,h,b]}                        # response
       else                                # redirect to no-query location
-        puts "dropping query from #{r.uri}"
+        Console.logger.info "dropping query from #{r.uri}"
         [302, {'Location' => ['//', r.host, r.path].join.R(r.env).href}, []]
       end}
 
@@ -436,7 +436,7 @@ class WebResource
           tFile = join('/token').R
           unless tFile.node.exist? && tFile.node.read == token
             tFile.writeFile token                  # save updated client-token
-            puts ['🎫 ', host, token].join ' '
+            logger.info ['🎫 ', host, token].join ' '
           end
         end
         if room = text.match(/"id":"([^"]+)/)

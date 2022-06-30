@@ -30,11 +30,11 @@ class WebResource
           env[:repository] ||= RDF::Repository.new
           reader.new(body, base_uri: self){|g|env[:repository] << g}
         else
-          puts "⚠️ no RDF reader for #{format}" # ⚠️ undefined Reader
+          logger.warn "⚠️ no RDF reader for #{format}" # ⚠️ undefined Reader
         end
         saveRDF
       else
-        puts "⚠️ format undefined on #{uri}"    # ⚠️ undefined format
+        logger.warn "⚠️ format undefined on #{uri}"    # ⚠️ undefined format
       end
 
       if env[:notransform] || fixed_format     # static content
@@ -46,7 +46,7 @@ class WebResource
         graphResponse format                   # response in preferred format
       end
     rescue Exception => e
-      puts e.class, e.message, e.backtrace
+      logger.failure self, e
       fetchLocal
     end
   end

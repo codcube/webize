@@ -63,7 +63,7 @@ class WebResource
         Console.logger.info [[(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                     # denote insecure transport
                (!env[:deny] && !uri.head? && head['Content-Type'] != env[:origin_format]) ? fmt : nil,   # downstream format if != upstream format
                status == env[:origin_status] ? nil : StatusIcon[status],                                 # downstream status if != upstream format
-               uri.action_icon,                                                                          # method
+               uri.action_icon || ' ',                                                                   # method
                env[:origin_format] ? (uri.format_icon env[:origin_format]) : nil,                        # upstream format
                StatusIcon[env[:origin_status]],                                                          # upstream status
                ([env[:repository].size,'⋮'].join if env[:repository] && env[:repository].size > 0)].join,# graph size
@@ -78,7 +78,7 @@ class WebResource
 
         [status, head, body]}                                                                            # response
     rescue Exception => e
-      Console.logger.failure env[:base], e
+      Console.logger.failure uri, e
       [500, {'Content-Type' => 'text/html; charset=utf-8'},
        uri.head? ? [] : ["<html><body class='error'>#{HTML.render [{_: :style, c: Webize::CSS::SiteCSS}, {_: :script, c: Webize::Code::SiteJS}, uri.uri_toolbar]}500</body></html>"]]
     end

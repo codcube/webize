@@ -228,7 +228,7 @@ module Webize
                 elsif o.empty?
                   nil
                 else
-                  Time.parse o rescue puts("failed to parse time: #{o}")
+                  Time.parse o rescue logger.warn("failed to parse time: #{o}")
                 end
             o = o.utc.iso8601 if o
           end
@@ -275,7 +275,7 @@ module Webize
                 @env[:links][:icon] ||= v if k.match? /^(fav)?icon?$/i
                 @env[:feeds].push v if k == 'alternate' && ((m['type']&.match?(/atom|rss/)) || (v.path&.match?(/^\/feed\/?$/))) && !@env[:feeds].member?(v)
                 k = MetaMap[k] || k
-                puts [k, v].join "\t " unless k.to_s.match? /^(drop|http)/
+                logger.warn ['no RDF predicate found:', k, v].join ' ' unless k.to_s.match? /^(drop|http)/
                 yield @base, k, v unless k == :drop || v.R.deny?}
             end
           end}
@@ -304,7 +304,7 @@ module Webize
               else
                 v = @base.join v if v.match? /^(http|\/)\S+$/
               end
-              puts [k,v].join "\t " unless k.to_s.match? /^(drop|http)/
+              logger.warn ['no RDF predicate found:', k, v].join ' ' unless k.to_s.match? /^(drop|http)/
               yield @base, k, v unless k == :drop
             end
           elsif m['http-equiv'] == 'refresh'

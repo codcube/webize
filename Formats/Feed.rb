@@ -108,7 +108,7 @@ module Webize
             end
           else
             p = MetaMap[p] if MetaMap.has_key? p
-            puts [p, o].join "\t " unless p.match? /^https?:/
+            logger.warn ['no RDF predicate found:', p, o].join ' ' unless p.match? /^https?:/
             yield s,p,o
           end
         }

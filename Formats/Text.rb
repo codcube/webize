@@ -28,7 +28,8 @@ class String
        '</a>') +
       (post.empty? && '' || post.hrefs(&blk)) # prob not tail-recursive, getting overflow on logfiles, may need to rework
   rescue
-    puts "failed to scan #{self}"
+    logger.warn "failed to scan string for hrefs"
+    logger.debug self
     ''
   end
 

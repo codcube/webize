@@ -25,10 +25,10 @@ class WebResource
                   next if predicate == :drop
                   statement.predicate = predicate.R
                 end
-                graph << statement }} rescue (puts "⚠️ RDFa::Reader failed")
+                graph << statement }} rescue (logger.warn "⚠️ RDFa::Reader failed")
           end
         else
-          Console.logger.warn "⚠️ no RDF reader for #{fsPath}" , options # reader undefined for type
+          logger.warn ["⚠️ no RDF reader for #{fsPath}" , options].join # reader not found
         end
       end
     elsif node.directory?                                            # directory RDF
@@ -111,7 +111,7 @@ class WebResource
           log << ['🕒', 🕒]
         end
       end
-      puts log.join ' ' unless log.empty?}
+      logger.info log.join ' ' unless log.empty?}
     self
   end
 
@@ -153,7 +153,7 @@ class WebResource
                if writer = RDF::Writer.for(content_type: format)
                  env[:repository].dump writer.to_sym, base_uri: self
                else
-                 puts "⚠️  RDF::Writer undefined for #{format}" ; ''
+                 logger.warn "⚠️  RDF::Writer undefined for #{format}" ; ''
                end
              end
 
@@ -161,6 +161,10 @@ class WebResource
       [status, head, [body]]                          # response
     end
   end
+end
+
+class RDF::Reader
+  include Console
 end
 
 RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl] # add 🐢 suffix for Turtle
@@ -178,7 +182,7 @@ module Webize
         configList([VocabPath, vocab, predicate].join '/').map{|srcURI|     # find mapping
           MetaMap[srcURI] = destURI}}                                       # map predicate
     else
-      puts "❓ undefined prefix #{vocab} referenced by vocab map"
+      Console.logger.warn "❓ undefined prefix #{vocab} referenced by vocab map"
     end}
 
   configList('blocklist/predicate').map{|p|MetaMap[p] = :drop}              # load predicate blocklist

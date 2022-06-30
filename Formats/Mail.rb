@@ -39,7 +39,8 @@ module Webize
       end
 
       def mail_triples body, &b
-        m = ::Mail.new body; return puts "mail-parse failed #{@base}" unless m
+        m = ::Mail.new body
+        return Console.logger.warn "email parse failed #{@base}" unless m
 
         # Message resource
         id = m.message_id || m.resent_message_id || Digest::SHA2.hexdigest(rand.to_s)

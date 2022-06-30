@@ -12,7 +12,7 @@ class WebResource
   def fileMIME
     (!host && fileMIMEprefix) ||  # name prefix
       fileMIMEsuffix ||           # name suffix
-      (puts "MIME search failed #{fsPath}"
+      (logger.warn "MIME search failed #{fsPath}"
        'application/octet-stream') # unknown
   end
 
@@ -35,7 +35,7 @@ class WebResource
 
   def fileMIMEsuffixRDF suffix
     if format = RDF::Format.file_extensions[suffix[1..-1].to_sym]
-      puts ['multiple formats match extension', suffix, format, ', using', format[0]].join ' ' if format.size > 1
+      logger.warn ['multiple formats match extension', suffix, format, ', using', format[0]].join ' ' if format.size > 1
       format[0].content_type[0]
     end
   end

@@ -29,7 +29,7 @@ module Webize
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri].R
-        @json = ::JSON.parse(input.respond_to?(:read) ? input.read : input) rescue (puts input.to_s.gsub(/\n/,' '); {})
+        @json = ::JSON.parse(input.respond_to?(:read) ? input.read : input) rescue (logger.debug ['JSON parse failure in: ', input].join; {})
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -99,7 +99,7 @@ module Webize
                       o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)           # resolve URI
                       p = MetaMap[p] if MetaMap.has_key? p
                       unless p == :drop
-                        puts [p, o].join "\t " unless p.match? /^https?:/
+                        logger.warn ['no RDF predicate found:', p, o].join ' ' unless p.match? /^https?:/
                         yield s, p, o
                       end
                     end

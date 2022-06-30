@@ -96,13 +96,13 @@ class WebResource
          Video].map{|p|
           resource.delete p}
         video = video['https://schema.org/url'] || video[Schema+'contentURL'] || video[Schema+'url'] || video[Link] || video['uri']
-        (puts "no video URI!"; video = '#video') unless video
+        (Console.logger.warn 'no video URI!'; video = '#video') unless video
       end
 
       if video.class == Array
-        puts "multiple videos: ", video if video.size > 1
+        Console.logger.warn ['multiple videos: ', video].join if video.size > 1
         video = video[0]
-        (puts "no video!"; video = '#video') unless video
+        (Console.logger.warn 'empty video resource'; video = '#video') unless video
       end
 
       if video.to_s.match? /v.redd.it/ # reddit?

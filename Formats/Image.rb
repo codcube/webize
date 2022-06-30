@@ -215,13 +215,13 @@ class WebResource
       if image.class == Hash
         resource = image.dup
         image = image['https://schema.org/url'] || image[Schema+'url'] || image[Link] || image['uri']
-        (puts "no image URI!"; image = '#image') unless image
+        (Console.logger.warn "no image URI!"; image = '#image') unless image
       end
 
       if image.class == Array
-        puts "multiple images: ", image if image.size > 1
+        Console.logger.warn ['multiple images: ', image].join if image.size > 1
         image = image[0]
-        (puts "no image!"; image = '#image') unless image
+        (Console.logger.warn "empty image resource"; image = '#image') unless image
       end
 
       src = env[:base].join(image).R(env).href
