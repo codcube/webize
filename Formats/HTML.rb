@@ -201,6 +201,7 @@ module Webize
 
     # HTML document -> RDF
     class Reader < RDF::Reader
+      include Console
       include WebResource::URIs
       format Format
 
