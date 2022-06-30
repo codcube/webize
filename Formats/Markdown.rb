@@ -16,6 +16,7 @@ module Webize
     end
 
     class Reader < RDF::Reader
+      include Console
       include WebResource::URIs
       format Format
 

@@ -12,6 +12,7 @@ module Webize
     end
 
     class Reader < RDF::Reader
+      include Console
       include WebResource::URIs
       format Format
 
@@ -40,7 +41,7 @@ module Webize
 
       def mail_triples body, &b
         m = ::Mail.new body
-        return Console.logger.warn "email parse failed #{@base}" unless m
+        return logger.warn "email parse failed #{@base}" unless m
 
         # Message resource
         id = m.message_id || m.resent_message_id || Digest::SHA2.hexdigest(rand.to_s)
