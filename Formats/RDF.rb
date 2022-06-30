@@ -163,10 +163,6 @@ class WebResource
   end
 end
 
-class RDF::Reader
-  include Console
-end
-
 RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl] # add 🐢 suffix for Turtle
 
 module Webize
