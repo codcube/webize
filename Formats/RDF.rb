@@ -28,7 +28,7 @@ class WebResource
                 graph << statement }} rescue (puts "⚠️ RDFa::Reader failed")
           end
         else
-          puts "⚠️ no RDF reader for #{fsPath}" , options if Verbose  # reader undefined for type
+          Console.logger.warn "⚠️ no RDF reader for #{fsPath}" , options # reader undefined for type
         end
       end
     elsif node.directory?                                            # directory RDF
@@ -91,7 +91,7 @@ class WebResource
       unless File.exist? f
         POSIX.container f                                            # container(s)
         RDF::Writer.for(:turtle).open(f){|f|f << graph}              # store 🐢
-        log << "\e[38;5;48m#{'%2d' % graph.size}⋮🐢 \e[1m#{graphURI.host ? graphURI : ('http://'+env['HTTP_HOST']).R.join(graphURI)}\e[0m" if Verbose || graphURI != self
+        log << "\e[38;5;48m#{'%2d' % graph.size}⋮🐢 \e[1m#{graphURI.host ? graphURI : ('http://'+env['HTTP_HOST']).R.join(graphURI)}\e[0m" unless graphURI == self
       end
       # if graph is not on timeline and has a timestamp
       if !graphURI.to_s.match?(HourDir) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
@@ -108,7 +108,7 @@ class WebResource
         unless File.exist? 🕒
           FileUtils.mkdir_p File.dirname 🕒                          # create missing timeslice containers
           FileUtils.ln f, 🕒 rescue FileUtils.cp f, 🕒               # link 🐢 to timeline
-          log << ['🕒', 🕒] if Verbose
+          log << ['🕒', 🕒]
         end
       end
       puts log.join ' ' unless log.empty?}

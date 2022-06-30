@@ -1,6 +1,4 @@
-
-# configuration for logger verbosity
-Verbose = ENV.has_key? 'VERBOSE'
+require 'console'
 
 module Webize
 

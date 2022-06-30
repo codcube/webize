@@ -22,11 +22,7 @@ class WebResource
       ActionIcon[env['REQUEST_METHOD']]
     end
 
-    def self.bwPrint kv
-      kv.map{|k,v|
-        print "\e[38;5;7;7m#{k}\e[0m#{v}"}
-      print "\n"
-    end
+    def self.bwPrint kv; kv.map{|k,v| "\e[38;5;7;7m#{k}\e[0m#{v}" } end
 
     # Rack entry-point
     def self.call env
@@ -54,17 +50,11 @@ class WebResource
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
 
-      if Verbose
-        print "\e[7m💻 → 🖥 #{uri}\e[0m "
-        bwPrint env
-      end
+      Console.logger.info "\e[7m💻 → 🖥 #{uri}\e[0m ", (bwPrint env)
       URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
-        if Verbose
-          print "\e[7m💻 ← 🖥 #{uri}\e[0m "
-          bwPrint head
-        end
+        Console.logger.info "\e[7m💻 ← 🖥 #{uri}\e[0m ", (bwPrint head)
         fmt = uri.format_icon head['Content-Type']                                                       # iconize format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
 
@@ -95,11 +85,11 @@ class WebResource
       cookie = join('/cookie').R                      # cookie-jar URI
       if env[:cookie] && !env[:cookie].empty?         # store cookie to jar
         cookie.writeFile env[:cookie]
-        puts [:🍯, host, env[:cookie]].join ' ' if Verbose
+         Console.logger.info [:🍯, host, env[:cookie]].join ' '
       end
       if cookie.file?                                 # read cookie from jar
         env['HTTP_COOKIE'] = cookie.node.read
-        puts [:🍪, host, env['HTTP_COOKIE']].join ' ' if Verbose
+         Console.logger.info [:🍪, host, env['HTTP_COOKIE']].join ' '
       end
     end
 
@@ -173,18 +163,10 @@ class WebResource
         head['Accept'] = ['text/turtle', head['Accept']].join ',' unless head['Accept']&.match? /text\/turtle/ # accept 🐢/turtle
       end
       head['If-Modified-Since'] = env[:cache].mtime.httpdate if env[:cache] # timestamp for conditional fetch
-      if Verbose
-        print "\e[7m🖥 → ☁️  #{uri}\e[0m "
-        HTTP.bwPrint head
-      end
+      Console.logger.info "\e[7m🖥 → ☁️  #{uri}\e[0m ", (HTTP.bwPrint head)
       URI.open(uri, head) do |response|                     # HTTP(S) fetch
         h = headers response.meta                           # response metadata
-        if Verbose
-#          print '🥩 ← ☁️  '                                 # raw upstream headers
-#          HTTP.bwPrint response.meta
-          print "\e[7m🧽 ← ☁️ \e[0m "                        # clean headers
-          HTTP.bwPrint h
-        end
+        Console.logger.info "\e[7m🧽 ← ☁️ \e[0m ", (HTTP.bwPrint h)                        # clean headers
         env[:origin_status] = response.status[0].to_i       # response status
         case env[:origin_status]
         when 204                                            # no content
@@ -213,7 +195,7 @@ class WebResource
               charset = 'UTF-8' if charset.match? /utf.?8/i # normalize UTF-8 charset symbols
               charset = 'Shift_JIS' if charset.match? /s(hift)?.?jis/i # normalize Shift-JIS charset symbols
               unless Encoding.name_list.member? charset     # ensure charset is in encoding set
-                puts "⚠️ unsupported charset #{charset}" if Verbose
+                Console.logger.warn "⚠️ unsupported charset #{charset} in #{uri}"
                 charset = 'UTF-8'                           # default charset
               end
             end
@@ -249,7 +231,7 @@ class WebResource
               if t = Time.httpdate(timestamp) rescue nil    # parse timestamp
                 FileUtils.touch file, mtime: t              # cache timestamp
               else
-                puts ['⚠️  timestamp:', h['Last-Modified'], timestamp != h['Last-Modified'] ? [:→, timestamp] : nil].join ' ' #if Verbose
+                puts ['⚠️  timestamp:', h['Last-Modified'], timestamp != h['Last-Modified'] ? [:→, timestamp] : nil].join ' '
               end
             end
 
@@ -273,10 +255,10 @@ class WebResource
                     env[:repository] << statement }} rescue (puts "⚠️ RDFa::Reader failed")
               end
             else
-              puts "⚠️ Reader undefined for #{format}" if Verbose
+              Console.logger.warn "⚠️ Reader undefined for #{format}"
             end unless format.match?(/octet-stream/) || body.empty?
           else
-            puts "⚠️ format undefined on #{uri}" if Verbose
+             Console.logger.warn "⚠️ format undefined on #{uri}"
           end
 
           return unless thru                                # HTTP response for caller?
@@ -291,7 +273,7 @@ class WebResource
             end}
           if h['Set-Cookie'] && CookieHosts.member?(host) && !(cookie = env[:base].join('/cookie').R).exist?
             cookie.writeFile h['Set-Cookie']                # update cookie-cache
-            puts [:🍯, host, h['Set-Cookie']].join ' ' if Verbose
+            Console.logger.info [:🍯, host, h['Set-Cookie']].join ' '
           end
 
           if env[:client_etags].include? h['ETag']          # client has entity

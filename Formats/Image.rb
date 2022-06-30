@@ -68,7 +68,7 @@ data-srcset
     def self.srcset node, base
       srcset = node['srcset'].scan(SrcSetRegex).map{|url, size|[(base.join url), size].join ' '}.join(', ')
       if srcset.empty?
-        puts "srcset failed to parse: " + node['srcset'] if Verbose
+        Console.logger.warn "srcset failed to parse: " + node['srcset']
       else
         node['srcset'] = srcset
       end
