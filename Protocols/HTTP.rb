@@ -50,17 +50,17 @@ class WebResource
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
 
-      #logger.debug ["\e[7m💻 → 🖥 #{uri}\e[0m ", bwPrint(env)].join
+      #Console.logger.debug ["\e[7m💻 → 🖥 #{uri}\e[0m ", bwPrint(env)].join
 
       URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
-        #logger.debug ["\e[7m💻 ← 🖥 #{uri}\e[0m ", bwPrint(head)].join
+        #Console.logger.debug ["\e[7m💻 ← 🖥 #{uri}\e[0m ", bwPrint(head)].join
 
         fmt = uri.format_icon head['Content-Type']                                                       # iconize format
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
 
-        logger.info [[(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                             # denote insecure transport
+        Console.logger.info [[(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                     # denote insecure transport
                (!env[:deny] && !uri.head? && head['Content-Type'] != env[:origin_format]) ? fmt : nil,   # downstream format if != upstream format
                status == env[:origin_status] ? nil : StatusIcon[status],                                 # downstream status if != upstream format
                uri.action_icon,                                                                          # method
@@ -78,7 +78,7 @@ class WebResource
 
         [status, head, body]}                                                                            # response
     rescue Exception => e
-      logger.failure env[:base], e
+      Console.logger.failure env[:base], e
       [500, {'Content-Type' => 'text/html; charset=utf-8'},
        uri.head? ? [] : ["<html><body class='error'>#{HTML.render [{_: :style, c: Webize::CSS::SiteCSS}, {_: :script, c: Webize::Code::SiteJS}, uri.uri_toolbar]}500</body></html>"]]
     end
@@ -109,8 +109,8 @@ class WebResource
         head['Content-Encoding'] = encoding
         body
       end
-    rescue Exception => e
-      puts [e.class, e.message].join " "
+      rescue Exception => e
+      logger.failure head, e
       head['Content-Encoding'] = encoding
       body
     end
@@ -237,7 +237,7 @@ class WebResource
               if t = Time.httpdate(timestamp) rescue nil    # parse timestamp
                 FileUtils.touch file, mtime: t              # cache timestamp
               else
-                puts ['⚠️  timestamp:', h['Last-Modified'], timestamp != h['Last-Modified'] ? [:→, timestamp] : nil].join ' '
+                logger.warn ['⚠️  malformed datetime:', h['Last-Modified'], timestamp != h['Last-Modified'] ? [:→, timestamp] : nil].join ' '
               end
             end
 
@@ -258,7 +258,7 @@ class WebResource
                       next if predicate == :drop
                       statement.predicate = predicate.R
                     end
-                    env[:repository] << statement }} rescue (puts "⚠️ RDFa::Reader failed")
+                    env[:repository] << statement }} rescue logger.warn("⚠️ RDFa::Reader failed")
               end
             else
               logger.warn "⚠️ Reader undefined for #{format}"
@@ -305,13 +305,13 @@ class WebResource
         dest = join(location).R env
         if no_scheme == dest.no_scheme                      # alternate scheme
           if scheme == 'https' && dest.scheme == 'http'     # downgrade
-            puts "⚠️  downgrade redirect #{dest}"
+            logger.warn "⚠️  downgrade redirect #{dest}"
             dest.fetchHTTP
           elsif scheme == 'http' && dest.scheme == 'https'  # upgrade
-            puts "🔒 upgrade redirect #{dest}"
+            logger.debug "🔒 upgrade redirect #{dest}"
             dest.fetchHTTP
           else                                              # redirect loop
-            puts "discarding #{uri} → #{location} redirect"
+            logger.warn "discarding #{uri} → #{location} redirect"
             fetchLocal
           end
         else
@@ -364,7 +364,7 @@ class WebResource
       when 'spartan'                                        # fetch w/ Spartan
         fetchSpartan
       else
-        puts "⚠️ unsupported scheme in #{uri}"; notfound     # unsupported scheme
+        logger.warn "⚠️ unsupported scheme #{uri}"; notfound # unsupported scheme
       end
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
       env[:warning] = [e.class, e.message].join ' '         # warn on error/fallback condition
