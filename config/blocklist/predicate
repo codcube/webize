@@ -10,6 +10,7 @@ al:android:url
 al:ios:app_name
 al:ios:app_store_id
 al:ios:url
+al:web:should_fallback
 amphtml
 apple-itunes-app
 apple-mobile-web-app-capable
@@ -36,6 +37,7 @@ generated
 github-keyboard-shortcuts
 go-import
 google
+google-adsense-platform-domain
 google-play-app
 google-signin-client_id
 google-site-verification
@@ -56,6 +58,7 @@ isRedBullRacing
 isRedBulletin
 isRookiesCup
 menuPosition
+mobile-web-app-capable
 monetization
 monetization_model
 msapplication-TileColor
@@ -80,7 +83,9 @@ request_id
 revision
 robots
 rootVe
+schema.DC
 socialLinksPosition
+soundcloud:sound_count
 stylesheet
 theme-color
 tier
