@@ -222,22 +222,11 @@ module Webize
 
       def each_statement &fn
         scanContent{|s,p,o,g=nil|
-          if p.to_s == Date # normalize date formats
-            o = o.to_s
-            o = if o.match?(/^\d+$/) # unixtime
-                  Time.at o.to_i
-                elsif o.empty?
-                  nil
-                else
-                  Time.parse o rescue logger.warn("failed to parse time: #{o}")
-                end
-            o = o.utc.iso8601 if o
-          end
+          o = Webize.date o if p.to_s == Date # normalize date formats
           fn.call RDF::Statement.new(s.R, p.R,
                                      p == Content ? ((l = RDF::Literal o).datatype = RDF.HTML
                                                      l) : o,
-                                     graph_name: g ? g.R : @base) if o
-        }
+                                     graph_name: g ? g.R : @base)}
       end
 
       def scanContent &f

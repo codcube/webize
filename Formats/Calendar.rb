@@ -92,6 +92,17 @@ end
 
 module Webize
 
+  def self.date o
+    return unless o
+    o = o.to_s
+    return o if o.empty?
+    (o.match?(/^\d+$/) ? Time.at(o.to_i) : Time.parse(o)).utc.iso8601
+  rescue Exception => e
+    #Console.logger.failure o, e
+    Console.logger.warn "failed to parse time: #{o}"
+    o
+  end
+
   module Calendar
     class Format < RDF::Format
       content_type 'text/calendar', :extension => :ics
