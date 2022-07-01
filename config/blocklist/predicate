@@ -1,3 +1,4 @@
+360-site-verification
 Distribution
 EditURI
 HandheldFriendly
@@ -19,6 +20,7 @@ apple-mobile-web-app-status-bar-style
 apple-mobile-web-app-title
 apple-touch-fullscreen
 applicationId
+baidu-site-verification
 canHaveEpisodes
 color-scheme
 commentable
@@ -54,6 +56,7 @@ hostname
 hovercard-subject-tag
 html-safe-nonce
 imageEssenceContainsCaption
+is_album
 isActive
 isJuniorTeam
 isLogoVisible
@@ -63,6 +66,7 @@ isRedBullPowertrains
 isRedBullRacing
 isRedBulletin
 isRookiesCup
+managed_by_feeds
 menuPosition
 mobile-web-app-capable
 monetization
@@ -91,7 +95,9 @@ revision
 robots
 rootVe
 schema.DC
+sogou_site_verification
 sharing
+shenma-site-verification
 snipped
 socialLinksPosition
 soundcloud:sound_count
