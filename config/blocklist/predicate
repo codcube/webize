@@ -1,8 +1,8 @@
 EditURI
 HandheldFriendly
 MobileOptimized
-ResourceLoaderDynamicStyles
 ROBOTS
+ResourceLoaderDynamicStyles
 ahrefs-site-verification
 al:android:app_name
 al:android:package
@@ -46,7 +46,9 @@ hostname
 hovercard-subject-tag
 html-safe-nonce
 imageEssenceContainsCaption
+isActive
 isJuniorTeam
+isLogoVisible
 isPlaceholder
 isRedBullMusic
 isRedBullPowertrains
@@ -61,6 +63,7 @@ msapplication-config
 msapplication-tap-highlight
 msvalidate.01
 mw-deduplicated-inline-style
+next-head-count
 norton-safeweb-site-verification
 openNewTab
 openid.server
@@ -76,8 +79,10 @@ request_id
 revision
 robots
 rootVe
+socialLinksPosition
 stylesheet
 theme-color
+tier
 token
 turbo-body-classes
 turbo-cache-control
@@ -91,10 +96,13 @@ twitter:app:url:googleplay
 twitter:app:url:ipad
 twitter:app:url:iphone
 twitter:card
+twitter:domain
 uriSlug
 user-login
+uuid
 viewport
 visitor-hmac
 visitor-payload
 wlwmanifest
+wot-verification
 yandex-verification
