@@ -1,6 +1,7 @@
 360-site-verification
 Distribution
 EditURI
+GOOGLEBOT
 HandheldFriendly
 MobileOptimized
 ROBOTS
@@ -35,6 +36,7 @@ enabled
 enabled-features
 estimatedReadingTime
 expected-hostname
+expires
 externalLink
 facebook-domain-verification
 fb:admins
