@@ -56,7 +56,6 @@ hostname
 hovercard-subject-tag
 html-safe-nonce
 imageEssenceContainsCaption
-is_album
 isActive
 isJuniorTeam
 isLogoVisible
@@ -66,6 +65,7 @@ isRedBullPowertrains
 isRedBullRacing
 isRedBulletin
 isRookiesCup
+is_album
 managed_by_feeds
 menuPosition
 mobile-web-app-capable
@@ -78,6 +78,7 @@ msvalidate.01
 mw-deduplicated-inline-style
 newTab
 next-head-count
+noopenner
 norton-safeweb-site-verification
 openNewTab
 openid.server
@@ -95,16 +96,18 @@ revision
 robots
 rootVe
 schema.DC
-sogou_site_verification
 sharing
 shenma-site-verification
 snipped
 socialLinksPosition
+sogou_site_verification
 soundcloud:sound_count
 station_permalink
 station_urn
 streamable
 stylesheet
+tec-api-origin
+tec-api-version
 theme-color
 tier
 token
