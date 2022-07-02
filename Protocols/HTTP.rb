@@ -19,7 +19,7 @@ class WebResource
       return '🛑' if env[:deny]
       return '🔌' if offline?
       return ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched] # denote middlebox or origin fetch
-      ActionIcon[env['REQUEST_METHOD']]
+      ActionIcon[env['REQUEST_METHOD']] || ' '
     end
 
     def self.bwPrint kv; kv.map{|k,v| "\e[38;5;7;7m#{k}\e[0m#{v}" } end
@@ -56,27 +56,22 @@ class WebResource
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
         #Console.logger.debug ["\e[7m💻 ← 🖥 #{uri}\e[0m ", bwPrint(head)].join
-
-        fmt = uri.format_icon head['Content-Type']                                                       # iconize format
-        color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                        # colorize format
-
-        Console.logger.info [[(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                     # denote insecure transport
-               (!env[:deny] && !uri.head? && head['Content-Type'] != env[:origin_format]) ? fmt : nil,   # downstream format if != upstream format
-               status == env[:origin_status] ? nil : StatusIcon[status],                                 # downstream status if != upstream format
-               uri.action_icon || ' ',                                                                   # method
-               env[:origin_format] ? (uri.format_icon env[:origin_format]) : nil,                        # upstream format
-               StatusIcon[env[:origin_status]],                                                          # upstream status
-               ([env[:repository].size,'⋮'].join if env[:repository] && env[:repository].size > 0)].join,# graph size
-              env['HTTP_REFERER'] ? ["\e[#{color}m", env['HTTP_REFERER'].R.display_host, "\e[0m →"].join : nil, # referer
-              ["\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert color of off-site referer
-               env[:base].host && env[:base].display_host, env[:base].path, "\e[0m",                     # path
-               (qs.map{|k,v|"\e[38;5;7;7m#{k}\e[0m#{v} "} if qs && !qs.empty?)].join,                    # query
-              head['Location'] ? ["→\e[#{color}m", head['Location'], "\e[0m"] : nil,                     # redirected location
-              env[:warning] ? ["\e[38;5;226;7m⚠️", env[:warning], "\e[0m"] : nil,                         # warning
-             ].flatten.compact.map{|t|
-          t.to_s.encode 'UTF-8'}.join ' '                                                                # logger
-
-        [status, head, body]}                                                                            # response
+        fmt = uri.format_icon head['Content-Type']
+        color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                   # colorize format
+        Console.logger.info [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : ' ', # transport security
+                             (env[:deny] || uri.head?) ? ' ' : fmt,                 # downstream format
+                             StatusIcon[status],                                    # response status
+                             uri.action_icon,                                       # HTTP method
+                             (env[:origin_format] && env[:origin_format] != head['Content-Type']) ? uri.format_icon(env[:origin_format]) : ' ', # upstream format
+                             (env[:repository]&.size).to_s.rjust(3), '⋮ ',          # graph size
+                             env['HTTP_REFERER'] ? ["\e[#{color}m",env['HTTP_REFERER'].R.display_host,"\e[0m → "] : nil, # referer
+                             "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert color of off-site referer
+                             env[:base].host && env[:base].display_host, env[:base].path, "\e[0m",  # path
+                             (qs.map{|k,v|"\e[38;5;7;7m#{k}\e[0m#{v} "} if qs && !qs.empty?),       # query
+                             head['Location'] ? ["→\e[#{color}m", head['Location'], "\e[0m"] : nil, # redirect location
+                             env[:warning] ? ["\e[38;5;226;7m⚠️", env[:warning], "\e[0m"] : nil,     # warning
+                            ].flatten.compact.map{|t|t.to_s.encode 'UTF-8'}.join
+        [status, head, body]}                                                                       # response
     rescue Exception => e
       Console.logger.failure uri, e
       [500, {'Content-Type' => 'text/html; charset=utf-8'},
