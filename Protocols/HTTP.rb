@@ -50,22 +50,19 @@ class WebResource
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
 
-      #Console.logger.debug ["\e[7m💻 → 🖥 #{uri}\e[0m ", bwPrint(env)].join
-
       URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
-        #Console.logger.debug ["\e[7m💻 ← 🖥 #{uri}\e[0m ", bwPrint(head)].join
         fmt = uri.format_icon head['Content-Type']
-        color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                   # colorize format
-        Console.logger.info [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : ' ', # transport security
-                             (env[:deny] || uri.head?) ? ' ' : fmt,                 # downstream format
-                             StatusIcon[status],                                    # response status
-                             uri.action_icon,                                       # HTTP method
-                             (env[:origin_format] && env[:origin_format] != head['Content-Type']) ? uri.format_icon(env[:origin_format]) : ' ', # upstream format
-                             (env[:repository]&.size).to_s.rjust(3), '⋮ ',          # graph size
+        color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                   # format color
+        Console.logger.info [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : ' ',                 # security
+                             (env[:deny] || uri.head?) ? ' ' : fmt,                                 # format
+                             StatusIcon[status] || ' ',                                             # status
+                             uri.action_icon,                                                       # method
+                             (env[:origin_format] && env[:origin_format] != head['Content-Type']) ? uri.format_icon(env[:origin_format]) : ' ', # original format
+                             (env[:repository]&.size).to_s.rjust(3), '⋮ ',                          # graph size
                              env['HTTP_REFERER'] ? ["\e[#{color}m",env['HTTP_REFERER'].R.display_host,"\e[0m → "] : nil, # referer
-                             "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert color of off-site referer
+                             "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert off-site referers
                              env[:base].host && env[:base].display_host, env[:base].path, "\e[0m",  # path
                              (qs.map{|k,v|"\e[38;5;7;7m#{k}\e[0m#{v} "} if qs && !qs.empty?),       # query
                              head['Location'] ? ["→\e[#{color}m", head['Location'], "\e[0m"] : nil, # redirect location
