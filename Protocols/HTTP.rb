@@ -15,13 +15,6 @@ class WebResource
     ActionIcon = Webize.configHash 'style/icons/action'  # HTTP method -> character
     StatusIcon = Webize.configHash 'style/icons/status'  # status code -> character
 
-    def action_icon
-      return '🛑' if env[:deny]
-      return '🔌' if offline?
-      return ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched] # denote middlebox or origin fetch
-      ActionIcon[env['REQUEST_METHOD']] || ' '
-    end
-
     def self.bwPrint kv; kv.map{|k,v| "\e[38;5;7;7m#{k}\e[0m#{v}" } end
 
     # Rack entry-point
@@ -53,12 +46,23 @@ class WebResource
       URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
-        fmt = uri.format_icon head['Content-Type']
+        fmt = uri.format_icon(head['Content-Type']) || '?'
+        act = if env[:deny]
+                '🛑'
+              elsif offline?
+                '🔌'
+              elsif env[:fetched]
+                ENV.has_key?('http_proxy') ? '🖥' : '🐕'
+              elsif ActionIcon.has_key? env['REQUEST_METHOD']
+                ActionIcon[env['REQUEST_METHOD']]
+              else
+                ' '
+              end
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                   # format color
         Console.logger.info [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : ' ',                 # security
-                             (env[:deny] || uri.head?) ? ' ' : fmt,                                 # format
                              StatusIcon[status] || ' ',                                             # status
-                             uri.action_icon,                                                       # method
+                             (env[:deny] || uri.head?) ? ' ' : fmt,                                 # format
+                             act,                                                                   # action
                              (env[:origin_format] && env[:origin_format] != head['Content-Type']) ? uri.format_icon(env[:origin_format]) : ' ', # original format
                              (env[:repository]&.size).to_s.rjust(3), '⋮ ',                          # graph size
                              env['HTTP_REFERER'] ? ["\e[#{color}m",env['HTTP_REFERER'].R.display_host,"\e[0m → "] : nil, # referer
