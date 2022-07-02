@@ -11,7 +11,7 @@ RDFa output - investigate HAML template-solution in RDF library or just add it t
 notification mesh
 #down link on google for all results inlined
 gack (gemini) server
-serve gemini from cache when gone missing localhost:8000/gemini://rfmpie.smol.pub/reviving-macbook-with-linux
+serve gemini from cache when gone missing gemini://rfmpie.smol.pub/reviving-macbook-with-linux
 histogram on datedir per slice-resolution
 commandline util to update static HTML for nginx
 link to local-archive URL from timeline http://localhost/2021/07/04/12/*#r5a53af0e893adbe0f1d10a3825eb1ceb7c28829a120be8a93d3dff98dc93046c
@@ -28,19 +28,19 @@ remember insecure hosts so we don't keep trying HTTPS
 more compliant cookie caching on allowed (sub)domains
 backlink indexing and more indexing in general - frequently linked posts 'daily heat'
 return graphs cached in request -  fetched updates report
-redir to stuff that's gonna be  blocked: http://l/2021/09/27/21/*blogpost*?view=table&sort=date →  //link.mail.bloombergbusiness.com/favicon.ico  → http://l/https://cdn.sailthru.com/assets/images/favicon.ico
-cache redirects (instantly syndicate t.co dereferences to peers) - and icons 🐕➡️  http://l/2021/09/29/11/*blogpost* →  //federalhillprov.com/favicon.ico  → http://l/https://federalhillprov.com/wp-content/uploads/2021/08/cropped-fed-hill-favicon-178px-32x32.png
-bat signal not in presumably-RDFa content (Can we twiddle HTML datatypes beforehand?) , URI-identified comments from RDFa graph not cached at canonical locaion http://l/universalhub.com/2021/steam-plant-catches-fire
+redir to stuff that's gonna be  blocked: http://l/2021/09/27/21/*blogpost*?view=table&sort=date →  //link.mail.bloombergbusiness.com/favicon.ico  → https://cdn.sailthru.com/assets/images/favicon.ico
+cache redirects (instantly syndicate t.co dereferences to peers) - and icons 🐕➡️  http://l/2021/09/29/11/*blogpost* →  //federalhillprov.com/favicon.ico  → https://federalhillprov.com/wp-content/uploads/2021/08/cropped-fed-hill-favicon-178px-32x32.png
+bat signal not in presumably-RDFa content (Can we twiddle HTML datatypes beforehand?) , URI-identified comments from RDFa graph not cached at canonical locaion http://universalhub.com/2021/steam-plant-catches-fire
 drop specific query keys - de-utmize and other gunk
 ask all the peer-caches (pi/vps/phone from laptop) ahead of origin servers for static resources - HEAD All then cancel remaining HEADs on first response and GET winner? or cache availability notices recieved via UDP mesh. 
 syndicate tokens to peers
 auto-certgen for Falcon HTTPS
 multi-GET abstraction
 systemd + openrc unit files
-next/prev links in HTML not lifted to HTTP metadata and/or collide with proxy-added #next/#prev http://l/techrights.org/2021/11/30/freedom-respecting-internet/?offline
+next/prev links in HTML not lifted to HTTP metadata and/or collide with proxy-added #next/#prev http://techrights.org/2021/11/30/freedom-respecting-internet/
 link gemini posts to timeline - use current timestamp if server doesn't provide
 ruby-net-text is failing on URI parse errors all the time - it shouldn't even parse the body - write a Gemini client?
 RDF::URI #query_values hates multiple/leading/trailing &s, submit patch upstream 'https://minnit.chat/DOYOUFAMILY?embed&&nickname='.R.query_values
 for node IDs in HTML content.. yield each as RDF HTML-content
 shift-right/left pagination shortcuts conflict with text-selection adjustment
-re-parsing PDFs when offline http://l/http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date - remove @path
+re-parsing PDFs when offline http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date - remove @path
