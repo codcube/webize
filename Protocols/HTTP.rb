@@ -46,8 +46,8 @@ class WebResource
       URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist on force-reload (browser ctrl-shift-R)
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
-        fmt = uri.format_icon(head['Content-Type']) || ' '
-        color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                   # format color
+        format = uri.format_icon(head['Content-Type']) || ' '
+        color = env[:deny] ? '38;5;196' : (FormatColor[format] || 0)                                # format color
         Console.logger.info [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : ' ',                 # security level
                              if env[:deny]                                                          # action taken
                                '🛑'
@@ -59,8 +59,8 @@ class WebResource
                                ' '
                              end,
                              StatusIcon[status] || ' ',                                             # status
-                             fmt,                                                                   # format
-                             env[:fetched] ? (ENV.has_key?('http_proxy') ? '🖥' : '🐕') : ' '        # fetch type
+                             format,                                                                # format
+                             env[:fetched] ? (ENV.has_key?('http_proxy') ? '🖥' : '🐕') : ' ',       # fetch type
                              uri.format_icon(env[:origin_format]) || ' ',                           # upstream/origin format
                              (env[:repository]&.size).to_s.rjust(3), '⋮ ',                          # graph size
                              env['HTTP_REFERER'] ? ["\e[#{color}m",env['HTTP_REFERER'].R.display_host,"\e[0m → "] : nil, # referer
