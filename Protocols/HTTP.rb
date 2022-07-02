@@ -49,7 +49,7 @@ class WebResource
         fmt = uri.format_icon(head['Content-Type']) || '?'
         act = if env[:deny]
                 '🛑'
-              elsif offline?
+              elsif uri.offline?
                 '🔌'
               elsif env[:fetched]
                 ENV.has_key?('http_proxy') ? '🖥' : '🐕'
