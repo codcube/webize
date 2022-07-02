@@ -43,27 +43,26 @@ class WebResource
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
 
-      URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist
+      URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist on force-reload (browser ctrl-shift-R)
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
         fmt = uri.format_icon(head['Content-Type']) || '?'
-        act = if env[:deny]
-                '🛑'
-              elsif uri.offline?
-                '🔌'
-              elsif env[:fetched]
-                ENV.has_key?('http_proxy') ? '🖥' : '🐕'
-              elsif ActionIcon.has_key? env['REQUEST_METHOD']
-                ActionIcon[env['REQUEST_METHOD']]
-              else
-                ' '
-              end
         color = env[:deny] ? '38;5;196' : (FormatColor[fmt] || 0)                                   # format color
         Console.logger.info [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : ' ',                 # security
                              StatusIcon[status] || ' ',                                             # status
                              (env[:deny] || uri.head?) ? ' ' : fmt,                                 # format
-                             act,                                                                   # action
-                             (env[:origin_format] && env[:origin_format] != head['Content-Type']) ? uri.format_icon(env[:origin_format]) : ' ', # original format
+                             if env[:deny]
+                               '🛑'
+                             elsif uri.offline?
+                               '🔌'
+                             elsif env[:fetched]
+                               ENV.has_key?('http_proxy') ? '🖥' : '🐕'
+                             elsif ActionIcon.has_key? env['REQUEST_METHOD']
+                               ActionIcon[env['REQUEST_METHOD']]
+                             else
+                               ' '
+                             end,                                                                   # action
+                             uri.format_icon(env[:origin_format]) || '?',                           # origin format
                              (env[:repository]&.size).to_s.rjust(3), '⋮ ',                          # graph size
                              env['HTTP_REFERER'] ? ["\e[#{color}m",env['HTTP_REFERER'].R.display_host,"\e[0m → "] : nil, # referer
                              "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert off-site referers
