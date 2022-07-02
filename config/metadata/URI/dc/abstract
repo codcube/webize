@@ -80,6 +80,7 @@ instapp:hashtags
 itunes:subtitle
 keywords
 krux:description
+label_name
 log_category
 metaDescription
 msapplication-tooltip
@@ -144,4 +145,5 @@ twitter:image.alt
 twitter:image:alt
 twitter:label1
 twitter:label2
+verticals
 video:tag

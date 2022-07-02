@@ -30,11 +30,13 @@ contains_music
 csrf-param
 csrf-token
 debug
+donationsActive
 downloadable
 embeddable_by
 enabled
 enabled-features
 estimatedReadingTime
+expandableLinkCaret
 expected-hostname
 expires
 externalLink
@@ -64,6 +66,9 @@ hovercard-subject-tag
 html-safe-nonce
 imageEssenceContainsCaption
 isActive
+isCookieBannerEnabled
+isEmailVerified
+isInitialsProfileEnabled
 isJuniorTeam
 isLogoVisible
 isPlaceholder
@@ -72,6 +77,10 @@ isRedBullPowertrains
 isRedBullRacing
 isRedBulletin
 isRookiesCup
+isShareButtonEnabled
+isShareLinksEnabled
+isVenmoEnabled
+isWhatsappNotificationsEnabled
 is_album
 managed_by_feeds
 menuPosition
@@ -105,6 +114,7 @@ rootVe
 schema.DC
 sharing
 shenma-site-verification
+showRepeatVisitorSignupCta
 snipped
 socialLinksPosition
 sogou_site_verification
@@ -135,6 +145,8 @@ twitter:domain
 twitter:widgets:csp
 uriSlug
 urn
+useFooterSignup
+useSignupLink
 user-login
 uuid
 verified
