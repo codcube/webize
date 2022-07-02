@@ -1,4 +1,5 @@
 require 'console'
+require 'pathname'
 
 module Webize
 

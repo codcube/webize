@@ -48,7 +48,7 @@ class WebResource
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
         format = uri.format_icon(head['Content-Type']) || ' '
         color = env[:deny] ? '38;5;196' : (FormatColor[format] || 0)                                # format color
-        Console.logger.info [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : ' ',                 # security level
+        Console.logger.info [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,                 # security level
                              if env[:deny]                                                          # action taken
                                '🛑'
                              elsif uri.offline?
