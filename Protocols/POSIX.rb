@@ -27,7 +27,7 @@ class WebResource
                 elsif q['q'] && !q['q'].empty?            # GREP
                   grep
                 elsif !host && path == '/'
-                  (Pathname.glob Webize::ConfigRelPath.join('bookmarks/{home.u,search.html}')).map &:R
+                  (Pathname.glob Webize::ConfigRelPath.join('bookmarks/{home.u,search.html}')).map{|_| _.R env}
                 else                                      # LS dir
                   pat = if dirURI?                        # has trailing-slash?
                           summarize = true                # summary of
@@ -54,6 +54,7 @@ class WebResource
                 fromNodes Pathname.glob fsPath + '.*'
               end
       nodes.map! &:preview if summarize                   # summarize nodes
+      #logger.debug [:nodes, nodes].join ' '
       nodes                                               # nodes
     end
 
