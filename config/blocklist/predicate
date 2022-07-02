@@ -38,12 +38,14 @@ externalLink
 facebook-domain-verification
 fb:admins
 fb:app_id
+fb:page_id
 fb:pages
 format-detection
 generated
 github-keyboard-shortcuts
 go-import
 google
+google-adsense-platform-account
 google-adsense-platform-domain
 google-play-app
 google-signin-client_id
@@ -125,6 +127,7 @@ twitter:app:url:ipad
 twitter:app:url:iphone
 twitter:card
 twitter:domain
+twitter:widgets:csp
 uriSlug
 urn
 user-login
