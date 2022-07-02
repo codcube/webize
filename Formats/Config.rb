@@ -3,6 +3,7 @@ require 'console'
 module Webize
 
   ConfigPath = [__dir__, '../config'].join '/'
+  ConfigRelPath = Pathname(ConfigPath).relative_path_from Dir.pwd
 
   # path -> String
   def self.configData path

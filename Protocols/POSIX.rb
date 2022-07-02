@@ -26,6 +26,8 @@ class WebResource
                   find '*' + q['find'] + '*'
                 elsif q['q'] && !q['q'].empty?            # GREP
                   grep
+                elsif !host && path == '/'
+                  (Pathname.glob Webize::ConfigRelPath.join('bookmarks/{home.u,search.html}')).map &:R
                 else                                      # LS dir
                   pat = if dirURI?                        # has trailing-slash?
                           summarize = true                # summary of
