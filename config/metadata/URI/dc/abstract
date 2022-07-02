@@ -131,6 +131,7 @@ tags
 tbi-vertical
 teaser
 teaserBody
+tooltip
 topic
 topic_n2_names
 topics
@@ -139,6 +140,7 @@ twitter:alt
 twitter:data1
 twitter:data2
 twitter:description
+twitter:image.alt
 twitter:image:alt
 twitter:label1
 twitter:label2
