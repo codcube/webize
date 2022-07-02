@@ -30,6 +30,7 @@ bc:primarycategory
 bc:tags
 beat
 biography
+blurb
 cXenseParse:keywords
 cXenseParse:news_keywords
 calloutText
@@ -107,6 +108,7 @@ sailthru.excerpt
 sailthru.section
 sailthru.tags
 sailthru.verticals
+screen
 section
 section-name
 section-slug
