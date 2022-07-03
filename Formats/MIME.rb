@@ -51,6 +51,7 @@ class WebResource
       🐢: '38;5;48',
       🎨: '38;5;227',
       🎬: '38;5;208',
+      '🎞️ ' => '38;5;208',
       '🖼️ ' => '38;5;226',
     }
 
@@ -64,7 +65,7 @@ class WebResource
       when /^image/
         '🖼️ '
       when /^video/
-        :🎞️
+        '🎞️ '
       when /atom|rss|xml/
         :📰
       when /html/
