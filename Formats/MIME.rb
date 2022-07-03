@@ -50,8 +50,9 @@ class WebResource
       🗒: '38;5;165',
       🐢: '38;5;48',
       🎨: '38;5;227',
-      🖼️: '38;5;226',
-      🎬: '38;5;208'}
+      🎬: '38;5;208',
+      '🖼️ ' => '38;5;226',
+    }
 
     # MIME type -> character
     def format_icon mime
@@ -61,7 +62,7 @@ class WebResource
       when /^audio/
         :🔉
       when /^image/
-        :🖼️
+        '🖼️ '
       when /^video/
         :🎞️
       when /atom|rss|xml/

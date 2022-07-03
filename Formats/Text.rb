@@ -203,4 +203,9 @@ class WebResource
        (fragment&.split re)]
     end
   end
+  module HTTP
+    def self.log data
+      Console.logger.info data
+    end
+  end
 end
