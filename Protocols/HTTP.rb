@@ -52,14 +52,15 @@ class WebResource
         log [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,  # protocol security
              if env[:deny]                                           # action
                '🛑'
-             elsif uri.offline?
-               '🔌'
+             elsif StatusIcon.has_key? status
+               StatusIcon[status]
              elsif ActionIcon.has_key? env['REQUEST_METHOD']
                ActionIcon[env['REQUEST_METHOD']]
+             elsif uri.offline?
+               '🔌'
              else
                sp
              end,
-             StatusIcon[status] || sp,                                            # status
              format,                                                              # format
              env[:fetched] ? (ENV.has_key?('http_proxy') ? '🖥' : '🐕') : sp,      # fetch type
              uri.format_icon(env[:origin_format]) || sp,                          # upstream/origin format
