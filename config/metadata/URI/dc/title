@@ -64,6 +64,7 @@ sailthru.socialtitle
 sailthru.title
 seoHeadline
 shortName
+socialHeadline
 ta:title
 taboola:headline
 textHeadline
@@ -71,5 +72,6 @@ title
 track_title
 twitter:text:title
 twitter:title
+twitterTitle
 urlName
 urlTitle

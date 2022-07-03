@@ -34,6 +34,8 @@ csrf-param
 csrf-token
 debug
 default_profile
+derivedScore
+directScore
 display_text_range
 donationsActive
 downloadable
@@ -53,6 +55,7 @@ fb:pages
 fb:profile_id
 format-detection
 generated
+gh-contentid
 github-keyboard-shortcuts
 go-import
 google
