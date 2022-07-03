@@ -126,9 +126,12 @@ class WebResource < RDF::URI
   end
 
   include URIs
-  include Console
-
   alias_method :uri, :to_s
+
+  include Console
+  def self.log data
+    Console.logger.info data
+  end
 
   module HTML
     include URIs
