@@ -3,7 +3,11 @@
 module Webize
   module GIF
     class Format < RDF::Format
-      content_type 'image/gif', :extension => :gif, aliases: %w(image/GIF;q=0.8)
+      content_type 'image/gif',
+                   extension: :gif,
+                   aliases: %w(
+                   image/avif;q=0.2
+                   image/GIF;q=0.8)
       reader { Reader }
     end
 
