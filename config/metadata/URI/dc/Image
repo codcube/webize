@@ -42,6 +42,8 @@ https://schema.org/thumbnailUrl
 icon
 icon_url
 image
+image1x
+image1x
 image:secure_url
 imageSrc
 imageThumbnail

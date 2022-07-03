@@ -2,6 +2,7 @@
 DC.Type
 DC.type
 __typename
+advertiser_account_type
 article.type
 cXenseParse:pageClass
 cXenseParse:postType
