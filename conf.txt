@@ -1,0 +1,8 @@
+temporary list of notes for stuff needing declarative config:
+
+srcnotsrc / src Image.rb
+basicslugs Text.rb
+constants URI.rb
+regexes Feed.rb
+singlehopheaders HTTP.rb
+formatcolor formaticon MIME.rb (already unused?)
