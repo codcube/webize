@@ -3,6 +3,7 @@ Distribution
 EditURI
 GOOGLEBOT
 HandheldFriendly
+MSSmartTagsPreventParsing
 MobileOptimized
 ROBOTS
 ResourceLoaderDynamicStyles
@@ -117,6 +118,7 @@ monetization_model
 msapplication-TileColor
 msapplication-config
 msapplication-tap-highlight
+msapplication-task
 msvalidate.01
 mw-deduplicated-inline-style
 naver-site-verification
@@ -191,9 +193,11 @@ useSignupLink
 user-login
 uuid
 verified
+verify-v1
 viewport
 visitor-hmac
 visitor-payload
 wlwmanifest
 wot-verification
+y_key
 yandex-verification
