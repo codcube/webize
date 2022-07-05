@@ -22,9 +22,9 @@ apple-mobile-web-app-capable
 apple-mobile-web-app-status-bar-style
 apple-mobile-web-app-title
 apple-touch-fullscreen
-apple-touch-icon-57x57
 applicationId
 baidu-site-verification
+bingbot
 brightspot.cached
 brightspot.contentId
 business_profile_state
@@ -83,6 +83,7 @@ indices
 isActive
 isCookieBannerEnabled
 isEmailVerified
+isExternal
 isInitialsProfileEnabled
 isJuniorTeam
 isLogoVisible
@@ -141,6 +142,7 @@ sharing
 shenma-site-verification
 showRepeatVisitorSignupCta
 siteid
+slurp
 snipped
 socialLinksPosition
 sogou_site_verification
