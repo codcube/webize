@@ -15,6 +15,12 @@ al:android:url
 al:ios:app_name
 al:ios:app_store_id
 al:ios:url
+al:ipad:app_name
+al:ipad:app_store_id
+al:ipad:url
+al:iphone:app_name
+al:iphone:app_store_id
+al:iphone:url
 al:web:should_fallback
 amphtml
 apple-itunes-app
@@ -23,6 +29,8 @@ apple-mobile-web-app-status-bar-style
 apple-mobile-web-app-title
 apple-touch-fullscreen
 applicationId
+article:content_tier
+articleid
 baidu-site-verification
 bingbot
 brightspot.cached
@@ -116,6 +124,7 @@ newTab
 next-head-count
 noopenner
 norton-safeweb-site-verification
+nyt_uri
 openNewTab
 openid.server
 optimizely-datafile
@@ -130,6 +139,7 @@ prefetch
 preload
 profile_link_color
 public
+pubp_event_id
 request-id
 request_id
 retweet_count
@@ -142,6 +152,7 @@ sharing
 shenma-site-verification
 showRepeatVisitorSignupCta
 siteid
+slack-app-id
 slurp
 snipped
 socialLinksPosition
