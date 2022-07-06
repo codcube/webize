@@ -126,8 +126,10 @@ class WebResource < RDF::URI
   end
 
   include URIs
-  include Console
   alias_method :uri, :to_s
+
+  include Console
+  Console.logger.verbose! false
 
   module HTML
     include URIs

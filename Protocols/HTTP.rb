@@ -64,7 +64,7 @@ class WebResource
              format,                                                              # format
              env[:fetched] ? (ENV.has_key?('http_proxy') ? '🖥' : '🐕') : sp,      # fetch type
              uri.format_icon(env[:origin_format]) || sp,                          # upstream/origin format
-             (env[:repository]&.size).to_s.rjust(3), '⋮ ',                        # graph size
+             (env[:repository]&.size).to_s.rjust(4), '⋮ ',                        # graph size
              env['HTTP_REFERER'] ? ["\e[#{color}m",env['HTTP_REFERER'].R.display_host,"\e[0m → "] : nil, # referer
              "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert off-site referer
              env[:base].host && env[:base].display_host, env[:base].path, "\e[0m",# path
