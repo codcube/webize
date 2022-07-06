@@ -1,3 +1,8 @@
+easy:
+icon for pdf
+icon for fetch from chained proxy
+
+harder:
 finger URIs gemini://freeshell.de/gemlog/2022-01-11.gmi
 generate preview at resource caching time
 grep inside list http://l/src/webize/config/feeds?q=gitter
