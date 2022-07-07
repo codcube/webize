@@ -89,6 +89,7 @@ hovercard-subject-tag
 html-safe-nonce
 imageEssenceContainsCaption
 indices
+instapp:owner_user_id
 isActive
 isCookieBannerEnabled
 isEmailVerified
@@ -185,6 +186,7 @@ twitter:app:url:ipad
 twitter:app:url:iphone
 twitter:card
 twitter:domain
+twitter:maxage
 twitter:widgets:csp
 uriSlug
 urn
