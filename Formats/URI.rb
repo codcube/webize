@@ -63,7 +63,7 @@ class WebResource < RDF::URI
       return true if BlockedSchemes.member? scheme  # scheme filter
       return if !host || (AllowHosts.member? host)  # allow hosts
       return true if host.match? Gunk               # hostname-regex filter
-      return deny_domain?                           # domain-tree filter
+      deny_domain?                                  # domain-tree filter
     end
 
     def deny_domain?
@@ -74,14 +74,17 @@ class WebResource < RDF::URI
 
     def dirURI?; path && path[-1] == '/' end
 
-    def display_host; host&.sub(/^www\./,'').sub(/\.(com|net|org)$/,'') end
+    def display_host
+      return unless host
+      host.sub(/^www\./,'').sub /\.(com|net|org)$/,''
+    end
 
     def display_name
       return fragment if fragment && !fragment.empty?                     # fragment
       return query_values['id'] if query_values&.has_key? 'id' rescue nil # query
       return basename if path && basename && !['','/'].member?(basename)  # basename
       return display_host if host                                         # hostname
-      'user'
+      :name
     end
 
     def domains; host.split('.').reverse end

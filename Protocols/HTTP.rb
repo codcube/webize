@@ -69,7 +69,7 @@ class WebResource
              "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert off-site referer
              env[:base].display_host, env[:base].path, "\e[0m",                   # host, path
              (qs.map{|k,v|" \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?),    # query
-             head['Location'] ? [" → \e[#{color}m",head['Location'],"\e[0m"] : nil, # location
+             head['Location'] ? [" → \e[#{color}m", head['Location'].R.unproxyURI.display_host, "\e[0m"] : nil, # redirected location
              env[:warning] ? [" \e[38;5;226m⚠️", env[:warning], "\e[0m"] : nil,    # warning
             ].flatten.compact.map{|t|t.to_s.encode 'UTF-8'}.join
         [status, head, body]}                                                     # response
