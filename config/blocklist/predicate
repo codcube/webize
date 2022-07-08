@@ -108,6 +108,7 @@ isShareLinksEnabled
 isVenmoEnabled
 isWhatsappNotificationsEnabled
 is_album
+isrc
 listed_count
 managed_by_feeds
 media_count
@@ -202,5 +203,6 @@ visitor-hmac
 visitor-payload
 wlwmanifest
 wot-verification
+x-ua-compatible
 y_key
 yandex-verification
