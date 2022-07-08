@@ -47,6 +47,9 @@ debug
 default_profile
 derivedScore
 directScore
+discourse/config/environment
+discourse_current_homepage
+discourse_theme_id
 display_text_range
 donationsActive
 downloadable
@@ -130,6 +133,7 @@ next-head-count
 noopenner
 norton-safeweb-site-verification
 nyt_uri
+og:ignore_canonical
 openNewTab
 openid.server
 optimizely-datafile
