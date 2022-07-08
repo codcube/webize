@@ -32,6 +32,7 @@ apple-touch-fullscreen
 applicationId
 article:content_tier
 articleid
+authorization_endpoint
 baidu-site-verification
 bingbot
 brightspot.cached
@@ -135,6 +136,7 @@ norton-safeweb-site-verification
 nyt_uri
 og:ignore_canonical
 openNewTab
+openid.delegate
 openid.server
 optimizely-datafile
 p:domain_verify
@@ -177,6 +179,7 @@ tec-api-version
 theme-color
 tier
 token
+token_endpoint
 track_format
 translator_type
 turbo-body-classes
