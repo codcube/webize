@@ -177,6 +177,7 @@ track_format
 translator_type
 turbo-body-classes
 turbo-cache-control
+twitter:app:country
 twitter:app:id:googleplay
 twitter:app:id:ipad
 twitter:app:id:iphone
@@ -187,6 +188,7 @@ twitter:app:url:googleplay
 twitter:app:url:ipad
 twitter:app:url:iphone
 twitter:card
+twitter:dnt
 twitter:domain
 twitter:maxage
 twitter:widgets:csp
