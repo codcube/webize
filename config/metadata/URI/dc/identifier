@@ -2,4 +2,5 @@ DC.Identifier
 DC.Identifier.URL
 DC.identifier
 dc.identifier
+dcterms.identifier
 fragment
