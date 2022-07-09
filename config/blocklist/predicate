@@ -34,10 +34,12 @@ article:content_tier
 articleid
 authorization_endpoint
 baidu-site-verification
+baidu_union_verify
 bingbot
 brightspot.cached
 brightspot.contentId
 business_profile_state
+bytedance-verification-code
 canHaveEpisodes
 color-scheme
 commentable
@@ -151,6 +153,7 @@ preload
 profile_link_color
 public
 pubp_event_id
+renderer
 request-id
 request_id
 retweet_count
