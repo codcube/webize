@@ -234,7 +234,7 @@ class WebResource
               if t = Time.httpdate(timestamp) rescue nil    # parse timestamp
                 FileUtils.touch file, mtime: t              # cache timestamp
               else
-                logger.warn ['⚠️  malformed datetime:', h['Last-Modified'], timestamp != h['Last-Modified'] ? [:→, timestamp] : nil].join ' '
+                logger.debug ['⚠️  HTTP datetime parse failed on ', h['Last-Modified'], timestamp != h['Last-Modified'] ? [:→, timestamp] : nil].join ' '
               end
             end
 

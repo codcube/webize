@@ -30,6 +30,7 @@ emit RDF for subresources in generic JSON triplr
 don't return login redirect to client, return proxy cache (IG but we seem permbanned from them so who else?)
 long-running slow updater, for occasional GET heavily-spaced origin-queries
 offline/online content merge by default? following feeds (API or RSS/Atom) to canonical URL often results in empty page due to SPA stuff, but we have the content already
+merge local dir-content at least. for nose following. http://l/gitter.im/solid/specification should link to spec, solidos etc 
 history -  store and browse versions, eg full blogpost and preview from feed
 remember insecure hosts so we don't keep trying HTTPS
 more compliant cookie caching on allowed (sub)domains

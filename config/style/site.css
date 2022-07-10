@@ -8,7 +8,7 @@
 #rootpath {float: left}
 #up {background-color: #222; color: #aaa; border-radius: 0 0 .5em .5em; font-size: 2em; position: fixed; right: 3em; top: 0; padding: 0 .8em 0 .8em}
 .abstract {background-color: #bbbbbb; color: #000; display: block; border-radius: 0 .4em 0 0; margin-left: -.2em; padding-left: .125em}
-.blocked, a.blocked.uri {background: repeating-linear-gradient(90deg, #000, #000, 1em, #f00 1em, #f00 2em); color: #fff}
+.blocked, a.blocked.uri {background: repeating-linear-gradient(0deg, #000, #000, 1em, #f03 1em, #f03 2em); color: #fff}
 .bold {font-weight: bold}
 .file > .icon {font-size: 4.2em; background-color: #000; color: #fff}
 .file > .name {font-size: .8em; position: absolute; top: 4.8em; left: .4em}
