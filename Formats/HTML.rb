@@ -407,9 +407,9 @@ class WebResource
                 elsif StatusColor.has_key? status
                   StatusColor[status]                                                              # status-code color
                 elsif !host || offline?
-                  '#000'                                                                           # offline -> black
+                  '#000'                                                                           # offline or local -> black
                 else
-                  '#333'                                                                           # online -> dark gray
+                  '#282828'                                                                        # online -> dark gray
                 end
       css = "body {background: repeating-linear-gradient(-45deg, #000, #000 1em, #{bgcolor} 1em, #{bgcolor} 2em)}" # CSS
 

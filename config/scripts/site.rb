@@ -100,7 +100,9 @@ class WebResource
     GET 'detectportal.firefox.com', -> r {[200, {'Content-Type' => 'text/html'}, ['<meta http-equiv="refresh" content="0;url=https://support.mozilla.org/kb/captive-portal"/>']]}
 
     # misc
+    GET 'm.facebook.com'
     GET 'www.facebook.com'
+
     GET 'feeds.feedburner.com', -> r {r.parts[0].index('~') ? r.deny : r.fetch}
 
     GET 'gitter.im', -> r {
