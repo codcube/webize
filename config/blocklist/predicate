@@ -24,6 +24,7 @@ al:iphone:app_store_id
 al:iphone:url
 al:web:should_fallback
 amphtml
+apple-app-site-association
 apple-itunes-app
 apple-mobile-web-app-capable
 apple-mobile-web-app-status-bar-style
