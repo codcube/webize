@@ -265,7 +265,7 @@ module Webize
                 @env[:links][:icon] ||= v if k.match? /^(fav)?icon?$/i
                 @env[:feeds].push v if k == 'alternate' && ((m['type']&.match?(/atom|rss/)) || (v.path&.match?(/^\/feed\/?$/))) && !@env[:feeds].member?(v)
                 k = MetaMap[k] || k
-                logger.warn ['no RDF predicate found:', k, v].join ' ' unless k.to_s.match? /^(drop|http)/
+                logger.warn ["no property URI for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
                 yield @base, k, v unless k == :drop || v.R.deny?}
             end
           end}
@@ -294,7 +294,7 @@ module Webize
               else
                 v = @base.join v if v.match? /^(http|\/)\S+$/
               end
-              logger.warn ['no RDF predicate found:', k, v].join ' ' unless k.to_s.match? /^(drop|http)/
+              logger.warn ["no property URI for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
               yield @base, k, v unless k == :drop
             end
           elsif m['http-equiv'] == 'refresh'

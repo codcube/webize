@@ -220,6 +220,7 @@ verify-v1
 viewport
 visitor-hmac
 visitor-payload
+webgains-site-verification
 wlwmanifest
 wot-verification
 x-ua-compatible
