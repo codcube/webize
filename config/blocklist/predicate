@@ -10,6 +10,7 @@ ResourceLoaderDynamicStyles
 SKYPE_TOOLBAR
 STYLESHEET
 advertiser_account_service_levels
+advertising
 ahrefs-site-verification
 al:android:app_name
 al:android:package
@@ -146,6 +147,8 @@ optimizely-datafile
 p:domain_verify
 pageId
 pagePosition
+parsely-metadata
+parsely-page
 pingback
 pinned_tweet_ids
 pinned_tweet_ids_str
