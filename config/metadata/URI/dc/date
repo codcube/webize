@@ -40,6 +40,7 @@ creationDate
 dat
 date
 date.release
+dateBroadcast
 dateCreated
 dateLastPubbed
 dateModified
@@ -134,6 +135,7 @@ timestamp
 updated
 updated-at
 updatedAt
+updatedDate
 updated_at
 updated_time
 uploadDate

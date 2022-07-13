@@ -37,6 +37,7 @@ resource-type
 sailthru.doctype
 subpageType
 subType
+taxonomyType
 trackType
 type
 typename
