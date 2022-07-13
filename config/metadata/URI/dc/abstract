@@ -44,6 +44,7 @@ definition
 des
 desc
 description
+domain
 dsc
 embedCaption
 excerpt
@@ -113,9 +114,9 @@ sailthru.tags
 sailthru.verticals
 screen
 section
-sections
 section-name
 section-slug
+sections
 shareSnippet
 shortDescription
 shortDescriptionOrTagLine
@@ -128,6 +129,7 @@ standfirst
 subText
 subheadline
 subject
+subsection
 subtitle
 summary
 tab
@@ -154,6 +156,7 @@ twitter:label1
 twitter:label2
 twitterDescription
 urlCode
+vertical
 verticals
 vf:topic
 video:tag
