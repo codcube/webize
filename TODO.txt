@@ -22,6 +22,7 @@ commandline util to update static HTML for nginx
 link to local-archive URL from timeline http://localhost/2021/07/04/12/*#r5a53af0e893adbe0f1d10a3825eb1ceb7c28829a120be8a93d3dff98dc93046c
 IRC linepointers are #hashonly, but resolution per-line might be expensive, investigate naive string-concat solution
 hash fetched entities to prevent redundant parsing/summarization work when origin caching is broken - essentially generate our own ETags
+return only new posts (cached in saveRDF) since full-content youtube/soundcloud/feedlist aggregated responses shred browsers. 
 log byte-range req
 populate geographic index from encountered RDF https://www.jphs.org/20th-century/2017/11/13/boston-remembers-kurt-cobain
 multiple videos, using first:https://www.youtube.com/opensearch?locale=en_US, https://www.youtube.com/watch?v=k2sIDDco5xg, http://www.youtube.com/watch?v=k2sIDDco5xg&feature=applinks, @youtube
