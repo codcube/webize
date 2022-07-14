@@ -34,6 +34,7 @@ offline/online content merge by default? following feeds (API or RSS/Atom) to ca
 merge local dir-content at least. for nose following. http://l/gitter.im/solid/specification should link to spec, solidos etc 
 history -  store and browse versions, eg full blogpost and preview from feed
 remember insecure hosts so we don't keep trying HTTPS
+show request meta in HTML - graph/resource/doc sizes/dates at least (should i ctrl-R? etc) 
 more compliant cookie caching on allowed (sub)domains
 backlink indexing and more indexing in general - frequently linked posts 'daily heat'
 return graphs cached in request -  fetched updates report
