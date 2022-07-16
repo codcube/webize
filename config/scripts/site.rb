@@ -43,7 +43,7 @@ class WebResource
 
   module HTTP
 
-    CDNhost = /\.(amazonaws|cloudfront|discordapp|g(it(hu|la)b|oogle)(usercontent)?|medium|substack|tumblr)\.(com|io|net)$/
+    CDNhost = /\.(amazon(aws)?|apple|cloud(inary|flare|front)|discord(app)?|f(acebook|bcdn)|g(it(hu|la)b|oogle)(usercontent)?|medium|substack|tumblr)\.(com|io|net)$/
     CDNdoc = /(\/|\.(html|jpe?g|mp4|p(df|ng)|webp))$/i
 
     NoQuery = -> r { # strip query from request and response (redirect location) URIs
@@ -96,12 +96,8 @@ class WebResource
 
     %w(bostonglobe-prod.cdn.arcpublishing.com).map{|host|GET host, Resizer}
 
-    # connectivity-check hosts
+    # pass firefox's connectivity check - screen-wasting messagebar and/or offline behaviours without this
     GET 'detectportal.firefox.com', -> r {[200, {'Content-Type' => 'text/html'}, ['<meta http-equiv="refresh" content="0;url=https://support.mozilla.org/kb/captive-portal"/>']]}
-
-    # misc
-    GET 'm.facebook.com'
-    GET 'www.facebook.com'
 
     GET 'feeds.feedburner.com', -> r {r.parts[0].index('~') ? r.deny : r.fetch}
 
