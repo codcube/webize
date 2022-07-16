@@ -34,6 +34,7 @@ offline/online content merge by default? following feeds (API or RSS/Atom) to ca
 merge local dir-content at least. for nose following. http://l/gitter.im/solid/specification should link to spec, solidos etc 
 history -  store and browse versions, eg full blogpost and preview from feed
 remember insecure hosts so we don't keep trying HTTPS
+small turtle documentatino of declarative config files
 show request meta in HTML - graph/resource/doc sizes/dates at least (should i ctrl-R? etc)  
 link to archived version from toolbar (we nuked ?offline QS so use the storage path)
 looks like we're getting good cookies from twitter but just not caching them - investigate if bookmarklet is really necessary. and the triplr is still kind of wonky in tmers of URIs, any simple way to override without introduci8ng another per-site config mechanism?
@@ -56,3 +57,16 @@ RDF::URI #query_values hates multiple/leading/trailing &s, submit patch upstream
 for node IDs in HTML content.. yield each as RDF HTML-content
 shift-right/left pagination shortcuts conflict with text-selection adjustment
 re-parsing PDFs when offline http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date - remove @path
+
+stuff needing declarative config:
+
+add:
+srcnotsrc / src Image.rb
+basicslugs Text.rb
+constants URI.rb
+regexes Feed.rb
+singlehopheaders HTTP.rb
+formatcolor formaticon MIME.rb (already unused?)
+
+hook up existing list:
+tokens (qs)
