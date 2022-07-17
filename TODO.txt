@@ -50,7 +50,7 @@ syndicate tokens to peers
 auto-certgen for Falcon HTTPS
 multi-GET abstraction
 systemd + openrc unit files
-next/prev links in HTML not lifted to HTTP metadata and/or collide with proxy-added #next/#prev http://techrights.org/2021/11/30/freedom-respecting-internet/
+next/prev links in HTML not lifted to HTTP metadata and/or collide with proxy-added #next/#prev http://techrights.org/2021/11/30/freedom-respecting-internet/ http://www.w3.org/1999/xhtml/vocab#role
 link gemini posts to timeline - use current timestamp if server doesn't provide
 ruby-net-text is failing on URI parse errors all the time - it shouldn't even parse the body - write a Gemini client?
 RDF::URI #query_values hates multiple/leading/trailing &s, submit patch upstream 'https://minnit.chat/DOYOUFAMILY?embed&&nickname='.R.query_values
