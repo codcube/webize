@@ -106,7 +106,7 @@ class WebResource
         body
       end
       rescue Exception => e
-      logger.failure head, e
+      Console.logger.failure head, e
       head['Content-Encoding'] = encoding
       body
     end
