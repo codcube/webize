@@ -55,6 +55,7 @@ debug
 default_profile
 derivedScore
 directScore
+discogsId
 discourse/config/environment
 discourse_current_homepage
 discourse_theme_id
