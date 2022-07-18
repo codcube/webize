@@ -40,6 +40,7 @@ authorization_endpoint
 baidu-site-verification
 baidu_union_verify
 bingbot
+botify-site-verification
 brightspot.cached
 brightspot.contentId
 business_profile_state
@@ -150,6 +151,7 @@ pageId
 pagePosition
 parsely-metadata
 parsely-page
+parsely-post-id
 pingback
 pinned_tweet_ids
 pinned_tweet_ids_str
