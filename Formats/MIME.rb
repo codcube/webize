@@ -78,6 +78,8 @@ class WebResource
         :⑶
       when /octet.stream|zip|xz/
         :🧱
+      when /pdf/
+        :📚
       when /playlist/
         :🎬
       when /script/

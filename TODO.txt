@@ -1,5 +1,4 @@
 easy:
-icon for pdf
 icon for fetch from chained proxy
 
 harder:
