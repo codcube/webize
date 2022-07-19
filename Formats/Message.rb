@@ -11,11 +11,13 @@ module Webize
       def scanMessages
         @doc.css(MsgCSS[:post]).map{|post|                                 # post
           links = post.css(MsgCSS[:link])
+
           subject = if !links.empty?
                       links[0]['href']                                     # identifier in self-referential link
                     else
                       post['data-post-no'] || post['id'] || post['itemid'] # identifier attribute
                     end
+
           if subject                                                       # identifier found?
             subject = @base.join subject                                   # resolve subject URI
             graph = ['//', subject.host, subject.path&.sub(/\.html$/, ''), # resolve graph URI
@@ -85,10 +87,13 @@ module Webize
                 end}
               yield subject, Content, Webize::HTML.format(msg.to_s, @base), graph
 
-              post.remove}                                                 # sweep HTML emitted as RDF content
+              post.remove}                                                 # sweep HTML emitted as RDF HTML-content
+          #else
+          #  logger.debug ["no subject found for node: ", post.to_html].join
           end
         }
-        @doc.css(MsgCSS[:gunk]).map &:remove
+
+        @doc.css(MsgCSS[:gunk]).map &:remove                               # sweep gunk nodes
 
       end
     end

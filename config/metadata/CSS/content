@@ -1,5 +1,6 @@
 .body
 .comment
+.comment_text
 .content
 .divMessage
 .e-content
