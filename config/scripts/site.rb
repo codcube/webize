@@ -5,7 +5,6 @@ module Webize
       Triplr = {
         'apnews.com' => :AP,
         'gitter.im' => :GitterHTML,
-        'lobste.rs' => :Lobsters,
         'spinitron.com' => :Spinitron,
         'universalhub.com' => :UHub,
         'www.apnews.com' => :AP,

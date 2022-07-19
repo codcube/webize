@@ -158,6 +158,7 @@ class WebResource < RDF::URI
 
       {class: :toolbox,
        c: [{_: :a, href: host ? env[:base].secureURL : HTTP.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪, id: :UI}, # 👉 origin UI
+           {_: :a, href: '/' + fsPath, c: :📦},
            {_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;'*5},                               # 👉 root node
            ({_: :a, c: '↨', id: :tabular,
              href: HTTP.qs(env[:qs].merge({'view' => 'table', 'sort' => 'date'}))} unless env[:view] == 'table'),       # 👉 tabular view
