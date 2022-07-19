@@ -10,7 +10,6 @@ module Webize
         'universalhub.com' => :UHub,
         'www.apnews.com' => :AP,
         'www.google.com' => :GoogleHTML,
-        'www.instagram.com' => :InstagramHTML,
         'www.nationalgeographic.com' => :NatGeo,
         'www.nytimes.com' => :NYT,
         'www.nts.live' => :NTS,
@@ -29,7 +28,6 @@ module Webize
       'api.mixcloud.com' => :MixcloudAPI,
       'gitter.im' => :GitterJSON,
       'proxy.c2.com' => :C2,
-      'www.instagram.com' => :InstagramJSON,
       'www.mixcloud.com' => :Mixcloud,
     }
   end
@@ -152,8 +150,6 @@ class WebResource
       end}
 
     GET 'us.conv.indeed.com', -> r {[301, {'Location' => ['//www.indeed.com/viewjob?jk=', r.query_values['jk']].join.R(r.env).href}, []]}
-
-    GET 'instagram.com', -> r {[301, {'Location' => ['//www.instagram.com', r.path].join.R(r.env).href}, []]}
 
     GET 'api.mixcloud.com', -> r {
       r.offline? ? r.fetchLocal : r.fetchHTTP(format: 'application/json')}
@@ -495,78 +491,6 @@ class WebResource
     tree['media'].map{|i|
       url = i['url'].R
       yield self, File.extname(url.path) == '.mp4' ? Video : Image, url}
-  end
-
-  def InstagramHTML doc, &b
-    objvar = /^window._sharedData = /
-    doc.css('script').map{|script|
-      if script.inner_text.match? objvar
-        InstagramJSON ::JSON.parse(script.inner_text.sub(objvar, '')[0..-2]), &b
-      end}
-  end
-
-  def InstagramJSON tree, &b
-    Webize::JSON.scan(tree){|h|
-      if tl = h['edge_owner_to_timeline_media']
-        end_cursor = tl['page_info']['end_cursor'] rescue nil
-        uid = tl["edges"][0]["node"]["owner"]["id"] rescue nil
-        env[:links][:prev] ||= 'https://www.instagram.com/graphql/query/' + HTTP.qs({query_hash: :e769aa130647d2354c40ea6a439bfc08, variables: {id: uid, first: 12, after: end_cursor}.to_json}) if uid && end_cursor
-      end
-      if h['shortcode']
-        s = graph = ['https://www.instagram.com/p/', h['shortcode'], '/'].join.R
-        yield s, Type, Post.R, graph
-        yield s, Image, h['display_url'].R, graph if h['display_url']
-        if owner = h['owner']
-          yield s, Creator, ('https://www.instagram.com/' + owner['username']).R, graph if owner['username']
-          yield s, To, 'https://www.instagram.com/'.R, graph
-        end
-        if time = h['taken_at_timestamp']
-          yield s, Date, Time.at(time).iso8601, graph
-        end
-        if text = h['edge_media_to_caption']['edges'][0]['node']['text']
-          yield s, Content, Webize::HTML.format(CGI.escapeHTML(text).split(' ').map{|t|
-                                                  if match = (t.match /^@([a-zA-Z0-9._]+)(.*)/)
-                                                    "<a class='uri' href='https://www.instagram.com/#{match[1]}'>#{match[1]}</a>#{match[2]}"
-                                                  else
-                                                    t
-                                                  end}.join(' '), self), graph
-        end rescue nil
-      end}
-  end
-
-  def Lobsters doc
-    doc.css('.h-entry').map{|entry|
-      avatar, author, archive, post = entry.css('.byline a')
-      post = archive unless post
-      subject = join post['href']
-      yield subject, Type, Post.R
-      yield subject, Creator, (join author['href'])
-      yield subject, Creator, author.inner_text
-      yield subject, Image, (join avatar.css('img')[0]['src'])
-      yield subject, Date, Time.parse(entry.css('.byline > span[title]')[0]['title']).iso8601
-      entry.css('.link > a').map{|link|
-        yield subject, Link, (join link['href'])
-        yield subject, Title, link.inner_text}
-      entry.css('.tags > a').map{|tag|
-        yield subject, To, (join tag['href'])
-        yield subject, Abstract, tag['title']}
-
-      entry.remove }
-
-    doc.css('div.comment[id]').map{|comment|
-      post_id, avatar, author, post_link = comment.css('.byline > a')
-      if post_link
-        subject = (join post_link['href']).R
-        graph = subject.join [subject.basename, subject.fragment].join '.'
-        yield subject, Type, Post.R, graph
-        yield subject, To, (join subject.path), graph
-        yield subject, Creator, (join author['href']), graph
-        yield subject, Creator, author.inner_text, graph
-        yield subject, Image, (join avatar.css('img')[0]['src']), graph
-        yield subject, Date, Time.parse(comment.css('.byline > span[title]')[0]['title']).iso8601, graph
-        yield subject, Content, (Webize::HTML.format comment.css('.comment_text')[0], self), graph
-      end
-      comment.remove }
   end
 
   def Mixcloud tree, &b
