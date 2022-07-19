@@ -1,7 +1,3 @@
-easy:
-icon for fetch from chained proxy
-
-harder:
 finger URIs gemini://freeshell.de/gemlog/2022-01-11.gmi
 generate preview at resource caching time
 grep inside list http://l/src/webize/config/feeds?q=gitter
@@ -58,15 +54,11 @@ for node IDs in HTML content.. yield each as RDF HTML-content
 shift-right/left pagination shortcuts conflict with text-selection adjustment
 re-parsing PDFs when offline http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date - remove @path
 
-stuff needing declarative config:
-
-add:
+move to declarative config:
 srcnotsrc / src Image.rb
 basicslugs Text.rb
 constants URI.rb
 regexes Feed.rb
 singlehopheaders HTTP.rb
 formatcolor formaticon MIME.rb (already unused?)
-
-hook up existing list:
 tokens (qs)
