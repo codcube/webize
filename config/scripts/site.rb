@@ -3,18 +3,11 @@ module Webize
   module HTML
     class Reader
       Triplr = {
-        'apnews.com' => :AP,
         'gitter.im' => :GitterHTML,
         'spinitron.com' => :Spinitron,
         'universalhub.com' => :UHub,
-        'www.apnews.com' => :AP,
         'www.google.com' => :GoogleHTML,
-        'www.nationalgeographic.com' => :NatGeo,
-        'www.nytimes.com' => :NYT,
-        'www.nts.live' => :NTS,
         'www.qrz.com' => :QRZ,
-        'www.scmp.com' => :Apollo,
-        'www.thecrimson.com' => :Apollo,
         'www.universalhub.com' => :UHub,
         'www.youtube.com' => :YouTube,
       }
@@ -93,9 +86,6 @@ class WebResource
 
     %w(bostonglobe-prod.cdn.arcpublishing.com).map{|host|GET host, Resizer}
 
-    # pass firefox's connectivity check - screen-wasting messagebar and/or offline behaviours without this
-    GET 'detectportal.firefox.com', -> r {[200, {'Content-Type' => 'text/html'}, ['<meta http-equiv="refresh" content="0;url=https://support.mozilla.org/kb/captive-portal"/>']]}
-
     GET 'feeds.feedburner.com', -> r {r.parts[0].index('~') ? r.deny : r.fetch}
 
     GET 'gitter.im', -> r {
@@ -171,13 +161,6 @@ class WebResource
         r.fetch
       end}
 
-    GET 'outline.com', -> r {
-      if r.parts.size == 1
-        (r.join ['/stat1k/', r.parts[0], '.html'].join).R(r.env).fetch
-      else
-        r.fetch
-      end}
-
     GET 'old.reddit.com', -> r { # use this host to read page pointers visible in <body> (oldUI) as they're missing in HEAD and <head> (oldUI/newUI) and <body> (newUI)
       r.fetch.yield_self{|status,head,body|
         if status.to_s.match? /^30/
@@ -203,10 +186,6 @@ class WebResource
       else
         r.deny
       end}
-
-    GotoReddit =  -> r {[302, {'Location' => ('//www.reddit.com' + r.path).R(r.env).href}, []]}
-    GET 'teddit.net', GotoReddit
-    GET 'np.reddit.com', GotoReddit
 
     GET 's4.reutersmedia.net', -> r {
       args = r.query_values || {}
@@ -320,24 +299,14 @@ class WebResource
     GET 'mobile.twitter.com', -> r {[301, {'Location' => ['//twitter.com', r.path, '?', r.query].join.R(r.env).href}, []]}
     GET 'www.twitter.com', Twitter
 
-    GET 'radar.weather.gov', -> r {
-      r.env[:cache] = r if r.file?
-      r.fetchHTTP}
-
     GET 'wiki.c2.com', -> r {
       proxyURL = ['https://proxy.c2.com/wiki/remodel/pages/', r.env['QUERY_STRING']].join.R r.env
       proxyURL.fetchHTTP format: 'application/json'}
 
     GET 's.yimg.com', ImgRehost
 
-    GET 'news.ycombinator.com', -> r {
-      r.env[:group] ||= 'to'
-      r.env[:order] ||= 'asc'
-      r.env[:sort] ||= 'date'
-      r.env[:view] ||= 'table'
-      r.fetch}
-
     GET 'youtu.be', -> r {[301, {'Location' => ['https://www.youtube.com/watch?v=', r.path[1..-1]].join.R(r.env).href}, []]}
+
     GotoYT = -> r {[301, {'Location' => ['//www.youtube.com', r.path, '?', r.query].join.R(r.env).href}, []]}
     GET 'm.youtube.com', GotoYT
     GET 'youtube.com', GotoYT
@@ -395,24 +364,6 @@ class WebResource
       else
         r.deny
       end}
-  end
-
-  def Apollo doc, &b
-    JSONembed doc, /window[^{]+Apollo[^{]+{/i, &b
-  end
-
-  def AP doc
-    doc.css('script').map{|script|
-      script.inner_text.scan(/window\['[-a-z]+'\] = ([^\n]+)/){|data| # find the JSON
-        data = data[0]
-        data = data[0..-2] if data[-1] == ';'
-        Webize::JSON::Reader.new(data, base_uri: self).scanContent do |s,p,o| # call JSON triplr
-          if p == 'gcsBaseUrl' # bind image URL
-            p = Image
-            o += '2000.jpeg'
-          end
-          yield s,p,o
-        end}}
   end
 
   def C2 tree, &b
@@ -543,20 +494,6 @@ class WebResource
       env[:links][:next] = pages['next'] if pages['next']
       env[:links][:prev] = pages['previous'] if pages['previous']
     end
-  end
-
-  def NatGeo doc, &b
-    JSONembed doc, /window[^{]+NatGeo[^{]+{/i, &b
-  end
-
-  def NYT doc, &b
-    JSONembed doc, /^window.__preload/, &b
-  end
-
-  def NTS doc, &b
-    JSONembed doc, /window._REACT_STATE/, &b
-    doc.css('button[data-src]').map{|button|
-      yield self, Link, button['data-src'].R}
   end
 
   def QRZ doc, &b
