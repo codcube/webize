@@ -93,13 +93,13 @@ class WebResource
         POSIX.container f                                            # container(s)
         RDF::Writer.for(:turtle).open(f){|f|f << graph}              # store 🐢
         log << ["\e[38;5;48m#{'%2d' % graph.size}⋮🐢 \e[1m",         # log graph location
-                graphURI.display_host, graphURI.path, "\e[0m"] unless this
+                [graphURI.display_host, graphURI.path].join, "\e[0m"] unless this
       end
       # if graph is not on timeline and has a timestamp
       if !graphURI.to_s.match?(HourDir) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
-        ts = ts.split /\D/                                           # slice time-segments
-        🕒 = [ts[0..3], ts.size < 4 ? '0' : nil,                     # timeslice containers
-              [ts[4..-1],                                            # remaining timeslices in basename
+        t = ts.split /\D/                                            # slice to unit segments
+        🕒 = [t[0..3], t.size < 4 ? '0' : nil,                       # timeslice containers
+              [t[4..-1],                                             # remaining timeslices in basename
                ([graphURI.slugs,                                     # graph name slugs
                  [type, creator, to].map{|pattern|                   # query pattern
                    slugify = pattern==type ? :display_name : :slugs  # slugization method
@@ -110,7 +110,7 @@ class WebResource
         unless File.exist? 🕒
           FileUtils.mkdir_p File.dirname 🕒                          # create missing timeslice containers
           FileUtils.ln f, 🕒 rescue FileUtils.cp f, 🕒               # link 🐢 to timeline
-          log << [:🕒, ts]                                           # log timestamp
+          log << [:🕒, ts] unless this                               # log timestamp
         end
       end
       logger.info log.join ' ' unless log.empty?}
