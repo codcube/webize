@@ -62,7 +62,7 @@ class WebResource
                sp
              end,
              format,                                                              # format
-             env[:fetched] ? (ENV.has_key?('http_proxy') ? '🖥' : '🐕') : sp,      # fetch type
+             env[:fetched] ? (ENV.has_key?('http_proxy') ? '🖥 ' : '🐕') : sp,     # fetch mode - origin or middlebox
              uri.format_icon(env[:origin_format]) || sp,                          # upstream/origin format
              (env[:repository]&.size).to_s.rjust(4), '⋮ ',                        # graph size
              env['HTTP_REFERER'] ? ["\e[#{color}m",env['HTTP_REFERER'].R.display_host,"\e[0m → "] : nil, # referer
