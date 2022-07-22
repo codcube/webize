@@ -36,6 +36,7 @@ cXenseParse:news_keywords
 calloutText
 caption
 category
+components
 dc.description
 dcterms.Description
 dcterms.abstract

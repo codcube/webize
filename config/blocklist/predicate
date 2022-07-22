@@ -96,6 +96,7 @@ googlebot-news
 gridsome:hash
 has_custom_timelines
 has_downloads_left
+hidden
 hostname
 hovercard-subject-tag
 html-safe-nonce

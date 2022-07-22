@@ -82,6 +82,7 @@ target
 text_url
 ugc
 url
+url_v2
 v:url
 vf:url
 vr:canonical
