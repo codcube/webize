@@ -60,16 +60,16 @@ class WebResource < RDF::URI
     def dataURI?; scheme == 'data' end
 
     def deny?
-      return true if BlockedSchemes.member? scheme  # scheme filter
-      return if !host || (AllowHosts.member? host)  # allow hosts
-      return true if host.match? Gunk               # hostname-regex filter
-      deny_domain?                                  # domain-tree filter
+      return true if BlockedSchemes.member? scheme  # scheme
+      return if !host || (AllowHosts.member? host)  # hostname
+      return true if host.match? Gunk               # hostname pattern
+      deny_domain?                                  # domainname tree
     end
 
     def deny_domain?
       d = DenyDomains                               # domain tree
       domains.find{|name| return unless d = d[name] # iterative name lookup
-        d.empty? }                                  # deny if name is leaf on deny tree
+        d.empty? }                                  # is name leaf on deny tree?
     end
 
     def dirURI?; path && path[-1] == '/' end
