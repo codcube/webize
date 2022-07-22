@@ -25,6 +25,7 @@ propagate blocklist changes around to peers (unblock entire proxy chain at once)
 emit RDF for subresources in generic JSON triplr
 CDNhost stuff probably is getting swept in HTML cleanup and/or elsewhere
 don't return login redirect to client, return proxy cache (IG but we seem permbanned from them so who else?)
+mixcloud-style if-modified-since support in generic JSON triplr
 long-running slow updater, for occasional GET heavily-spaced origin-queries
 drop nulls somewhere in the triplr pipeline http://localhost:8000/https://lilsilva.persona.co
 offline/online content merge by default? following feeds (API or RSS/Atom) to canonical URL often results in empty page due to SPA stuff, but we have the content already
