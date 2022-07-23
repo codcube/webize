@@ -156,11 +156,11 @@ module Webize
         elsif File.extname(@base) == '.irc'
           chat_triples &f
         else
-          yield @base, Content, Webize::HTML.format(WebResource::HTML.render({_: :pre,
-                                                                              c: @doc.lines.map{|line|
-                                                                                line.hrefs{|p,o|
-                                                                                  yield @base, p, o  unless o.deny?
-                                                                                }}}), @base)
+          yield @base, Content,
+          Webize::HTML.format(WebResource::HTML.render({_: :pre,
+                                                        c: @doc.lines.map{|line|
+                                                          line.hrefs{|p,o|
+                                                            yield @base, p, o}}}), @base)
         end
       end
     end

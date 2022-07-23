@@ -12,54 +12,55 @@ module Webize
     def self.clean doc, base
       log = -> type, content, filter {               # logger
         print type + " \e[38;5;8m" + content.to_s.gsub(/[\n\r\s\t]+/,' ').gsub(filter, "\e[38;5;48m\\0\e[38;5;8m") + "\e[0m "}
+                                                     # parse document
+      doc = Nokogiri::HTML.parse doc.gsub /<\/?(noscript|wbr)[^>]*>/i,'' # strip <noscript>, <wbr>
 
-      doc = Nokogiri::HTML.parse doc.gsub /<\/?(noscript|wbr)[^>]*>/i,'' # strip <noscript> <wbr>
-      doc.traverse{|e|                               # visit nodes
+      doc.traverse{|e|                               # nodes
 
-        if e['src']                                  # src attribute
-          src = (base.join e['src']).R               # resolve locator
+        if e['src']                                  # @src
+          src = (base.join e['src']).R               # resolve URI
           if src.deny?
             #Console.logger.debug "🚩 \e[38;5;196m#{src}\e[0m"
-            e.remove                                 # strip gunk reference in src attribute
+            e.remove                                 # gunk reference in @src
           end
         end
 
-        if (e.name=='link' && e['href']) || e['xlink:href'] # href attribute
-          ref = (base.join (e['href'] || e['xlink:href'])).R # resolve location
+        if (e.name=='link' && e['href']) || e['xlink:href'] # @href
+          ref = (base.join (e['href'] || e['xlink:href'])).R # resolve URI
           if ref.deny? || %w(dns-prefetch preconnect).member?(e['rel'])
             #Console.logger.debug "🚩 \e[38;5;196m#{ref}\e[0m"
-            e.remove                                 # strip gunk reference in href attribute
+            e.remove                                 # gunk reference in @href
           end
         end}
 
-      doc.css('meta[content]').map{|meta|            # strip gunk reference in meta tag
+      doc.css('meta[content]').map{|meta|            # <meta>
         if meta['content'].match? /^https?:/
           if meta['content'].R.deny?
             #Console.logger.debug "🚩 #{meta['content']}"
-            meta.remove
+            meta.remove                              # gunk reference in @content
           end
         end}
 
-      doc.css('script').map{|s|                      # visit script-nodes
-        s.attribute_nodes.map{|a|                    # @src and nonstandard attribute names
+      doc.css('script').map{|s|                      # <script>
+        s.attribute_nodes.map{|a|                    # attribute names
           if a.value.R.deny?                         # target denied?
             #Console.logger.debug "🚩 \e[38;5;196m#{a.value}\e[0m"
-            s.remove                                 # strip gunk attribute
+            s.remove                                 # gunk reference in @
           end}}
 
-      doc.css('style').map{|node|                    # strip CSS gunk
+      doc.css('style').map{|node|                    # <style>
         Webize::CSS.cleanNode node if node.inner_text.match? CSSgunk}
 
-      doc.css('[style]').map{|node|
+      doc.css('[style]').map{|node|                  # gunk in @style
         Webize::CSS.cleanAttr node if node['style'].match? CSSgunk}
 
       dropnodes = "amp-ad, amp-consent, .player-unavailable"
-      doc.css(dropnodes).remove                      # strip amp + popup gunk
+      doc.css(dropnodes).remove                      # gunk nodes
 
-      doc.css('[integrity]').map{|n|                 # content is being heavily modified,
-        n.delete 'integrity'}                        # strip now-invalid integrity hash (TODO generate?)
+      doc.css('[integrity]').map{|n|                 # content modified,
+        n.delete 'integrity'}                        # strip invalidated hash
 
-      doc.to_html                                    # serialize clean(er) doc
+      doc.to_html                                    # serialize document
     end
 
     # format HTML. (string -> string) or (nokogiri -> nokogiri)
