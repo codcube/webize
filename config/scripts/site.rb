@@ -33,9 +33,6 @@ class WebResource
 
   module HTTP
 
-    CDNhost = /\.(amazon(aws)?|apple|cloud(inary|flare|front)|discord(app)?|f(acebook|bcdn)|g(it(hu|la)b|oogle)(usercontent)?|medium|shopify|substack|tumblr|wixstatic)\.(com|io|net)$/
-    CDNdoc = /(\/|\.(html|jpe?g|mp4|p(df|ng)|webp))$/i
-
     NoQuery = -> r { # strip query from request and response (redirect location) URIs
       if !r.query                         # URL is query-free
         r.fetch.yield_self{|s,h,b|        # call origin

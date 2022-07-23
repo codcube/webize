@@ -4,8 +4,10 @@ class WebResource < RDF::URI
   module URIs
     GlobChars = /[\*\{\[]/
     RegexChars = /[\^\(\)\|\[\]\$]/
+    CDNhost = /\.(amazon(aws)?|apple|cloud(inary|flare|front)|discord(app)?|f(acebook|bcdn)|g(it(hu|la)b|oogle)(usercontent)?|medium|shopify|substack|tumblr|wixstatic)\.(com|io|net)$/
+    CDNdoc = /\.(html|jpe?g|mp4|p(df|ng)|webp)$/i
 
-    # base-URI constants. TODO benchmark RDF::Vocab, maybe we can remove these without notable performance impacts
+    # URI constants. TODO benchmark RDF::Vocab, maybe we can remove this without notable performance impacts
     DC       = 'http://purl.org/dc/terms/'
     DOAP     = 'http://usefulinc.com/ns/doap#'
     FOAF     = 'http://xmlns.com/foaf/0.1/'
