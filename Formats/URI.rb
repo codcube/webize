@@ -48,28 +48,30 @@ class WebResource < RDF::URI
 
     def self.blocklist
       DenyDomains.clear
-      Webize.configList('blocklist/domain').map{|l|         # parse blocklist
-        cursor = DenyDomains                                # reset cursor
-        l.chomp.sub(/^\./,'').split('.').reverse.map{|name| # parse domains
-          cursor = cursor[name] ||= {}}}                    # create domain entries
+      Webize.configList('blocklist/domain').map{|l|          # parse blocklist
+        cursor = DenyDomains                                 # reset cursor
+        l.chomp.sub(/^\./,'').split('.').reverse.map{|name|  # parse name
+          cursor = cursor[name] ||= {}}}                     # initialize and advance cursor
     end
-    self.blocklist                                          # load blocklist
+    self.blocklist                                           # load blocklist
 
     def basename; File.basename path if path end
 
     def dataURI?; scheme == 'data' end
 
     def deny?
-      return true if BlockedSchemes.member? scheme  # scheme
-      return if !host || (AllowHosts.member? host)  # hostname
-      return true if host.match? Gunk               # hostname pattern
-      deny_domain?                                  # domainname tree
+      return true if BlockedSchemes.member? scheme           # scheme
+      return if !host || (AllowHosts.member? host)           # host
+      return true if host.match? Gunk                        # host pattern
+      return if host.match?(CDNhost) && path&.match?(CDNdoc) # path pattern
+      deny_domain?                                           # domain tree
     end
 
     def deny_domain?
-      d = DenyDomains                               # domain tree
-      domains.find{|name| return unless d = d[name] # iterative name lookup
-        d.empty? }                                  # is name leaf on deny tree?
+      d = DenyDomains                                        # reset cursor
+      domains.find{|name|                                    # parse name
+        return unless d = d[name]                            # advance cursor
+        d.empty? }                                           # is name leaf in tree?
     end
 
     def dirURI?; path && path[-1] == '/' end

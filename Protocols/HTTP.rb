@@ -429,14 +429,13 @@ class WebResource
     end
 
     def hostHandler
-      qs = query_values || {}                         # parse query
+      qs = query_values || {}                         # query
       dirMeta                                         # add directory metadata
       cookieCache                                     # load/save cookies
-      return [204, {}, []] if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # "connectivity check" 204 response
-      return ENV.has_key?('http_proxy') ? fetch : HostGET[host.downcase][self] if has_handler? # origin-facing host adaptor (no intermediary proxy)
+      return [204, {}, []] if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # "connectivity check" response
+      return ENV.has_key?('http_proxy') ? fetch : HostGET[host.downcase][self] if has_handler? # origin-facing adaptor (no intermediary proxy)
       return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop query gunk
-      return fetch if host.match?(CDNhost) && (!path || path.match?(CDNdoc)) # allowed CDN content
-      deny? ? deny : fetch                            # generic remote node
+      deny? ? deny : fetch                            # generic remote
     end
 
     def icon

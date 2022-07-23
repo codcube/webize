@@ -12,11 +12,10 @@ module Webize
     def self.clean doc, base
       log = -> type, content, filter {               # logger
         print type + " \e[38;5;8m" + content.to_s.gsub(/[\n\r\s\t]+/,' ').gsub(filter, "\e[38;5;48m\\0\e[38;5;8m") + "\e[0m "}
-                                                     # parse document
-      doc = Nokogiri::HTML.parse doc.gsub /<\/?(noscript|wbr)[^>]*>/i,'' # strip <noscript>, <wbr>
+                                                                         # parse document,
+      doc = Nokogiri::HTML.parse doc.gsub /<\/?(noscript|wbr)[^>]*>/i,'' # strip <noscript>, <wbr> tags
 
-      doc.traverse{|e|                               # nodes
-
+      doc.traverse{|e|
         if e['src']                                  # @src
           src = (base.join e['src']).R               # resolve URI
           if src.deny?
@@ -51,7 +50,7 @@ module Webize
       doc.css('style').map{|node|                    # <style>
         Webize::CSS.cleanNode node if node.inner_text.match? CSSgunk}
 
-      doc.css('[style]').map{|node|                  # gunk in @style
+      doc.css('[style]').map{|node|                  # @style
         Webize::CSS.cleanAttr node if node['style'].match? CSSgunk}
 
       dropnodes = "amp-ad, amp-consent, .player-unavailable"
