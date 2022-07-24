@@ -3,6 +3,7 @@
 .comment
 .entry
 .message
+.op-msg
 .post
 .post-container
 .postCell

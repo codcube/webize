@@ -1,6 +1,9 @@
 .age
 .byline > span[title]
 [data-time]
+[data-timestamp]
 [data-utc]
 [datetime]
+[timestamp]
 [unixtime]
+time

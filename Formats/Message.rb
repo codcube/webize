@@ -5,8 +5,10 @@ module Webize
 
       MsgCSS = {}
 
-      %w(content creator creatorHref date freeformDate gunk image imageP imagePP link post reply title video).map{|attr| # attribute selectors
-        MsgCSS[attr.to_sym] = Webize.configList('metadata/CSS/' + attr).join ', '}
+      %w(content creator creatorHref date freeformDate gunk image imageP imagePP link post reply title video).map{|a| # attribute selectors
+        MsgCSS[a.to_sym] = Webize.configList('metadata/CSS/' + a).join ', '}
+
+      DateAttr = %w(data-time data-timestamp data-utc date datetime time timestamp unixtime title)
 
       def scanMessages
         @doc.css(MsgCSS[:post]).map{|post|                                 # post
@@ -24,20 +26,10 @@ module Webize
                      '/', subject.fragment].join.R                         # fragment URI to graph path (posts/replies to their own files)
 
             yield subject, Type, (SIOC + 'BoardPost').R, graph             # RDF type
-            post.css(MsgCSS[:date]).map{|date|
-              unixtime = date['data-time'] ||
-                         date['data-utc'] ||
-                         date['unixtime']
 
-              ts = if date['datetime']
-                     date['datetime']
-                   elsif unixtime
-                     Time.at((unixtime).to_i).iso8601
-                   elsif date['title']
-                     date['title']
-                   end
-
-              yield subject, Date, ts, graph if ts}                        # ISO8601 and UNIX (integer since 1970 epoch) timestamp
+            post.css(MsgCSS[:date]).map{|d|                                # ISO8601 and UNIX timestamp
+              yield subject, Date, d[DateAttr.find{|a| d.has_attribute? a }] || d.inner_text, graph
+              d.remove}
 
             post.css(MsgCSS[:freeformDate]).map{|created|                  # freeform timestamp
               if date = Chronic.parse(created['data-content'] || created.inner_text)
@@ -46,14 +38,16 @@ module Webize
               end}
 
             post.css(MsgCSS[:creator]).map{|name|
-              yield subject, Creator, name.inner_text, graph}              # author name
+              yield subject, Creator, name.inner_text, graph               # author name
+              name.remove }
 
-           post.css(MsgCSS[:creatorHref]).map{|a|
+            post.css(MsgCSS[:creatorHref]).map{|a|
              yield subject, Creator, (@base.join a['href']), graph         # author URI
              a.remove }
 
             post.css(MsgCSS[:title]).map{|subj|
-              yield subject, Title, subj.inner_text, graph }               # title
+              yield subject, Title, subj.inner_text, graph                 # title
+              subj.remove }
 
             post.css('img').map{|i|
               yield subject, Image, (@base.join i['src']), graph}          # image
@@ -80,16 +74,13 @@ module Webize
               msg.css(MsgCSS[:reply]).map{|reply_of|
                 yield subject, To, (@base.join reply_of['href']), graph    # reply-of reference
                 reply_of.remove}
-              msg.traverse{|n|                                             # hrefs in text nodes
+              msg.traverse{|n|                                             # hrefize text nodes
                 if n.text? && n.to_s.match?(/https?:\/\//)
                   n.add_next_sibling (CGI.unescapeHTML n.to_s).hrefs{|p,o| yield subject, p, o}
                   n.remove
                 end}
               yield subject, Content, Webize::HTML.format(msg.to_s, @base), graph
-
-              post.remove}                                                 # sweep HTML emitted as RDF HTML-content
-          #else
-          #  logger.debug ["no subject found for node: ", post.to_html].join
+              post.remove}
           end
         }
 
