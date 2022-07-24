@@ -68,21 +68,25 @@ module Webize
               if count = c.inner_text.strip.match(/^(\d+) comments$/)
                 yield subject, 'https://schema.org/commentCount', count[1], graph
               end}
-                                                                           # content
-            yield subject, Content, Webize::HTML.format(post.to_s, @base), graph if post['class'] == 'content'
-            post.css(MsgCSS[:content]).map{|msg|
-              msg.css(MsgCSS[:reply]).map{|reply_of|
+
+            cs = post.css MsgCSS[:content]                                 # content nodes
+            cs.push post if cs.empty?
+
+            cs.map{|c|                                                     # content
+              c.css(MsgCSS[:reply]).map{|reply_of|
                 yield subject, To, (@base.join reply_of['href']), graph    # reply-of reference
                 reply_of.remove}
-              msg.traverse{|n|                                             # hrefize text nodes
+
+              c.traverse{|n|                                               # hrefize text nodes
                 if n.text? && n.to_s.match?(/https?:\/\//)
                   n.add_next_sibling (CGI.unescapeHTML n.to_s).hrefs{|p,o| yield subject, p, o}
                   n.remove
                 end}
-              yield subject, Content, Webize::HTML.format(msg.to_s, @base), graph
-              post.remove}
-          end
-        }
+
+              yield subject, Content, Webize::HTML.format(c.to_s, @base), graph}
+
+            post.remove
+          end}
 
         @doc.css(MsgCSS[:gunk]).map &:remove                               # sweep gunk nodes
 
