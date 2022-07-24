@@ -23,7 +23,6 @@ populate geographic index from encountered RDF https://www.jphs.org/20th-century
 multiple videos, using first:https://www.youtube.com/opensearch?locale=en_US, https://www.youtube.com/watch?v=k2sIDDco5xg, http://www.youtube.com/watch?v=k2sIDDco5xg&feature=applinks, @youtube
 propagate blocklist changes around to peers (unblock entire proxy chain at once) - still use git?
 emit RDF for subresources in generic JSON triplr
-CDNhost stuff probably is getting swept in HTML cleanup and/or elsewhere
 don't return login redirect to client, return proxy cache (IG but we seem permbanned from them so who else?)
 mixcloud-style if-modified-since support in generic JSON triplr
 long-running slow updater, for occasional GET heavily-spaced origin-queries
