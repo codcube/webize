@@ -136,7 +136,7 @@ data-srcset
   module PNG
     class Format < RDF::Format
       content_type 'image/png',
-                   extensions: [:ico, :png],
+                   extensions: [:png, :ico],
                    aliases: %w(
                    image/x-icon;q=0.8
                    image/vnd.microsoft.icon;q=0.2
