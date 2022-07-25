@@ -4,7 +4,7 @@ class WebResource < RDF::URI
   module URIs
     GlobChars = /[\*\{\[]/
     RegexChars = /[\^\(\)\|\[\]\$]/
-    CDNhost = /\.(amazon(aws)?|apple|cloud(inary|flare|front)|discord(app)?|f(acebook|bcdn)|g(it(hu|la)b|oogle)(usercontent)?|medium|shopify|substack|tumblr|wixstatic)\.(com|io|net)$/
+    CDNhost = /\.(amazon(aws)?|apple|cloud(inary|flare|front)|discord(app)?|f(acebook|bcdn)|g(host|it(hu|la)b|oogle)(usercontent)?|medium|shopify|substack|tumblr|wixstatic)\.(com|io|net)$/
     CDNdoc = /\.(html|jpe?g|mp4|p(df|ng)|webp)$/i
 
     # URI constants. TODO benchmark RDF::Vocab, maybe we can remove this without notable performance impacts
@@ -39,7 +39,7 @@ class WebResource < RDF::URI
     Video    = DC + 'Video'
     Resource = RDFs + 'Resource'
 
-    # declarative config
+    # read config files
     AllowHosts = Webize.configList 'hosts/allow'
     CookieHosts = Webize.configList 'hosts/cookie'
     BlockedSchemes = Webize.configList 'blocklist/scheme'
