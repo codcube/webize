@@ -8,6 +8,7 @@
 .post-container
 .postCell
 .post_wrapper
+.spin-item
 .views-row
 [id^='post']
 article
