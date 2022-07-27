@@ -27,6 +27,7 @@ don't return login redirect to client, return proxy cache (IG but we seem permba
 mixcloud-style if-modified-since support in generic JSON triplr
 long-running slow updater, for occasional GET heavily-spaced origin-queries
 drop nulls somewhere in the triplr pipeline http://localhost:8000/https://lilsilva.persona.co
+per-site upstreams/proxies for custom archival scenarios. also alleviates broken edge caching (wrt rm -rf .chromium or even just dropping out of the 1GB cache)
 offline/online content merge by default? following feeds (API or RSS/Atom) to canonical URL often results in empty page due to SPA stuff, but we have the content already
 merge local dir-content at least. for nose following. http://l/gitter.im/solid/specification should link to spec, solidos etc 
 history -  store and browse versions, eg full blogpost and preview from feed
