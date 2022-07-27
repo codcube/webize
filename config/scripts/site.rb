@@ -467,7 +467,6 @@ class WebResource
   end
 
   def MixcloudAPI tree, &b
-    yield self, Title, tree['name']
     tree['data'].map{|mix|
       graph = subject = mix['url'].R
       date = mix['created_time']
