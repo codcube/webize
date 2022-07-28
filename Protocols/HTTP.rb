@@ -23,7 +23,7 @@ class WebResource
 
       env[:start_time] = Time.now                           # start timer
       env['SERVER_NAME'].downcase!                          # normalize hostname
-      env.update HTTP.env                                   # storage fields
+      env.update HTTP.env                                   # init environment storage
 
       isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
@@ -274,8 +274,9 @@ class WebResource
               type = type.sub(/^rel="?/,'').sub /"$/, ''
               env[:links][type.to_sym] = ref
             end}
-          if h['Set-Cookie'] && CookieHosts.member?(host) && !(cookie = env[:base].join('/cookie').R).exist?
-            cookie.writeFile h['Set-Cookie']                # update cookie-cache
+
+          if h['Set-Cookie'] && CookieHosts.member?(host)   # if cookie sent by server and acceptable by client,
+            cookie.writeFile h['Set-Cookie']                # stash in jar
             logger.info [:🍯, host, h['Set-Cookie']].join ' '
           end
 
