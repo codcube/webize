@@ -16,6 +16,7 @@ completeUrl
 custom_link
 dataHref
 dct:references
+dns-prefetch
 dofollow
 embedLinkUrl
 embedUrl
@@ -82,6 +83,7 @@ source_url
 static_url
 taboola:url
 target
+template
 text_url
 ugc
 url
