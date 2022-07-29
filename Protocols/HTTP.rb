@@ -275,8 +275,8 @@ class WebResource
               env[:links][type.to_sym] = ref
             end}
 
-          if h['Set-Cookie'] && CookieHosts.member?(host)   # if cookie sent by server and acceptable by client,
-            cookie.writeFile h['Set-Cookie']                # stash in jar
+          if h['Set-Cookie'] && CookieHosts.member?(host)   # if cookie is sent from upstream and accepted by client,
+            env[:base].join('/cookie').R.writeFile h['Set-Cookie'] # stash cookie in jar
             logger.info [:🍯, host, h['Set-Cookie']].join ' '
           end
 
