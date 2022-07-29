@@ -26,7 +26,7 @@ module Webize
 
         if (e.name=='link' && e['href']) || e['xlink:href'] # @href
           ref = (base.join (e['href'] || e['xlink:href'])).R # resolve URI
-          if ref.deny? || %w(dns-prefetch preconnect).member?(e['rel'])
+          if ref.deny?
             #Console.logger.debug "🚩 \e[38;5;196m#{ref}\e[0m"
             e.remove                                 # gunk reference in @href
           end

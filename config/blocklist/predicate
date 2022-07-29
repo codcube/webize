@@ -158,8 +158,6 @@ pingback
 pinned_tweet_ids
 pinned_tweet_ids_str
 possibly_sensitive_editable
-prefetch
-preload
 profile_link_color
 public
 pubp_event_id

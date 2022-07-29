@@ -60,6 +60,9 @@ parsely-link
 permalink
 permalink_url
 pinterest:url
+preconnect
+prefetch
+preload
 prerender
 preview_url
 profile
