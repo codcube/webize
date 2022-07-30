@@ -38,34 +38,9 @@ module Webize
 
     # alternate names for src and srcset attributes
 
-    SRCnotSRC = %w(
-data-baseurl
-data-delayed-url
-data-ezsrc
-data-gl-src
-data-hi-res-src
-data-image
-data-img
-data-img-url
-data-img-src
-data-lazy
-data-lazy-img
-data-lazy-src
-data-menuimg
-data-native-src
-data-original
-data-raw-src
-data-src
-data-url
-image-src
-)
+    SRCnotSRC = Webize.configList 'metadata/image/src'
 
-    SRCSET = %w{
-data-ezsrcset
-data-gl-srcset
-data-lazy-srcset
-data-srcset
-}
+    SRCSET = Webize.configList 'metadata/image/srcset'
 
     SrcSetRegex = /\s*(\S+)\s+([^,]+),*/
 

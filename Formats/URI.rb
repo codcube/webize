@@ -44,7 +44,7 @@ class WebResource < RDF::URI
     CookieHosts = Webize.configList 'hosts/cookie'
     BlockedSchemes = Webize.configList 'blocklist/scheme'
     Gunk = Regexp.new Webize.configData('blocklist/regex'), Regexp::IGNORECASE
-    ImgExt = Webize.configList 'metadata/image_extension'
+    ImgExt = Webize.configList 'metadata/image/ext'
     KillFile = Webize.configList 'blocklist/sender'
     DenyDomains = {}
 
