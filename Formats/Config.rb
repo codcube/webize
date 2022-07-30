@@ -20,4 +20,9 @@ module Webize
   def self.configList path
     configData(path).lines.map &:chomp
   end
+
+  def self.configRegex path
+    Regexp.new configData(path), Regexp::IGNORECASE
+  end
+
 end

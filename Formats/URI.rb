@@ -39,11 +39,11 @@ class WebResource < RDF::URI
     Video    = DC + 'Video'
     Resource = RDFs + 'Resource'
 
-    # read config files
+    # read & parse config files
     AllowHosts = Webize.configList 'hosts/allow'
     CookieHosts = Webize.configList 'hosts/cookie'
     BlockedSchemes = Webize.configList 'blocklist/scheme'
-    Gunk = Regexp.new Webize.configData('blocklist/regex'), Regexp::IGNORECASE
+    Gunk = Webize.configRegex 'blocklist/regex'
     ImgExt = Webize.configList 'metadata/image/ext'
     KillFile = Webize.configList 'blocklist/sender'
     DenyDomains = {}
