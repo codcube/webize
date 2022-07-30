@@ -4,7 +4,7 @@ class WebResource < RDF::URI
   module URIs
     GlobChars = /[\*\{\[]/
     RegexChars = /[\^\(\)\|\[\]\$]/
-    CDNhost = /\.(amazon(aws)?|apple|cloud(inary|flare|front)|discord(app)?|f(acebook|bcdn)|g(host|it(hu|la)b|oogle)(usercontent)?|medium|shopify|substack|tumblr|wixstatic)\.(com|io|net)$/
+    CDNhost = Webize.configRegex 'hosts/CDN'
     CDNdoc = /\.(html|jpe?g|mp4|p(df|ng)|webp)$/i
 
     # URI constants. TODO benchmark RDF::Vocab, maybe we can remove this without notable performance impacts
