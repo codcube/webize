@@ -61,6 +61,7 @@ discourse/config/environment
 discourse_current_homepage
 discourse_theme_id
 display_text_range
+distribution
 donationsActive
 downloadable
 embeddable_by
