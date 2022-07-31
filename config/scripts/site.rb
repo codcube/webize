@@ -47,7 +47,6 @@ class WebResource
         [302, {'Location' => ['//', r.host, r.path].join.R(r.env).href}, []]
       end}
 
-    # shortURL hosts
     Webize.configList('hosts/shorturl').map{|h|
       GET h, NoQuery}
 
@@ -58,8 +57,6 @@ class WebResource
 
     Webize.configList('hosts/url').map{|h|
       GET h, GotoURL}
-
-    GET 'urldefense.com', -> r {[302, {'Location' => r.path.split('__')[1].R(r.env).href}, []]}
 
     GET 'feeds.feedburner.com', -> r {r.parts[0].index('~') ? r.deny : r.fetch}
 
@@ -74,19 +71,7 @@ class WebResource
         r.fetch
       end}
 
-    GotoAdURL =  -> r {
-      if url = (r.query_values || {})['adurl']
-        dest = url.R
-        dest.query = '' unless url.match? /dest_url/
-        [301, {'Location' => dest}, []]
-      else
-        r.deny
-      end}
-
-    GET 'googleads.g.doubleclick.net', GotoAdURL
-    GET 'www.googleadservices.com', GotoAdURL
     GET 'google.com', -> r {[301, {'Location' => ['//www.google.com', r.path, '?', r.query].join.R(r.env).href}, []]}
-
     GET 'www.google.com', -> r {
       case r.parts[0]
       when 'amp'
@@ -113,13 +98,10 @@ class WebResource
         r.fetch
       end}
 
-    GET 'us.conv.indeed.com', -> r {[301, {'Location' => ['//www.indeed.com/viewjob?jk=', r.query_values['jk']].join.R(r.env).href}, []]}
-
     GET 'api.mixcloud.com', -> r {
       r.offline? ? r.fetchLocal : r.fetchHTTP(format: 'application/json')}
 
     GET 'mixcloud.com', -> r {[301, {'Location' => ['//www.mixcloud.com', r.path].join.R(r.env).href}, []]}
-
     GET 'www.mixcloud.com', -> r {
       if !r.path || r.path == '/'
         barrier = Async::Barrier.new
@@ -160,15 +142,6 @@ class WebResource
         r.fetch
       else
         r.deny
-      end}
-
-    GET 's4.reutersmedia.net', -> r {
-      args = r.query_values || {}
-      if args.has_key? 'w'
-        args.delete 'w'
-        [301, {'Location' => (qs args)}, []]
-      else
-        r.fetch
       end}
 
     GET 'soundcloud.com', -> r {
@@ -276,12 +249,11 @@ class WebResource
       proxyURL = ['https://proxy.c2.com/wiki/remodel/pages/', r.env['QUERY_STRING']].join.R r.env
       proxyURL.fetchHTTP format: 'application/json'}
 
-    GET 'youtu.be', -> r {[301, {'Location' => ['https://www.youtube.com/watch?v=', r.path[1..-1]].join.R(r.env).href}, []]}
-
     GotoYT = -> r {[301, {'Location' => ['//www.youtube.com', r.path, '?', r.query].join.R(r.env).href}, []]}
     GET 'm.youtube.com', GotoYT
     GET 'youtube.com', GotoYT
 
+    GET 'youtu.be', -> r {[301, {'Location' => ['https://www.youtube.com/watch?v=', r.path[1..-1]].join.R(r.env).href}, []]}
     GET 'www.youtube.com', -> r {
       r.env[:searchbase] = '/results'
       r.env[:searchterm] = 'search_query'
