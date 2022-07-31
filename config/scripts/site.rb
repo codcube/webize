@@ -48,39 +48,18 @@ class WebResource
       end}
 
     # shortURL hosts
-    Webize.configList('hosts/shorturl').map{|h| GET h, NoQuery}
-
-    GET 'bos.gl', -> r {r.scheme = 'http'; r.fetch} # hangs on HTTPS, use HTTP
-
-    # URL-in-URL hosts with no origin roundtrip
-    GotoBase = -> r {[301, {'Location' => (CGI.unescape r.basename)}, []]}
+    Webize.configList('hosts/shorturl').map{|h|
+      GET h, NoQuery}
 
     GotoURL = -> r {
       q = r.query_values || {}
       dest = q['url'] || q['u'] || q['q']
       dest ? [301, {'Location' => dest.R(r.env).href}, []] : r.notfound}
 
-    Webize.configList('hosts/url').map{|h| GET h, GotoURL}
+    Webize.configList('hosts/url').map{|h|
+      GET h, GotoURL}
 
     GET 'urldefense.com', -> r {[302, {'Location' => r.path.split('__')[1].R(r.env).href}, []]}
-
-    # image-specific URL-in-URL hosts
-    ImgRehost = -> r {
-      ps = r.path.split /https?:\/+/
-      ps.size > 1 ? [301, {'Location' => ('https://' + ps[-1]).R(r.env).href}, []] : r.fetch}
-
-    GET 'res.cloudinary.com', ImgRehost
-    GET 'dynaimage.cdn.cnn.com', GotoBase
-
-    Resizer = -> r {
-      if r.parts[0] == 'resizer'
-        parts = r.path.split /\/\d+x\d+\/((filter|smart)[^\/]*\/)?/
-        parts.size > 1 ? [302, {'Location' => 'https://' + parts[-1]}, []] : r.fetch
-      else
-        r.fetch
-      end}
-
-    %w(bostonglobe-prod.cdn.arcpublishing.com).map{|host|GET host, Resizer}
 
     GET 'feeds.feedburner.com', -> r {r.parts[0].index('~') ? r.deny : r.fetch}
 
@@ -192,8 +171,6 @@ class WebResource
         r.fetch
       end}
 
-    GET 'cdn.shortpixel.ai', ImgRehost
-
     GET 'soundcloud.com', -> r {
       if !r.path || r.path == '/'
         barrier = Async::Barrier.new
@@ -298,8 +275,6 @@ class WebResource
     GET 'wiki.c2.com', -> r {
       proxyURL = ['https://proxy.c2.com/wiki/remodel/pages/', r.env['QUERY_STRING']].join.R r.env
       proxyURL.fetchHTTP format: 'application/json'}
-
-    GET 's.yimg.com', ImgRehost
 
     GET 'youtu.be', -> r {[301, {'Location' => ['https://www.youtube.com/watch?v=', r.path[1..-1]].join.R(r.env).href}, []]}
 
