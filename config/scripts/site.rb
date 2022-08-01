@@ -16,10 +16,9 @@ module Webize
   module JSON
     Triplr = {
       'api.imgur.com' => :Imgur,
-      'api.mixcloud.com' => :MixcloudAPI,
+      'api.mixcloud.com' => :Mixcloud,
       'gitter.im' => :GitterJSON,
       'proxy.c2.com' => :C2,
-      'www.mixcloud.com' => :Mixcloud,
     }
   end
 end
@@ -367,35 +366,7 @@ class WebResource
       yield self, File.extname(url.path) == '.mp4' ? Video : Image, url}
   end
 
-  # do we still use this? maybe was for MITMing mobile or web app
   def Mixcloud tree, &b
-    if data = tree['data']
-      if user = data['user']
-        if username = user['username']
-          if uploads = user['uploads']
-            if edges = uploads['edges']
-              edges.map{|edge|
-                mix = edge['node']
-                slug = mix['slug']
-                subject = graph = ('https://www.mixcloud.com/' + username + '/' + slug).R
-                yield subject, Title, mix['name'], graph
-                yield subject, Date, mix['publishDate'], graph
-                if duration = mix['audioLength']
-                  yield subject, Schema+'duration', duration, graph
-                end
-                yield subject, Image, ('https://thumbnailer.mixcloud.com/unsafe/1280x1280/' + mix['picture']['urlRoot']).R, graph
-                if audio = mix['previewUrl']
-                  yield subject, Audio, audio.R, graph
-                end
-              }
-            end
-          end
-        end
-      end
-    end
-  end
-
-  def MixcloudAPI tree, &b
     tree['data'].map{|mix|
       graph = subject = mix['url'].R
       date = mix['created_time']
