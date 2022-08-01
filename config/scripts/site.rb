@@ -35,13 +35,11 @@ class WebResource
     Webize.configList('hosts/shorturl').map{|h|
       GET h, -> r {r.dropQS}}
 
-    GotoURL = -> r {
-      q = r.query_values || {}
-      dest = q['url'] || q['u'] || q['q']
-      dest ? [301, {'Location' => dest.R(r.env).href}, []] : r.notfound}
-
     Webize.configList('hosts/url').map{|h|
-      GET h, GotoURL}
+      GET h, -> r {
+        q = r.query_values || {}
+        dest = q['url'] || q['u'] || q['q']
+        dest ? [301, {'Location' => dest.R(r.env).href}, []] : r.notfound}}
 
     GET 'feeds.feedburner.com', -> r {r.parts[0].index('~') ? r.deny : r.fetch}
 
@@ -68,8 +66,6 @@ class WebResource
       when 'sorry' # denied by antibot, goto DDG
         q = r.query_values['continue'].R.query_values['q']
         [302, {'Location' => 'https://duckduckgo.com/' + HTTP.qs({q: q})}, []]
-      when 'url'
-        GotoURL[r]
       else
         r.deny
       end}
