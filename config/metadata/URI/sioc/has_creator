@@ -10,6 +10,9 @@ Generator
 accountName
 acct
 article:author
+article:author:first_name
+article:author:last_name
+article:author:username
 article:author_name
 article_author
 artist
@@ -66,6 +69,8 @@ og:last_name
 og:username
 page:author
 parsely-author
+profile:first_name
+profile:last_name
 profile:username
 sailthru.author
 screen_name
