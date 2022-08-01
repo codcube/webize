@@ -32,23 +32,8 @@ class WebResource
 
   module HTTP
 
-    NoQuery = -> r { # strip query from request and response (redirect location) URIs
-      if !r.query                         # URL is query-free
-        r.fetch.yield_self{|s,h,b|        # call origin
-          h.keys.map{|k|                  # strip redirected-location query
-            if k.downcase == 'location' && h[k].match?(/\?/)
-              Console.logger.info "dropping query from #{h[k]}"
-              h[k] = h[k].split('?')[0]
-            end
-          }
-          [s,h,b]}                        # response
-      else                                # redirect to no-query location
-        Console.logger.info "dropping query from #{r.uri}"
-        [302, {'Location' => ['//', r.host, r.path].join.R(r.env).href}, []]
-      end}
-
     Webize.configList('hosts/shorturl').map{|h|
-      GET h, NoQuery}
+      GET h, -> r {r.dropQS}}
 
     GotoURL = -> r {
       q = r.query_values || {}
