@@ -5,7 +5,7 @@ class WebResource < RDF::URI
     GlobChars = /[\*\{\[]/
     RegexChars = /[\^\(\)\|\[\]\$]/
     CDNhost = Webize.configRegex 'hosts/CDN'
-    CDNdoc = /\.(html|jpe?g|mp4|p(df|ng)|webp)$/i
+    CDNdoc = Webize.configRegex 'formats/CDN'
 
     # URI constants. TODO benchmark RDF::Vocab, maybe we can remove this without notable performance impacts
     DC       = 'http://purl.org/dc/terms/'
@@ -44,7 +44,6 @@ class WebResource < RDF::URI
     CookieHosts = Webize.configList 'hosts/cookie'
     BlockedSchemes = Webize.configList 'blocklist/scheme'
     Gunk = Webize.configRegex 'blocklist/regex'
-    ImgExt = Webize.configList 'metadata/image/ext'
     KillFile = Webize.configList 'blocklist/sender'
     DenyDomains = {}
 

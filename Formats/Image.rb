@@ -38,9 +38,9 @@ module Webize
 
     # alternate names for src and srcset attributes
 
-    SRCnotSRC = Webize.configList 'metadata/image/src'
+    SRCnotSRC = Webize.configList 'formats/image/src'
 
-    SRCSET = Webize.configList 'metadata/image/srcset'
+    SRCSET = Webize.configList 'formats/image/srcset'
 
     SrcSetRegex = /\s*(\S+)\s+([^,]+),*/
 
@@ -187,7 +187,9 @@ module Webize
   end
 end
 class WebResource
-
+  module URIs
+    ImgExt = Webize.configList 'formats/image/ext'
+  end
   module HTML
 
     MarkupPredicate[Schema+'srcSet'] = -> sets, env {
