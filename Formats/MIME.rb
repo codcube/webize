@@ -42,18 +42,8 @@ class WebResource
 
   module HTTP
 
-    # character -> ASCII color
-    FormatColor = {
-      ➡️: '38;5;7',
-      📃: '38;5;231',
-      📜: '38;5;51',
-      🗒: '38;5;165',
-      🐢: '38;5;48',
-      🎨: '38;5;227',
-      🎬: '38;5;208',
-      '🎞️ ' => '38;5;208',
-      '🖼️ ' => '38;5;226',
-    }
+    # char -> ASCII color
+    FormatColor = Webize.configHash 'style/color/format'
 
     # MIME type -> character
     def format_icon mime
@@ -63,9 +53,9 @@ class WebResource
       when /^audio/
         :🔉
       when /^image/
-        '🖼️ '
+        :🖼️
       when /^video/
-        '🎞️ '
+        :🎞️
       when /atom|rss|xml/
         :📰
       when /html/
