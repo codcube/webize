@@ -13,7 +13,7 @@ module Webize
 
   # path -> Hash
   def self.configHash path
-    Hash[*configList(path).map(&:split).flatten]
+    Hash[*configTokens(path)]
   end
 
   # path -> Array
@@ -21,8 +21,14 @@ module Webize
     configData(path).lines.map &:chomp
   end
 
+  # path -> Regexp
   def self.configRegex path
     Regexp.new configData(path), Regexp::IGNORECASE
+  end
+
+  # path -> Array
+  def self.configTokens path
+    configData(path).split
   end
 
 end
