@@ -46,8 +46,7 @@ class WebResource
       URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist on force-reload (browser ctrl-shift-R)
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
-        sp = '  '                                                    # spacer
-        format = uri.format_icon(head['Content-Type']) || sp         # format icon
+        format = uri.format_icon(head['Content-Type']) || ' '        # format icon
         color = env[:deny] ? '38;5;196' : (FormatColor[format] || 0) # format color
         log [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,  # protocol security
              if env[:deny]                                           # action
@@ -59,20 +58,20 @@ class WebResource
              elsif uri.offline?
                '🔌'
              else
-               sp
+               ' '
              end,
-             format,                                                              # format
-             env[:fetched] ? (ENV.has_key?('http_proxy') ? '🖥 ' : '🐕') : sp,     # fetch mode - origin or middlebox
-             uri.format_icon(env[:origin_format]) || sp,                          # upstream/origin format
-             (env[:repository]&.size).to_s.rjust(4), '⋮ ',                        # graph size
+             format,                                                          # format
+             env[:fetched] ? (ENV.has_key?('http_proxy') ? '🖥' : '🐕') : ' ', # fetch mode - origin or middlebox
+             uri.format_icon(env[:origin_format]) || ' ',                     # upstream/origin format
+             (env[:repository]&.size).to_s.rjust(4), '⋮ ',                    # graph size
              env['HTTP_REFERER'] ? ["\e[#{color}m",env['HTTP_REFERER'].R.display_host,"\e[0m → "] : nil, # referer
              "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert off-site referer
-             env[:base].display_host, env[:base].path, "\e[0m",                   # host, path
-             (qs.map{|k,v|" \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?),    # query
+             env[:base].display_host, env[:base].path, "\e[0m",               # host, path
+             (qs.map{|k,v|" \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?),# query
              head['Location'] ? [" → \e[#{color}m", head['Location'].R.unproxyURI.display_host, "\e[0m"] : nil, # redirected location
-             env[:warning] ? [" \e[38;5;226m⚠️", env[:warning], "\e[0m"] : nil,    # warning
+             env[:warning] ? [" \e[38;5;226m⚠️", env[:warning], "\e[0m"] : nil,# warning
             ].flatten.compact.map{|t|t.to_s.encode 'UTF-8'}.join
-        [status, head, body]}                                                     # response
+        [status, head, body]}                                                 # response
     rescue Exception => e
       Console.logger.failure uri, e
       [500, {'Content-Type' => 'text/html; charset=utf-8'},
