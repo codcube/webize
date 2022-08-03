@@ -49,39 +49,39 @@ class WebResource
     def format_icon mime
       case mime
       when /^(application\/)?font/
-        :🇦
+        '🇦'
       when /^audio/
-        :🔉
+        '🔉'
       when /^image/
-        :🖼️
+        '🖼️'
       when /^video/
-        :🎞️
+        '🎞️'
       when /atom|rss|xml/
-        :📰
+        '📰'
       when /html/
-        :📃
+        '📃'
       when /json/
-        :🗒
+        '🗒'
       when /markdown/
-        :🖋
+        '🖋'
       when /n.?triples/
-        :⑶
+        '⑶'
       when /octet.stream|zip|xz/
-        :🧱
+        '🧱'
       when /pdf/
-        :📚
+        '📚'
       when /playlist/
-        :🎬
+        '🎬'
       when /script/
-        :📜
+        '📜'
       when /text\/css/
-        :🎨
+        '🎨'
       when /text\/gemini/
-        :🚀
+        '🚀'
       when /text\/plain/
-        :🇹
+        '🇹'
       when /text\/turtle/
-        :🐢
+        '🐢'
       else
         mime
       end
