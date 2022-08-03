@@ -59,5 +59,4 @@ re-parsing PDFs when offline http://www.midnightnotes.org/pdfnewenc9.pdf?view=ta
 move to declarative config:
 constants URI.rb
 regexes Feed.rb
-formatcolor formaticon MIME.rb (already unused?)
 tokens (qs)
