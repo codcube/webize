@@ -12,8 +12,10 @@ class WebResource
                          [host, addr]}}.flatten]         # peer host -> peer addr map
     PeerAddrs = PeerHosts.invert                         # peer addr -> peer host map
     LocalAddrs = Socket.ip_address_list.map &:ip_address # local addresses
-    ActionIcon = Webize.configHash 'style/icons/action'  # HTTP method -> character
-    StatusIcon = Webize.configHash 'style/icons/status'  # status code -> character
+    ActionIcon = Webize.configHash 'style/icons/action'  # HTTP method -> char
+    StatusIcon = Webize.configHash 'style/icons/status'  # status code (string) -> char
+    StatusIcon.keys.map{|s|                              # status code (int) -> char
+      StatusIcon[s.to_i] = StatusIcon[s]}
 
     def self.bwPrint kv; kv.map{|k,v| "\e[38;5;7;7m#{k}\e[0m#{v}" } end
 

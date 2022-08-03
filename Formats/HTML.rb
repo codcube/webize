@@ -380,6 +380,8 @@ class WebResource
     SiteFont = Webize.configData 'style/fonts/hack.woff2'
     SiteIcon = Webize.configData 'style/icons/favicon.ico'
     StatusColor = Webize.configHash 'style/color/status'
+    StatusColor.keys.map{|s|
+      StatusColor[s.to_i] = StatusColor[s]}
 
     # Graph -> HTML
     def htmlDocument graph
