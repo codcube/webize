@@ -11,6 +11,7 @@ SKYPE_TOOLBAR
 STYLESHEET
 X-UA-Compatible
 _token
+action-cable-url
 advertiser_account_service_levels
 advertising
 ahrefs-site-verification
@@ -50,6 +51,7 @@ canHaveEpisodes
 color-scheme
 commentable
 contains_music
+csp-nonce
 csrf-param
 csrf-token
 debug
