@@ -48,8 +48,8 @@ class WebResource
       URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist on force-reload (browser ctrl-shift-R)
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
-        formatI = uri.format_icon env[:origin_format]                 # input format
-        formatO = uri.format_icon head['Content-Type']                # output format
+        inFmt = uri.format_icon env[:origin_format]                   # input format
+        outFmt = uri.format_icon head['Content-Type']                 # output format
         color = env[:deny] ? '38;5;196' : (FormatColor[formatO] || 0) # format -> color
         log [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,   # transport security
              if env[:deny]                                            # action taken:
@@ -64,10 +64,10 @@ class WebResource
              (ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched]), # upstream type: origin or middlebox
              ([env[:repository].size, '⋮'] if env[:repository] && env[:repository].size > 0), ' ', # graph size
              env['HTTP_REFERER'] ? ["\e[#{color}m",env['HTTP_REFERER'].R.display_host,"\e[0m → "] : nil, # referer
-             formatI, ' ',                                            # input format
+             outFmt, ' ',                                             # output format
              "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert off-site referer
              env[:base].display_host, env[:base].path, "\e[0m",       # host, path
-             formatO != formatI ? [' → ', formatO, ' '] : nil,              # output format
+             ([' ⟵ ', inFmt, ' '] if inFmt && inFmt != outfmt),       # input format, if transcoded
              (qs.map{|k,v|" \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?), # query
              head['Location'] ? [" → \e[#{color}m", head['Location'].R.unproxyURI.display_host, "\e[0m"] : nil, # redirected location
              env[:warning] ? [" \e[38;5;226m⚠️", env[:warning], "\e[0m"] : nil, # warning
