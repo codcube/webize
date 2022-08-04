@@ -47,10 +47,12 @@ class WebResource
 
       URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist on force-reload (browser ctrl-shift-R)
 
-      uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body|
+      uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body| # call request and inspect response
         inFmt = uri.format_icon env[:origin_format]                   # input format
         outFmt = uri.format_icon head['Content-Type']                 # output format
         color = env[:deny] ? '38;5;196' : (FormatColor[formatO] || 0) # format -> color
+        referer = env['HTTP_REFERER'].R if env['HTTP_REFERER']        # referer
+
         log [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,   # transport security
              if env[:deny]                                            # action taken:
                '🛑'                                                   #  blocked
@@ -63,7 +65,7 @@ class WebResource
              end,
              (ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched]), # upstream type: origin or middlebox
              ([env[:repository].size, '⋮'] if env[:repository] && env[:repository].size > 0), ' ', # graph size
-             env['HTTP_REFERER'] ? ["\e[#{color}m",env['HTTP_REFERER'].R.display_host,"\e[0m → "] : nil, # referer
+             referer ? ["\e[#{color}m", referer.display_host, "\e[0m → "] : nil, # referer
              outFmt, ' ',                                             # output format
              "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert off-site referer
              env[:base].display_host, env[:base].path, "\e[0m",       # host, path
@@ -72,6 +74,7 @@ class WebResource
              head['Location'] ? [" → \e[#{color}m", head['Location'].R.unproxyURI.display_host, "\e[0m"] : nil, # redirected location
              env[:warning] ? [" \e[38;5;226m⚠️", env[:warning], "\e[0m"] : nil, # warning
             ].flatten.compact.map{|t|t.to_s.encode 'UTF-8'}.join
+
         [status, head, body]}                                         # response
     rescue Exception => e
       Console.logger.failure uri, e
