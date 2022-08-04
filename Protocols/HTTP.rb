@@ -47,35 +47,35 @@ class WebResource
 
       URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist on force-reload (browser ctrl-shift-R)
 
-      uri.send(env['REQUEST_METHOD']).yield_self{|status, head, body| # call request and inspect response
-        inFmt = uri.format_icon env[:origin_format]                   # input format
-        outFmt = uri.format_icon head['Content-Type']                 # output format
-        color = env[:deny] ? '38;5;196' : (FormatColor[formatO] || 0) # format -> color
-        referer = env['HTTP_REFERER'].R if env['HTTP_REFERER']        # referer
+      uri.send(env['REQUEST_METHOD']).yield_self{|status,head,body| # call request and inspect response
+        inFmt = uri.format_icon env[:origin_format]                 # input format
+        outFmt = uri.format_icon head['Content-Type']               # output format
+        color = env[:deny] ? '38;5;196' : (FormatColor[outFmt]||0)  # format -> color
+        referer = env['HTTP_REFERER'].R if env['HTTP_REFERER']      # referer
 
-        log [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil,   # transport security
-             if env[:deny]                                            # action taken:
-               '🛑'                                                   #  blocked
+        log [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil, # transport security
+             if env[:deny]                                          # action taken:
+               '🛑'                                                 # blocked
              elsif StatusIcon.has_key? status
-               StatusIcon[status]                                     #  status code
+               StatusIcon[status]                                   # status code
              elsif ActionIcon.has_key? env['REQUEST_METHOD']
-               ActionIcon[env['REQUEST_METHOD']]                      #  method
+               ActionIcon[env['REQUEST_METHOD']]                    # HTTP method
              elsif uri.offline?
-               '🔌'                                                   #  offline response
+               '🔌'                                                 # offline response
              end,
              (ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched]), # upstream type: origin or middlebox
              ([env[:repository].size, '⋮'] if env[:repository] && env[:repository].size > 0), ' ', # graph size
              referer ? ["\e[#{color}m", referer.display_host, "\e[0m → "] : nil, # referer
-             outFmt, ' ',                                             # output format
-             "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert off-site referer
-             env[:base].display_host, env[:base].path, "\e[0m",       # host, path
-             ([' ⟵ ', inFmt, ' '] if inFmt && inFmt != outfmt),       # input format, if transcoded
+             outFmt, ' ',                                           # output format
+             "\e[#{color}#{';7' if referer && referer.host != env[:base].host}m", # invert off-site referer
+             (env[:base].display_host unless referer && referer.host == env[:base].host), env[:base].path, "\e[0m", # host, path
+             ([' ⟵ ', inFmt, ' '] if inFmt && inFmt != outFmt),     # input format, if transcoded
              (qs.map{|k,v|" \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?), # query
              head['Location'] ? [" → \e[#{color}m", head['Location'].R.unproxyURI.display_host, "\e[0m"] : nil, # redirected location
              env[:warning] ? [" \e[38;5;226m⚠️", env[:warning], "\e[0m"] : nil, # warning
             ].flatten.compact.map{|t|t.to_s.encode 'UTF-8'}.join
 
-        [status, head, body]}                                         # response
+        [status, head, body]}                                       # response
     rescue Exception => e
       Console.logger.failure uri, e
       [500, {'Content-Type' => 'text/html; charset=utf-8'},
