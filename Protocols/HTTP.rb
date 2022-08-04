@@ -34,9 +34,9 @@ class WebResource
                               env['HTTP_HOST']].join).R.join(RDF::URI(env['REQUEST_PATH']).path).R env
       uri.port = nil if [80,443,8000].member? uri.port      # port if non-default
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query if non-empty
-        env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {} # strip excess &s to not trip up URI libraries
-        qs = env[:qs].dup                                   # full query - proxy and origin args - parsed and memoized
-        Args.map{|k|                                        # (💻 <> 🖥) argnames
+        env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {} # strip excess & and parse
+        qs = env[:qs].dup                                   # parsed query from caller
+        Args.map{|k|                                        # (💻 <> 🖥) local argument names
          env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) args for request in environment
         uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) args for follow-on requests in URI
       end
@@ -62,9 +62,9 @@ class WebResource
              end,
              format,                                                     # format
              (ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched]), # upstream source: origin or middlebox
-             uri.format_icon(env[:origin_format]),                       # original format
              ([env[:repository].size, '⋮'] if env[:repository] && env[:repository].size > 0), ' ', # graph size
              env['HTTP_REFERER'] ? ["\e[#{color}m",env['HTTP_REFERER'].R.display_host,"\e[0m → "] : nil, # referer
+             uri.format_icon(env[:origin_format]),                       # source format
              "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert off-site referer
              env[:base].display_host, env[:base].path, "\e[0m",          # host, path
              (qs.map{|k,v|" \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?), # query
