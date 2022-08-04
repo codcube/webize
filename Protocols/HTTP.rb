@@ -63,7 +63,7 @@ class WebResource
              format,                                                     # format
              (ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched]), # upstream source: origin or middlebox
              uri.format_icon(env[:origin_format]),                       # original format
-             ([env[:repository].size, '⋮'] if env[:repository] && env[:repository].size > 0), # graph size
+             ([env[:repository].size, '⋮'] if env[:repository] && env[:repository].size > 0), ' ', # graph size
              env['HTTP_REFERER'] ? ["\e[#{color}m",env['HTTP_REFERER'].R.display_host,"\e[0m → "] : nil, # referer
              "\e[#{color}#{env[:base].host && env['HTTP_REFERER'] && !env['HTTP_REFERER'].index(env[:base].host) && ';7' || ''}m", # invert off-site referer
              env[:base].display_host, env[:base].path, "\e[0m",          # host, path
