@@ -93,8 +93,7 @@ class WebResource
       unless File.exist? f
         POSIX.container f                                            # container(s)
         RDF::Writer.for(:turtle).open(f){|f|f << graph}              # store 🐢
-        log << ["\e[38;5;48m#{'%2d' % graph.size}⋮🐢 \e[1m",         # log graph location
-                [graphURI.display_host, graphURI.path, "\e[0m"].join] unless this
+        log << ["\e[38;5;48m#{'%2d' % graph.size}⋮🐢\e[1m",[graphURI.display_host, graphURI.path, "\e[0m"].join] unless this
       end
 
       # if graph location is not on timeline, link to timeline. TODO other index locations
