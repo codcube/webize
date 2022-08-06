@@ -1,0 +1,4 @@
+#!/bin/sh
+blocklist=$HOME/src/webize/config/blocklist/domain
+echo $1 >> $blocklist
+sort $blocklist -o $blocklist
