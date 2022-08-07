@@ -3,7 +3,7 @@ class WebResource
 
   module HTML
 
-    MarkupPredicate[Schema + 'itemListElement'] = MarkupPredicate[Schemas + 'itemListElement'] = -> list, env {
+    MarkupPredicate[Schema + 'itemListElement'] = MarkupPredicate['https://schema.org/itemListElement'] = -> list, env {
       env[:sort] ||= Schema + 'position'
       list.map!{|i| i.class == Hash ? i : {'uri' => i.to_s}}
       tabular list, env}

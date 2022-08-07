@@ -13,7 +13,6 @@ Post     http://rdfs.org/sioc/ns#Post
 RDFs     http://www.w3.org/2000/01/rdf-schema#
 SIOC     http://rdfs.org/sioc/ns#
 Schema   http://schema.org/
-Schemas  https://schema.org/
 Title    http://purl.org/dc/terms/title
 To       http://rdfs.org/sioc/ns#addressed_to
 Type     http://www.w3.org/1999/02/22-rdf-syntax-ns#type
