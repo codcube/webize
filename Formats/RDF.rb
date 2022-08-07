@@ -177,7 +177,7 @@ module Webize
 
   # read metadata map from configuration files
   Dir.children([ConfigPath, VocabPath].join '/').map{|vocab|                # find vocab
-    if vocabulary = vocab == 'rdf' ? {uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'} : RDF.vocab_map[vocab.to_sym]
+    if vocabulary = vocab == 'rdf' ? {uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'} : RDF.vocab_map[vocab.to_sym] # enable our use of RDF symbol as vocab prefix
       Dir.children([ConfigPath, VocabPath, vocab].join '/').map{|predicate| # find predicate
         destURI = [vocabulary[:uri], predicate].join
         configList([VocabPath, vocab, predicate].join '/').map{|srcURI|     # find mapping

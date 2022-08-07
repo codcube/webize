@@ -6,36 +6,13 @@ class WebResource < RDF::URI
     RegexChars = /[\^\(\)\|\[\]\$]/
     CDNhost = Webize.configRegex 'hosts/CDN'
     CDNdoc = Webize.configRegex 'formats/CDN'
-
-    # URI constants. TODO benchmark RDF::Vocab, maybe we can remove this without notable performance impacts
-    DC       = 'http://purl.org/dc/terms/'
-    DOAP     = 'http://usefulinc.com/ns/doap#'
-    OG       = 'http://ogp.me/ns#'
-    SIOC     = 'http://rdfs.org/sioc/ns#'
-    Schema   = 'http://schema.org/'
-    Schemas  = 'https://schema.org/'
-    W3       = 'http://www.w3.org/'
-    Abstract = DC + 'abstract'
-    Audio    = DC + 'Audio'
-    Content  = SIOC + 'content'
-    Creator  = SIOC + 'has_creator'
-    Date     = DC + 'date'
-    From     = Creator
-    Image    = DC + 'Image'
-    Link     = DC + 'link'
-    Post     = SIOC + 'Post'
-    RDFs     = W3 + '2000/01/rdf-schema#'
-    Title    = DC + 'title'
-    To       = SIOC + 'addressed_to'
-    Type     = W3 + '1999/02/22-rdf-syntax-ns#type'
-    Video    = DC + 'Video'
-
-    # read & parse config files
     AllowHosts = Webize.configList 'hosts/allow'
     CookieHosts = Webize.configList 'hosts/cookie'
     BlockedSchemes = Webize.configList 'blocklist/scheme'
     Gunk = Webize.configRegex 'blocklist/regex'
     KillFile = Webize.configList 'blocklist/sender'
+    Webize.configHash('metadata/constants').map{|symbol, uri|
+      self.const_set symbol, uri}
     DenyDomains = {}
 
     def self.blocklist
