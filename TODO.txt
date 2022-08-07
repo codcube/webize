@@ -58,8 +58,3 @@ RDF::URI #query_values hates multiple/leading/trailing &s, submit patch upstream
 for node IDs in HTML content.. yield each as RDF HTML-content
 shift-right/left pagination shortcuts conflict with text-selection adjustment
 re-parsing PDFs when offline http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date - remove @path
-
-move to declarative config:
-constants URI.rb
-regexes Feed.rb
-tokens (qs)
