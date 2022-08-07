@@ -231,7 +231,7 @@ module Webize
 
       def scanContent &f
         # document RDF type
-        yield @base, Type, (FOAF+'Document').R
+        yield @base, Type, 'http://xmlns.com/foaf/0.1/Document'.R
 
         # resolve inline base-URI declaration
         if base = @doc.css('head base')[0]

@@ -3,12 +3,12 @@
 class WebResource
 
   def dir_triples graph
-    graph << RDF::Statement.new(self, Type.R, (LDP + 'Container').R)
+    graph << RDF::Statement.new(self, Type.R, (W3 + 'ns/ldp#Container').R)
     graph << RDF::Statement.new(self, Title.R, basename)
     graph << RDF::Statement.new(self, Date.R, node.stat.mtime.iso8601)
     nodes = node.children.select{|n|n.basename.to_s[0] != '.'} # find contained nodes
     nodes.map{|child|                                          # 👉 contained nodes
-      graph << RDF::Statement.new(self, (LDP+'contains').R, (join child.basename.to_s.gsub(' ','%20').gsub('#','%23')))}
+      graph << RDF::Statement.new(self, (W3 + 'ns/ldp#contains').R, (join child.basename.to_s.gsub(' ','%20').gsub('#','%23')))}
   end
 
   module URIs

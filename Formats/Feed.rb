@@ -27,6 +27,9 @@ module Webize
       include WebResource::URIs
       format Format
 
+      Atom = W3 + '2005/Atom#'
+      RSS = 'http://purl.org/rss/1.0/'
+
       def initialize(input = $stdin, options = {}, &block)
         @doc = input.respond_to?(:read) ? input.read : input
         @base = options[:base_uri].R
