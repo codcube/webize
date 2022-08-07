@@ -529,7 +529,7 @@ class WebResource
             seen = true                 # mark as shown
             f[o,env]                    # render as type
           end},
-         (Markup[Resource][o, env] unless seen)]   # generic resource rendering
+         (Markup[RDFs + 'Resource'][o, env] unless seen)]   # generic resource rendering
       when Integer
         o
       when RDF::Literal

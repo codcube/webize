@@ -29,7 +29,6 @@ class WebResource < RDF::URI
     To       = SIOC + 'addressed_to'
     Type     = W3 + '1999/02/22-rdf-syntax-ns#type'
     Video    = DC + 'Video'
-    Resource = RDFs + 'Resource'
 
     # read & parse config files
     AllowHosts = Webize.configList 'hosts/allow'
