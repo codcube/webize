@@ -27,7 +27,7 @@ module Webize
       include WebResource::URIs
       format Format
 
-      Atom = W3 + '2005/Atom#'
+      Atom = 'http://www.w3.org/2005/Atom#'
       RSS = 'http://purl.org/rss/1.0/'
 
       def initialize(input = $stdin, options = {}, &block)

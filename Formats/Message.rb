@@ -208,7 +208,7 @@ class WebResource
       ts.map(&:to_s).map(&:strip).uniq.map{|t|
         [CGI.escapeHTML(t), ' ']}}
 
-    Markup[RDFs + 'Resource'] = -> re, env {
+    Markup['http://www.w3.org/2000/01/rdf-schema#Resource'] = -> re, env {
       types = re.delete(Type) || []
       im = types.member? SIOC+'InstantMessage'
       titled = re.has_key? Title
