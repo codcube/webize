@@ -183,7 +183,8 @@ module Webize
         srcset = i['srcset'].scan(SrcSetRegex).map{|ref, size|
           [ref.R(env).href, size].join ' '
         }.join(', ')
-        i['srcset'] = srcset unless srcset.empty?}
+        srcset = i['srcset'].R(env).href if srcset.empty?
+        i['srcset'] = srcset}
 
       html.css('[href]').map{|a|
         a['href'] = env[:base].join(a['href']).R(env).href} # @href

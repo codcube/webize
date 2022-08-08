@@ -46,12 +46,11 @@ module Webize
 
     # resolve @srcset refs
     def self.srcset node, base
-      srcset = node['srcset'].scan(SrcSetRegex).map{|url, size|[(base.join url), size].join ' '}.join(', ')
-      if srcset.empty?
-        Console.logger.debug "srcset failed to parse: " + node['srcset']
-      else
-        node['srcset'] = srcset
-      end
+      srcset = node['srcset'].scan(SrcSetRegex).map{|url, size|
+        [(base.join url), size].join ' '
+      }.join(', ')
+      srcset = base.join node['srcset'] if srcset.empty? # resolve singleton URL in srcset attribute. eithere there's lots of spec violators or this is allowed. we allow it 
+      node['srcset'] = srcset
     end
 
   end
