@@ -299,7 +299,9 @@ module Webize
               yield @base, k, v unless k == :drop
             end
           elsif m['http-equiv'] == 'refresh'
-            yield @base, Link, m['content'].split('url=')[-1].R
+            if u = m['content'].split('url=')[-1]
+              yield @base, Link, u.R
+            end
           end}
 
         # title
