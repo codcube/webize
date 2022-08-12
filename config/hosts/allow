@@ -40,6 +40,7 @@ gql.reddit.com
 i.dailymail.co.uk
 i.guim.co.uk
 i.imgur.com
+i.instagram.com
 i0.wp.com
 i1.wp.com
 i2.wp.com
@@ -59,10 +60,12 @@ pbs.twimg.com
 photos.app.goo.gl
 photos.google.com
 research.google
+scontent-lga3-2.cdninstagram.com
 signin.ebay.com
 soundcloud.com
 sourceforge.net
 static.cargo.site
+static.cdninstagram.com
 static.wixstatic.com
 static01.nyt.com
 static01.nytimes.com
@@ -88,6 +91,7 @@ www.ft.com
 www.homedepot.com
 www.imdb.com
 www.indeed.com
+www.instagram.com
 www.japantimes.co.jp
 www.latimes.com
 www.lenovo.com
