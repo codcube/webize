@@ -1,6 +1,8 @@
 .artist
 .author
 .bigusername
+.chat-item__from
+.chat-item__username
 .comment-author
 .name
 .nick

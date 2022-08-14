@@ -80,7 +80,8 @@ class WebResource
                  else
                    if Type == k && types&.find{|t| AV.member? t}                 # Audio/Video typed
                      playerType = Audio.R==resource[Type][0] ? 'audio' : 'video' # play-button for A/V resource
-                     {_: :a, href: '#', c: '▶️', onclick: 'var player = document.getElementById("' + playerType + '"); player.src="' + re.href + '"; player.play()'}
+                     {_: :a, href: '#', c: '▶️',
+                      onclick: 'var player = document.getElementById("' + playerType + '"); player.src="' + re.href + '"; player.play()'}
                    elsif MarkupPredicate.has_key? k
                      predicate[k]
                    else

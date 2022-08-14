@@ -1,4 +1,5 @@
 .body
+.chat-item__text
 .comment
 .comment_text
 .content

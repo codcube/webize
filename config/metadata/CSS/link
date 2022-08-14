@@ -3,6 +3,7 @@
 .postNum a
 .u-url
 .views-field-title a
+a.chat-item__time
 a.linkSelf
 a.post_no
 a.titlelink
