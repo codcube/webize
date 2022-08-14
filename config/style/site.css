@@ -83,6 +83,7 @@ table.tabular {border-spacing: 0}
 td {border-radius: .2em; border-width: 0 1px 1px 0; border-style: solid; border-color: #555}
 td.k a {color: #ccc; background-color: #000; max-width: 28ex; padding: 0 .1em 0 .1em}
 td.k {text-align: right; font-weight: bold}
+td[property="http://rdfs.org/sioc/ns#addressed_to"] > a {white-space: nowrap}
 th {border-radius: 0; border-width: 0 0 1px 0}
 th.sort {background-color: #bbb; color: #000; border-radius: .38em}
 thead a {color: #eee}

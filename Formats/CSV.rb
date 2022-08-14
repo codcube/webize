@@ -68,7 +68,8 @@ class WebResource
               {_: :tr, id: re.local_id, c: keys.map{|k|                          # resource row
                  {_: :td, property: k,
                   c: if k == 'uri'                                               # primary column
-                   [{_: :a, class: :title, href: re.href, c: resource.has_key?(Title) ? predicate[Title] : :🔗, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}, # title
+                   [{_: :a, href: re.href,
+                     c: resource.has_key?(Title) ? predicate[Title] : :🔗, id: 'p' + Digest::SHA2.hexdigest(rand.to_s)}, # title
                     predicate[Abstract],                                         # abstract
                     [*AV, Image].map{|t|
                       [(Markup[Webize::MetaMap[t] || t][re, env] if types&.member? t), # A/V inlined resource
