@@ -52,7 +52,7 @@ class WebResource
     treeFromGraph(fullGraph).map{|subject, resource|                 # resources to summarize
       subject = subject.R                                            # subject resource
       full = (resource[Type]||[]).find{|t| NoSummary.member? t}      # resource-types retaining full content
-      predicates = [Abstract, Audio, Creator, Date, Image, LDP+'contains', DC+'identifier', Title, To, Type, Video, Schema+'itemListElement']
+      predicates = [Abstract, Audio, Creator, Date, Image, W3 + 'ns/ldp#contains', DC+'identifier', Title, To, Type, Video, Schema+'itemListElement']
       predicates.push Content if full                                # main content sometimes included in preview
       predicates.push Link unless subject.host                       # include untyped links in local content
       predicates.map{|predicate|                                     # summary-statement predicate

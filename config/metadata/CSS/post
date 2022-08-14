@@ -3,7 +3,6 @@
 .chat-item
 .comment
 .entry
-.js-timeline-item
 .message
 .op-msg
 .post

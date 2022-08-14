@@ -12,6 +12,7 @@ module Webize
 
       def scanMessages
         @doc.css(MsgCSS[:post]).map{|post|                                 # post
+
           links = post.css(MsgCSS[:link])
 
           subject = if !links.empty?
