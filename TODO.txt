@@ -5,7 +5,6 @@ mboxes, gunzipped https://www.redhat.com/archives/dm-devel/2020-November.txt.gz
 path visualization (how did i get here? referer logging / backlink history)
 git RDFize
 replace dnsd-minit4 with RubyDNS
-get rid of GET customizatino entirely except for required token magic (move HN/Lobsters/etc to generic post-in-HTML triplr)
 view for event types https://jewishchronicle.timesofisrael.com/ - datetimeline vis
 RDFa output - investigate HAML template-solution in RDF library or just add it to native views. not many to edit
 notification mesh
@@ -37,7 +36,6 @@ remember insecure hosts so we don't keep trying HTTPS
 small turtle documentatino of declarative config files
 show request meta in HTML - graph/resource/doc sizes/dates at least (should i ctrl-R? etc)  
 link to archived version from toolbar (we nuked ?offline QS so use the storage path)
-looks like we're getting good cookies from twitter but just not caching them - investigate if bookmarklet is really necessary. and the triplr is still kind of wonky in tmers of URIs, any simple way to override without introduci8ng another per-site config mechanism?
 more compliant cookie caching on allowed (sub)domains
 figure out what is causing loops like discarding https://askubuntu.com/questions/1299890/how-to-sort-a-file-before-redirecting-it-as-an-input-to-a-bash-script → https://askubuntu.com/questions/1299890/how-to-sort-a-file-before-redirecting-it-as-an-input-to-a-bash-script redirect
 backlink indexing and more indexing in general - frequently linked posts 'daily heat'
