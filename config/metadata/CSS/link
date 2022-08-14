@@ -7,3 +7,4 @@ a.chat-item__time
 a.linkSelf
 a.post_no
 a.titlelink
+[id*="permalink"]
