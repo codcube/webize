@@ -14,3 +14,4 @@ Title    http://purl.org/dc/terms/title
 To       http://rdfs.org/sioc/ns#addressed_to
 Type     http://www.w3.org/1999/02/22-rdf-syntax-ns#type
 Video    http://purl.org/dc/terms/Video
+W3	 http://www.w3.org/ns/

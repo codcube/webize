@@ -51,8 +51,9 @@ class WebResource
     saveRDF fullGraph if basename.index('msg.') == 0                 # cache RDF extracted from nonRDF
     treeFromGraph(fullGraph).map{|subject, resource|                 # resources to summarize
       subject = subject.R                                            # subject resource
-      full = (resource[Type]||[]).find{|t| NoSummary.member? t}      # resource-types retaining full content
-      predicates = [Abstract, Audio, Creator, Date, Image, W3 + 'ns/ldp#contains', DC+'identifier', Title, To, Type, Video, Schema+'itemListElement']
+      full = (resource[Type]||[]).find{|t| NoSummary.member? t}      # resource types retaining full content
+      predicates = [Abstract, Audio, Creator, Date, Image, W3 + 'ldp#contains',
+                    DC + 'identifier', Title, To, Type, Video, Schema + 'itemListElement']
       predicates.push Content if full                                # main content sometimes included in preview
       predicates.push Link unless subject.host                       # include untyped links in local content
       predicates.map{|predicate|                                     # summary-statement predicate
