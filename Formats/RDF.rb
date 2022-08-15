@@ -8,7 +8,6 @@ class WebResource
     elsif node.directory?                                            # directory
       (dirURI? ? self : join((basename||'')+'/').R(env)).dir_triples graph
     end
-
     self
   end
 
@@ -49,10 +48,9 @@ class WebResource
     summary                                                          # return summary
   end
 
-  # (format, content, Repository) -> Repository
+  # (format, content, repository) -> Repository
   def readRDF format, content, graph
     options = {}
-
     case options[:content_type] = format                         # content type
     when /octet.stream/                                            # blob
     when /^audio/                                                  # audio file
@@ -66,17 +64,17 @@ class WebResource
     else
       if reader ||= RDF::Reader.for(**options)                     # find reader
         reader.new(content, base_uri: self){|_|graph << _}     # read RDF
-        if options[:content_type]=='text/html' && reader != RDF::RDFa::Reader # read RDFa
+        if options[:content_type] == 'text/html' && reader != RDF::RDFa::Reader # read RDFa
           RDF::RDFa::Reader.new(content, base_uri: env[:base]){|g|
             g.each_statement{|statement|
               if predicate = Webize::MetaMap[statement.predicate.to_s]
                 next if predicate == :drop
                 statement.predicate = predicate.R
               end
-              graph << statement }} rescue (logger.warn "⚠️ RDFa::Reader failed")
+              graph << statement }} rescue (logger.debug "⚠️ RDFa::Reader failure #{uri}")
         end
       else
-        logger.warn ["⚠️ no RDF reader for #{fsPath}" , options].join # reader not found
+        logger.warn ["⚠️ no RDF reader " , options].join # reader not found
       end
     end    
   end
