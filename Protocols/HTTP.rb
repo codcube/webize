@@ -83,15 +83,19 @@ class WebResource
     end
 
     def cookieCache
-      cookie = join('/cookie').R                      # cookie-jar URI
-      if env[:cookie] && !env[:cookie].empty?         # store cookie to jar
+      cookie = join('/cookie').R                      # jar URI
+      if env[:cookie] && !env[:cookie].empty?         # qs-specified cookie to jar
         cookie.writeFile env[:cookie]
          logger.info [:🍯, host, env[:cookie]].join ' '
       end
-      if cookie.file?                                 # read cookie from jar
+      if cookie.file?                                 # load cookie from jar
         env['HTTP_COOKIE'] = cookie.node.read
         logger.info [:🍪, host, env['HTTP_COOKIE']].join ' '
       end
+    end
+
+    def debug?
+      ENV['CONSOLE_LEVEL'] == 'debug'
     end
 
     def HTTP.decompress head, body
@@ -181,13 +185,13 @@ class WebResource
       end
       head['If-Modified-Since'] = env[:cache].mtime.httpdate if env[:cache] # timestamp for conditional fetch
 
-      #logger.debug ["\e[7m🖥 → ☁️  #{uri}\e[0m ", HTTP.bwPrint(head)].join # request headers
+      logger.debug ["\e[7m🖥 → ☁️  #{uri}\e[0m ", HTTP.bwPrint(head)].join if debug? # request metadata
 
       URI.open(uri, head) do |response|                     # HTTP(S) fetch
         h = headers response.meta                           # response metadata
 
-        #logger.debug ["\e[7m🥩 ← ☁️ \e[0m ", HTTP.bwPrint(response.meta)].join # raw upstream headers
-        #logger.debug ["\e[7m🧽 ← ☁️ \e[0m ", HTTP.bwPrint(h)].join # cleaned upstream headers
+        logger.debug ["\e[7m🥩 ← ☁️ \e[0m ", HTTP.bwPrint(response.meta)].join if debug? # raw upstream metadata
+        logger.debug ["\e[7m🧽 ← ☁️ \e[0m ", HTTP.bwPrint(h)].join if debug? # clean upstream metadata
 
         env[:origin_status] = response.status[0].to_i       # response status
         case env[:origin_status]
@@ -294,10 +298,7 @@ class WebResource
               env[:links][type.to_sym] = ref
             end}
 
-          if h['Set-Cookie'] && CookieHosts.member?(host)   # if cookie is sent from upstream and accepted by client,
-            env[:base].join('/cookie').R.writeFile h['Set-Cookie'] # stash cookie in jar
-            logger.info [:🍯, host, h['Set-Cookie']].join ' '
-          end
+          stashCookie h['Set-Cookie']                       # cache upstream cookie
 
           if env[:client_etags].include? h['ETag']          # client has entity
             [304, {}, []]                                   # no content
@@ -318,6 +319,7 @@ class WebResource
       status = e.io.status[0].to_i                          # response status
       case status.to_s
       when /30[12378]/                                      # redirected
+        logger.debug ["\e[7m ☁️  redirect #{status} \e[0m ", HTTP.bwPrint(e.io.meta)].join if debug? # request metadata
         location = e.io.meta['location']
         dest = join(location).R env
         if no_scheme == dest.no_scheme                      # alternate scheme
@@ -328,8 +330,10 @@ class WebResource
             logger.debug "🔒 upgrade redirect #{dest}"
             dest.fetchHTTP
           else                                              # redirect loop
-            logger.warn "discarding #{uri} → #{location} redirect"
-            fetchLocal
+            logger.warn "redirect loop → #{location}"
+            stashCookie e.io.meta['set-cookie']
+            #           fetchLocal
+            [status, {'Location' => dest.href}, []]
           end
         else
           [status, {'Location' => dest.href}, []]
@@ -515,6 +519,12 @@ class WebResource
       env[:deny] = true
       [202, {'Access-Control-Allow-Credentials' => 'true',
              'Access-Control-Allow-Origin' => origin}, []]
+    end
+    def stashCookie cookie
+      return unless cookie && CookieHosts.member?(host)
+      cookie = cookie.split(',').map{|c| c.split(';')[0]}.join ','
+      env[:base].join('/cookie').R.writeFile cookie # stash cookie in jar
+      logger.info [:🍯, host, cookie].join ' '
     end
   end
 
