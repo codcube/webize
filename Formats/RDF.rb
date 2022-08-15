@@ -50,6 +50,7 @@ class WebResource
 
   # (format, content, repository) -> Repository
   def readRDF format, content, graph
+    return if content.empty?
     options = {}
     case options[:content_type] = format                         # content type
     when /octet.stream/                                            # blob
@@ -65,7 +66,7 @@ class WebResource
       if reader ||= RDF::Reader.for(**options)                     # find reader
         reader.new(content, base_uri: self){|_|graph << _}     # read RDF
         if options[:content_type] == 'text/html' && reader != RDF::RDFa::Reader # read RDFa
-          RDF::RDFa::Reader.new(content, base_uri: env[:base]){|g|
+          RDF::RDFa::Reader.new(content, base_uri: self){|g|
             g.each_statement{|statement|
               if predicate = Webize::MetaMap[statement.predicate.to_s]
                 next if predicate == :drop

@@ -241,38 +241,17 @@ class WebResource
               FileUtils.ln_s File.basename(file), link unless File.basename(link) == 'index' # link path
             end
             File.open(file, 'w'){|f| f << body }            # cache static entity
-
+            env[:repository] ||= RDF::Repository.new      # initialize RDF repository
             if timestamp = h['Last-Modified']               # HTTP provided timestamp
               timestamp.sub! /((ne|r)?s|ur)?day/, ''        # strip day name to 3-letter abbr
               if t = Time.httpdate(timestamp) rescue nil    # parse timestamp
                 FileUtils.touch file, mtime: t              # cache timestamp
+                env[:repository] << RDF::Statement.new(self, Date.R, t.iso8601) # timestamp RDF
               else
                 logger.debug ['⚠️  HTTP datetime parse failed on ', h['Last-Modified'], timestamp != h['Last-Modified'] ? [:→, timestamp] : nil].join ' '
               end
             end
-
-            if reader = RDF::Reader.for(content_type: format) # reader defined for format?
-              env[:repository] ||= RDF::Repository.new      # initialize RDF repository
-              env[:repository] << RDF::Statement.new(self, Date.R, t.iso8601) if t
-              case format
-              when /image/
-                env[:repository] << RDF::Statement.new(self, Type.R, Image.R)
-              when /video/
-                env[:repository] << RDF::Statement.new(self, Type.R, Video.R)
-              end
-              reader.new(body, base_uri: self, path: file){|g|env[:repository] << g} # read RDF
-              if format == 'text/html' && reader != RDF::RDFa::Reader                # read RDFa
-                RDF::RDFa::Reader.new(body, base_uri: self){|g|
-                  g.each_statement{|statement|
-                    if predicate = Webize::MetaMap[statement.predicate.to_s]
-                      next if predicate == :drop
-                      statement.predicate = predicate.R
-                    end
-                    env[:repository] << statement }} rescue logger.warn("⚠️ RDFa::Reader failed")
-              end
-            else
-              logger.warn "⚠️ Reader undefined for #{format}"
-            end unless format.match?(/octet-stream/) || body.empty?
+            readRDF format, body, env[:repository]
           else
             logger.warn "⚠️ format undefined on #{uri}"
           end
