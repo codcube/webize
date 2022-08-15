@@ -5,6 +5,7 @@ class WebResource
   def loadRDF graph: env[:repository] ||= RDF::Repository.new
     options = {}
     if node.file?                                                    # file
+      readRDF fileMIME, File.open(fsPath).read, graph
     elsif node.directory?                                            # directory RDF
       (dirURI? ? self : join((basename||'')+'/').R(env)).dir_triples graph
     end
@@ -50,7 +51,7 @@ class WebResource
 
   # (format, content, Repository) -> Repository
   def readRDF format, content, graph
-    case options[:content_type] = fileMIME                         # content type
+    case options[:content_type] = format                         # content type
     when /octet.stream/                                            # blob
     when /^audio/                                                  # audio file
       audio_triples graph
@@ -62,9 +63,9 @@ class WebResource
       graph << RDF::Statement.new(self, Title.R, basename)
     else
       if reader ||= RDF::Reader.for(**options)                     # find reader
-        reader.new(File.open(fsPath).read, base_uri: self){|_|graph << _}     # read RDF
+        reader.new(content, base_uri: self){|_|graph << _}     # read RDF
         if options[:content_type]=='text/html' && reader != RDF::RDFa::Reader # read RDFa
-          RDF::RDFa::Reader.new(File.open(fsPath).read, base_uri: env[:base]){|g|
+          RDF::RDFa::Reader.new(content, base_uri: env[:base]){|g|
             g.each_statement{|statement|
               if predicate = Webize::MetaMap[statement.predicate.to_s]
                 next if predicate == :drop
