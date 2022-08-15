@@ -48,7 +48,7 @@ class WebResource
     summary                                                          # return summary
   end
 
-  # (format, content, repository) -> Repository
+  # type, content -> Repository
   def readRDF format, content, graph
     return if content.empty?
     case format                                                    # content type:
@@ -63,7 +63,9 @@ class WebResource
       graph << RDF::Statement.new(self, Title.R, basename)
     else
       if reader ||= RDF::Reader.for(content_type: format)          # find reader
+
         reader.new(content, base_uri: self){|_|graph << _}         # read RDF
+
         if format == 'text/html' && reader != RDF::RDFa::Reader    # read RDFa
           RDF::RDFa::Reader.new(content, base_uri: self){|g|
             g.each_statement{|statement|
