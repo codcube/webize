@@ -37,7 +37,6 @@ small turtle documentatino of declarative config files
 show request meta in HTML - graph/resource/doc sizes/dates at least (should i ctrl-R? etc)  
 link to archived version from toolbar (we nuked ?offline QS so use the storage path)
 more compliant cookie caching on allowed (sub)domains
-figure out what is causing loops like discarding https://askubuntu.com/questions/1299890/how-to-sort-a-file-before-redirecting-it-as-an-input-to-a-bash-script → https://askubuntu.com/questions/1299890/how-to-sort-a-file-before-redirecting-it-as-an-input-to-a-bash-script redirect
 backlink indexing and more indexing in general - frequently linked posts 'daily heat'
 return graphs cached in request -  fetched updates report
 redir to stuff that's gonna be  blocked: http://l/2021/09/27/21/*blogpost*?view=table&sort=date →  //link.mail.bloombergbusiness.com/favicon.ico  → https://cdn.sailthru.com/assets/images/favicon.ico

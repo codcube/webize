@@ -215,18 +215,12 @@ class WebResource
           if format                                         # format defined
             format.downcase!                                # normalize case
             if !charset && format.index('html') && metatag = body[0..4096].encode('UTF-8', undef: :replace, invalid: :replace).match(/<meta[^>]+charset=['"]?([^'">]+)/i)
-              charset = metatag[1]                          # charset defined in document header
+              charset = metatag[1]                          # charset defined in document
             end
-            if charset                                      # charset defined?
-              charset = 'UTF-8' if charset.match? /utf.?8/i # normalize UTF-8 charset symbols
-              charset = 'Shift_JIS' if charset.match? /s(hift)?.?jis/i # normalize Shift-JIS charset symbols
-              unless Encoding.name_list.member? charset     # ensure charset is in encoding set
-                logger.warn "⚠️ unsupported charset #{charset} in #{uri}"
-                charset = 'UTF-8'                           # default charset
-              end
-            end
+            charset ||= 'UTF-8'                             # default charset
+            charset = normalize_charset charset             # normalize charset
             if format.match? /(ht|x)ml|script|text/         # encode text formats in UTF-8
-              body.encode! 'UTF-8', charset || 'UTF-8', invalid: :replace, undef: :replace
+              body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace
             end
             if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i)
               format = 'text/html'                          # HTML served w/ XML MIME
@@ -330,10 +324,8 @@ class WebResource
             logger.debug "🔒 upgrade redirect #{dest}"
             dest.fetchHTTP
           else                                              # redirect loop
-            logger.warn "redirect loop → #{location}"
-            stashCookie e.io.meta['set-cookie']
-            #           fetchLocal
-            [status, {'Location' => dest.href}, []]
+            logger.warn "🛑 redirect loop → #{location}"
+            fetchLocal
           end
         else
           [status, {'Location' => dest.href}, []]
@@ -477,6 +469,24 @@ class WebResource
       return unless env.has_key? :links
       env[:links].map{|type,uri|
         "<#{uri}>; rel=#{type}"}.join(', ')
+    end
+
+    def normalize_charset c
+      c = case c
+          when /iso.?8859/i
+            'ISO-8859-1'
+          when /s(hift)?.?jis/i
+            'Shift_JIS'
+          when /utf.?8/i
+            'UTF-8'
+          else
+            c
+          end
+      unless Encoding.name_list.member? c          # ensure charset is in encoding set
+        logger.warn "⚠️ unsupported charset #{c} on #{uri}"
+        c = 'UTF-8'                                # default charset
+      end
+      c
     end
 
     def notfound
