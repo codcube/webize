@@ -217,8 +217,7 @@ class WebResource
             if !charset && format.index('html') && metatag = body[0..4096].encode('UTF-8', undef: :replace, invalid: :replace).match(/<meta[^>]+charset=['"]?([^'">]+)/i)
               charset = metatag[1]                          # charset defined in document
             end
-            charset ||= 'UTF-8'                             # default charset
-            charset = normalize_charset charset             # normalize charset
+            charset = charset ? (normalize_charset charset) : 'UTF-8' # normalize charset
             if format.match? /(ht|x)ml|script|text/         # encode text formats in UTF-8
               body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace
             end
@@ -226,10 +225,7 @@ class WebResource
               format = 'text/html'                          # HTML served w/ XML MIME
             end
             env[:origin_format] = format                    # upstream format
-            fixed_format = format.match? FixedFormat        # fixed format?
-
             body = Webize.clean self, body, format          # clean upstream data
-
             file = fsPath                                   # cache storage
             if file[-1] == '/'                              # container
               file += 'index'
@@ -296,12 +292,12 @@ class WebResource
 
           if env[:client_etags].include? h['ETag']          # client has entity
             [304, {}, []]                                   # no content
-          elsif env[:notransform] || fixed_format           # static content
+          elsif env[:notransform] || format.match?(FixedFormat) # static format
             body = Webize::HTML.resolve_hrefs body, env, true if format == 'text/html' && env[:proxy_href] # resolve proxy-hrefs
             head = {'Content-Type' => format,               # response header
                     'Content-Length' => body.bytesize.to_s}
             %w(ETag Last-Modified).map{|k|head[k] = h[k] if h[k]} # upstream headers for caller
-            head['Expires']=(Time.now+3e7).httpdate if fixed_format # cache static assets
+            head['Expires']=(Time.now+3e7).httpdate         # cache static asset
             [200, head, [body]]                             # response in upstream format
           else                                              # content-negotiated transform
             graphResponse format                            # response in preferred format
