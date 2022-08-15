@@ -255,10 +255,8 @@ class WebResource
           else
             logger.warn "⚠️ format undefined on #{uri}"
           end
-
           return unless thru                                # HTTP response for caller?
           saveRDF                                           # update graph-cache
-
           h['Link'] && h['Link'].split(',').map{|link|      # parse upstream Link headers
             ref, type = link.split(';').map &:strip
             if ref && type
@@ -266,9 +264,7 @@ class WebResource
               type = type.sub(/^rel="?/,'').sub /"$/, ''
               env[:links][type.to_sym] = ref
             end}
-
           stashCookie h['Set-Cookie']                       # cache upstream cookie
-
           if env[:client_etags].include? h['ETag']          # client has entity
             [304, {}, []]                                   # no content
           elsif env[:notransform] || format.match?(FixedFormat) # static format

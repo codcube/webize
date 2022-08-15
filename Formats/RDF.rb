@@ -51,21 +51,20 @@ class WebResource
   # (format, content, repository) -> Repository
   def readRDF format, content, graph
     return if content.empty?
-    options = {}
-    case options[:content_type] = format                         # content type
-    when /octet.stream/                                            # blob
-    when /^audio/                                                  # audio file
+    case format                                                    # content type:
+    when /octet.stream/                                            #  blob
+    when /^audio/                                                  #  audio
       audio_triples graph
-    when /^image/                                                  # image file
+    when /^image/                                                  #  image
       graph << RDF::Statement.new(self, Type.R, Image.R)
       graph << RDF::Statement.new(self, Title.R, basename)
-    when /^video/                                                  # video file
+    when /^video/                                                  #  video
       graph << RDF::Statement.new(self, Type.R, Video.R)
       graph << RDF::Statement.new(self, Title.R, basename)
     else
-      if reader ||= RDF::Reader.for(**options)                     # find reader
-        reader.new(content, base_uri: self){|_|graph << _}     # read RDF
-        if options[:content_type] == 'text/html' && reader != RDF::RDFa::Reader # read RDFa
+      if reader ||= RDF::Reader.for(content_type: format)          # find reader
+        reader.new(content, base_uri: self){|_|graph << _}         # read RDF
+        if format == 'text/html' && reader != RDF::RDFa::Reader    # read RDFa
           RDF::RDFa::Reader.new(content, base_uri: self){|g|
             g.each_statement{|statement|
               if predicate = Webize::MetaMap[statement.predicate.to_s]
@@ -75,7 +74,7 @@ class WebResource
               graph << statement }} rescue (logger.debug "⚠️ RDFa::Reader failure #{uri}")
         end
       else
-        logger.warn ["⚠️ no RDF reader " , options].join # reader not found
+        logger.warn ["⚠️ no RDF reader for " , format].join # reader not found
       end
     end    
   end
