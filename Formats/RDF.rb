@@ -3,12 +3,12 @@ class WebResource
 
   # file -> Repository
   def loadRDF graph: env[:repository] ||= RDF::Repository.new
-    options = {}
     if node.file?                                                    # file
       readRDF fileMIME, File.open(fsPath).read, graph
-    elsif node.directory?                                            # directory RDF
+    elsif node.directory?                                            # directory
       (dirURI? ? self : join((basename||'')+'/').R(env)).dir_triples graph
     end
+
     self
   end
 
@@ -51,6 +51,8 @@ class WebResource
 
   # (format, content, Repository) -> Repository
   def readRDF format, content, graph
+    options = {}
+
     case options[:content_type] = format                         # content type
     when /octet.stream/                                            # blob
     when /^audio/                                                  # audio file
