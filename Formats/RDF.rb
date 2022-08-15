@@ -1,36 +1,10 @@
 # coding: utf-8
 class WebResource
 
-  # file -> (in-memory) Repository
+  # file -> Repository
   def loadRDF graph: env[:repository] ||= RDF::Repository.new
     options = {}
     if node.file?                                                    # file
-      case options[:content_type] = fileMIME                         # content type
-      when /octet.stream/                                            # blob
-      when /^audio/                                                  # audio file
-        audio_triples graph
-      when /^image/                                                  # image file
-        graph << RDF::Statement.new(self, Type.R, Image.R)
-        graph << RDF::Statement.new(self, Title.R, basename)
-      when /^video/                                                  # video file
-        graph << RDF::Statement.new(self, Type.R, Video.R)
-        graph << RDF::Statement.new(self, Title.R, basename)
-      else
-        if reader ||= RDF::Reader.for(**options)                     # find reader
-          reader.new(File.open(fsPath).read, base_uri: self){|_|graph << _}     # read RDF
-          if options[:content_type]=='text/html' && reader != RDF::RDFa::Reader # read RDFa
-            RDF::RDFa::Reader.new(File.open(fsPath).read, base_uri: env[:base]){|g|
-              g.each_statement{|statement|
-                if predicate = Webize::MetaMap[statement.predicate.to_s]
-                  next if predicate == :drop
-                  statement.predicate = predicate.R
-                end
-                graph << statement }} rescue (logger.warn "⚠️ RDFa::Reader failed")
-          end
-        else
-          logger.warn ["⚠️ no RDF reader for #{fsPath}" , options].join # reader not found
-        end
-      end
     elsif node.directory?                                            # directory RDF
       (dirURI? ? self : join((basename||'')+'/').R(env)).dir_triples graph
     end
@@ -72,6 +46,36 @@ class WebResource
 
     summary.writeFile miniGraph.dump(:turtle,base_uri: self,standard_prefixes: true) # cache summary
     summary                                                          # return summary
+  end
+
+  # (format, content, Repository) -> Repository
+  def readRDF format, content, graph
+    case options[:content_type] = fileMIME                         # content type
+    when /octet.stream/                                            # blob
+    when /^audio/                                                  # audio file
+      audio_triples graph
+    when /^image/                                                  # image file
+      graph << RDF::Statement.new(self, Type.R, Image.R)
+      graph << RDF::Statement.new(self, Title.R, basename)
+    when /^video/                                                  # video file
+      graph << RDF::Statement.new(self, Type.R, Video.R)
+      graph << RDF::Statement.new(self, Title.R, basename)
+    else
+      if reader ||= RDF::Reader.for(**options)                     # find reader
+        reader.new(File.open(fsPath).read, base_uri: self){|_|graph << _}     # read RDF
+        if options[:content_type]=='text/html' && reader != RDF::RDFa::Reader # read RDFa
+          RDF::RDFa::Reader.new(File.open(fsPath).read, base_uri: env[:base]){|g|
+            g.each_statement{|statement|
+              if predicate = Webize::MetaMap[statement.predicate.to_s]
+                next if predicate == :drop
+                statement.predicate = predicate.R
+              end
+              graph << statement }} rescue (logger.warn "⚠️ RDFa::Reader failed")
+        end
+      else
+        logger.warn ["⚠️ no RDF reader for #{fsPath}" , options].join # reader not found
+      end
+    end    
   end
 
   # Repository -> 🐢 file(s)
