@@ -121,12 +121,12 @@ class WebResource
 
     # initialize containing dir
     def self.container path
-      dir = File.dirname path
-      until path == '.' # garbage collect files or dangling symlinks in the way
+      dir = File.dirname path # container path
+      until path == '.' # garbage collect files and symlinks in container path
         FileUtils.rm path if File.file?(path) || File.symlink?(path)
-        path = File.dirname path # up a level
+        path = File.dirname path
       end
-      FileUtils.mkdir_p dir # create containing dir
+      FileUtils.mkdir_p dir   # create container
     end
 
     # HTTP-level pointers for directory navigation
