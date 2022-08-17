@@ -185,16 +185,10 @@ class WebResource
       end
       head['If-Modified-Since'] = env[:cache].mtime.httpdate if env[:cache] # timestamp for conditional fetch
 
-      logger.debug ["\e[7m🖥 → ☁️  #{uri}\e[0m ", HTTP.bwPrint(head)].join if debug? # request metadata
+      URI.open(uri, head) do |response|                     # HTTP fetch
+        h = headers response.meta                           # response headera
 
-      URI.open(uri, head) do |response|                     # HTTP(S) fetch
-        h = headers response.meta                           # response metadata
-
-        logger.debug ["\e[7m🥩 ← ☁️ \e[0m ", HTTP.bwPrint(response.meta)].join if debug? # raw upstream metadata
-        logger.debug ["\e[7m🧽 ← ☁️ \e[0m ", HTTP.bwPrint(h)].join if debug? # clean upstream metadata
-
-        env[:origin_status] = response.status[0].to_i       # response status
-        case env[:origin_status]
+        case env[:origin_status] = response.status[0].to_i  # response status
         when 204                                            # no content
           [204, {}, []]
         when 206                                            # partial content
@@ -251,23 +245,9 @@ class WebResource
           end
           return unless thru                                # HTTP response for caller?
           saveRDF                                           # update graph-cache
-          h['Link'] && h['Link'].split(',').map{|link|      # parse upstream Link headers
-            ref, type = link.split(';').map &:strip
-            if ref && type
-              ref = ref.sub(/^</,'').sub />$/, ''
-              type = type.sub(/^rel="?/,'').sub /"$/, ''
-              env[:links][type.to_sym] = ref
-            end}
-          stashCookie h['Set-Cookie']                       # cache upstream cookie
-          if env[:client_etags].include? h['ETag']          # client has entity
-            [304, {}, []]                                   # no content
-          elsif env[:notransform] || format.match?(FixedFormat) # static format
-            body = Webize::HTML.resolve_hrefs body, env, true if format == 'text/html' && env[:proxy_href] # resolve proxy-hrefs
-            head = {'Content-Type' => format,               # response header
-                    'Content-Length' => body.bytesize.to_s}
-            %w(ETag Last-Modified).map{|k|head[k] = h[k] if h[k]} # upstream headers for caller
-            head['Expires']=(Time.now+3e7).httpdate         # cache static asset
-            [200, head, [body]]                             # response in upstream format
+
+          if env[:notransform] || format.match?(FixedFormat) # static format
+            staticResponse format, body
           else                                              # content-negotiated transform
             graphResponse format                            # response in preferred format
           end
@@ -385,6 +365,8 @@ class WebResource
     # PRs pending for rack/falcon, maybe we can finally remove this soon
     def headers raw = nil
       raw ||= env || {}                               # raw headers
+      logger.debug ["\e[7m🥩 ← 🗣 \e[0m ", HTTP.bwPrint(raw)].join if debug? # raw debug-prints
+
       head = {}                                       # cleaned headers
       raw.map{|k,v|                                   # inspect (k,v) pairs
         unless k.class!=String || k.index('rack.')==0 # skip internal headers
@@ -399,11 +381,20 @@ class WebResource
           head[key] = (v.class == Array && v.size == 1 && v[0] || v) unless SingleHopHeaders.member? key.downcase # set header
         end}
 
+      head['Link']&.split(',').map{|link|             # read Link headers
+        ref, type = link.split(';').map &:strip
+        if ref && type
+          ref = ref.sub(/^</,'').sub />$/, ''
+          type = type.sub(/^rel="?/,'').sub /"$/, ''
+          env[:links][type.to_sym] = ref
+        end}
 
       head['Referer'] = 'http://drudgereport.com/' if host&.match? /wsj\.com$/ # referer tweaks so stuff loads
       head['Referer'] = 'https://' + (host || env['HTTP_HOST']) + '/' if (path && %w(.gif .jpeg .jpg .png .svg .webp).member?(File.extname(path).downcase)) || parts.member?('embed')
 
       head['User-Agent'] = 'curl/7.82.0' if %w(po.st t.co).member? host # to prefer HTTP HEAD redirections e over procedural Javascript, advertise a basic user-agent
+
+      logger.debug ["\e[7m🧽 ← 🗣 \e[0m ", HTTP.bwPrint(head)].join if debug? # clean debug-prints
       head
     end
 
@@ -495,12 +486,19 @@ class WebResource
       [202, {'Access-Control-Allow-Credentials' => 'true',
              'Access-Control-Allow-Origin' => origin}, []]
     end
-    def stashCookie cookie
-      return unless cookie && CookieHosts.member?(host)
-      cookie = cookie.split(',').map{|c| c.split(';')[0]}.join ','
-      env[:base].join('/cookie').R.writeFile cookie # stash cookie in jar
-      logger.info [:🍯, host, cookie].join ' '
+
+    def staticResponse format, body
+      if format == 'text/html' && env[:proxy_href] # resolve proxy-hrefs
+        body = Webize::HTML.resolve_hrefs body, env, true
+      end
+
+      head = {'Content-Type' => format,               # response header
+              'Content-Length' => body.bytesize.to_s,
+             'Expires' => (Time.now + 3e7).httpdate}
+
+      [200, head, [body]]                             # response
     end
+
   end
 
   include HTTP
