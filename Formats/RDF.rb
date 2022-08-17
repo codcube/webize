@@ -93,18 +93,15 @@ class WebResource
     (repository || env[:repository]).each_graph.map{|graph|          # graph
       graphURI = (graph.name || self).R                              # graph URI
       this = graphURI == self
-      f = graphURI.fsPath
-      f += 'index' if f[-1] == '/'
-      f += '.🐢'                                                     # storage location
+      f = graphURI.docPath + '.🐢'                                   # storage path
       log = []
 
       unless File.exist? f
-        POSIX.container f                                            # container(s)
         RDF::Writer.for(:turtle).open(f){|f|f << graph}              # store 🐢
         log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m",[graphURI.display_host, graphURI.path, "\e[0m"].join] unless this
       end
 
-      # if graph location is not on timeline, link to timeline. TODO other index locations
+      # if location isn't on timeline, link to timeline. TODO other indexing
       if !graphURI.to_s.match?(HourDir) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
 
         t = ts.split /\D/                                            # slice to unit segments

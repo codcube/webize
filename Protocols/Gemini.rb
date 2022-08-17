@@ -15,16 +15,7 @@ class WebResource
         format.downcase!
         env[:origin_format] = format           # record upstream format for log
         fixed_format = format.match? FixedFormat
-
-        file = fsPath                          # cache storage
-        if file[-1] == '/'                     # directory URI
-          file += 'index'
-        elsif directory?                       # directory missing /
-          file += '/index'
-        end
-
-        POSIX.container file                   # containing dir(s)
-        File.open(file, 'w'){|f| f << body }   # update cache
+        File.open(docPath, 'w'){|f| f << body } # update cache
 
         if reader = RDF::Reader.for(content_type: format)
           env[:repository] ||= RDF::Repository.new

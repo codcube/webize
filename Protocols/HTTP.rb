@@ -226,13 +226,7 @@ class WebResource
             end
             env[:origin_format] = format                    # upstream format
             body = Webize.clean self, body, format          # clean upstream data
-            file = fsPath                                   # cache storage
-            if file[-1] == '/'                              # container
-              file += 'index'
-            elsif directory?                                # container sans '/'
-              file += '/index'
-            end
-            POSIX.container file                            # create container(s)
+            file = docPath                                   # cache storage
             ext = (File.extname(file)[1..-1] || '').to_sym  # upstream suffix
             if (formats = RDF::Format.content_types[format]) && # content-type
                (extensions = formats.map(&:file_extension).flatten) && # suffixes for content-type

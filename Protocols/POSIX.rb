@@ -13,6 +13,20 @@ class WebResource
 
   module URIs
 
+    # document location for resource
+    def docPath
+      file = fsPath                          # resource path
+
+      if file[-1] == '/'                     # directory locator - no fs stat needed
+        file += 'index'
+      elsif directory?                       # directory at location
+        file += '/index'
+      end
+
+      POSIX.container file                   # create container(s)
+      file                                   # document path
+    end
+
     # find filesystem nodes and map to URI space
     # (URI, env) -> [URI, URI, ..]
     def fsNodes
@@ -119,14 +133,16 @@ class WebResource
 
   module POSIX
 
-    # initialize containing dir
+    # create containing dir for path
     def self.container path
       dir = File.dirname path # container path
-      until path == '.' # garbage collect files and symlinks in container path
+
+      until path == '.'       # unlink files and symlinks blocking container path
         FileUtils.rm path if File.file?(path) || File.symlink?(path)
         path = File.dirname path
       end
-      FileUtils.mkdir_p dir   # create container
+
+      FileUtils.mkdir_p dir   # create container(s)
     end
 
     # HTTP-level pointers for directory navigation
