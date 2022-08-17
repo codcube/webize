@@ -220,28 +220,26 @@ class WebResource
             end
             env[:origin_format] = format                    # upstream format
             body = Webize.clean self, body, format          # clean upstream data
-            file = docPath                                   # cache storage
-            ext = (File.extname(file)[1..-1] || '').to_sym  # upstream suffix
+            file = docPath                                  # cache storage
             if (formats = RDF::Format.content_types[format]) && # content-type
                (extensions = formats.map(&:file_extension).flatten) && # suffixes for content-type
-               !extensions.member?(ext)                     # suffix not mapped to content-type
-              file = [(link = file),'.',extensions[0]].join # append suffix
+               !extensions.member?((File.extname(file)[1..-1] || '').to_sym) # suffix not mapped to content-type?
+              file = [(link = file),'.',extensions[0]].join # append MIME suffix
               FileUtils.ln_s File.basename(file), link unless File.basename(link) == 'index' # link path
             end
             File.open(file, 'w'){|f| f << body }            # cache static entity
-            env[:repository] ||= RDF::Repository.new      # initialize RDF repository
+            env[:repository] ||= RDF::Repository.new        # initialize RDF repository
             if timestamp = h['Last-Modified']               # HTTP provided timestamp
-              timestamp.sub! /((ne|r)?s|ur)?day/, ''        # strip day name to 3-letter abbr
               if t = Time.httpdate(timestamp) rescue nil    # parse timestamp
                 FileUtils.touch file, mtime: t              # cache timestamp
                 env[:repository] << RDF::Statement.new(self, Date.R, t.iso8601) # timestamp RDF
               else
-                logger.debug ['⚠️  HTTP datetime parse failed on ', h['Last-Modified'], timestamp != h['Last-Modified'] ? [:→, timestamp] : nil].join ' '
+                logger.debug ['⚠️  HTTP date-parse failed on ', h['Last-Modified'], timestamp != h['Last-Modified'] ? [:→, timestamp] : nil].join ' '
               end
             end
-            readRDF format, body, env[:repository]
+            readRDF format, body, env[:repository]          # parse RDF
           else
-            logger.warn "⚠️ format undefined on #{uri}"
+            logger.debug "⚠️ no format defined on #{uri}"
           end
           return unless thru                                # HTTP response for caller?
           saveRDF                                           # update graph-cache
@@ -365,12 +363,12 @@ class WebResource
     # PRs pending for rack/falcon, maybe we can finally remove this soon
     def headers raw = nil
       raw ||= env || {}                               # raw headers
+      head = {}                                       # cleaned headers
       logger.debug ["\e[7m🥩 ← 🗣 \e[0m ", HTTP.bwPrint(raw)].join if debug? # raw debug-prints
 
-      head = {}                                       # cleaned headers
-      raw.map{|k,v|                                   # inspect (k,v) pairs
+      raw.map{|k,v|                                   # (key, val) tuples
         unless k.class!=String || k.index('rack.')==0 # skip internal headers
-          key = k.downcase.sub(/^http_/,'').split(/[-_]/).map{|t| # strip prefix and tokenize
+          key = k.downcase.sub(/^http_/,'').split(/[-_]/).map{|t| # strip HTTP prefix and split tokens
             if %w{cf cl csrf ct dfe dnt id spf utc xss xsrf}.member? t
               t.upcase                                # upcase acronym
             elsif 'etag' == t
@@ -381,7 +379,9 @@ class WebResource
           head[key] = (v.class == Array && v.size == 1 && v[0] || v) unless SingleHopHeaders.member? key.downcase # set header
         end}
 
-      head['Link']&.split(',').map{|link|             # read Link headers
+      head['Last-Modified']&.sub! /((ne|r)?s|ur)?day/, '' # abbr day name to 3-letter variant
+
+      head['Link']&.split(',').map{|link|             # read Link headers to request env
         ref, type = link.split(';').map &:strip
         if ref && type
           ref = ref.sub(/^</,'').sub />$/, ''
@@ -395,6 +395,7 @@ class WebResource
       head['User-Agent'] = 'curl/7.82.0' if %w(po.st t.co).member? host # to prefer HTTP HEAD redirections e over procedural Javascript, advertise a basic user-agent
 
       logger.debug ["\e[7m🧽 ← 🗣 \e[0m ", HTTP.bwPrint(head)].join if debug? # clean debug-prints
+
       head
     end
 
