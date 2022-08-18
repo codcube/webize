@@ -166,11 +166,11 @@ class WebResource
 	semaphore = Async::Semaphore.new(16, parent: barrier)
         nodes.map{|n|
           semaphore.async do
-            n.fetchRemote **opts
+            n.R(env).fetchRemote **opts
             print :🐕
           end}
         barrier.wait
-        r.saveRDF.graphResponse
+        saveRDF.graphResponse
       else # fetch node
         # name may resolve to localhost. define hostname in HOSTS to get a path-only URI in #call and not reach this lookup
         env[:addr] = Resolv.getaddress host rescue '127.0.0.1'
@@ -373,13 +373,13 @@ class WebResource
 
       head['Last-Modified']&.sub! /((ne|r)?s|ur)?day/, '' # abbr day name to 3-letter variant
 
-      head['Link']&.split(',').map{|link|             # read Link headers to request env
+      head['Link'].split(',').map{|link|             # read Link headers to request env
         ref, type = link.split(';').map &:strip
         if ref && type
           ref = ref.sub(/^</,'').sub />$/, ''
           type = type.sub(/^rel="?/,'').sub /"$/, ''
           env[:links][type.to_sym] = ref
-        end}
+        end} if head.has_key? 'Link'
 
       head['Referer'] = 'http://drudgereport.com/' if host&.match? /wsj\.com$/ # referer tweaks so stuff loads
       head['Referer'] = 'https://' + (host || env['HTTP_HOST']) + '/' if (path && %w(.gif .jpeg .jpg .png .svg .webp).member?(File.extname(path).downcase)) || parts.member?('embed')
