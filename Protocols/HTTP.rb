@@ -178,7 +178,7 @@ class WebResource
     end
 
     # fetch node to graph and cache
-    def fetchHTTP format: nil, thru: true                   # options: MIME (override erroneous origin), HTTP response for caller
+    def fetchHTTP format: nil, thru: true                   # options: MIME (override origin), HTTP response for caller
       head = headers.merge({redirect: false})               # parse client headers, disable automagic/hidden redirect following
       unless env[:notransform]                              # query ?notransform for upstream UI on content-negotiating servers
         head['Accept'] = ['text/turtle', head['Accept']].join ',' unless head['Accept']&.match? /text\/turtle/ # accept 🐢/turtle
