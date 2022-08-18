@@ -187,7 +187,6 @@ class WebResource
 
       URI.open(uri, head) do |response|                     # HTTP fetch
         h = headers response.meta                           # response headera
-
         case env[:origin_status] = response.status[0].to_i  # response status
         when 204                                            # no content
           [204, {}, []]
@@ -233,17 +232,12 @@ class WebResource
               if t = Time.httpdate(timestamp) rescue nil    # parse timestamp
                 FileUtils.touch file, mtime: t              # cache timestamp
                 env[:repository] << RDF::Statement.new(self, Date.R, t.iso8601) # timestamp RDF
-              else
-                logger.debug ['⚠️  HTTP date-parse failed on ', h['Last-Modified'], timestamp != h['Last-Modified'] ? [:→, timestamp] : nil].join ' '
               end
             end
             readRDF format, body, env[:repository]          # parse RDF
-          else
-            logger.debug "⚠️ no format defined on #{uri}"
           end
           return unless thru                                # HTTP response for caller?
           saveRDF                                           # update graph-cache
-
           if env[:notransform] || format.match?(FixedFormat) # static format
             staticResponse format, body
           else                                              # content-negotiated transform
