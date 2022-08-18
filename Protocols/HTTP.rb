@@ -152,7 +152,7 @@ class WebResource
     end
 
     # fetch node(s) from local or remote host
-    def fetch nodes = nil
+    def fetch nodes=nil, **opts
       return fetchLocal nodes if offline?                   # offline cache
       if file?                                              # cached file?
         return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # immutable nodes are always up-to-date
@@ -161,11 +161,12 @@ class WebResource
         env[:cache] = 🐢                                    # cache reference for conditional fetch
       end
       if nodes # fetch node(s)
+        opts[:thru] = false
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
         nodes.map{|n|
           semaphore.async do
-            n.fetchRemote
+            n.fetchRemote **opts
             print :🐕
           end}
         barrier.wait
@@ -291,20 +292,22 @@ class WebResource
       graphResponse                                         # response
     end
 
-    def fetchRemote
+    def fetchRemote **opts
       env[:fetched] = true                                  # denote network-fetch for logger
       case scheme                                           # request scheme
       when 'gemini'
         fetchGemini                                         # fetch w/ Gemini
       when 'http'
-        fetchHTTP                                           # fetch w/ HTTP
+        fetchHTTP **opts                                    # fetch w/ HTTP
       when 'https'
         if ENV.has_key?('http_proxy')
-          insecure.fetchHTTP                                # fetch w/ HTTP from private-network proxy
+          insecure.fetchHTTP **opts                         # fetch w/ HTTP from proxy
         elsif PeerAddrs.has_key? env[:addr]
-          url = insecure; url.port = 8000; url.fetchHTTP    # fetch w/ HTTP from private-network peer
+          url = insecure
+          url.port = 8000
+          url.fetchHTTP **opts                              # fetch w/ HTTP from peer
         else
-          fetchHTTP                                         # fetch w/ HTTPS from origin
+          fetchHTTP **opts                                  # fetch w/ HTTPS
         end
       when 'spartan'                                        # fetch w/ Spartan
         fetchSpartan
@@ -429,7 +432,7 @@ class WebResource
             c
           end
       unless Encoding.name_list.member? c          # ensure charset is in encoding set
-        logger.warn "⚠️ unsupported charset #{c} on #{uri}"
+        logger.debug "⚠️ unsupported charset #{c} on #{uri}"
         c = 'UTF-8'                                # default charset
       end
       c

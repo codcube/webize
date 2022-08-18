@@ -84,15 +84,7 @@ class WebResource
     GET 'mixcloud.com', -> r {[301, {'Location' => ['//www.mixcloud.com', r.path].join.R(r.env).href}, []]}
     GET 'www.mixcloud.com', -> r {
       if !r.path || r.path == '/'
-        barrier = Async::Barrier.new
-	semaphore = Async::Semaphore.new(16, parent: barrier)
-        Webize.configList('subscriptions/mixcloud').map{|chan|
-          semaphore.async do
-            print "🔊"
-            "https://api.mixcloud.com/#{chan}/cloudcasts/".R(r.env).fetchHTTP format: 'application/json', thru: false
-          end}
-        barrier.wait
-        r.saveRDF.graphResponse
+        r.fetch Webize.configList('subscriptions/mixcloud').map{|c| "https://api.mixcloud.com/#{c}/cloudcasts/"}, format: 'application/json'
       else
         r.env[:feeds].push "https://api.mixcloud.com/#{r.parts[0]}/cloudcasts/"
         r.fetch
@@ -126,17 +118,10 @@ class WebResource
 
     GET 'soundcloud.com', -> r {
       if !r.path || r.path == '/'
-        barrier = Async::Barrier.new
-	semaphore = Async::Semaphore.new(16, parent: barrier)
         client_id = 'qAMlSnK5vTFKGJJcub5ud5wWTnVPj1iy'
         version = 1658391893
-        Webize.configList('subscriptions/soundcloud').map{|chan|
-          semaphore.async do
-            print "🔊"
-            "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{client_id}&limit=20&offset=0&linked_partitioning=1&app_version=#{version}&app_locale=en".R(r.env).fetchHTTP thru: false
-          end}
-        barrier.wait
-        r.saveRDF.graphResponse
+        r.fetch Webize.configList('subscriptions/soundcloud').map{|chan|
+          "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{client_id}&limit=20&offset=0&linked_partitioning=1&app_version=#{version}&app_locale=en"}
       else
         r.fetch
       end}
@@ -262,16 +247,7 @@ class WebResource
         when /attribution_link|redirect/
           [301, {'Location' => r.join(qs['q']||qs['u']).R(r.env).href}, []]
         when 'feed'
-          barrier = Async::Barrier.new
-	  semaphore = Async::Semaphore.new(16, parent: barrier)
-          Webize.configList('subscriptions/youtube').map{|chan|
-            id = chan.R.parts[-1]
-            semaphore.async do
-              print "🎞️"
-              "https://www.youtube.com/feeds/videos.xml?channel_id=#{id}".R(r.env).fetchHTTP thru: false
-            end}
-          barrier.wait
-          r.saveRDF.graphResponse
+          r.fetch Webize.configList('subscriptions/youtube').map{|c| 'https://www.youtube.com/feeds/videos.xml?channel_id=' + c.R.parts[-1]}
         when 'get_video_info'
           if r.query_values['el'] == 'adunit' # TODO ads
             [200, {"Access-Control-Allow-Origin"=>"https://www.youtube.com", "Content-Type"=>"application/x-www-form-urlencoded", "Content-Length"=>"0"}, ['']]
