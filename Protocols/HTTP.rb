@@ -206,29 +206,29 @@ class WebResource
                        ct[0]
                      end
           if format                                         # format defined
+            env[:repository] ||= RDF::Repository.new        # initialize RDF repository
+            env[:origin_format] = format                    # upstream format
             format.downcase!                                # normalize case
             if !charset && format.index('html') && metatag = body[0..4096].encode('UTF-8', undef: :replace, invalid: :replace).match(/<meta[^>]+charset=['"]?([^'">]+)/i)
               charset = metatag[1]                          # charset defined in document
             end
             charset = charset ? (normalize_charset charset) : 'UTF-8' # normalize charset
-            if format.match? /(ht|x)ml|script|text/         # encode text formats in UTF-8
+            if format.match? /(ht|x)ml|script|text/         # normalize encoding to UTF-8
               body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace
             end
             if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i)
               format = 'text/html'                          # HTML served w/ XML MIME
             end
-            env[:origin_format] = format                    # upstream format
             body = Webize.clean self, body, format          # clean upstream data
             file = docPath                                  # cache storage
             if (formats = RDF::Format.content_types[format]) && # content-type
                (extensions = formats.map(&:file_extension).flatten) && # suffixes for content-type
                !extensions.member?((File.extname(file)[1..-1] || '').to_sym) # suffix not mapped to content-type?
               file = [(link = file),'.',extensions[0]].join # append MIME suffix
-              FileUtils.ln_s File.basename(file), link unless File.basename(link) == 'index' # link path
+              FileUtils.ln_s File.basename(file), link unless File.basename(link) == 'index' # link to canonical location
             end
-            File.open(file, 'w'){|f| f << body }            # cache static entity
-            env[:repository] ||= RDF::Repository.new        # initialize RDF repository
-            if timestamp = h['Last-Modified']               # HTTP provided timestamp
+            File.open(file, 'w'){|f| f << body }            # cache entity
+            if timestamp = h['Last-Modified']               # HTTP timestamp
               if t = Time.httpdate(timestamp) rescue nil    # parse timestamp
                 FileUtils.touch file, mtime: t              # cache timestamp
                 env[:repository] << RDF::Statement.new(self, Date.R, t.iso8601) # timestamp RDF
@@ -239,7 +239,7 @@ class WebResource
           return unless thru                                # HTTP response for caller?
           saveRDF                                           # update graph-cache
           if env[:notransform] || format.match?(FixedFormat) # static format
-            staticResponse format, body
+            staticResponse format, body                     # response in upstream format
           else                                              # content-negotiated transform
             graphResponse format                            # response in preferred format
           end
