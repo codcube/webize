@@ -339,6 +339,37 @@ class WebResource
       fetchLocal                                 # local node
     end
 
+    def graphResponse defaultFormat = 'text/html'
+      if !env.has_key?(:repository) || env[:repository].empty? # no graph-data found
+        return notfound
+      end
+
+      status = env[:origin_status] || 200             # response status
+      format = selectFormat defaultFormat             # response format
+      format += '; charset=utf-8' if %w{text/html text/turtle}.member? format
+      head = {'Access-Control-Allow-Origin' => origin,# response header
+              'Content-Type' => format,
+              'Last-Modified' => Time.now.httpdate,
+              'Link' => linkHeader}
+      return [status, head, nil] if head?             # header-only response
+
+      body = case format                              # response body
+             when /html/
+               htmlDocument treeFromGraph             # serialize HTML
+             when /atom|rss|xml/
+               feedDocument treeFromGraph             # serialize Atom/RSS
+             else                                     # serialize RDF
+               if writer = RDF::Writer.for(content_type: format)
+                 env[:repository].dump writer.to_sym, base_uri: self
+               else
+                 logger.warn "⚠️  RDF::Writer undefined for #{format}" ; ''
+               end
+             end
+
+      head['Content-Length'] = body.bytesize.to_s     # response size
+      [status, head, [body]]                          # response
+    end
+
     def has_handler?; HostGET.has_key? host.downcase end
 
     def HEAD
