@@ -194,31 +194,26 @@ class WebResource
           h['Access-Control-Allow-Origin'] ||= origin
           [206, h, [response.read]]
         else                                                # full content
-          body = HTTP.decompress h, response.read           # decompress content
-          format ||= if path == '/feed'                     # format fixed on remote /feed due to erroneous upstream text/html headers
-                       'application/atom+xml'
-                     elsif content_type = h['Content-Type'] # format defined in HTTP header
-                       ct = content_type.split(/;/)
-                       if ct.size == 2 && ct[1].index('charset') # charset defined in HTTP header
-                         charset = ct[1].sub(/.*charset=/i,'')
-                         charset = nil if charset.empty? || charset == 'empty'
-                       end
-                       ct[0]
-                     end
-          if format                                         # format defined
+          body = HTTP.decompress h, response.read           # decompress content          
+          if format ||= if path == '/feed'                  # format override on remote /feed due to common upstream text/html or text/plain headers
+                          'application/atom+xml'
+                        elsif content_type = h['Content-Type'] # format defined in HTTP header
+                          ct = content_type.split(/;/)
+                          if ct.size == 2 && ct[1].index('charset') # charset defined in HTTP header
+                            charset = ct[1].sub(/.*charset=/i,'')
+                            charset = nil if charset.empty? || charset == 'empty'
+                          end
+                          ct[0]
+                        end
             env[:repository] ||= RDF::Repository.new        # initialize RDF repository
             env[:origin_format] = format                    # upstream format
             format.downcase!                                # normalize case
             if !charset && format.index('html') && metatag = body[0..4096].encode('UTF-8', undef: :replace, invalid: :replace).match(/<meta[^>]+charset=['"]?([^'">]+)/i)
               charset = metatag[1]                          # charset defined in document
             end
-            charset = charset ? (normalize_charset charset) : 'UTF-8' # normalize charset
-            if format.match? /(ht|x)ml|script|text/         # normalize encoding to UTF-8
-              body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace
-            end
-            if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i)
-              format = 'text/html'                          # HTML served w/ XML MIME
-            end
+            charset = charset ? (normalize_charset charset) : 'UTF-8' # normalize charset tag
+            body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # normalize encoding
+            format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served w/ XML MIME
             body = Webize.clean self, body, format          # clean upstream data
             file = docPath                                  # cache storage
             if (formats = RDF::Format.content_types[format]) && # content-type
