@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
 # coding: utf-8
-# originally Simple DNS server by Peter Cooper w/ MIT license
+# previously Simple DNS server by Peter Cooper w/ MIT license
 # typical usage is system resolver set to 127.0.0.1,
-# and script at ../proxy has enabled low-port 53 forwarding to us
-# prob will replace this w/ async-dns or something
+# and iptables forwarding port 53 to our high port listener
 
 require_relative '../../index'
 
