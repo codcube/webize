@@ -390,7 +390,7 @@ class WebResource
       logger.debug ["\e[7m🥩 ← 🗣 \e[0m ", HTTP.bwPrint(raw)].join if debug? # raw debug-prints
 
       raw.map{|k,v|                                   # (key, val) tuples
-        unless k.class!=String || k.index('rack.')==0 # skip internal headers
+        unless k.class!=String || k.match?(/^(protocol|rack)\./i) # except rack/server-use fields
           key = k.downcase.sub(/^http_/,'').split(/[-_]/).map{|t| # strip HTTP prefix and split tokens
             if %w{cf cl csrf ct dfe dnt id spf utc xss xsrf}.member? t
               t.upcase                                # upcase acronym
