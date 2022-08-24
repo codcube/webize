@@ -2,6 +2,7 @@
 DC.Type
 DC.type
 __typename
+_type
 advertiser_account_type
 article.type
 cXenseParse:pageClass
@@ -28,16 +29,16 @@ node_type
 objectType
 og:type
 page:type
-pagetype
 pageType
+pagetype
 parsely-type
 preset
 projectionType
 resource-type
 sailthru.doctype
 set_type
-subpageType
 subType
+subpageType
 taxonomyType
 trackType
 type
