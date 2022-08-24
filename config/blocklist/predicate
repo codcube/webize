@@ -38,6 +38,7 @@ apple-touch-fullscreen
 applicationId
 article:content_tier
 articleid
+assetId
 authorization_endpoint
 baidu-site-verification
 baidu_union_verify
@@ -176,6 +177,7 @@ robots
 rootVe
 schema.DC
 scriptUrl
+sha1hash
 shareaholic:site_id
 sharing
 shenma-site-verification
@@ -219,6 +221,7 @@ twitter:domain
 twitter:maxage
 twitter:partner
 twitter:widgets:csp
+uploadId
 uriSlug
 urn
 useFooterSignup
