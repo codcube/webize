@@ -234,10 +234,10 @@ class WebResource
           end
           return unless thru                                # HTTP response for caller?
           saveRDF                                           # update graph-cache
-          if env[:notransform] || format.match?(FixedFormat) # static format
-            staticResponse format, body                     # response in upstream format
-          else                                              # content-negotiated transform
-            graphResponse format                            # response in preferred format
+          if env[:notransform] || format&.match?(FixedFormat) # transformable?
+            staticResponse format, body                     # upstream format
+          else
+            graphResponse format                            # content-negotiated format
           end
         end
       end
