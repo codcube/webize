@@ -39,6 +39,7 @@ sailthru.doctype
 set_type
 subType
 subpageType
+targetType
 taxonomyType
 trackType
 type

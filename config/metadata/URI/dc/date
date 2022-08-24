@@ -12,6 +12,8 @@ DCTERMS.issued
 DCTERMS.modified
 Modified
 REVISION_DATE
+_createdAt
+_updatedAt
 article.created
 article.published
 article.updated
