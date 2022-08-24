@@ -35,6 +35,7 @@ preset
 projectionType
 resource-type
 sailthru.doctype
+set_type
 subpageType
 subType
 taxonomyType
