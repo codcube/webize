@@ -11,7 +11,12 @@ class WebResource
     self
   end
 
-  # file -> 🐢 file containing abstract/summary of RDF data
+  NoSummary = [Image,                      # don't summarize these resource types
+               Schema + 'ItemList',
+               Schema + 'Readme',
+               SIOC + 'MicroPost'].map &:R
+
+  # file -> 🐢 abstract/summary of RDF data
   def preview
     hash = Digest::SHA2.hexdigest uri
     file = [:cache,:overview,hash[0..1],hash[2..-1]+'.🐢'].join '/'  # summary path

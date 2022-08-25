@@ -24,11 +24,6 @@ module Webize
 end
 class WebResource
 
-  NoSummary = [Image,                      # don't summarize these resource-types
-               Schema + 'ItemList',
-               Schema + 'Readme',
-               SIOC + 'MicroPost'].map &:R
-
   module HTTP
     GET 'feeds.feedburner.com', -> r {r.parts[0].index('~') ? r.deny : r.fetch}
 
