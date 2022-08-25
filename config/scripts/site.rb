@@ -30,16 +30,6 @@ class WebResource
                SIOC + 'MicroPost'].map &:R
 
   module HTTP
-
-    Webize.configList('hosts/shorturl').map{|h|
-      GET h, -> r {r.dropQS}}
-
-    Webize.configList('hosts/url').map{|h|
-      GET h, -> r {
-        q = r.query_values || {}
-        dest = q['url'] || q['u'] || q['q']
-        dest ? [301, {'Location' => dest.R(r.env).href}, []] : r.notfound}}
-
     GET 'feeds.feedburner.com', -> r {r.parts[0].index('~') ? r.deny : r.fetch}
 
     GET 'gitter.im', -> r {
@@ -124,13 +114,6 @@ class WebResource
           "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{client_id}&limit=20&offset=0&linked_partitioning=1&app_version=#{version}&app_locale=en"}
       else
         r.fetch
-      end}
-
-    GET 'go.theregister.com', -> r {
-      if r.parts[0] == 'feed'
-        [301, {'Location' => 'https://' + r.path[6..-1]}, []]
-      else
-        r.deny
       end}
 
     Twitter = -> r {

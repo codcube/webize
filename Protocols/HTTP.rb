@@ -323,10 +323,20 @@ class WebResource
       end
     end
 
+    # custom GET handler
     def self.GET arg, lambda = -> r {r.send r.uri.match?(Gunk) ? :deny : :fetch}
       HostGET[arg] = lambda
     end
 
+    Webize.configList('hosts/shorturl').map{|h|GET h, -> r {r.dropQS}}
+
+    Webize.configList('hosts/url').map{|h|
+      GET h, -> r {
+        q = r.query_values || {}
+        dest = q['url'] || q['u'] || q['q']
+        dest ? [301, {'Location' => dest.R(r.env).href}, []] : r.notfound}}
+
+    # generic GET handler
     def GET
       return hostHandler if host                 # remote node - canonical URI
       p = parts[0]                               # path selector
