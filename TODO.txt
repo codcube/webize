@@ -23,8 +23,7 @@ dedupe images, link to shown image from placeholder icons
 populate geographic index from encountered RDF https://www.jphs.org/20th-century/2017/11/13/boston-remembers-kurt-cobain
 multiple videos, using first:https://www.youtube.com/opensearch?locale=en_US, https://www.youtube.com/watch?v=k2sIDDco5xg, http://www.youtube.com/watch?v=k2sIDDco5xg&feature=applinks, @youtube
 propagate blocklist changes around to peers (unblock entire proxy chain at once) - still use git?
-emit RDF for subresources in generic JSON triplr
-don't return login redirect to client, return proxy cache (IG but we seem permbanned from them so who else?)
+link from parent to child resources in generic JSON triplr
 mixcloud-style if-modified-since support in generic JSON triplr
 long-running slow updater, for occasional GET heavily-spaced origin-queries
 drop nulls somewhere in the triplr pipeline http://localhost:8000/https://lilsilva.persona.co
@@ -32,21 +31,19 @@ per-site upstreams/proxies for custom archival scenarios. also alleviates broken
 offline/online content merge by default? following feeds (API or RSS/Atom) to canonical URL often results in empty page due to SPA stuff, but we have the content already
 merge local dir-content at least. for nose following. http://l/gitter.im/solid/specification should link to spec, solidos etc 
 history -  store and browse versions, eg full blogpost and preview from feed
-remember insecure hosts so we don't keep trying HTTPS
+remember insecure hosts so we don't keep trying HTTPS - enough hosts to bother?
 small turtle documentatino of declarative config files
 show request meta in HTML - graph/resource/doc sizes/dates at least (should i ctrl-R? etc)  
-link to archived version from toolbar (we nuked ?offline QS so use the storage path)
 more compliant cookie caching on allowed (sub)domains
 backlink indexing and more indexing in general - frequently linked posts 'daily heat'
-return graphs cached in request -  fetched updates report
+NNTP server/client
 redir to stuff that's gonna be  blocked: http://l/2021/09/27/21/*blogpost*?view=table&sort=date →  //link.mail.bloombergbusiness.com/favicon.ico  → https://cdn.sailthru.com/assets/images/favicon.ico
 cache redirects (instantly syndicate t.co dereferences to peers) - and icons 🐕➡️  http://l/2021/09/29/11/*blogpost* →  //federalhillprov.com/favicon.ico  → https://federalhillprov.com/wp-content/uploads/2021/08/cropped-fed-hill-favicon-178px-32x32.png
 bat signal not in presumably-RDFa content (Can we twiddle HTML datatypes beforehand?) , URI-identified comments from RDFa graph not cached at canonical locaion http://universalhub.com/2021/steam-plant-catches-fire
 drop specific query keys - de-utmize and other gunk
-ask all the peer-caches (pi/vps/phone from laptop) ahead of origin servers for static resources - HEAD All then cancel remaining HEADs on first response and GET winner? or cache availability notices recieved via UDP mesh. 
+ask all the peer-caches (pi/vps/phone from laptop) ahead of origin servers for static resources - HEAD All then cancel remaining HEADs on first response and GET winner? or cache availability notices recieved via UDP mesh.  - or announce availability at cache-time of stuff not autoimagically syndicated (larger static media stuff etc)
 syndicate tokens to peers
 auto-certgen for Falcon HTTPS
-multi-GET abstraction
 systemd + openrc unit files
 next/prev links in HTML not lifted to HTTP metadata and/or collide with proxy-added #next/#prev http://techrights.org/2021/11/30/freedom-respecting-internet/ http://www.w3.org/1999/xhtml/vocab#role
 link gemini posts to timeline - use current timestamp if server doesn't provide
