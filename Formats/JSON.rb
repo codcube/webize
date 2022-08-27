@@ -44,6 +44,7 @@ module Webize
 
       def each_statement &fn
         scanContent{|s, p, o, graph=nil|
+          o = Webize.date o if p.to_s == Date # normalize date formats
           fn.call RDF::Statement.new(s.R, p.R,
                                      p == Content ? ((l = RDF::Literal o).datatype = RDF.HTML
                                                       l) : o,
