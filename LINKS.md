@@ -24,4 +24,4 @@ in theory, this project can go away once clients and servers are [privacy respec
 
 # WHO
 
-IX or XI on efnet or rizon IRC. msg me if you've sent an email or filed an issue so i know to check it. i am available for hire unless that involves NDAs, closed-source, or user ad-delivery/analytics/telemetry. pronouns he/him/they
+IX or XI on efnet or rizon IRC. /msg me to notify you've sent an email (to git-commit address) or bug/issue/PR on a website as i don't use those sites other than public backup/mirrors for visibility (i'm trying to get hired, but given a no-IP/NDA clause and neglibible professional experience, credentials, accolades, degrees, or network, the presence on the proprietary GitHub site hasn't seemed to result in any recruiters. mainly i'm too lazy to figure out how to login and remove it at this point)
