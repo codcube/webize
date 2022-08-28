@@ -79,6 +79,7 @@ expires
 externalLink
 facebook-domain-verification
 fast_followers_count
+favorited
 fb:admins
 fb:app_id
 fb:page_id
@@ -131,6 +132,7 @@ isShareLinksEnabled
 isVenmoEnabled
 isWhatsappNotificationsEnabled
 is_album
+is_quote_status
 isrc
 listed_count
 managed_by_feeds
@@ -173,11 +175,13 @@ possibly_sensitive_editable
 profile_link_color
 public
 pubp_event_id
+quote_count
 renderer
 request-id
 request_id
 rest_id
 retweet_count
+retweeted
 revision
 revisit
 robots
