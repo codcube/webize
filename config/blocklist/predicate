@@ -101,8 +101,11 @@ google-translate-customization
 googlebot
 googlebot-news
 gridsome:hash
+hasModeratedReplies
 has_custom_timelines
 has_downloads_left
+has_extended_profile
+has_nft_avatar
 hidden
 hostname
 hovercard-subject-tag
@@ -149,6 +152,7 @@ newTab
 next-head-count
 noopenner
 norton-safeweb-site-verification
+not_interested
 nyt_uri
 og:ignore_canonical
 openNewTab
@@ -164,6 +168,7 @@ parsely-post-id
 pingback
 pinned_tweet_ids
 pinned_tweet_ids_str
+possibly_sensitive
 possibly_sensitive_editable
 profile_link_color
 public
@@ -171,6 +176,7 @@ pubp_event_id
 renderer
 request-id
 request_id
+rest_id
 retweet_count
 revision
 revisit
@@ -196,6 +202,9 @@ station_urn
 statuses_count
 streamable
 stylesheet
+super_follow_eligible
+super_followed_by
+super_following
 tec-api-origin
 tec-api-version
 theme-color
