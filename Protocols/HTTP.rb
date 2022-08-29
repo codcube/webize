@@ -344,15 +344,15 @@ class WebResource
 
     # generic GET handler
     def GET
-      return hostHandler if host                 # remote node - canonical URI
-      p = parts[0]                               # path selector
-      return fetchLocal unless p                 # root local node
-      return unproxy.hostHandler if p[-1] == ':' # remote node - proxy URI
-      return icon if p == 'favicon.ico'          # icon served from RAM
-      return unproxy.hostHandler if p.index '.'  # remote node - proxy URI
-      return dateDir if %w{m d h y}.member? p    # current year/month/day/hour container
-      return inbox if p == 'mailto'              # inbox redirect
-      fetchLocal                                 # local node
+      return hostGET if host                  # remote node at canonical URI
+      p = parts[0]                            # path selector
+      return fetchLocal unless p              # root local node
+      return unproxy.hostGET if p[-1] == ':'  # remote node at proxy URI w/ scheme
+      return icon if p == 'favicon.ico'       # icon
+      return unproxy.hostGET if p.index '.'   # remote node at proxy URI w/o scheme
+      return dateDir if %w{m d h y}.member? p # current year/month/day/hour's container
+      return inbox if p == 'mailto'           # inbox redirect
+      fetchLocal                              # local node
     end
 
     def graphResponse defaultFormat = 'text/html'
@@ -438,7 +438,7 @@ class WebResource
       head
     end
 
-    def hostHandler
+    def hostGET
       dirMeta                                         # add directory metadata
       return [204, {}, []] if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # "connectivity check" handler
       return fetch(adapt? ? Subscriptions[host] : nil) if Subscriptions.has_key?(host) && path == '/feed' # subscription handler

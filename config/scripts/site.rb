@@ -102,11 +102,15 @@ class WebResource
     Subscriptions['soundcloud.com'] = Webize.configList('subscriptions/soundcloud').map{|chan|
       "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{Soundcloud[:client_id]}&limit=20&offset=0&linked_partitioning=1&app_version=#{Soundcloud[:version]}&app_locale=en"}
 
+    TweetURL =  -> q {'https://api.twitter.com/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_ext_alt_text=true&include_quote_count=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&simple_quoted_tweet=true&q=' + q + '&tweet_search_mode=live&count=20&query_source=&pc=1&spelling_corrections=1&ext=mediaStats%2ChighlightedLabel'}
+
+    Subscriptions['twitter.com'] = Webize.configList('subscriptions/twitter').shuffle.each_slice(18){|us|
+      TweetURL[us.map{|u|
+                 'from%3A' + u}.join('%2BOR%2B')]
+
     Twitter = -> r {
       parts = r.parts
       qs = r.query_values || {}
-      cursor = qs.has_key?('cursor') ? ('&cursor=' + qs['cursor']) : ''
-      users = Webize.configList 'subscriptions/twitter'
       notusers = %w(favicon.ico manifest.json push_service_worker.js search sw.js users)
 
       r.cookieCache           # load/save cookies
@@ -120,14 +124,7 @@ class WebResource
         r.env['x-guest-token'] ||= attrs['gt'] if attrs['gt']
       end
 
-      searchURL = -> q {
-        ('https://api.twitter.com/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_ext_alt_text=true&include_quote_count=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&simple_quoted_tweet=true&q='+q+'&tweet_search_mode=live&count=20' + cursor + '&query_source=&pc=1&spelling_corrections=1&ext=mediaStats%2ChighlightedLabel').R(r.env)}
-
-      if !r.path || r.path == '/'                          ## feed
-        users.shuffle.each_slice(18){|t| print '🐦'
-          searchURL[t.map{|u|'from%3A'+u}.join('%2BOR%2B')].fetchHTTP thru: false}
-        r.saveRDF.graphResponse
-      elsif parts.size == 1 && !notusers.member?(parts[0]) ## user
+      if parts.size == 1 && !notusers.member?(parts[0]) ## user
         if qs.has_key? 'q'                                  # query user tweet cache
           r.fetchLocal
         elsif qs.has_key? 'ref_src'                         # drop tracking-gunk to prevent URI-filtering
@@ -163,15 +160,8 @@ class WebResource
       elsif parts.member?('status') || parts.member?('statuses') ## conversation
         convo = parts.find{|p| p.match? /^\d{8}\d+$/ }
         "https://api.twitter.com/2/timeline/conversation/#{convo}.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_composer_source=true&include_ext_alt_text=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&simple_quoted_tweets=true&count=20#{cursor}&ext=mediaStats%2CcameraMoment".R(r.env).fetch
-      elsif parts[0] == 'hashtag'                          ## hash-tag
-        searchURL['%23'+parts[1]].fetch
       elsif parts[0] == 'search'                           ## search
-        qs.has_key?('q') ?  searchURL[qs['q']].fetch : r.notfound
-      elsif parts[0] == 'users'                            ## user list
-        r.env[:repository] ||= RDF::Repository.new
-        users.map{|u|
-          r.env[:repository] << RDF::Statement.new(r, Link.R, ['//twitter.com/',u].join.R)}
-        r.graphResponse
+        qs.has_key?('q') ? TweetURL[qs['q']].R(r.env).fetch : r.notfound
       else
         r.fetch
       end}
