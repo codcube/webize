@@ -178,8 +178,7 @@ class WebResource
 	semaphore = Async::Semaphore.new(16, parent: barrier)
         nodes.map{|n|
           semaphore.async do
-            n.R(env).fetchRemote **opts
-            print :🐕
+            print format_icon n.R(env).fetchRemote **opts
           end}
         barrier.wait
         saveRDF.graphResponse
@@ -244,7 +243,7 @@ class WebResource
             end
             readRDF format, body, env[:repository]          # parse RDF
           end
-          return unless thru                                # HTTP response for caller?
+          return format unless thru                         # return HTTP response to caller?
           saveRDF                                           # update graph-cache
           if env[:notransform] || format&.match?(FixedFormat) # transformable?
             staticResponse format, body                     # upstream format

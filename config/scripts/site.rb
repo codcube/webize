@@ -105,10 +105,9 @@ class WebResource
 
     GET 'www.reddit.com', -> r {
       ps = r.parts
-      r.env[:group] = Title unless ps[-1] == 'new'
       r.env[:links][:prev] = ['//old.reddit.com', (r.path || '/').sub('.rss',''), '?',r.query].join.R r.env # previous-page pointer
       if !ps[0] || %w(comments r u user).member?(ps[0])
-        r.path += '.rss' unless r.offline? || !r.path || r.path.index('.rss')
+        r.path += '.rss' unless r.offline? || !r.path || r.path.index('.rss') # add .rss to URL to request preferred content-type
         r.fetch
       elsif %w(favicon.ico gallery wiki video).member? ps[0]
         r.fetch
