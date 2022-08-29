@@ -101,7 +101,7 @@ class WebResource
       log = []
 
       unless File.exist? f
-        RDF::Writer.for(:turtle).open(f){|f|f << graph}              # store 🐢
+        RDF::Writer.for(:turtle).open(f){|f|f << graph}              # store 🐢 at canonical location
         env[:updates] << graph if env.has_key? :updates
         log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] unless g.in_doc?
       end
@@ -109,8 +109,8 @@ class WebResource
       # if location isn't on timeline, link to timeline. TODO other indexing
       if !g.to_s.match?(HourDir) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
 
-        t = ts.split /\D/                                            # timeslice
-        🕒 = [t[0..3], t.size < 4 ? '0' : nil, [t[4..-1],            # timeslice containers
+        t = ts.split /\D/                                            # split timestamp
+        🕒 = [t[0..3], t.size < 4 ? '0' : nil, [t[4..-1],            # timeline containers
                ([g.slugs, [type, creator, to].map{|pattern|          # name tokens from graph and query pattern
                    slugify = pattern==type ? :display_name : :slugs  # slug verbosity
                    graph.query(pattern).objects.map{|o|              # query for slug-containing triples
@@ -119,7 +119,7 @@ class WebResource
                 compact.join('.')[0..125].sub(/\.$/,'')+'.🐢'].compact.join '/' # 🕒 path
 
         unless File.exist? 🕒
-          FileUtils.mkdir_p File.dirname 🕒                          # create timeslice container(s)
+          FileUtils.mkdir_p File.dirname 🕒                          # create timeline container(s)
           FileUtils.ln f, 🕒 rescue FileUtils.cp f, 🕒               # hardlink 🐢 to 🕒, fallback to copy
           log.unshift [:🕒, ts] unless g.in_doc?
         end

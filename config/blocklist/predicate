@@ -133,6 +133,8 @@ isRookiesCup
 isShareButtonEnabled
 isShareLinksEnabled
 isVenmoEnabled
+isVisible
+isVisibleMobile
 isWhatsappNotificationsEnabled
 is_album
 is_quote_status
