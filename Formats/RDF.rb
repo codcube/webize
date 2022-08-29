@@ -103,6 +103,7 @@ class WebResource
 
       unless File.exist? f
         RDF::Writer.for(:turtle).open(f){|f|f << graph}              # store 🐢
+        env[:updates] << graph if env.has_key? :updates
         log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m",[graphURI.display_host, graphURI.path, "\e[0m"].join] unless this
       end
 
@@ -130,9 +131,12 @@ class WebResource
     self
   end
 
-  # Repository -> JSON (s -> p -> o) input datastructure for non-RDF renderers
-  def treeFromGraph graph=nil; graph ||= env[:repository]; return {} unless graph
-    tree = {}; bnodes = [] # initialize tree and bnode list
+  # RDF Repository -> JSON (s -> p -> o) input datastructure for renderers
+  def treeFromGraph graph = nil
+    graph ||= env[:updates] || env[:repository]
+    return {} unless graph
+    tree = {}   # output tree
+    bnodes = [] # blank-node list
     graph.each_triple{|subj,pred,o| # visit triples
       s = subj.to_s; p = pred.to_s  # stringify keys
       tree[s] ||= subj.class==RDF::Node ? {} : {'uri' => s}    # subject

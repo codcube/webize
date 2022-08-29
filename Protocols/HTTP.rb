@@ -167,7 +167,7 @@ class WebResource
     def fetch nodes=nil, **opts
       return fetchLocal nodes if offline? # return offline cache
       if file?                            # cached node?
-        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return up-to-date immutable node
+        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return immutable node
         cache = self                      # cache reference
       elsif directory? && (🐢 = join('index.ttl').R).exist? # cached directory index?
         cache = 🐢                        # cache reference
@@ -447,7 +447,10 @@ class WebResource
       dirMeta                                         # directory metadata
       cookieCache                                     # save/restore cookies
       return [204, {}, []] if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # "connectivity check" handler
-      return fetch(adapt? ? Subscriptions[host] : nil) if Subscriptions.has_key?(host) && path == '/feed' # subscription handler
+      if Subscriptions.has_key?(host) && path == '/feed' # subscriptions
+        env[:updates] = RDF::Repository.new
+        return fetch adapt? ? Subscriptions[host] : nil
+      end
       return adapt? ? HostGET[host.downcase][self] : fetch if has_handler? # custom handler
       return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop query
       deny? ? deny : fetch                            # generic handler
