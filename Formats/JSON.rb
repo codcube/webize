@@ -44,11 +44,12 @@ module Webize
 
       def each_statement &fn
         scanContent{|s, p, o, graph=nil|
+          s = s.R
           o = Webize.date o if p.to_s == Date # normalize date formats
-          fn.call RDF::Statement.new(s.R, p.R,
+          fn.call RDF::Statement.new(s, p.R,
                                      p == Content ? ((l = RDF::Literal o).datatype = RDF.HTML
                                                       l) : o,
-                                     graph_name: graph ? graph.R : @base)}
+                                     graph_name: graph ? graph.R : s.graphURI)}
       end
 
       def JSONfeed

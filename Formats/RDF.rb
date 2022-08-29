@@ -96,24 +96,23 @@ class WebResource
     type = RDF::Query::Pattern.new :s, Type.R, :o                    # RDF type query-pattern
 
     (repository || env[:repository]).each_graph.map{|graph|          # graph
-      graphURI = (graph.name || self).R                              # graph URI
-      this = graphURI == self
-      f = graphURI.docPath + '.🐢'                                   # storage path
+      g = graph.name ? graph.name.R : graphURI                       # graph URI
+      f = g.docPath + '.🐢'                                          # storage path
       log = []
 
       unless File.exist? f
         RDF::Writer.for(:turtle).open(f){|f|f << graph}              # store 🐢
         env[:updates] << graph if env.has_key? :updates
-        log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m",[graphURI.display_host, graphURI.path, "\e[0m"].join] unless this
+        log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] unless g.in_doc?
       end
 
       # if location isn't on timeline, link to timeline. TODO other indexing
-      if !graphURI.to_s.match?(HourDir) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
+      if !g.to_s.match?(HourDir) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
 
         t = ts.split /\D/                                            # slice to unit segments
         🕒 = [t[0..3], t.size < 4 ? '0' : nil,                       # timeslice containers
               [t[4..-1],                                             # remaining timeslices in basename
-               ([graphURI.slugs,                                     # graph name slugs
+               ([g.slugs,                                            # tokens for path name
                  [type, creator, to].map{|pattern|                   # query pattern
                    slugify = pattern==type ? :display_name : :slugs  # slugization method
                    graph.query(pattern).objects.map{|o|              # query for slug-containing triples
@@ -124,7 +123,7 @@ class WebResource
         unless File.exist? 🕒
           FileUtils.mkdir_p File.dirname 🕒                          # create missing timeslice containers
           FileUtils.ln f, 🕒 rescue FileUtils.cp f, 🕒               # link 🐢 to timeline
-          log.unshift [:🕒, ts] unless this                          # log timestamp
+          log.unshift [:🕒, ts] unless g.in_doc?                     # log timestamp
         end
       end
       logger.info log.join ' ' unless log.empty?}

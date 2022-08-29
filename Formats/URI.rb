@@ -61,6 +61,8 @@ class WebResource < RDF::URI
 
     def extname; File.extname path if path end
 
+    def graphURI; [host ? ['//', host] : nil, path].join.R env end
+
     def imgPath?; path && (ImgExt.member? extname.downcase) end
 
     def imgURI?; imgPath? || (dataURI? && path.index('image') == 0) end
