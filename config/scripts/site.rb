@@ -55,7 +55,10 @@ class WebResource
 
     TwURL =  -> q {'https://api.twitter.com/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_ext_alt_text=true&include_quote_count=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&simple_quoted_tweet=true&q=' + q + '&tweet_search_mode=live&count=20&query_source=&pc=1&spelling_corrections=1&ext=mediaStats%2ChighlightedLabel'}
 
-    Subscriptions['twitter.com'] = Webize.configList('subscriptions/twitter').shuffle.each_slice(18){|us|TwURL[us.map{|u|'from%3A' + u}.join('%2BOR%2B')]}
+    Subscriptions['twitter.com'] = []
+
+    Webize.configList('subscriptions/twitter').shuffle.each_slice(18){|users|
+      Subscriptions['twitter.com'].push TwURL[users.map{|user|'from%3A' + user}.join('%2BOR%2B')]}
 
     Subscriptions['www.youtube.com'] = Webize.configList('subscriptions/youtube').map{|c|'https://www.youtube.com/feeds/videos.xml?channel_id=' + c}
 
@@ -151,7 +154,7 @@ class WebResource
         end
       elsif parts.member?('status') || parts.member?('statuses') ## conversation
         convo = parts.find{|p| p.match? /^\d{8}\d+$/ }
-        "https://api.twitter.com/2/timeline/conversation/#{convo}.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_composer_source=true&include_ext_alt_text=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&simple_quoted_tweets=true&count=20#{cursor}&ext=mediaStats%2CcameraMoment".R(r.env).fetch
+        "https://api.twitter.com/2/timeline/conversation/#{convo}.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_composer_source=true&include_ext_alt_text=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&simple_quoted_tweets=true&count=20&ext=mediaStats%2CcameraMoment".R(r.env).fetch
       elsif parts[0] == 'search'                           ## search
         qs.has_key?('q') ? TwURL[qs['q']].R(r.env).fetch : r.notfound
       else
