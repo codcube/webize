@@ -47,7 +47,7 @@ class WebResource
         [301, {'Location' => r.query_values['imgurl'].R(r.env).href}, []]
       when /^(dl|images|x?js|maps|search)$/
         r.fetch
-      when 'sorry' # denied by antibot, goto DDG
+      when 'sorry' # denied, goto DDG
         q = r.query_values['continue'].R.query_values['q']
         [302, {'Location' => 'https://duckduckgo.com/' + HTTP.qs({q: q})}, []]
       else
@@ -75,14 +75,14 @@ class WebResource
         r.fetch
       end}
 
-    GET 'old.reddit.com', -> r { # use this host to read page pointers visible in <body> (oldUI) as they're missing in HEAD and <head> (oldUI/newUI) and <body> (newUI)
+    GET 'old.reddit.com', -> r { # use this host to read page pointers visible in HTML <body> (old UI) as they're missing in HTTP HEAD and HTML <head> (old/new UI) and HTML <body> (new UI)
       r.fetch.yield_self{|status,head,body|
         if status.to_s.match? /^30/
           [status, head, body]
         else
           links = []
-          if body.class == Array && body[0].class == String # find page pointers in <body>
-            body[0].scan(/href="([^"]+after=[^"]+)/){|link|
+          if body.class == Array && body[0].class == String
+            body[0].scan(/href="([^"]+after=[^"]+)/){|link| # page pointers in <body>
               links << CGI.unescapeHTML(link[0]).R}
           end
           [302, {'Location' => (links.empty? ? r.href : links.sort_by{|r|r.query_values['count'].to_i}[-1]).to_s.sub('old','www')}, []] # redirect to page with highest count

@@ -451,7 +451,7 @@ class WebResource
         'Expires' => (Time.now + 86400).httpdate}, [WebResource::HTML::SiteIcon]]
     end
 
-    def inbox # redirect from email-address URI to current month's mailbox
+    def inbox # redirect for address to current month's "mailbox" (timeline query) URI
       [302,
        {'Location' => ['/m/',                                                            # current month (change to day if heavy email user)
                        (parts[1].split(/[\W_]/) - BasicSlugs).map(&:downcase).join('.'), # address slug
