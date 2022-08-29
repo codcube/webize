@@ -41,7 +41,7 @@ class WebResource
                 elsif q['q'] && !q['q'].empty?            # GREP
                   grep
                 elsif !host && path == '/'
-                  (Pathname.glob Webize::ConfigRelPath.join('bookmarks/{home.u,search.html}')).map{|_| _.R env}
+                  (Pathname.glob Webize::ConfigRelPath.join('bookmarks/{home.u,search.🐢}')).map{|_| _.R env}
                 else                                      # LS dir
                   pat = if dirURI?                        # has trailing-slash?
                           summarize = true                # summary of
