@@ -222,6 +222,7 @@ class WebResource
             charset = charset ? (normalize_charset charset) : 'UTF-8' # normalize charset tag
             body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # normalize encoding
             format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served w/ XML MIME
+            no_transform = env[:notransform] || format.match?(FixedFormat)
             body = Webize.clean self, body, format          # clean upstream data
             file = docPath                                  # cache storage
             if (formats = RDF::Format.content_types[format]) && # content-type
@@ -230,7 +231,6 @@ class WebResource
               file = [(link = file),'.',extensions[0]].join # append MIME suffix
               FileUtils.ln_s File.basename(file), link unless File.basename(link) == 'index' # link to canonical location
             end
-            File.open(file, 'w'){|f| f << body }            # cache entity
             if timestamp = h['Last-Modified']               # HTTP timestamp
               if t = Time.httpdate(timestamp) rescue nil    # parse timestamp
                 FileUtils.touch file, mtime: t              # cache timestamp
@@ -240,7 +240,8 @@ class WebResource
             readRDF format, body, env[:repository]          # parse RDF
           end
           return format unless thru                         # return HTTP response to caller?
-          if env[:notransform] || format&.match?(FixedFormat) # transformable?
+          if no_transform                                   # transformable?
+            File.open(file, 'w'){|f| f << body }            # cache content
             staticResponse format, body                     # upstream format
           else
             graphResponse format                            # content-negotiated format
