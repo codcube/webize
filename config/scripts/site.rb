@@ -95,15 +95,12 @@ class WebResource
         r.deny
       end}
 
-    GET 'soundcloud.com', -> r {
-      if !r.path || r.path == '/'
-        client_id = 'lnFbWHXluNwOkW7TxTYUXrrse0qj1C72'
-        version = 1660899819
-        r.fetch Webize.configList('subscriptions/soundcloud').map{|chan|
-          "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{client_id}&limit=20&offset=0&linked_partitioning=1&app_version=#{version}&app_locale=en"}
-      else
-        r.fetch
-      end}
+    Soundcloud = {
+      client_id: 'lnFbWHXluNwOkW7TxTYUXrrse0qj1C72',
+      version: 1660899819 }
+
+    Subscriptions['soundcloud.com'] = Webize.configList('subscriptions/soundcloud').map{|chan|
+      "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{Soundcloud[:client_id]}&limit=20&offset=0&linked_partitioning=1&app_version=#{Soundcloud[:version]}&app_locale=en"}
 
     Twitter = -> r {
       parts = r.parts
