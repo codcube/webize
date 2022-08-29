@@ -170,11 +170,6 @@ class WebResource
       proxyURL = ['https://proxy.c2.com/wiki/remodel/pages/', r.env['QUERY_STRING']].join.R r.env
       proxyURL.fetchHTTP format: 'application/json'}
 
-    GotoYT = -> r {[301, {'Location' => ['//www.youtube.com', r.path, '?', r.query].join.R(r.env).href}, []]}
-    GET 'm.youtube.com', GotoYT
-    GET 'youtube.com', GotoYT
-
-    GET 'youtu.be', -> r {[301, {'Location' => ['https://www.youtube.com/watch?v=', r.path[1..-1]].join.R(r.env).href}, []]}
     GET 'www.youtube.com', -> r {
       r.env[:searchbase] = '/results'
       r.env[:searchterm] = 'search_query'
@@ -217,136 +212,140 @@ class WebResource
       else
         r.deny
       end}
-  end
 
-  Subscriptions['www.youtube.com'] = Webize.configList('subscriptions/youtube').map{|c|
-    'https://www.youtube.com/feeds/videos.xml?channel_id=' + c.R.parts[-1]}
+    Subscriptions['www.youtube.com'] = Webize.configList('subscriptions/youtube').map{|c|
+      'https://www.youtube.com/feeds/videos.xml?channel_id=' + c.R.parts[-1]}
 
-  def C2 tree, &b
-    yield self, Date, tree['date']
-    yield self, Content, (Webize::HTML.format tree['text'].hrefs, self)
-  end
+    GET 'm.youtube.com', -> r {[301, {'Location' => ['//www.youtube.com',  r.path,  '?', r.query].join.R(r.env).href}, []]}
+    GET 'youtube.com',   -> r {[301, {'Location' => ['//www.youtube.com',  r.path,  '?', r.query].join.R(r.env).href}, []]}
+    GET 'youtu.be',      -> r {[301, {'Location' => ['//www.youtube.com/watch?v=', r.path[1..-1]].join.R(r.env).href}, []]}
 
-  def GitterHTML doc
-    doc.css('script').map{|script|
-      text = script.inner_text
-      if text.match? /^window.gitterClientEnv/     # environment JSON
-        if token = text.match(/accessToken":"([^"]+)/)
-          token = token[1]
-          tFile = join('/token').R
-          unless tFile.node.exist? && tFile.node.read == token
-            tFile.writeFile token                  # save updated client-token
-            logger.info ['🎫 ', host, token].join ' '
-          end
-        end
-        if room = text.match(/"id":"([^"]+)/)
-          room_id = room[1]                         # room id
-          room = ('http://gitter.im/api/v1/rooms/' + room_id + '/').R # room URI
-          env[:links][:prev] = room.uri + 'chatMessages?lookups%5B%5D=user&includeThreads=false&limit=31'
-          yield room, Schema + 'sameAs', self, room # link room API URI to canonical URI 
-          yield room, Type, (SIOC + 'ChatChannel').R
-        end
-      end}
-  end
-
-  def GitterJSON tree, &b
-    return if tree.class == Array
-    return unless items = tree['items']
-    items.map{|item|
-      id = item['id']                              # message identifier
-      room_id = parts[3]                           # room identifier
-      room = ('http://gitter.im/api/v1/rooms/'  + room_id + '/').R # room URI
-      env[:links][:prev] ||= room.uri + 'chatMessages?lookups%5B%5D=user&includeThreads=false&beforeId=' + id + '&limit=31'
-      date = item['sent']
-      uid = item['fromUser']
-      user = tree['lookups']['users'][uid]
-      graph = ['/' + date.sub('-','/').sub('-','/').sub('T','/').sub(':','/').gsub(/[-:]/,'.'), 'gitter', user['username'], id].join('.').R # graph on timeline
-      subject = 'http://gitter.im' + path + '?at=' + id # subject URI
-      yield subject, Date, date, graph
-      yield subject, Type, (SIOC + 'MicroPost').R, graph
-      yield subject, Creator, join(user['url']), graph
-      yield subject, Creator, user['displayName'], graph
-      yield subject, To, room, graph
-      if image = user['avatarUrl']
-        yield subject, Image, join(image), graph
-      end
-      yield subject, Content, (Webize::HTML.format item['html'], self), graph
-    }
-  end
-
-  def GoogleHTML doc
-    doc.css('div.g').map{|g|
-      if r = g.css('a[href]')[0]
-        subject = r['href'].R
-        if subject.host
-          if title = r.css('h3')[0]
-            yield subject, Type, (Schema+'SearchResult').R
-            yield subject, Title, title.inner_text
-            yield subject, Content, Webize::HTML.format(g.inner_html, self)
-          end
-        end
-      end
-      g.remove}
-    if pagenext = doc.css('#pnnext')[0]
-      env[:links][:next] ||= join pagenext['href']
+    def C2 tree, &b
+      yield self, Date, tree['date']
+      yield self, Content, (Webize::HTML.format tree['text'].hrefs, self)
     end
-    doc.css('#botstuff, #bottomads, #footcnt, #rhs, #searchform, svg, #tads, #taw, [role="navigation"]').map &:remove
-  end
 
-  def Imgur tree, &b
-    tree['media'].map{|i|
-      url = i['url'].R
-      yield self, File.extname(url.path) == '.mp4' ? Video : Image, url}
-  end
+    def GitterHTML doc
+      doc.css('script').map{|script|
+        text = script.inner_text
+        if text.match? /^window.gitterClientEnv/     # environment JSON
+          if token = text.match(/accessToken":"([^"]+)/)
+            token = token[1]
+            tFile = join('/token').R
+            unless tFile.node.exist? && tFile.node.read == token
+              tFile.writeFile token                  # save updated client-token
+              logger.info ['🎫 ', host, token].join ' '
+            end
+          end
+          if room = text.match(/"id":"([^"]+)/)
+            room_id = room[1]                         # room id
+            room = ('http://gitter.im/api/v1/rooms/' + room_id + '/').R # room URI
+            env[:links][:prev] = room.uri + 'chatMessages?lookups%5B%5D=user&includeThreads=false&limit=31'
+            yield room, Schema + 'sameAs', self, room # link room API URI to canonical URI 
+            yield room, Type, (SIOC + 'ChatChannel').R
+          end
+        end}
+    end
 
-  def Mixcloud tree, &b
-    tree['data'].map{|mix|
-      graph = subject = mix['url'].R
-      date = mix['created_time']
-      unless env.has_key?('HTTP_IF_MODIFIED_SINCE') && date < Time.httpdate(env['HTTP_IF_MODIFIED_SINCE']).iso8601
-        yield subject, Type, Post.R, graph
-        yield subject, Title, mix['name'], graph
+    def GitterJSON tree, &b
+      return if tree.class == Array
+      return unless items = tree['items']
+      items.map{|item|
+        id = item['id']                              # message identifier
+        room_id = parts[3]                           # room identifier
+        room = ('http://gitter.im/api/v1/rooms/'  + room_id + '/').R # room URI
+        env[:links][:prev] ||= room.uri + 'chatMessages?lookups%5B%5D=user&includeThreads=false&beforeId=' + id + '&limit=31'
+        date = item['sent']
+        uid = item['fromUser']
+        user = tree['lookups']['users'][uid]
+        graph = ['/' + date.sub('-','/').sub('-','/').sub('T','/').sub(':','/').gsub(/[-:]/,'.'), 'gitter', user['username'], id].join('.').R # graph on timeline
+        subject = 'http://gitter.im' + path + '?at=' + id # subject URI
         yield subject, Date, date, graph
-        yield subject, Creator, mix['user']['name'], graph
-        yield subject, To, mix['user']['url'].R, graph
-        mix['pictures'].map{|_,i|
-          yield subject, Image, i.R, graph if i.match? /1024x1024/}
-        if duration = mix['audio_length']
-          yield subject, Schema+'duration', duration, graph
+        yield subject, Type, (SIOC + 'MicroPost').R, graph
+        yield subject, Creator, join(user['url']), graph
+        yield subject, Creator, user['displayName'], graph
+        yield subject, To, room, graph
+        if image = user['avatarUrl']
+          yield subject, Image, join(image), graph
         end
-        mix['tags'].map{|tag|
-          yield subject, Abstract, tag['name'], graph}
-      end
-    }
-    if pages = tree['paging']
-      env[:links][:next] = pages['next'] if pages['next']
-      env[:links][:prev] = pages['previous'] if pages['previous']
+        yield subject, Content, (Webize::HTML.format item['html'], self), graph
+      }
     end
-  end
 
-  def QRZ doc, &b
-    doc.css('script').map{|script|
-      script.inner_text.scan(%r(biodata'\).html\(\s*Base64.decode\("([^"]+))xi){|data|
-        yield self, Content, Base64.decode64(data[0]).encode('UTF-8', undef: :replace, invalid: :replace, replace: ' ')}}
-  end
+    def GoogleHTML doc
+      doc.css('div.g').map{|g|
+        if r = g.css('a[href]')[0]
+          subject = r['href'].R
+          if subject.host
+            if title = r.css('h3')[0]
+              yield subject, Type, (Schema+'SearchResult').R
+              yield subject, Title, title.inner_text
+              yield subject, Content, Webize::HTML.format(g.inner_html, self)
+            end
+          end
+        end
+        g.remove}
+      if pagenext = doc.css('#pnnext')[0]
+        env[:links][:next] ||= join pagenext['href']
+      end
+      doc.css('#botstuff, #bottomads, #footcnt, #rhs, #searchform, svg, #tads, #taw, [role="navigation"]').map &:remove
+    end
 
-  def UHub doc
-    doc.css('.pager-next > a[href]').map{|n|     env[:links][:next] ||= (join n['href'])}
-    doc.css('.pager-previous > a[href]').map{|p| env[:links][:prev] ||= (join p['href'])}
-    doc.css('.views-field-created').map{|c|
-      date, time = c.css('.field-content')[0].inner_text.split '-'
-      m, d, y = date.strip.split '/'
-      time ||= '00:00'
-      time, ampm = time.strip.split /\s/
-      hour, min = time.split(':').map &:to_i
-      hour += 12 if ampm == 'pm' && hour != 12
-      c.add_next_sibling "<time datetime='20#{y}-#{m}-#{d}T#{hour}:#{min}:00Z'>"
-      c.remove
-    }
-  end
+    def Imgur tree, &b
+      tree['media'].map{|i|
+        url = i['url'].R
+        yield self, File.extname(url.path) == '.mp4' ? Video : Image, url}
+    end
 
-  def YouTube doc, &b
-    JSONembed doc, /var ytInitial(Data|PlayerResponse) = /i, &b
-  end
+    def Mixcloud tree, &b
+      tree['data'].map{|mix|
+        graph = subject = mix['url'].R
+        date = mix['created_time']
+        unless env.has_key?('HTTP_IF_MODIFIED_SINCE') && date < Time.httpdate(env['HTTP_IF_MODIFIED_SINCE']).iso8601
+          yield subject, Type, Post.R, graph
+          yield subject, Title, mix['name'], graph
+          yield subject, Date, date, graph
+          yield subject, Creator, mix['user']['name'], graph
+          yield subject, To, mix['user']['url'].R, graph
+          mix['pictures'].map{|_,i|
+            yield subject, Image, i.R, graph if i.match? /1024x1024/}
+          if duration = mix['audio_length']
+            yield subject, Schema+'duration', duration, graph
+          end
+          mix['tags'].map{|tag|
+            yield subject, Abstract, tag['name'], graph}
+        end
+      }
+      if pages = tree['paging']
+        env[:links][:next] = pages['next'] if pages['next']
+        env[:links][:prev] = pages['previous'] if pages['previous']
+      end
+    end
 
+    def QRZ doc, &b
+      doc.css('script').map{|script|
+        script.inner_text.scan(%r(biodata'\).html\(\s*Base64.decode\("([^"]+))xi){|data|
+          yield self, Content, Base64.decode64(data[0]).encode('UTF-8', undef: :replace, invalid: :replace, replace: ' ')}}
+    end
+
+    def UHub doc
+      doc.css('.pager-next > a[href]').map{|n|     env[:links][:next] ||= (join n['href'])}
+      doc.css('.pager-previous > a[href]').map{|p| env[:links][:prev] ||= (join p['href'])}
+      doc.css('.views-field-created').map{|c|
+        date, time = c.css('.field-content')[0].inner_text.split '-'
+        m, d, y = date.strip.split '/'
+        time ||= '00:00'
+        time, ampm = time.strip.split /\s/
+        hour, min = time.split(':').map &:to_i
+        hour += 12 if ampm == 'pm' && hour != 12
+        c.add_next_sibling "<time datetime='20#{y}-#{m}-#{d}T#{hour}:#{min}:00Z'>"
+        c.remove
+      }
+    end
+
+    def YouTube doc, &b
+      JSONembed doc, /var ytInitial(Data|PlayerResponse) = /i, &b
+    end
+
+  end
 end
