@@ -25,18 +25,11 @@ end
 class WebResource
 
   module HTTP
-    GET 'feeds.feedburner.com', -> r {r.parts[0].index('~') ? r.deny : r.fetch}
 
-    GET 'gitter.im', -> r {
-      if r.parts[0] == 'api'
-        token = r.join('/token').R
-        if !r.env.has_key?('x-access-token') && token.node.exist?
-          r.env['x-access-token'] = token.node.read
-        end
-        r.query ? r.fetch : r.fetchLocal
-      else
-        r.fetch
-      end}
+    def gitterAuth
+      token = join('/token').R
+      env['x-access-token'] = token.node.read if !env.has_key?('x-access-token') && token.node.exist?
+    end
 
     GET 'google.com', -> r {[301, {'Location' => ['//www.google.com', r.path, '?', r.query].join.R(r.env).href}, []]}
     GET 'www.google.com', -> r {
@@ -62,8 +55,6 @@ class WebResource
       else
         r.fetch
       end}
-
-    GET 'mixcloud.com', -> r {[301, {'Location' => ['//www.mixcloud.com', r.path].join.R(r.env).href}, []]}
 
     Subscriptions['www.mixcloud.com'] = Webize.configList('subscriptions/mixcloud').map{|c|
       "https://api.mixcloud.com/#{c}/cloudcasts/"}
@@ -103,9 +94,6 @@ class WebResource
       "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{Soundcloud[:client_id]}&limit=20&offset=0&linked_partitioning=1&app_version=#{Soundcloud[:version]}&app_locale=en"}
 
     TweetURL =  -> q {'https://api.twitter.com/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_ext_alt_text=true&include_quote_count=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&simple_quoted_tweet=true&q=' + q + '&tweet_search_mode=live&count=20&query_source=&pc=1&spelling_corrections=1&ext=mediaStats%2ChighlightedLabel'}
-
-    Subscriptions['twitter.com'] = Webize.configList('subscriptions/twitter').shuffle.each_slice(18){|us|
-      TweetURL[us.map{|u| 'from%3A' + u}.join('%2BOR%2B')]}
 
     def twAuth
       return unless env['HTTP_COOKIE']
@@ -165,6 +153,9 @@ class WebResource
 
     GET 'mobile.twitter.com', -> r {[301, {'Location' => ['//twitter.com', r.path, '?', r.query].join.R(r.env).href}, []]}
     GET 'www.twitter.com',    -> r {[301, {'Location' => ['//twitter.com', r.path, '?', r.query].join.R(r.env).href}, []]}
+
+    Subscriptions['twitter.com'] = Webize.configList('subscriptions/twitter').shuffle.each_slice(18){|us|
+      TweetURL[us.map{|u| 'from%3A' + u}.join('%2BOR%2B')]}
 
     GET 'wiki.c2.com', -> r {
       proxyURL = ['https://proxy.c2.com/wiki/remodel/pages/', r.env['QUERY_STRING']].join.R r.env

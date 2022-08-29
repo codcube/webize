@@ -97,7 +97,13 @@ class WebResource
         env['HTTP_COOKIE'] = cookie.node.read
         logger.info [:🍪, host, env['HTTP_COOKIE']].join ' '
       end
-      twAuth if host == 'twitter.com' # TODO auth-method mappings
+      # host-specific token wrangling
+      case host
+      when 'gitter.im'
+        gitterAuth
+      when 'twitter.com'
+        twAuth
+      end
     end
 
     def debug?
