@@ -106,30 +106,28 @@ class WebResource
 
     Subscriptions['twitter.com'] = Webize.configList('subscriptions/twitter').shuffle.each_slice(18){|us|
       TweetURL[us.map{|u|
-                 'from%3A' + u}.join('%2BOR%2B')]
+                 'from%3A' + u}.join('%2BOR%2B')]}
+
+    def twAuth
+      return unless env['HTTP_COOKIE']
+      attrs = {}
+      env['HTTP_COOKIE'].split(';').map{|attr|
+        k, v = attr.split('=').map &:strip
+        attrs[k] = v}
+      env['authorization'] ||= 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA'
+      env['x-csrf-token'] ||= attrs['ct0'] if attrs['ct0']
+      env['x-guest-token'] ||= attrs['gt'] if attrs['gt']
+    end
 
     Twitter = -> r {
       parts = r.parts
       qs = r.query_values || {}
-      notusers = %w(favicon.ico manifest.json push_service_worker.js search sw.js users)
-
-      r.cookieCache           # load/save cookies
-      if r.env['HTTP_COOKIE'] # set auth headers
-        attrs = {}
-        r.env['HTTP_COOKIE'].split(';').map{|attr|
-          k, v = attr.split('=').map &:strip
-          attrs[k] = v}
-        r.env['authorization'] ||= 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA'
-        r.env['x-csrf-token'] ||= attrs['ct0'] if attrs['ct0']
-        r.env['x-guest-token'] ||= attrs['gt'] if attrs['gt']
-      end
-
-      if parts.size == 1 && !notusers.member?(parts[0]) ## user
+      if parts.size == 1 && !%w(favicon.ico manifest.json push_service_worker.js search sw.js users).member?(parts[0]) ## user tweets
         if qs.has_key? 'q'                                  # query user tweet cache
           r.fetchLocal
         elsif qs.has_key? 'ref_src'                         # drop tracking-gunk to prevent URI-filtering
           [301, {'Location' => r.join(r.path).R(r.env).href}, []]
-        else                                                # find uid, then fetch tweets and profile
+        else                                                # find uid, fetch tweets and add profile metadata to graph
           uid = nil
           uidQuery = "https://twitter.com/i/api/graphql/Vf8si2dfZ1zmah8ePYPjDQ/UserByScreenNameWithoutResults?variables=%7B%22screen_name%22:%22#{parts[0]}%22%2C%22withHighlightedLabel%22:true%7D"
           URI.open(uidQuery, r.headers){|response|

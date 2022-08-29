@@ -97,6 +97,7 @@ class WebResource
         env['HTTP_COOKIE'] = cookie.node.read
         logger.info [:🍪, host, env['HTTP_COOKIE']].join ' '
       end
+      twAuth if host == 'twitter.com' # TODO auth-method mappings
     end
 
     def debug?
@@ -439,7 +440,8 @@ class WebResource
     end
 
     def hostGET
-      dirMeta                                         # add directory metadata
+      dirMeta                                         # directory metadata
+      cookieCache                                     # save/restore cookies
       return [204, {}, []] if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # "connectivity check" handler
       return fetch(adapt? ? Subscriptions[host] : nil) if Subscriptions.has_key?(host) && path == '/feed' # subscription handler
       return adapt? ? HostGET[host.downcase][self] : fetch if has_handler? # custom handler
