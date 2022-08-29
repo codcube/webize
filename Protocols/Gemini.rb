@@ -23,7 +23,6 @@ class WebResource
         else
           logger.warn "⚠️ no RDF reader for #{format}" # ⚠️ undefined Reader
         end
-        saveRDF
       else
         logger.warn "⚠️ format undefined on #{uri}"    # ⚠️ undefined format
       end

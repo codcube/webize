@@ -181,7 +181,7 @@ class WebResource
             print format_icon n.R(env).fetchRemote **opts
           end}
         barrier.wait
-        saveRDF.graphResponse
+        graphResponse
       else # fetch node
         # name may resolve to localhost. define hostname in HOSTS to get a path-only URI in #call and not reach this lookup
         env[:addr] = Resolv.getaddress host rescue '127.0.0.1'
@@ -244,7 +244,6 @@ class WebResource
             readRDF format, body, env[:repository]          # parse RDF
           end
           return format unless thru                         # return HTTP response to caller?
-          saveRDF                                           # update graph-cache
           if env[:notransform] || format&.match?(FixedFormat) # transformable?
             staticResponse format, body                     # upstream format
           else
@@ -361,7 +360,8 @@ class WebResource
     end
 
     def graphResponse defaultFormat = 'text/html'
-      if !env.has_key?(:repository) || env[:repository].empty? # no graph-data found
+      saveRDF                                         # commit graph cache
+      if !env.has_key?(:repository) || env[:repository].empty? # no graph data
         return notfound
       end
 
