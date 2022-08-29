@@ -71,7 +71,7 @@ class WebResource
              (env[:base].display_host unless referer && referer.host == env[:base].host), env[:base].path, "\e[0m", # host, path
              ([' ⟵ ', inFmt, ' '] if inFmt && inFmt != outFmt),     # input format, if transcoded
              (qs.map{|k,v|" \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?), # query
-             head['Location'] ? [" → \e[#{color}m", head['Location'].R.unproxyURI.display_host, "\e[0m"] : nil, # redirected location
+             head['Location'] ? [" → \e[#{color}m", head['Location'].R.unproxyURI, "\e[0m"] : nil, # redirected location
              env[:warning] ? [" \e[38;5;226m⚠️", env[:warning], "\e[0m"] : nil, # warning
             ].flatten.compact.map{|t|t.to_s.encode 'UTF-8'}.join
 
@@ -95,7 +95,7 @@ class WebResource
       end
       if cookie.file?                                 # load cookie from jar
         env['HTTP_COOKIE'] = cookie.node.read
-        logger.info [:🍪, host, env['HTTP_COOKIE']].join ' '
+        logger.debug [:🍪, host, env['HTTP_COOKIE']].join ' '
       end
       # host-specific token wrangling
       case host
