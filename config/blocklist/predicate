@@ -87,6 +87,7 @@ fb:app_id
 fb:page_id
 fb:pages
 fb:profile_id
+following
 format-detection
 friends_count
 generated
@@ -213,6 +214,10 @@ snipped
 socialLinksPosition
 sogou_site_verification
 soundcloud:sound_count
+source_status_id
+source_status_id_str
+source_user_id
+source_user_id_str
 station_permalink
 station_urn
 statuses_count
