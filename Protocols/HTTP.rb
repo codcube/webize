@@ -165,14 +165,16 @@ class WebResource
 
     # fetch node(s) from local or remote host
     def fetch nodes=nil, **opts
-      return fetchLocal nodes if offline?                   # offline cache
-      if file?                                              # cached file?
+      return fetchLocal nodes if offline? # offline cache
+      if file?                            # cache-file exists?
         return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # immutable nodes are always up-to-date
-        env[:cache] = self                                  # cache reference for conditional fetch
+        cache = self                      # reference for conditional fetch
       elsif directory? && (🐢 = join('index.ttl').R).exist? # cached dir-index?
-        env[:cache] = 🐢                                    # cache reference for conditional fetch
+        cache = 🐢                        # reference for conditional fetch
       end
-      if nodes # fetch node(s)
+      head['If-Modified-Since'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
+
+      if nodes # fetch nodes asynchronously
         opts[:thru] = false
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
@@ -191,13 +193,7 @@ class WebResource
 
     # fetch node to graph and cache
     def fetchHTTP thru: true                                # HTTP response for caller?
-      head = headers.merge({redirect: false})               # parse client headers, disable automagic/hidden redirect following
-      unless env[:notransform]                              # query ?notransform for upstream UI on content-negotiating servers
-        head['Accept'] = ['text/turtle', head['Accept']].join ',' unless head['Accept']&.match? /text\/turtle/ # accept 🐢/turtle
-      end
-      head['If-Modified-Since'] = env[:cache].mtime.httpdate if env[:cache] # timestamp for conditional fetch
-
-      URI.open(uri, head) do |response|                     # HTTP fetch
+      URI.open(uri, headers.merge({redirect: false})) do |response|
         h = headers response.meta                           # response headera
         case env[:origin_status] = response.status[0].to_i  # response status
         when 204                                            # no content
@@ -423,7 +419,10 @@ class WebResource
           head[key] = (v.class == Array && v.size == 1 && v[0] || v) unless SingleHopHeaders.member? key.downcase # set header
         end}
 
+      head['Accept'] = ['text/turtle', head['Accept']].join ',' unless env[:notransform] || head['Accept']&.match?(/text\/turtle/) # accept 🐢/turtle
+
       head['Content-Type'] = 'application/json' if %w(api.mixcloud.com proxy.c2.com).member? host
+
       head['Last-Modified']&.sub! /((ne|r)?s|ur)?day/, '' # abbr day name to 3-letter variant
 
       head['Link'].split(',').map{|link|             # read Link headers to request env
