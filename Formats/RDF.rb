@@ -97,7 +97,7 @@ class WebResource
 
     (repository || env[:repository]).each_graph.map{|graph|          # graph
       g = graph.name ? graph.name.R : graphURI                       # graph URI
-      f = g.docPath + '.🐢'                                          # storage path
+      f = g.docPath + '.🐢'                                          # 🐢 path
       log = []
 
       unless File.exist? f
@@ -109,21 +109,19 @@ class WebResource
       # if location isn't on timeline, link to timeline. TODO other indexing
       if !g.to_s.match?(HourDir) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
 
-        t = ts.split /\D/                                            # slice to unit segments
-        🕒 = [t[0..3], t.size < 4 ? '0' : nil,                       # timeslice containers
-              [t[4..-1],                                             # remaining timeslices in basename
-               ([g.slugs,                                            # tokens for path name
-                 [type, creator, to].map{|pattern|                   # query pattern
-                   slugify = pattern==type ? :display_name : :slugs  # slugization method
+        t = ts.split /\D/                                            # timeslice
+        🕒 = [t[0..3], t.size < 4 ? '0' : nil, [t[4..-1],            # timeslice containers
+               ([g.slugs, [type, creator, to].map{|pattern|          # name tokens from graph and query pattern
+                   slugify = pattern==type ? :display_name : :slugs  # slug verbosity
                    graph.query(pattern).objects.map{|o|              # query for slug-containing triples
-                  o.respond_to?(:R) ? o.R.send(slugify) : o.to_s.split(/[\W_]/)}}]. # tokenize slugs
-                  flatten.compact.map(&:downcase).uniq - BasicSlugs)].          # normalize slugs
-                compact.join('.')[0..125].sub(/\.$/,'')+'.🐢'].compact.join '/' # build timeline path
+                  o.respond_to?(:R) ? o.R.send(slugify) : o.to_s.split(/[\W_]/)}}]. # tokenize
+                  flatten.compact.map(&:downcase).uniq - BasicSlugs)].          # apply slug skiplist
+                compact.join('.')[0..125].sub(/\.$/,'')+'.🐢'].compact.join '/' # 🕒 path
 
         unless File.exist? 🕒
-          FileUtils.mkdir_p File.dirname 🕒                          # create missing timeslice containers
-          FileUtils.ln f, 🕒 rescue FileUtils.cp f, 🕒               # link 🐢 to timeline
-          log.unshift [:🕒, ts] unless g.in_doc?                     # log timestamp
+          FileUtils.mkdir_p File.dirname 🕒                          # create timeslice container(s)
+          FileUtils.ln f, 🕒 rescue FileUtils.cp f, 🕒               # hardlink 🐢 to 🕒, fallback to copy
+          log.unshift [:🕒, ts] unless g.in_doc?
         end
       end
       logger.info log.join ' ' unless log.empty?}
