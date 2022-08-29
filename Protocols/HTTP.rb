@@ -173,7 +173,6 @@ class WebResource
         env[:cache] = 🐢                                    # cache reference for conditional fetch
       end
       if nodes # fetch node(s)
-        opts[:format] = 'application/json' if %w(www.mixcloud.com).member? host
         opts[:thru] = false
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
@@ -192,7 +191,7 @@ class WebResource
     end
 
     # fetch node to graph and cache
-    def fetchHTTP format: nil, thru: true                   # options: MIME (override origin), HTTP response for caller
+    def fetchHTTP thru: true                                # HTTP response for caller?
       head = headers.merge({redirect: false})               # parse client headers, disable automagic/hidden redirect following
       unless env[:notransform]                              # query ?notransform for upstream UI on content-negotiating servers
         head['Accept'] = ['text/turtle', head['Accept']].join ',' unless head['Accept']&.match? /text\/turtle/ # accept 🐢/turtle
@@ -425,6 +424,7 @@ class WebResource
           head[key] = (v.class == Array && v.size == 1 && v[0] || v) unless SingleHopHeaders.member? key.downcase # set header
         end}
 
+      head['Content-Type'] = 'application/json' if %w(api.mixcloud.com proxy.c2.com).member? host
       head['Last-Modified']&.sub! /((ne|r)?s|ur)?day/, '' # abbr day name to 3-letter variant
 
       head['Link'].split(',').map{|link|             # read Link headers to request env

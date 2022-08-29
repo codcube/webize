@@ -164,9 +164,7 @@ class WebResource
     GET 'mobile.twitter.com', -> r {[301, {'Location' => ['//twitter.com', r.path, '?', r.query].join.R(r.env).href}, []]}
     GET 'www.twitter.com',    -> r {[301, {'Location' => ['//twitter.com', r.path, '?', r.query].join.R(r.env).href}, []]}
 
-    GET 'wiki.c2.com', -> r {
-      proxyURL = ['https://proxy.c2.com/wiki/remodel/pages/', r.env['QUERY_STRING']].join.R r.env
-      proxyURL.fetchHTTP format: 'application/json'}
+    GET 'wiki.c2.com', -> r {['https://proxy.c2.com/wiki/remodel/pages/', r.env['QUERY_STRING']].join.R(r.env).fetchHTTP}
 
     GET 'www.youtube.com', -> r {
       r.env[:searchbase] = '/results'
