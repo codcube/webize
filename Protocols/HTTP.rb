@@ -438,7 +438,6 @@ class WebResource
     end
 
     def hostHandler
-      qs = query_values || {}                         # query
       dirMeta                                         # add directory metadata
       return [204, {}, []] if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # "connectivity check" response
       return adapt? ? HostGET[host.downcase][self] : fetch if has_handler? # origin-facing adaptor

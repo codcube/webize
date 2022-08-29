@@ -7,7 +7,6 @@ class WebResource < RDF::URI
     CDNhost = Webize.configRegex 'hosts/CDN'
     CDNdoc = Webize.configRegex 'formats/CDN'
     AllowHosts = Webize.configList 'hosts/allow'
-    CookieHosts = Webize.configList 'hosts/cookie'
     BlockedSchemes = Webize.configList 'blocklist/scheme'
     Gunk = Webize.configRegex 'blocklist/regex'
     KillFile = Webize.configList 'blocklist/sender'
