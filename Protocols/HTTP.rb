@@ -165,14 +165,14 @@ class WebResource
 
     # fetch node(s) from local or remote host
     def fetch nodes=nil, **opts
-      return fetchLocal nodes if offline? # offline cache
-      if file?                            # cache-file exists?
-        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # immutable nodes are always up-to-date
-        cache = self                      # reference for conditional fetch
-      elsif directory? && (🐢 = join('index.ttl').R).exist? # cached dir-index?
-        cache = 🐢                        # reference for conditional fetch
+      return fetchLocal nodes if offline? # return offline cache
+      if file?                            # cached node?
+        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return up-to-date immutable node
+        cache = self                      # cache reference
+      elsif directory? && (🐢 = join('index.ttl').R).exist? # cached directory index?
+        cache = 🐢                        # cache reference
       end
-      head['If-Modified-Since'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
+      env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
 
       if nodes # fetch nodes asynchronously
         opts[:thru] = false
