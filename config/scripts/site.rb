@@ -26,11 +26,40 @@ class WebResource
 
   module HTTP
 
+    ## auth handlers
+
     def gitterAuth
       token = join('/token').R
       env['x-access-token'] = token.node.read if !env.has_key?('x-access-token') && token.node.exist?
     end
 
+    def twAuth
+      return unless env['HTTP_COOKIE']
+      attrs = {}
+      env['HTTP_COOKIE'].split(';').map{|attr|
+        k, v = attr.split('=').map &:strip
+        attrs[k] = v}
+      env['authorization'] ||= 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA'
+      env['x-csrf-token'] ||= attrs['ct0'] if attrs['ct0']
+      env['x-guest-token'] ||= attrs['gt'] if attrs['gt']
+    end
+
+    ## subscriptions
+
+    Subscriptions['www.mixcloud.com'] = Webize.configList('subscriptions/mixcloud').map{|c|"https://api.mixcloud.com/#{c}/cloudcasts/"}
+
+    SC = {client_id: 'lnFbWHXluNwOkW7TxTYUXrrse0qj1C72', version: 1660899819 }
+
+    Subscriptions['soundcloud.com'] = Webize.configList('subscriptions/soundcloud').map{|chan|
+      "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{SC[:client_id]}&limit=20&offset=0&linked_partitioning=1&app_version=#{SC[:version]}&app_locale=en"}
+
+    TwURL =  -> q {'https://api.twitter.com/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_ext_alt_text=true&include_quote_count=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&simple_quoted_tweet=true&q=' + q + '&tweet_search_mode=live&count=20&query_source=&pc=1&spelling_corrections=1&ext=mediaStats%2ChighlightedLabel'}
+
+    Subscriptions['twitter.com'] = Webize.configList('subscriptions/twitter').shuffle.each_slice(18){|us|TwURL[us.map{|u|'from%3A' + u}.join('%2BOR%2B')]}
+
+    Subscriptions['www.youtube.com'] = Webize.configList('subscriptions/youtube').map{|c|'https://www.youtube.com/feeds/videos.xml?channel_id=' + c.R.parts[-1]}
+
+    ## GET handlers
     GET 'google.com', -> r {[301, {'Location' => ['//www.google.com', r.path, '?', r.query].join.R(r.env).href}, []]}
     GET 'www.google.com', -> r {
       case r.parts[0]
@@ -55,9 +84,6 @@ class WebResource
       else
         r.fetch
       end}
-
-    Subscriptions['www.mixcloud.com'] = Webize.configList('subscriptions/mixcloud').map{|c|
-      "https://api.mixcloud.com/#{c}/cloudcasts/"}
 
     # read page pointers visible in HTML <body> (old UI) as they're missing in HTTP HEAD and HTML <head> (old/new UI) and HTML <body> (new UI)
     GET 'old.reddit.com', -> r {
@@ -84,27 +110,7 @@ class WebResource
         r.fetch
       else
         r.deny
-      end}
-
-    Soundcloud = {
-      client_id: 'lnFbWHXluNwOkW7TxTYUXrrse0qj1C72',
-      version: 1660899819 }
-
-    Subscriptions['soundcloud.com'] = Webize.configList('subscriptions/soundcloud').map{|chan|
-      "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{Soundcloud[:client_id]}&limit=20&offset=0&linked_partitioning=1&app_version=#{Soundcloud[:version]}&app_locale=en"}
-
-    TweetURL =  -> q {'https://api.twitter.com/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_ext_alt_text=true&include_quote_count=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&simple_quoted_tweet=true&q=' + q + '&tweet_search_mode=live&count=20&query_source=&pc=1&spelling_corrections=1&ext=mediaStats%2ChighlightedLabel'}
-
-    def twAuth
-      return unless env['HTTP_COOKIE']
-      attrs = {}
-      env['HTTP_COOKIE'].split(';').map{|attr|
-        k, v = attr.split('=').map &:strip
-        attrs[k] = v}
-      env['authorization'] ||= 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA'
-      env['x-csrf-token'] ||= attrs['ct0'] if attrs['ct0']
-      env['x-guest-token'] ||= attrs['gt'] if attrs['gt']
-    end
+     end}
 
     GET 'twitter.com', -> r {
       parts = r.parts
@@ -146,16 +152,13 @@ class WebResource
         convo = parts.find{|p| p.match? /^\d{8}\d+$/ }
         "https://api.twitter.com/2/timeline/conversation/#{convo}.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_composer_source=true&include_ext_alt_text=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&simple_quoted_tweets=true&count=20#{cursor}&ext=mediaStats%2CcameraMoment".R(r.env).fetch
       elsif parts[0] == 'search'                           ## search
-        qs.has_key?('q') ? TweetURL[qs['q']].R(r.env).fetch : r.notfound
+        qs.has_key?('q') ? TwURL[qs['q']].R(r.env).fetch : r.notfound
       else
         r.fetch
       end}
 
     GET 'mobile.twitter.com', -> r {[301, {'Location' => ['//twitter.com', r.path, '?', r.query].join.R(r.env).href}, []]}
     GET 'www.twitter.com',    -> r {[301, {'Location' => ['//twitter.com', r.path, '?', r.query].join.R(r.env).href}, []]}
-
-    Subscriptions['twitter.com'] = Webize.configList('subscriptions/twitter').shuffle.each_slice(18){|us|
-      TweetURL[us.map{|u| 'from%3A' + u}.join('%2BOR%2B')]}
 
     GET 'wiki.c2.com', -> r {
       proxyURL = ['https://proxy.c2.com/wiki/remodel/pages/', r.env['QUERY_STRING']].join.R r.env
@@ -203,9 +206,6 @@ class WebResource
       else
         r.deny
       end}
-
-    Subscriptions['www.youtube.com'] = Webize.configList('subscriptions/youtube').map{|c|
-      'https://www.youtube.com/feeds/videos.xml?channel_id=' + c.R.parts[-1]}
 
     GET 'm.youtube.com', -> r {[301, {'Location' => ['//www.youtube.com',  r.path,  '?', r.query].join.R(r.env).href}, []]}
     GET 'youtube.com',   -> r {[301, {'Location' => ['//www.youtube.com',  r.path,  '?', r.query].join.R(r.env).href}, []]}
