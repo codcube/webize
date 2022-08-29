@@ -173,7 +173,7 @@ class WebResource
         env[:cache] = 🐢                                    # cache reference for conditional fetch
       end
       if nodes # fetch node(s)
-        opts[:format] = 'application/json' if %w(api.mixcloud.com).member? host
+        opts[:format] = 'application/json' if %w(www.mixcloud.com).member? host
         opts[:thru] = false
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
