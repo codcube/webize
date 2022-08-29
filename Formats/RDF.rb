@@ -96,7 +96,7 @@ class WebResource
     type = RDF::Query::Pattern.new :s, Type.R, :o                    # RDF type query-pattern
 
     (repository || env[:repository]).each_graph.map{|graph|          # graph
-      g = graph.name ? graph.name.R : graphURI                       # graph URI
+      g = graph.name ? (graph.name.R env) : graphURI                 # graph URI
       f = g.docPath + '.🐢'                                          # 🐢 path
       log = []
 
