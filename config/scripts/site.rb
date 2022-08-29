@@ -117,44 +117,38 @@ class WebResource
 
     GET 'twitter.com', -> r {
       parts = r.parts
-      qs = r.query_values || {}
-      if parts.size == 1 && !%w(favicon.ico manifest.json push_service_worker.js search sw.js users).member?(parts[0]) ## user tweets
-        if qs.has_key? 'q'                                  # query user tweet cache
-          r.fetchLocal
-        elsif qs.has_key? 'ref_src'                         # drop tracking-gunk to prevent URI-filtering
-          [301, {'Location' => r.join(r.path).R(r.env).href}, []]
-        else                                                # find uid, fetch tweets and add profile metadata to graph
-          uid = nil
-          uidQuery = "https://twitter.com/i/api/graphql/Vf8si2dfZ1zmah8ePYPjDQ/UserByScreenNameWithoutResults?variables=%7B%22screen_name%22:%22#{parts[0]}%22%2C%22withHighlightedLabel%22:true%7D"
-          URI.open(uidQuery, r.headers){|response|
-            body = response.read
-            if response.meta['content-type'].index 'json'
-              json = ::JSON.parse HTTP.decompress({'Content-Encoding' => response.meta['content-encoding']}, body)
-              if json['data'].empty?
-                r.notfound
-              else
-                user = json['data']['user']['legacy']
-                uid = json['data']['user']['rest_id']
-                r.env[:repository] ||= RDF::Repository.new  # profile data RDF
-                r.env[:repository] << RDF::Statement.new(r, Abstract.R, ((a = RDF::Literal(Webize::HTML.format user['description'].hrefs, r)).datatype = RDF.HTML; a))
-                r.env[:repository] << RDF::Statement.new(r, Date.R, user['created_at'])
-                r.env[:repository] << RDF::Statement.new(r, Title.R, user['name'])
-                r.env[:repository] << RDF::Statement.new(r, (Schema+'location').R, user['location'])
-                %w(profile_banner_url profile_image_url_https).map{|i|
-                  if image = user[i]
-                    r.env[:repository] << RDF::Statement.new(r, Image.R, image.R)
-                  end}
-                msgsURL = "https://twitter.com/i/api/graphql/CDDPst9A-AHg6Q0k9-wo7w/UserTweets?variables=%7B%22userId%22%3A%22#{uid}%22%2C%22count%22%3A40%2C%22includePromotedContent%22%3Atrue%2C%22withQuickPromoteEligibilityTweetFields%22%3Atrue%2C%22withSuperFollowsUserFields%22%3Atrue%2C%22withDownvotePerspective%22%3Afalse%2C%22withReactionsMetadata%22%3Afalse%2C%22withReactionsPerspective%22%3Afalse%2C%22withSuperFollowsTweetFields%22%3Atrue%2C%22withVoice%22%3Atrue%2C%22withV2Timeline%22%3Atrue%2C%22__fs_dont_mention_me_view_api_enabled%22%3Afalse%2C%22__fs_interactive_text_enabled%22%3Atrue%2C%22__fs_responsive_web_uc_gql_enabled%22%3Afalse%7D"
-                msgsURL.R(r.env).fetch
-              end
+      if parts.size == 1 && !%w(favicon.ico manifest.json push_service_worker.js search sw.js users).member?(parts[0]) ## user page
+        uid = nil
+        uidQuery = "https://twitter.com/i/api/graphql/Vf8si2dfZ1zmah8ePYPjDQ/UserByScreenNameWithoutResults?variables=%7B%22screen_name%22:%22#{parts[0]}%22%2C%22withHighlightedLabel%22:true%7D"
+        URI.open(uidQuery, r.headers){|response|
+          body = response.read
+          if response.meta['content-type'].index 'json'
+            json = ::JSON.parse HTTP.decompress({'Content-Encoding' => response.meta['content-encoding']}, body)
+            if json['data'].empty?
+              r.notfound
             else
-              [200, response.meta, [body]]
-            end} rescue r.notfound
-        end
-      elsif parts.member?('status') || parts.member?('statuses') ## conversation
+              user = json['data']['user']['legacy']
+              uid = json['data']['user']['rest_id']
+              r.env[:repository] ||= RDF::Repository.new  # profile data to graph
+              r.env[:repository] << RDF::Statement.new(r, Abstract.R, ((a = RDF::Literal(Webize::HTML.format user['description'].hrefs, r)).datatype = RDF.HTML; a))
+              r.env[:repository] << RDF::Statement.new(r, Date.R, user['created_at'])
+              r.env[:repository] << RDF::Statement.new(r, Title.R, user['name'])
+              r.env[:repository] << RDF::Statement.new(r, (Schema+'location').R, user['location'])
+              %w(profile_banner_url profile_image_url_https).map{|i|
+                if image = user[i]
+                  r.env[:repository] << RDF::Statement.new(r, Image.R, image.R)
+                end}
+              msgsURL = "https://twitter.com/i/api/graphql/CDDPst9A-AHg6Q0k9-wo7w/UserTweets?variables=%7B%22userId%22%3A%22#{uid}%22%2C%22count%22%3A40%2C%22includePromotedContent%22%3Atrue%2C%22withQuickPromoteEligibilityTweetFields%22%3Atrue%2C%22withSuperFollowsUserFields%22%3Atrue%2C%22withDownvotePerspective%22%3Afalse%2C%22withReactionsMetadata%22%3Afalse%2C%22withReactionsPerspective%22%3Afalse%2C%22withSuperFollowsTweetFields%22%3Atrue%2C%22withVoice%22%3Atrue%2C%22withV2Timeline%22%3Atrue%2C%22__fs_dont_mention_me_view_api_enabled%22%3Afalse%2C%22__fs_interactive_text_enabled%22%3Atrue%2C%22__fs_responsive_web_uc_gql_enabled%22%3Afalse%7D"
+              msgsURL.R(r.env).fetch
+            end
+          else
+            [200, response.meta, [body]]
+          end} rescue r.notfound
+      elsif parts.member?('status') || parts.member?('statuses') ## tweet
         convo = parts.find{|p| p.match? /^\d{8}\d+$/ }
         "https://api.twitter.com/2/timeline/conversation/#{convo}.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_composer_source=true&include_ext_alt_text=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&simple_quoted_tweets=true&count=20&ext=mediaStats%2CcameraMoment".R(r.env).fetch
-      elsif parts[0] == 'search'                           ## search
+      elsif parts[0] == 'search'                                 ## search
+        qs = r.query_values || {}
         qs.has_key?('q') ? TwURL[qs['q']].R(r.env).fetch : r.notfound
       else
         r.fetch
