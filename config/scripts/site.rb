@@ -118,7 +118,8 @@ class WebResource
       users = Webize.configList 'subscriptions/twitter'
       notusers = %w(favicon.ico manifest.json push_service_worker.js search sw.js users)
 
-      if r.env['HTTP_COOKIE'] # auth headers
+      r.cookieCache           # load/save cookies
+      if r.env['HTTP_COOKIE'] # set auth headers
         attrs = {}
         r.env['HTTP_COOKIE'].split(';').map{|attr|
           k, v = attr.split('=').map &:strip

@@ -82,11 +82,16 @@ class WebResource
        uri.head? ? [] : ["<html><body class='error'>#{HTML.render [{_: :style, c: Webize::CSS::SiteCSS}, {_: :script, c: Webize::Code::SiteJS}, uri.uri_toolbar]}500</body></html>"]]
     end
 
+    # site adaptation runs on last proxy in chain
+    def adapt?
+      !ENV.has_key?('http_proxy')
+    end
+
     def cookieCache
-      cookie = join('/cookie').R                      # jar URI
-      if env[:cookie] && !env[:cookie].empty?         # qs-specified cookie to jar
+      cookie = join('/cookie').R                      # jar
+      if env[:cookie] && !env[:cookie].empty?         # store cookie to jar
         cookie.writeFile env[:cookie]
-         logger.info [:🍯, host, env[:cookie]].join ' '
+        logger.info [:🍯, host, env[:cookie]].join ' '
       end
       if cookie.file?                                 # load cookie from jar
         env['HTTP_COOKIE'] = cookie.node.read
@@ -435,11 +440,10 @@ class WebResource
     def hostHandler
       qs = query_values || {}                         # query
       dirMeta                                         # add directory metadata
-      cookieCache                                     # load/save cookies
       return [204, {}, []] if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # "connectivity check" response
-      return ENV.has_key?('http_proxy') ? fetch : HostGET[host.downcase][self] if has_handler? # origin-facing adaptor (no intermediary proxy)
-      return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop query gunk
-      deny? ? deny : fetch                            # generic remote
+      return adapt? ? HostGET[host.downcase][self] : fetch if has_handler? # origin-facing adaptor
+      return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop query
+      deny? ? deny : fetch                            # generic node
     end
 
     def icon
