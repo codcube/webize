@@ -5,7 +5,7 @@ class WebResource
     include URIs
     Args = Webize.configList 'HTTP/arguments'            # permitted query arguments
     Methods = Webize.configList 'HTTP/methods'           # permitted HTTP methods
-    HostGET = {}                                         # handler-lambda storage
+    HostGET = {}; Subscriptions = {}                     # host handler and subscription-list storage
     PeerHosts = Hash[*File.open([ENV['PREFIX'],'/etc/hosts'].join).readlines.map(&:chomp).map{|l|
                        addr, *names = l.split
                        names.map{|host|
@@ -166,6 +166,7 @@ class WebResource
         env[:cache] = 🐢                                    # cache reference for conditional fetch
       end
       if nodes # fetch node(s)
+        opts[:format] = 'application/json' if %w(api.mixcloud.com).member? host
         opts[:thru] = false
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
@@ -439,10 +440,11 @@ class WebResource
 
     def hostHandler
       dirMeta                                         # add directory metadata
-      return [204, {}, []] if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # "connectivity check" response
-      return adapt? ? HostGET[host.downcase][self] : fetch if has_handler? # origin-facing adaptor
+      return [204, {}, []] if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # "connectivity check" handler
+      return fetch(adapt? ? Subscriptions[host] : nil) if Subscriptions.has_key?(host) && path == '/feed' # subscription handler
+      return adapt? ? HostGET[host.downcase][self] : fetch if has_handler? # custom handler
       return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop query
-      deny? ? deny : fetch                            # generic node
+      deny? ? deny : fetch                            # generic handler
     end
 
     def icon

@@ -63,19 +63,13 @@ class WebResource
         r.fetch
       end}
 
-    GET 'api.mixcloud.com', -> r {
-      r.offline? ? r.fetchLocal : r.fetchHTTP(format: 'application/json')}
-
     GET 'mixcloud.com', -> r {[301, {'Location' => ['//www.mixcloud.com', r.path].join.R(r.env).href}, []]}
-    GET 'www.mixcloud.com', -> r {
-      if !r.path || r.path == '/'
-        r.fetch Webize.configList('subscriptions/mixcloud').map{|c| "https://api.mixcloud.com/#{c}/cloudcasts/"}, format: 'application/json'
-      else
-        r.env[:feeds].push "https://api.mixcloud.com/#{r.parts[0]}/cloudcasts/"
-        r.fetch
-      end}
 
-    GET 'old.reddit.com', -> r { # use this host to read page pointers visible in HTML <body> (old UI) as they're missing in HTTP HEAD and HTML <head> (old/new UI) and HTML <body> (new UI)
+    Subscriptions['www.mixcloud.com'] = Webize.configList('subscriptions/mixcloud').map{|c|
+      "https://api.mixcloud.com/#{c}/cloudcasts/"}
+
+    # read page pointers visible in HTML <body> (old UI) as they're missing in HTTP HEAD and HTML <head> (old/new UI) and HTML <body> (new UI)
+    GET 'old.reddit.com', -> r {
       r.fetch.yield_self{|status,head,body|
         if status.to_s.match? /^30/
           [status, head, body]
@@ -225,8 +219,6 @@ class WebResource
             [s,h,b]}
         when /attribution_link|redirect/
           [301, {'Location' => r.join(qs['q']||qs['u']).R(r.env).href}, []]
-        when 'feed'
-          r.fetch Webize.configList('subscriptions/youtube').map{|c| 'https://www.youtube.com/feeds/videos.xml?channel_id=' + c.R.parts[-1]}
         when 'get_video_info'
           if r.query_values['el'] == 'adunit' # TODO ads
             [200, {"Access-Control-Allow-Origin"=>"https://www.youtube.com", "Content-Type"=>"application/x-www-form-urlencoded", "Content-Length"=>"0"}, ['']]
@@ -243,6 +235,9 @@ class WebResource
         r.deny
       end}
   end
+
+  Subscriptions['www.youtube.com'] = Webize.configList('subscriptions/youtube').map{|c|
+    'https://www.youtube.com/feeds/videos.xml?channel_id=' + c.R.parts[-1]}
 
   def C2 tree, &b
     yield self, Date, tree['date']
