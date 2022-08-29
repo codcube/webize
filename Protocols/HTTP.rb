@@ -356,7 +356,7 @@ class WebResource
     end
 
     def graphResponse defaultFormat = 'text/html'
-      saveRDF                                         # commit graph cache
+      saveRDF if host                                 # cache remote graph
       if !env.has_key?(:repository) || env[:repository].empty? # no graph data
         return notfound
       end
