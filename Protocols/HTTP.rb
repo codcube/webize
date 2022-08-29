@@ -64,7 +64,7 @@ class WebResource
                '🔌'                                                 # offline response
              end,
              (ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched]), # upstream type: origin or middlebox
-             ([env[:repository].size, '⋮'] if env[:repository] && env[:repository].size > 0), ' ', # graph size
+             ([env[:repository].size, '⋮', env[:updates]&.size] if env[:repository] && env[:repository].size > 0), ' ', # graph size
              referer ? ["\e[#{color}m", referer.display_host, "\e[0m → "] : nil, # referer
              outFmt, ' ',                                           # output format
              "\e[#{color}#{';7' if referer && referer.host != env[:base].host}m", # invert off-site referer
