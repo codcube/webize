@@ -30,7 +30,7 @@ class WebResource
 
     def gitterAuth
       token = join('/token').R
-      env['x-access-token'] = token.node.read if !env.has_key?('x-access-token') && token.node.exist?
+      env['x-access-token'] = token.node.read if parts[0] == 'api' && !env.has_key?('x-access-token') && token.node.exist?
     end
 
     def twAuth
