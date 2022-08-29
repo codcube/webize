@@ -60,6 +60,7 @@ class WebResource
     Subscriptions['www.youtube.com'] = Webize.configList('subscriptions/youtube').map{|c|'https://www.youtube.com/feeds/videos.xml?channel_id=' + c}
 
     ## GET handlers
+
     GET 'google.com', -> r {[301, {'Location' => ['//www.google.com', r.path, '?', r.query].join.R(r.env).href}, []]}
     GET 'www.google.com', -> r {
       case r.parts[0]
@@ -211,6 +212,8 @@ class WebResource
     GET 'youtube.com',   -> r {[301, {'Location' => ['//www.youtube.com',  r.path,  '?', r.query].join.R(r.env).href}, []]}
     GET 'youtu.be',      -> r {[301, {'Location' => ['//www.youtube.com/watch?v=', r.path[1..-1]].join.R(r.env).href}, []]}
 
+    # site-specific RDF mapping methods for HTML and JSON
+
     def C2 tree, &b
       yield self, Date, tree['date']
       yield self, Content, (Webize::HTML.format tree['text'].hrefs, self)
@@ -337,6 +340,5 @@ class WebResource
     def YouTube doc, &b
       JSONembed doc, /var ytInitial(Data|PlayerResponse) = /i, &b
     end
-
   end
 end
