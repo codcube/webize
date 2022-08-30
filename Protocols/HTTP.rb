@@ -169,12 +169,13 @@ class WebResource
       if file?                            # cached node?
         return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return immutable node
         cache = self                      # cache reference
-      elsif directory? && (🐢 = join('index.ttl').R).exist? # cached directory index?
+      elsif directory? && (🐢 = join('index.🐢').R).exist? # cached directory index?
         cache = 🐢                        # cache reference
+        cache.loadRDF
       end
       env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
 
-      if nodes # fetch nodes asynchronously
+      if nodes # fetch node(s) asynchronously
         opts[:thru] = false
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
