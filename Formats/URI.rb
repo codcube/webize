@@ -129,14 +129,16 @@ class WebResource < RDF::URI
       env[:searchterm] ||= 'q'                                      # query argument
 
       {class: :toolbox,
-       c: [{_: :a, href: host ? env[:base].secureURL : HTTP.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪, id: :UI}, # 👉 origin UI
-           {_: :a, href: '/' + fsPath, c: :📦},                                                                         # 👉 archive
-           {_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;'*5},                               # 👉 root node
+       c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;'*5},                               # 👉 root node
+           {_: :a, id: :UI, href: host ? env[:base].secureURL : HTTP.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, # 👉 origin UI
+           {_: :a, id: :cache, href: '/' + fsPath, c: :📦},                                                             # 👉 archive
            ({_: :a, c: '↨', id: :tabular,
              href: HTTP.qs(env[:qs].merge({'view' => 'table', 'sort' => 'date'}))} unless env[:view] == 'table'),       # 👉 tabular view
            {class: :path, c: env[:base].parts.map{|p|
               bc += '/' + p                                                                                             # 👉 path breadcrumb
-              ['/', {_: :a, class: :path_crumb, href: env[:base].join(bc).R(env).href, c: CGI.escapeHTML(Rack::Utils.unescape p)}]}},
+              ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
+                     href: env[:base].join(bc).R(env).href,
+                     c: CGI.escapeHTML(Rack::Utils.unescape p)}]}},
            (breadcrumbs.map{|crumb|                                                                                     # 👉 RDF breadcrumbs
               crumb[Link]&.map{|url|
                 u = url.R(env)
