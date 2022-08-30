@@ -181,8 +181,9 @@ class WebResource < RDF::URI
                                c: host ? {_: :a, href: h.href,
                                           c: {_: :img, alt: h.display_host, src: h.join('/favicon.ico').R(env).href},
                                           style: "background-color: #{HostColor[host] || '#000'}; color: #fff"} : []},
-                              {_: :td, class: :path,
-                               c: paths.map{|p| markup p, env }}]}}}},
+#                              {_: :td, class: :path, c: paths.map{|p| markup p, env }},
+                              {_: :td, class: :path, c: paths.map{|p| [' ', CGI.escapeHTML(p)] }},
+                             ]}}}},
                   '</tr></table>']}}]}, '&nbsp;']}}
 
   end
