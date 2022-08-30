@@ -24,4 +24,4 @@ in theory, this project can go away once clients and servers are [privacy respec
 
 # WHO
 
-IX on Efnet and Rizon IRC. /msg to notify you've sent an email (to git-commit address) or bug/issue/PR on a website as i don't use those accounts other than public mirrors for visibility (i'm trying to get hired, but given my no-IP/NDA clause and neglibible professional experience, credentials, accolades, degrees, or network, presence on the proprietary GitHub site has yet to yield results. for now i'm too lazy to log in and remove it)
+IX on Efnet and Rizon IRC. /msg to notify if you've emailed the git address or created bug/issue/PR on a webapp as those accounts are solely for public backups, so far
