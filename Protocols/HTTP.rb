@@ -471,7 +471,6 @@ class WebResource
     end
 
     def hostGET
-      return deny if deny?           # blocked request
       dirMeta                        # directory metadata
       cookieCache                    # save/restore cookies
       case path
@@ -487,9 +486,9 @@ class WebResource
         end
       else
         if (handler = HostGET[host.downcase]) && adapt?
-          hander[self]               # adapted remote
+          handler[self]               # adapted remote
         else
-          fetch                      # generic remote node
+          deny? ? deny : fetch        # generic remote node
         end
       end
     end
