@@ -435,7 +435,7 @@ class WebResource
                              env[:links].map{|type, resource|
                                {_: :link, rel: type, href: CGI.escapeHTML(resource.R(env).href)}}]},
                         {_: :body,
-                         c: [{_: :img, id: :favicon, src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href},
+                         c: [{_: :img, class: :favicon, src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href},
                              uri_toolbar,
                              ({_: :span, c: env[:origin_status], class: :bold} if env[:origin_status] && env[:origin_status] != 200), # origin status
                              ({_: :span, c: '%.1fs' % elapsed, class: :bold} if elapsed > 1),                                         # elapsed time
