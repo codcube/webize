@@ -135,18 +135,18 @@ class WebResource < RDF::URI
            ({_: :a, c: '↨', id: :tabular,
              href: HTTP.qs(env[:qs].merge({'view' => 'table', 'sort' => 'date'}))} unless env[:view] == 'table'),       # 👉 tabular view
            {class: :path, c: env[:base].parts.map{|p|
-              bc += '/' + p                                                                                             # 👉 path breadcrumb
+              bc += '/' + p                                                                                             # 👉 path breadcrumbs
               ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
                      href: env[:base].join(bc).R(env).href,
                      c: CGI.escapeHTML(Rack::Utils.unescape p)}]}},
-           (breadcrumbs.map{|crumb|                                                                                     # 👉 RDF breadcrumbs
+           (breadcrumbs.map{|crumb|                                                                                     # 👉 graph breadcrumbs
               crumb[Link]&.map{|url|
                 u = url.R(env)
                 {_: :a, class: :breadcrumb, href: u.href, c: crumb[Title] ? CGI.escapeHTML(crumb[Title].join(' ').strip) : u.display_name,
                  id: 'crumb'+Digest::SHA2.hexdigest(rand.to_s)}}} if breadcrumbs),
-           {_: :form, c: [({_: :input, name: env[:searchterm]} unless env[:qs].has_key? env[:searchterm]),              # search box
+           {_: :form, c: [({_: :input, name: env[:searchterm]} unless env[:qs].has_key? env[:searchterm]),              # searchbox
                           env[:qs].map{|k,v|
-                            {_: :input, name: k, value: v}.update(k == env[:searchterm] ? {} : {type: :hidden})}        # query args, hidden in UI except main query text
+                            {_: :input, name: k, value: v}.update(k == env[:searchterm] ? {} : {type: :hidden})}        # preserve non-visible query arguments
                          ]}.update(env[:searchbase] ? {action: env[:base].join(env[:searchbase]).R(env).href} : {}),
            env[:feeds].map{|feed|                                                                                       # 👉 feed(s)
              feed = feed.R(env)
@@ -156,8 +156,8 @@ class WebResource < RDF::URI
     end
     
     # URI -> lambda
-    Markup = {}          # mark up resource of RDF type
-    MarkupPredicate = {} # mark up objects of predicate
+    Markup = {}          # markup resource of RDF type
+    MarkupPredicate = {} # markup objects of predicate
 
     MarkupPredicate['uri'] = -> uris, env {
       uris.map{|uri|
@@ -249,7 +249,7 @@ class WebResource < RDF::URI
   end
 end
 
-# class -> WebResource (URI, environment)
+# cast to WebResource shorthand method. optional environment argument
 
 class Pathname
   def R env=nil; env ? WebResource.new(to_s).env(env) : WebResource.new(to_s) end
