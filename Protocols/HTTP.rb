@@ -479,6 +479,12 @@ class WebResource
         [204, {}, []]
       when '/feed'                   # subscription endpoint
         fetch adapt? ? Subscriptions[host] : nil
+      when /^\/resizer/
+        if (ps = path.split /\/\d+x\d+\/((filter|smart)[^\/]*\/)?/).size > 1
+          [302, {'Location' => 'https://' + ps[-1]}, []]
+        else
+          fetch
+        end
       else
         if (handler = HostGET[host.downcase]) && adapt?
           hander[self]               # adapted remote
@@ -487,14 +493,6 @@ class WebResource
         end
       end
     end
-
-    Resizer = -> r {
-      if r.parts[0] == 'resizer'
-        parts = r.path.split /\/\d+x\d+\/((filter|smart)[^\/]*\/)?/
-        parts.size > 1 ? [302, {'Location' => 'https://' + parts[-1]}, []] : r.fetch
-      else
-        r.fetch
-      end}
     
     def icon
       [200,
