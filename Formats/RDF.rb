@@ -128,7 +128,7 @@ class WebResource
     self
   end
 
-  # RDF Repository -> JSON (s -> p -> o) input datastructure for renderers
+  # RDF Repository -> JSON (s -> p -> o) input tree for renderers
   def treeFromGraph graph = nil
     graph ||= env[:updates] || env[:repository]
     return {} unless graph

@@ -130,6 +130,33 @@ class WebResource
       body
     end
 
+    #      return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop query
+    def deny status = 200, type = nil
+      env[:deny] = true
+      ext = File.extname basename if path
+      type, content = if type == :stylesheet || ext == '.css'
+                        ['text/css', '']
+                      elsif type == :font || %w(.eot .otf .ttf .woff .woff2).member?(ext)
+                        ['font/woff2', WebResource::HTML::SiteFont]
+                      elsif type == :image || %w(.bmp .ico .gif .jpg .png).member?(ext)
+                        ['image/png', WebResource::HTML::SiteIcon]
+                      elsif type == :script || ext == '.js'
+                        ['application/javascript', "// URI: #{uri.match(Gunk) || host}"]
+                      elsif type == :JSON || ext == '.json'
+                        ['application/json','{}']
+                      else
+                        env.delete :view
+                        env[:qs].map{|k,v|
+                          env[:qs][k] = v.R if v && v.index('http')==0 && !v.index(' ')}
+                        ['text/html; charset=utf-8', htmlDocument({'#req'=>env})]
+                      end
+      [status,
+       {'Access-Control-Allow-Credentials' => 'true',
+        'Access-Control-Allow-Origin' => origin,
+        'Content-Type' => type},
+       head? ? [] : [content]]
+    end
+
     def dropQS
       if !query                         # URL is query-free
         fetch.yield_self{|s,h,b|        # call origin
@@ -331,7 +358,7 @@ class WebResource
       end
     end
 
-    # custom GET handler
+    # define a host-specific GET handler
     def self.GET arg, lambda = -> r {r.send r.uri.match?(Gunk) ? :deny : :fetch}
       HostGET[arg] = lambda
     end
@@ -344,7 +371,6 @@ class WebResource
         dest = q['url'] || q['u'] || q['q']
         dest ? [301, {'Location' => dest.R(r.env).href}, []] : r.notfound}}
 
-    # generic GET handler
     def GET
       return hostGET if host                  # remote node at canonical URI
       p = parts[0]                            # path selector
@@ -388,8 +414,6 @@ class WebResource
       head['Content-Length'] = body.bytesize.to_s     # response size
       [status, head, [body]]                          # response
     end
-
-    def has_handler?; HostGET.has_key? host.downcase end
 
     def HEAD
       self.GET.yield_self{|s, h, _|
@@ -446,18 +470,32 @@ class WebResource
     end
 
     def hostGET
-      dirMeta                                         # directory metadata
-      cookieCache                                     # save/restore cookies
-      return [204, {}, []] if parts[-1]&.match? /^(gen(erate)?|log)_?204$/ # "connectivity check" handler
-      if Subscriptions.has_key?(host) && path == '/feed' # subscriptions
-        env[:updates] = RDF::Repository.new
-        return fetch adapt? ? Subscriptions[host] : nil
+      return deny if deny?           # blocked request
+      dirMeta                        # directory metadata
+      cookieCache                    # save/restore cookies
+      case path
+      when /(gen(erate)?|log)_?204$/ # connectivity check
+        [204, {}, []]
+      when '/feed'
+        env[:updates] = RDF::Repository.new if Subscriptions.has_key? host
+        fetch adapt? ? Subscriptions[host] : nil
+      else
+        if (handler = HostGET[host.downcase]) && adapt?
+          hander[self]
+        else
+          fetch
+        end
       end
-      return adapt? ? HostGET[host.downcase][self] : fetch if has_handler? # custom handler
-      return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop query
-      deny? ? deny : fetch                            # generic handler
     end
 
+    Resizer = -> r {
+      if r.parts[0] == 'resizer'
+        parts = r.path.split /\/\d+x\d+\/((filter|smart)[^\/]*\/)?/
+        parts.size > 1 ? [302, {'Location' => 'https://' + parts[-1]}, []] : r.fetch
+      else
+        r.fetch
+      end}
+    
     def icon
       [200,
        {'Content-Type' => 'image/png',

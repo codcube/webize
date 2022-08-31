@@ -28,15 +28,15 @@ class WebResource < RDF::URI
     def dataURI?; scheme == 'data' end
 
     def deny?
-      return true if BlockedSchemes.member? scheme           # scheme
-      return if !host || (AllowHosts.member? host)           # host
-      return true if host.match? Gunk                        # host pattern
-      return if host.match?(CDNhost) && path&.match?(CDNdoc) # path pattern
-      deny_domain?                                           # domain tree
+      return true if BlockedSchemes.member? scheme           # block scheme
+      return if !host || (AllowHosts.member? host)           # allow host
+      return true if uri.match? Gunk                         # block gunk URI
+      return if host.match?(CDNhost) && path&.match?(CDNdoc) # allow CDN URI
+      deny_domain?                                           # block domain
     end
 
     def deny_domain?
-      d = DenyDomains                                        # reset cursor
+      d = DenyDomains                                        # cursor to root
       domains.find{|name|                                    # parse name
         return unless d = d[name]                            # advance cursor
         d.empty? }                                           # is name leaf in tree?
@@ -188,32 +188,6 @@ class WebResource < RDF::URI
 
   end
   module HTTP
-
-    def deny status = 200, type = nil
-      env[:deny] = true
-      ext = File.extname basename if path
-      type, content = if type == :stylesheet || ext == '.css'
-                        ['text/css', '']
-                      elsif type == :font || %w(.eot .otf .ttf .woff .woff2).member?(ext)
-                        ['font/woff2', WebResource::HTML::SiteFont]
-                      elsif type == :image || %w(.bmp .ico .gif .jpg .png).member?(ext)
-                        ['image/png', WebResource::HTML::SiteIcon]
-                      elsif type == :script || ext == '.js'
-                        ['application/javascript', "// URI: #{uri.match(Gunk) || host}"]
-                      elsif type == :JSON || ext == '.json'
-                        ['application/json','{}']
-                      else
-                        env.delete :view
-                        env[:qs].map{|k,v|
-                          env[:qs][k] = v.R if v && v.index('http')==0 && !v.index(' ')}
-                        ['text/html; charset=utf-8', htmlDocument({'#req'=>env})]
-                      end
-      [status,
-       {'Access-Control-Allow-Credentials' => 'true',
-        'Access-Control-Allow-Origin' => origin,
-        'Content-Type' => type},
-       head? ? [] : [content]]
-    end
 
     def insecure
       _ = dup.env env
