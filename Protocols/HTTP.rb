@@ -203,6 +203,7 @@ class WebResource
       env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
 
       if nodes # fetch node(s) asynchronously
+        env[:updates] = RDF::Repository.new # initialize updates graph
         opts[:thru] = false
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
@@ -476,14 +477,13 @@ class WebResource
       case path
       when /(gen(erate)?|log)_?204$/ # connectivity check
         [204, {}, []]
-      when '/feed'
-        env[:updates] = RDF::Repository.new if Subscriptions.has_key? host
+      when '/feed'                   # subscription endpoint
         fetch adapt? ? Subscriptions[host] : nil
       else
         if (handler = HostGET[host.downcase]) && adapt?
-          hander[self]
+          hander[self]               # adapted remote
         else
-          fetch
+          fetch                      # generic remote node
         end
       end
     end
