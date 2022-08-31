@@ -485,10 +485,10 @@ class WebResource
           fetch
         end
       else
-        if (handler = HostGET[host.downcase]) && adapt?
-          handler[self]               # adapted remote
+        if (λ = HostGET[host.downcase]) && adapt?
+          λ[self]                    # adapted remote
         else
-          deny? ? deny : fetch        # generic remote node
+          deny? ? deny : fetch       # generic remote node
         end
       end
     end

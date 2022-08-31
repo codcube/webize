@@ -7,6 +7,7 @@ MSSmartTagsPreventParsing
 MobileOptimized
 ROBOTS
 ResourceLoaderDynamicStyles
+Robots
 SKYPE_TOOLBAR
 STYLESHEET
 X-UA-Compatible
@@ -141,6 +142,7 @@ is_quote_status
 is_translation_enabled
 is_translator
 isrc
+layout
 listed_count
 managed_by_feeds
 media_count
