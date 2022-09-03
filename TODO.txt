@@ -1,5 +1,6 @@
 finger URIs gemini://freeshell.de/gemlog/2022-01-11.gmi
 generate preview at resource caching time
+use ~/.config/webize instead of git dir for config
 grep inside list http://l/src/webize/config/feeds?q=gitter
 mboxes, gunzipped https://www.redhat.com/archives/dm-devel/2020-November.txt.gz
 path visualization (how did i get here? referer logging / backlink history)
