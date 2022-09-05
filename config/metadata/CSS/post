@@ -13,4 +13,5 @@
 .views-row
 [id^='post']
 article
+li
 td.subtext
