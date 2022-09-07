@@ -40,6 +40,7 @@ merge local dir-content at least. for nose following. http://l/gitter.im/solid/s
 history -  store and browse versions, eg full blogpost and preview from feed
 remember insecure hosts so we don't keep trying HTTPS - enough hosts to bother?
 small turtle documentatino of declarative config files
+reddit pagination breaking in chained proxy scenario (maybe we need to not eat adaptor-proxy-args when #adapt? return false)
 show request meta in HTML - graph/resource/doc sizes/dates at least (should i ctrl-R? etc)  
 backlink indexing and more indexing in general - frequently linked posts 'daily heat'
 NNTP server/client
