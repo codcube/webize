@@ -231,16 +231,16 @@ class WebResource
           [206, h, [response.read]]
         else                                                # massage metadata, cache and return data
           body = HTTP.decompress h, response.read           # decompress body
-          if format ||= if path == '/feed'                  # format override on remote /feed due to common upstream text/html or text/plain headers
-                          'application/atom+xml'
-                        elsif content_type = h['Content-Type'] # format defined in HTTP header
-                          ct = content_type.split(/;/)
-                          if ct.size == 2 && ct[1].index('charset') # charset defined in HTTP header
-                            charset = ct[1].sub(/.*charset=/i,'')
-                            charset = nil if charset.empty? || charset == 'empty'
-                          end
-                          ct[0]
+          if format = if path == '/feed'                    # format override on remote /feed due to common upstream text/html or text/plain headers
+                        'application/atom+xml'
+                      elsif content_type = h['Content-Type'] # format defined in HTTP header
+                        ct = content_type.split(/;/)
+                        if ct.size == 2 && ct[1].index('charset') # charset defined in HTTP header
+                          charset = ct[1].sub(/.*charset=/i,'')
+                          charset = nil if charset.empty? || charset == 'empty'
                         end
+                        ct[0]
+                      end
             env[:repository] ||= RDF::Repository.new        # request graph
             env[:origin_format] = format                    # original format
             format.downcase!                                # normalize format
@@ -255,7 +255,7 @@ class WebResource
             if (formats = RDF::Format.content_types[format]) &&           # content type
                (extensions = formats.map(&:file_extension).flatten) &&    # name suffix(es) for content type
                !extensions.member?((File.extname(file)[1..-1]||'').to_sym)# upstream suffix maps to content-type?
-              file = [(link = file),'.',extensions[0]].join               # append valid MIME suffix
+              file = [(link = file), '.', extensions[0]].join             # append valid MIME suffix
               FileUtils.ln_s File.basename(file), link                    # link corrected name to canonical name
             end
             File.open(file, 'w'){|f| f << body }                          # update cache content
@@ -265,7 +265,7 @@ class WebResource
                 env[:repository] << RDF::Statement.new(self, Date.R, t.iso8601) # emit timestamp to request graph
               end
             end
-            readRDF format, body, env[:repository]                        # read data into request graph
+            readRDF format, body, env[:repository]                        # read fetched data into request graph
           end
           return format unless thru                                       # return HTTP response to caller?
           static ? (staticResponse format, body) : (graphResponse format) # response in content-negotiated format
