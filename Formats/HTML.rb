@@ -8,61 +8,7 @@ module Webize
     ReaderHosts = Webize.configList 'hosts/reader'
     NewsHosts = Webize.configList 'hosts/news'
 
-    # clean HTML document
-    def self.clean doc, base
-      log = -> type, content, filter {               # logger
-        print type + " \e[38;5;8m" + content.to_s.gsub(/[\n\r\s\t]+/,' ').gsub(filter, "\e[38;5;48m\\0\e[38;5;8m") + "\e[0m "}
-                                                                         # parse document,
-      doc = Nokogiri::HTML.parse doc.gsub /<\/?(noscript|wbr)[^>]*>/i,'' # strip <noscript>, <wbr> tags
-
-      doc.traverse{|e|
-        if e['src']                                  # @src
-          src = (base.join e['src']).R               # resolve URI
-          if src.deny?
-            #Console.logger.debug "🚩 \e[38;5;196m#{src}\e[0m"
-            e.remove                                 # gunk reference in @src
-          end
-        end
-
-        if (e.name=='link' && e['href']) || e['xlink:href'] # @href
-          ref = (base.join (e['href'] || e['xlink:href'])).R # resolve URI
-          if ref.deny?
-            #Console.logger.debug "🚩 \e[38;5;196m#{ref}\e[0m"
-            e.remove                                 # gunk reference in @href
-          end
-        end}
-
-      doc.css('meta[content]').map{|meta|            # <meta>
-        if meta['content'].match? /^https?:/
-          if meta['content'].R.deny?
-            #Console.logger.debug "🚩 #{meta['content']}"
-            meta.remove                              # gunk reference in @content
-          end
-        end}
-
-      doc.css('script').map{|s|                      # <script>
-        s.attribute_nodes.map{|a|                    # attribute names
-          if a.value.R.deny?                         # target denied?
-            #Console.logger.debug "🚩 \e[38;5;196m#{a.value}\e[0m"
-            s.remove                                 # gunk reference in @
-          end}}
-
-      doc.css('style').map{|node|                    # <style>
-        Webize::CSS.cleanNode node if node.inner_text.match? CSSgunk}
-
-      doc.css('[style]').map{|node|                  # @style
-        Webize::CSS.cleanAttr node if node['style'].match? CSSgunk}
-
-      dropnodes = "amp-ad, amp-consent, .player-unavailable"
-      doc.css(dropnodes).remove                      # gunk nodes
-
-      doc.css('[integrity]').map{|n|                 # content modified,
-        n.delete 'integrity'}                        # strip invalidated hash
-
-      doc.to_html                                    # serialize document
-    end
-
-    # format HTML. (string -> string) or (nokogiri -> nokogiri)
+    # (String -> String) or (Nokogiri -> Nokogiri)
     def self.format html, base
 
       # reader mode, less verbosity in output doc
@@ -70,7 +16,7 @@ module Webize
 
       # parse string to nokogiri
       if html.class == String
-        html = Nokogiri::HTML.fragment html
+        html = Nokogiri::HTML.fragment html.gsub(/<\/?(noscript|wbr)[^>]*>/i, '')
         serialize = true
       end
 

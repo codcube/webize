@@ -110,17 +110,3 @@ class WebResource
     end
   end
 end
-
-module Webize
-
-  def self.clean baseURI, body, format
-    if format.index('text/css') == 0     # clean CSS
-      Webize::CSS.clean body
-    elsif format.index('text/html') == 0 # clean HTML
-      Webize::HTML.clean body, baseURI
-    else
-      body
-    end
-  end
-
-end
