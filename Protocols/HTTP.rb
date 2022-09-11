@@ -220,8 +220,7 @@ class WebResource
       end
     end
 
-    # fetch node to graph and cache
-    def fetchHTTP thru: true                                # HTTP response for caller?
+    def fetchHTTP thru: true                                # option: return HTTP response through to caller?
       URI.open(uri, headers.merge({redirect: false})) do |response|
         h = headers response.meta                           # response headera
         case env[:origin_status] = response.status[0].to_i  # response status
@@ -230,8 +229,8 @@ class WebResource
         when 206                                            # partial content
           h['Access-Control-Allow-Origin'] ||= origin
           [206, h, [response.read]]
-        else                                                # full content
-          body = HTTP.decompress h, response.read           # decompress content          
+        else                                                # massage metadata, cache and return data
+          body = HTTP.decompress h, response.read           # decompress body
           if format ||= if path == '/feed'                  # format override on remote /feed due to common upstream text/html or text/plain headers
                           'application/atom+xml'
                         elsif content_type = h['Content-Type'] # format defined in HTTP header
@@ -242,47 +241,41 @@ class WebResource
                           end
                           ct[0]
                         end
-            env[:repository] ||= RDF::Repository.new        # initialize RDF repository
-            env[:origin_format] = format                    # upstream format
-            format.downcase!                                # normalize case
+            env[:repository] ||= RDF::Repository.new        # request graph
+            env[:origin_format] = format                    # original format
+            format.downcase!                                # normalize format
             if !charset && format.index('html') && metatag = body[0..4096].encode('UTF-8', undef: :replace, invalid: :replace).match(/<meta[^>]+charset=['"]?([^'">]+)/i)
-              charset = metatag[1]                          # charset defined in document
+              charset = metatag[1]                          # charset defined in-band in content
             end
-            charset = charset ? (normalize_charset charset) : 'UTF-8' # normalize charset tag
-            body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # normalize encoding
-            format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served w/ XML MIME
-            no_transform = env[:notransform] || format.match?(FixedFormat)
-            body = Webize.clean self, body, format          # clean upstream data
-            file = docPath                                  # cache storage
-            if (formats = RDF::Format.content_types[format]) && # content-type
-               (extensions = formats.map(&:file_extension).flatten) && # suffixes for content-type
-               !extensions.member?((File.extname(file)[1..-1] || '').to_sym) # suffix not mapped to content-type?
-              file = [(link = file),'.',extensions[0]].join # append MIME suffix
-              FileUtils.ln_s File.basename(file), link unless File.basename(link) == 'index' # link to canonical location
+            charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset
+            body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # encode in UTF-8
+            format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML?
+            static = env[:notransform] || format.match?(FixedFormat)      # transformable content?
+            file = docPath                                                # cache location
+            if (formats = RDF::Format.content_types[format]) &&           # content type
+               (extensions = formats.map(&:file_extension).flatten) &&    # name suffix(es) for content type
+               !extensions.member?((File.extname(file)[1..-1]||'').to_sym)# upstream suffix maps to content-type?
+              file = [(link = file),'.',extensions[0]].join               # append valid MIME suffix
+              FileUtils.ln_s File.basename(file), link                    # link corrected name to canonical name
             end
-            if timestamp = h['Last-Modified']               # HTTP timestamp
-              if t = Time.httpdate(timestamp) rescue nil    # parse timestamp
-                FileUtils.touch file, mtime: t              # cache timestamp
-                env[:repository] << RDF::Statement.new(self, Date.R, t.iso8601) # timestamp RDF
+            File.open(file, 'w'){|f| f << body }                          # update cache content
+            if timestamp = h['Last-Modified']                             # HTTP metadata timestamp
+              if t = Time.httpdate(timestamp) rescue nil                  # parse timestamp
+                FileUtils.touch file, mtime: t                            # update cache timestamp
+                env[:repository] << RDF::Statement.new(self, Date.R, t.iso8601) # emit timestamp to request graph
               end
             end
-            readRDF format, body, env[:repository]          # parse RDF
+            readRDF format, body, env[:repository]                        # read data into request graph
           end
-          return format unless thru                         # return HTTP response to caller?
-          if no_transform                                   # transformable?
-            File.open(file, 'w'){|f| f << body }            # cache content
-            staticResponse format, body                     # upstream format
-          else
-            graphResponse format                            # content-negotiated format
-          end
+          return format unless thru                                       # return HTTP response to caller?
+          static ? (staticResponse format, body) : (graphResponse format) # response in content-negotiated format
         end
       end
-    rescue Exception => e                                   # response codes mapped to exceptions by HTTP library
+    rescue Exception => e
       raise unless e.respond_to?(:io) && e.io.respond_to?(:status)
-      status = e.io.status[0].to_i                          # response status
+      status = e.io.status[0].to_i                          # status raised to exception by HTTP library
       case status.to_s
-      when /30[12378]/                                      # redirected
-        logger.debug ["\e[7m ☁️  redirect #{status} \e[0m ", HTTP.bwPrint(e.io.meta)].join if debug? # request metadata
+      when /30[12378]/                                      # redirect
         location = e.io.meta['location']
         dest = join(location).R env
         if no_scheme == dest.no_scheme                      # alternate scheme
@@ -306,7 +299,6 @@ class WebResource
         head = headers e.io.meta
         body = HTTP.decompress(head, e.io.read).encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
         if head['Content-Type']&.index 'html'
-          body = Webize::HTML.clean body, self
           env[:repository] ||= RDF::Repository.new
           RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|env[:repository] << g} # read origin RDF
         end
