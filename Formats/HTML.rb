@@ -21,7 +21,7 @@ module Webize
       end
 
       # drop upstream formatting and scripts
-      dropnodes = 'iframe, script, style, link[rel="stylesheet"], link[type="text/javascript"], link[as="script"]'  # a[href^="javascript"]
+      dropnodes = 'frame, iframe, script, style, link[rel="stylesheet"], link[type="text/javascript"], link[as="script"]'  # a[href^="javascript"]
       html.css(dropnodes).remove
 
       # <img> mapping
@@ -177,10 +177,9 @@ module Webize
       end
 
       def scanContent &f
-        # document RDF type
         yield @base, Type, 'http://xmlns.com/foaf/0.1/Document'.R
 
-        # resolve inline base-URI declaration
+        # resolve base-URI declaration
         if base = @doc.css('head base')[0]
           if baseHref = base['href']
             @base = @base.join(baseHref).R @env
@@ -191,17 +190,11 @@ module Webize
         @base.send Triplr[@base.host], @doc, &f if Triplr[@base.host]
 
 
-        # embedded frames
-        @doc.css('frame, iframe').map{|frame|
-          if src = frame.attr('src')
-            src = @base.join(src).R
-            unless src.deny?
-              src = src.query_values['audio_file'].R if src.query && src.query_values.has_key?('audio_file')
-              yield @base, Link, src
-            end
-          end}
+        # @src
+        @doc.css('[src]').map{|e|
+          yield @base, Link, @base.join(e.attr('src')).R unless %w(img video).member? e.name}
 
-        # typed references
+        # @rel @href
         @doc.css('[rel][href]').map{|m|
           if rel = m.attr("rel") # predicate
             if v = m.attr("href") # object
@@ -228,7 +221,7 @@ module Webize
             @env[:links][:prev] ||= @base.join ref
           end}
 
-        # meta tags
+        # <meta>
         @doc.css('meta').map{|m|
           if k = (m.attr("name") || m.attr("property"))  # predicate
             if v = (m.attr("content") || m.attr("href")) # object
@@ -250,7 +243,7 @@ module Webize
             end
           end}
 
-        # title
+        # <title>
         @doc.css('title').map{|title|
           yield @base, Title, title.inner_text }
 
@@ -269,7 +262,7 @@ module Webize
           @doc.css(vsel).map{|v|
             yield @base, Video, @base.join(v.attr('src')) }}
 
-        # posts
+        # inlined messages
         scanMessages &f
 
         # JSON

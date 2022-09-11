@@ -24,7 +24,6 @@ feedURL hook
 make PDF triplr work without @path (file reference passed to triplr in addition to raw data)
 ipfs/ipns protocol handler https://archive.fosdem.org/2021/schedule/event/open_research_filecoin_ipfs/
 dedupe images, link to shown image from placeholder icons
-seee if javascript hosts are always being emitted before #clean (analytics/spyware honeypot)
 assemble dash/hls manifest for youtube data we have from the json , so we can stop using their borked player with the unskippable adloop bug
 populate geographic index from encountered RDF https://www.jphs.org/20th-century/2017/11/13/boston-remembers-kurt-cobain
 dont show blocked favicons, this is leaking red DNS/Http requests unnecessarily
