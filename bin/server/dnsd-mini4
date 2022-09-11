@@ -89,13 +89,14 @@ class DNSServer
                 elsif failed
                   "\e[35;1m"
                 elsif hostname.index('www.') == 0
+                  www = true
                   nil
                 else
                   "\e[38;5;51m"
                 end
-        puts [Time.now.iso8601[11..18],
+        puts [Time.now.iso8601[11..15],
               [color,
-               (resource.deny_domain? || failed) ? nil : 'https://',
+               (resource.deny_domain? || failed || www) ? nil : 'https://',
                hostname, "\e[0m"].join].join ' '
       end
       src.reply r.response(result)
