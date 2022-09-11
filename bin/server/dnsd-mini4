@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 # previously Simple DNS server by Peter Cooper w/ MIT license
-# typical usage is system resolver set to 127.0.0.1,
-# and iptables forwarding port 53 to our high port listener
+# typical usage: system resolver set to 127.0.0.1,
+# and ip tables redirecting port 53 to port 1053 listener
 
 require_relative '../../index'
 
@@ -25,12 +25,9 @@ class DNSRequest
 
   def extract_domain
     @domain = ''
-    # Check "Opcode" of question header for valid question
     if @data[2].ord & 120 == 0
-      # Read QNAME section of question section. DNS header section is 12 bytes long, so data starts at offset 12
       idx = 12    
       len = @data[idx].ord
-      # Strings are rendered as a byte containing length, then text.. repeat until length of 0
       until len == 0 do
         @domain += @data[idx + 1, len] + '.'
         idx += len + 1
@@ -42,36 +39,25 @@ class DNSRequest
   def response(val)
     return empty_response if domain.empty? || !val
     cname = val =~ /[a-z]/
-    # Valid response header
     hA = "\x81\x00".force_encoding('ASCII-8BIT')
     hB = "\x00\x00\x00\x00".force_encoding('ASCII-8BIT')
     response = [data[0,2], hA, (data[4,2] * 2), hB].join
-    # Append original question section
     response += data[12..-1]
-    # Use pointer to refer to domain name in question section
     response += "\xc0\x0c".force_encoding('ASCII-8BIT')
-    # Set response type accordingly
     response += cname ? "\x00\x05".force_encoding('ASCII-8BIT') : "\x00\x01".force_encoding('ASCII-8BIT')
-    # Set response class (IN)
     response += "\x00\x01".force_encoding('ASCII-8BIT')
-    # TTL in seconds
     response += [server.ttl].pack("N")
-    # Calculate RDATA - we need its length in advance
     if cname
       rdata = val.split('.').collect { |a| a.length.chr + a }.join + "\x00".force_encoding('ASCII-8BIT')
     else
-      # Append IP address as four 8 bit unsigned bytes
       rdata = val.split('.').collect(&:to_i).pack("C*")
     end
-    # RDATA is 4 bytes
     response += [rdata.length].pack("n")
     response += rdata
   end
 
   def empty_response
-    # Empty response header [id * 2, flags, NXDOMAIN, qd count * 2, an count * 2, ns count * 2, ar count * 2]
     response = "#{data[0,2]}\x81\x03#{data[4,2]}\x00\x00\x00\x00\x00\x00"
-    # Append original question section
     response += data[12..-1]
   end
 end
@@ -101,6 +87,8 @@ class DNSServer
         color = if deny
                   "\e[38;5;#{resource.deny_domain? ? 196 : 202};7m"
                 elsif failed
+                  "\e[35;1m"
+                elsif hostname.index('www.') == 0
                   nil
                 else
                   "\e[38;5;51m"
