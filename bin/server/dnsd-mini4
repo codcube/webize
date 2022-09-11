@@ -95,7 +95,7 @@ class DNSServer
                 end
         puts [Time.now.iso8601[11..18],
               [color,
-               deny ? nil : 'https://',
+               (resource.deny_domain? || failed) ? nil : 'https://',
                hostname, "\e[0m"].join].join ' '
       end
       src.reply r.response(result)
