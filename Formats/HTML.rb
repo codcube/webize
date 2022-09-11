@@ -192,7 +192,14 @@ module Webize
 
         # @src
         @doc.css('[src]').map{|e|
-          yield @base, Link, @base.join(e.attr('src')).R unless %w(img video).member? e.name}
+          yield @base, Link, @base.join(e.attr('src')).R unless %w(img style video).member? e.name}
+
+        @doc.css('script').map{|s| # nonstandard script attributes from lazy-loaders etc
+          s.attribute_nodes.map{|a|
+            unless %w(src type).member? a.name
+              puts "SCRIPT @#{a.name} #{a.value}"
+              yield @base, Link, @base.join(a.value.R).R
+            end}}
 
         # @rel @href
         @doc.css('[rel][href]').map{|m|
