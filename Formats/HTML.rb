@@ -195,8 +195,8 @@ module Webize
 
         # @href
         @doc.css('[href]').map{|m|
-          if rel = m.attr('rel')          # @rel  -> predicate
-            v = @base.join m.attr('href') # @href -> object
+          v = @base.join m.attr 'href' # @href object
+          if rel = m.attr('rel')       # @rel predicate
             rel.split(/[\s,]+/).map{|k|
               @env[:links][:prev] ||= v if k.match? /prev(ious)?/i
               @env[:links][:next] ||= v if k.downcase == 'next'
@@ -205,9 +205,9 @@ module Webize
               k = MetaMap[k] || k
               logger.warn ["predicate URI unmappped for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
               yield @base, k, v unless k == :drop || v.R.deny?}
-          elsif href = m.attr('href')
-              puts "no @rel #{href}", m unless 'a' == m.name
-              yield @base, Link, @base.join(href)
+          else
+              puts "no @rel #{v}", m unless 'a' == m.name
+              yield @base, Link, v
           end}
 
         # page pointers
