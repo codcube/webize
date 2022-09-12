@@ -87,6 +87,11 @@ class WebResource
       !ENV.has_key?('http_proxy')
     end
 
+    def block h
+      puts "blocking #{h}"
+      fetchLocal
+    end
+
     def cookieCache
       cookie = join('/cookie').R                      # jar
       if env[:cookie] && !env[:cookie].empty?         # store cookie to jar
@@ -130,7 +135,7 @@ class WebResource
       body
     end
 
-    #      return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop query
+    # return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop query
     def deny status = 200, type = nil
       env[:deny] = true
       ext = File.extname basename if path
@@ -373,6 +378,7 @@ class WebResource
       return unproxy.hostGET if p.index '.'   # remote node at proxy URI w/o scheme
       return dateDir if %w{m d h y}.member? p # current year/month/day/hour's container
       return inbox if p == 'mailto'           # inbox redirect
+      return block parts[1] if p == 'block'   # block site
       fetchLocal                              # local node
     end
 
