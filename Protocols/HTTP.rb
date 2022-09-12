@@ -87,9 +87,11 @@ class WebResource
       !ENV.has_key?('http_proxy')
     end
 
-    def block h
-      puts "blocking #{h}"
-      fetchLocal
+    def block domain
+      File.open([Webize::ConfigPath, :blocklist, :domain].join('/'), 'a'){|list|
+        list << domain } # add to blocklist
+      URIs.blocklist     # refresh blocklist
+      [302, {'Location' => ['//', domain].join.R(env).href}, []]
     end
 
     def cookieCache

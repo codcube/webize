@@ -33,12 +33,12 @@
 .post .creator {float: right}
 .post .to {margin-left: -.2em; float: left}
 .post > .content {border-radius: 0 .4em .38em .38em; border: 1px solid #999; margin: 0; padding: 0 0 0 .2em}
-.post > .title { border-radius: .4em .4em 0 0; max-width: 80ex}
+.post > .title { border-radius: .4em .4em 0 0}
 .post a.pointer {font-size: .8em; color: #aaa; font-weight: normal; margin: 0; float: right}
 .post a.pointer:visited {background-color: #888; color: #000}
 .post th {background-color: #ccc; color: #000}
 .post th[scope="row"] {background-color: #2d2d2d; color: #fff; border-style: solid; border-color: #555}
-.post {margin: 0 .25em 0 0}
+.post {margin: 0 .25em 0 0; max-width: 100%}
 .post.im .creator {float: none}
 .post.im, .post.im > .content {margin: 0; padding: 0; border-width: 0}
 .posts > a.group {color: #000; vertical-align: top; margin: 0; padding: .1em; border-radius: 0 0 .4em 0}
