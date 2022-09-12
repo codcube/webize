@@ -89,8 +89,8 @@ class WebResource
 
     def block domain
       File.open([Webize::ConfigPath, :blocklist, :domain].join('/'), 'a'){|list|
-        list << domain } # add to blocklist
-      URIs.blocklist     # refresh blocklist
+        list << domain << "\n"} # add to blocklist
+      URIs.blocklist            # read blocklist
       [302, {'Location' => ['//', domain].join.R(env).href}, []]
     end
 
