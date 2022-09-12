@@ -134,7 +134,7 @@ class WebResource < RDF::URI
            {_: :a, id: :cache, href: '/' + fsPath, c: :📦},                                                             # 👉 archive
            ({_: :a, id: :tabular, c: '↨',
              href: HTTP.qs(env[:qs].merge({'view' => 'table', 'sort' => 'date'}))} unless env[:view] == 'table'),       # 👉 tabular view
-           ({_: :a, id: :block, href: ['/block/', host].join, class: :dimmed, c: :🛑} if host && !deny?),
+           ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed, c: :🛑} if host && !deny?),    # block host
            {class: :path, c: env[:base].parts.map{|p|
               bc += '/' + p                                                                                             # 👉 path breadcrumbs
               ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,

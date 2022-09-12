@@ -78,34 +78,40 @@ module Webize
                   end
           offsite = ref.host != base.host
           e['id'] = 'g' + Digest::SHA2.hexdigest(rand.to_s) if base.scheme == 'gemini'
-          icon = case ref.scheme
-                 when 'data'
-                   :🧱
-                 when 'mailto'
-                   color = '#48f'
-                   :📭
-                 when 'gemini'
-                   :🚀
-                 else
-                   if offsite && !blocked
-                     ['<img src="//', ref.host, '/favicon.ico">']
-                   end
-                 end
-          e.inner_html = [(icon unless reader),
-                          e.inner_html == ref.uri ? nil : e.inner_html,
-                          if ref.dataURI?                                                                               # inline data?
-                            ['<pre>',
-                             if ref.path.index('text/plain,') == 0                                                      # show text content
-                               CGI.escapeHTML(Rack::Utils.unescape ref.to_s[16..-1])
-                             else
-                               ref.path.split(',',2)[0]                                                                 # show content-type
-                             end,
-                             '</pre>'].join
-                          else                                                                                          # URI reference
-                            ([' <span class=uri>', # show URI
-                              CGI.escapeHTML((offsite ? ref.uri.sub(/^https?:..(www.)?/,'') : [ref.path, ref.query ? ['?', ref.query] : nil, ref.fragment ? ['#', ref.fragment] : nil].join)[0..127]),
-                              '</span> '] unless reader)
-                          end].join
+          e.inner_html = [
+            if reader
+              nil
+            elsif ref.imgURI? && e.css('img').empty?
+              ['<img src="', ref.uri, '">']
+            else
+              case ref.scheme
+              when 'data'
+                :🧱
+              when 'mailto'
+                color = '#48f'
+                :📭
+              when 'gemini'
+                :🚀
+              else
+                if offsite && !blocked
+                  ['<img src="//', ref.host, '/favicon.ico">']
+                end
+              end
+            end,
+            e.inner_html == ref.uri ? nil : e.inner_html,
+            if ref.dataURI?                                                                               # inline data?
+              ['<pre>',
+               if ref.path.index('text/plain,') == 0                                                      # show text content
+                 CGI.escapeHTML(Rack::Utils.unescape ref.to_s[16..-1])
+               else
+                 ref.path.split(',',2)[0]                                                                 # show content-type
+               end,
+               '</pre>'].join
+            else                                                                                          # URI reference
+              ([' <span class=uri>', # show URI
+                CGI.escapeHTML((offsite ? ref.uri.sub(/^https?:..(www.)?/,'') : [ref.path, ref.query ? ['?', ref.query] : nil, ref.fragment ? ['#', ref.fragment] : nil].join)[0..127]),
+                '</span> '] unless reader)
+            end].join
           css = [:uri]
           css.push :path unless offsite                           # local or global reference class
           if blocked                                              # blocked-resource class
