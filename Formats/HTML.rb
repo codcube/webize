@@ -195,7 +195,7 @@ module Webize
 
         # @href
         @doc.css('[href]').map{|m|
-          if rel = m.attr 'rel'           # @rel  -> predicate
+          if rel = m.attr('rel')          # @rel  -> predicate
             v = @base.join m.attr('href') # @href -> object
             rel.split(/[\s,]+/).map{|k|
               @env[:links][:prev] ||= v if k.match? /prev(ious)?/i
@@ -205,8 +205,8 @@ module Webize
               k = MetaMap[k] || k
               logger.warn ["predicate URI unmappped for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
               yield @base, k, v unless k == :drop || v.R.deny?}
-          elsif href = m.attr 'href'
-              puts "no @rel #{href}"
+          elsif href = m.attr('href')
+              puts "no @rel #{href}", m unless 'a' == m.name
               yield @base, Link, @base.join(href)
           end}
 
@@ -246,10 +246,8 @@ module Webize
         # <script>
         @doc.css('script').map{|s| # nonstandard src-attrs for lazy-loaders etc
           s.attribute_nodes.map{|a|
-            unless %w(src type).member? a.name
-              puts "SCRIPT @#{a.name} #{a.value}"
-              yield @base, Link, @base.join(a.value)
-            end}}
+            puts "SCRIPT @#{a.name} #{a.value}" unless %w(src type).member?(a.name) || !a.value.match?(/^(\/|http)/)
+            yield @base, Link, @base.join(a.value) unless %w(src type).member?(a.name) || !a.value.match?(/^(\/|http)/)}}
 
         # <title>
         @doc.css('title').map{|title|
