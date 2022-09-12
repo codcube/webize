@@ -9,6 +9,7 @@
 .abstract {background-color: #bbbbbb; color: #000; display: block; border-radius: 0 .4em 0 0; margin-left: -.2em; padding-left: .125em}
 .blocked, a.blocked.uri {background: repeating-linear-gradient(0deg, #000, #000, 1em, #f03 1em, #f03 2em); color: #fff; border: 1px solid #f03}
 .bold {font-weight: bold}
+.dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 4.2em; background-color: #000; color: #fff}
 .file > .name {font-size: .8em; position: absolute; top: 4.8em; left: .4em}
@@ -52,7 +53,7 @@
 .toolbox {vertical-align: top; font-size: 1.33em; color: #fff; text-shadow: 1px 1px #000000}
 .video {border: solid .3em #444; background-color: #000; margin: .2em;  border-radius: .5em}
 .warning {background-color: #ff0; color: #000; font-size: 1.1em}
-:target {background-color: #2ef !important; color : #000 !important}
+:target {background-color: #2ef !important; color : #000 !important; opacity: 1.0}
 a {text-decoration: none; border-radius: .14em; color: #eee; font-weight: bold; vertical-align: top; margin: 0; padding: 0 .125em 0 .125em}
 a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
 a.uri > img {float: left}

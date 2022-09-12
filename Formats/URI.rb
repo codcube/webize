@@ -132,8 +132,9 @@ class WebResource < RDF::URI
        c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;'*5},                               # 👉 root node
            {_: :a, id: :UI, href: host ? env[:base].secureURL : HTTP.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, # 👉 origin UI
            {_: :a, id: :cache, href: '/' + fsPath, c: :📦},                                                             # 👉 archive
-           ({_: :a, c: '↨', id: :tabular,
+           ({_: :a, id: :tabular, c: '↨',
              href: HTTP.qs(env[:qs].merge({'view' => 'table', 'sort' => 'date'}))} unless env[:view] == 'table'),       # 👉 tabular view
+           ({_: :a, id: :block, href: ['/block/', host].join, class: :dimmed, c: :🛑} unless deny?),
            {class: :path, c: env[:base].parts.map{|p|
               bc += '/' + p                                                                                             # 👉 path breadcrumbs
               ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,

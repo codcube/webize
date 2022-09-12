@@ -205,7 +205,7 @@ module Webize
               k = MetaMap[k] || k
               logger.warn ["predicate URI unmappped for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
               yield @base, k, v unless k == :drop || v.R.deny?}
-          elsif 'a' != m.name
+          elsif %w(a base).member?(m.name)
             puts "no @rel #{v}", m
             yield @base, Link, v
           end}
