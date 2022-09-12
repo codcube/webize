@@ -21,7 +21,7 @@ module Webize
       end
 
       # drop upstream formatting and scripts
-      dropnodes = 'frame, iframe, script, style, link[rel="stylesheet"], link[type="text/javascript"], link[as="script"]'  # a[href^="javascript"]
+      dropnodes = 'frame, iframe, script, style, link[rel="stylesheet"], link[type="text/javascript"], link[as="script"], a[href^="javascript"]'
       html.css(dropnodes).remove
 
       # <img> mapping
@@ -192,13 +192,13 @@ module Webize
 
         # @src
         @doc.css('[src]').map{|e|
-          yield @base, Link, @base.join(e.attr('src')).R unless %w(img style video).member? e.name}
+          yield @base, Link, @base.join(e.attr('src')) unless %w(img style video).member? e.name}
 
         @doc.css('script').map{|s| # nonstandard script attributes from lazy-loaders etc
           s.attribute_nodes.map{|a|
             unless %w(src type).member? a.name
               puts "SCRIPT @#{a.name} #{a.value}"
-              yield @base, Link, @base.join(a.value.R).R
+              yield @base, Link, @base.join(a.value)
             end}}
 
         # @rel @href
@@ -207,12 +207,14 @@ module Webize
             if v = m.attr("href") # object
               v = @base.join v
               rel.split(/[\s,]+/).map{|k|
+
                 @env[:links][:prev] ||= v if k.match? /prev(ious)?/i
                 @env[:links][:next] ||= v if k.downcase == 'next'
                 @env[:links][:icon] ||= v if k.match? /^(fav)?icon?$/i
                 @env[:feeds].push v if k == 'alternate' && ((m['type']&.match?(/atom|rss/)) || (v.path&.match?(/^\/feed\/?$/))) && !@env[:feeds].member?(v)
+
                 k = MetaMap[k] || k
-                logger.warn ["no property URI for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
+                logger.warn ["predicate URI unmappped for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
                 yield @base, k, v unless k == :drop || v.R.deny?}
             end
           end}
