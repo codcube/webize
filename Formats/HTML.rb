@@ -179,61 +179,52 @@ module Webize
       def scanContent &f
         yield @base, Type, 'http://xmlns.com/foaf/0.1/Document'.R
 
-        # resolve base-URI declaration
+        # resolve base URI
         if base = @doc.css('head base')[0]
           if baseHref = base['href']
             @base = @base.join(baseHref).R @env
           end
         end
 
-        # site-specific reader
+        # site-reader
         @base.send Triplr[@base.host], @doc, &f if Triplr[@base.host]
-
 
         # @src
         @doc.css('[src]').map{|e|
           yield @base, Link, @base.join(e.attr('src')) unless %w(img style video).member? e.name}
 
-        @doc.css('script').map{|s| # nonstandard script attributes from lazy-loaders etc
-          s.attribute_nodes.map{|a|
-            unless %w(src type).member? a.name
-              puts "SCRIPT @#{a.name} #{a.value}"
-              yield @base, Link, @base.join(a.value)
-            end}}
-
-        # @rel @href
-        @doc.css('[rel][href]').map{|m|
-          if rel = m.attr("rel") # predicate
-            if v = m.attr("href") # object
-              v = @base.join v
-              rel.split(/[\s,]+/).map{|k|
-
-                @env[:links][:prev] ||= v if k.match? /prev(ious)?/i
-                @env[:links][:next] ||= v if k.downcase == 'next'
-                @env[:links][:icon] ||= v if k.match? /^(fav)?icon?$/i
-                @env[:feeds].push v if k == 'alternate' && ((m['type']&.match?(/atom|rss/)) || (v.path&.match?(/^\/feed\/?$/))) && !@env[:feeds].member?(v)
-
-                k = MetaMap[k] || k
-                logger.warn ["predicate URI unmappped for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
-                yield @base, k, v unless k == :drop || v.R.deny?}
-            end
+        # @href
+        @doc.css('[href]').map{|m|
+          if rel = m.attr 'rel'           # @rel  -> predicate
+            v = @base.join m.attr('href') # @href -> object
+            rel.split(/[\s,]+/).map{|k|
+              @env[:links][:prev] ||= v if k.match? /prev(ious)?/i
+              @env[:links][:next] ||= v if k.downcase == 'next'
+              @env[:links][:icon] ||= v if k.match? /^(fav)?icon?$/i
+              @env[:feeds].push v if k == 'alternate' && ((m['type']&.match?(/atom|rss/)) || (v.path&.match?(/^\/feed\/?$/))) && !@env[:feeds].member?(v)
+              k = MetaMap[k] || k
+              logger.warn ["predicate URI unmappped for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
+              yield @base, k, v unless k == :drop || v.R.deny?}
+          elsif href = m.attr 'href'
+              puts "no @rel #{href}"
+              yield @base, Link, @base.join(href)
           end}
 
         # page pointers
         @doc.css('#next, #nextPage, a.next').map{|nextPage|
-          if ref = nextPage.attr("href")
+          if ref = nextPage.attr('href')
             @env[:links][:next] ||= @base.join ref
           end}
 
         @doc.css('#prev, #prevPage, a.prev').map{|prevPage|
-          if ref = prevPage.attr("href")
+          if ref = prevPage.attr('href')
             @env[:links][:prev] ||= @base.join ref
           end}
 
         # <meta>
         @doc.css('meta').map{|m|
-          if k = (m.attr("name") || m.attr("property"))  # predicate
-            if v = (m.attr("content") || m.attr("href")) # object
+          if k = (m.attr('name') || m.attr('property'))  # predicate
+            if v = (m.attr('content') || m.attr('href')) # object
               k = MetaMap[k] || k                        # map property-names
               case k
               when Abstract
@@ -252,11 +243,19 @@ module Webize
             end
           end}
 
+        # <script>
+        @doc.css('script').map{|s| # nonstandard src-attrs for lazy-loaders etc
+          s.attribute_nodes.map{|a|
+            unless %w(src type).member? a.name
+              puts "SCRIPT @#{a.name} #{a.value}"
+              yield @base, Link, @base.join(a.value)
+            end}}
+
         # <title>
         @doc.css('title').map{|title|
           yield @base, Title, title.inner_text }
 
-        # images
+        # <img>
         @doc.css('img[title], img[alt]').map{|img|
           if image = img['src']
             yield image, Type, Image.R
@@ -266,7 +265,7 @@ module Webize
               end}
           end}
 
-        # videos
+        # <video>
         ['video[src]', 'video > source[src]'].map{|vsel|
           @doc.css(vsel).map{|v|
             yield @base, Video, @base.join(v.attr('src')) }}
