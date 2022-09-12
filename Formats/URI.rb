@@ -129,7 +129,7 @@ class WebResource < RDF::URI
       env[:searchterm] ||= 'q'                                      # query argument
 
       {class: :toolbox,
-       c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;'*5},                               # 👉 root node
+       c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;' * 3},                             # 👉 root node
            {_: :a, id: :UI, href: host ? env[:base].secureURL : HTTP.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, # 👉 origin UI
            {_: :a, id: :cache, href: '/' + fsPath, c: :📦},                                                             # 👉 archive
            ({_: :a, id: :tabular, c: '↨',
