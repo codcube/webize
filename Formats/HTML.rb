@@ -205,9 +205,9 @@ module Webize
               k = MetaMap[k] || k
               logger.warn ["predicate URI unmappped for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
               yield @base, k, v unless k == :drop || v.R.deny?}
-          else
-              puts "no @rel #{v}", m unless 'a' == m.name
-              yield @base, Link, v
+          elsif 'a' != m.name
+            puts "no @rel #{v}", m
+            yield @base, Link, v
           end}
 
         # page pointers
@@ -246,8 +246,10 @@ module Webize
         # <script>
         @doc.css('script').map{|s| # nonstandard src-attrs for lazy-loaders etc
           s.attribute_nodes.map{|a|
-            puts "SCRIPT @#{a.name} #{a.value}" unless %w(src type).member?(a.name) || !a.value.match?(/^(\/|http)/)
-            yield @base, Link, @base.join(a.value) unless %w(src type).member?(a.name) || !a.value.match?(/^(\/|http)/)}}
+            unless %w(src type).member?(a.name) || !a.value.match?(/^(\/|http)/)
+              puts "SCRIPT @#{a.name} #{a.value}"
+              yield @base, Link, @base.join(a.value)
+            end}}
 
         # <title>
         @doc.css('title').map{|title|

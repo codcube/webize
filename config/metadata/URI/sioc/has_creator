@@ -63,6 +63,7 @@ http://www.livejournal.org/rss/lj/1.0/poster
 https://schema.org/author
 itunes:author
 me
+medium-com:creator
 og:article:author
 og:author
 og:first_name

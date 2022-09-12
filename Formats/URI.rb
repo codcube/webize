@@ -165,7 +165,7 @@ class WebResource < RDF::URI
         {_: :a, href: uri.href, c: uri.display_name}}}
 
     MarkupPredicate[Link] = -> links, env {
-      links.select{|l|l.respond_to? :R}.map(&:R).group_by{|l|
+      links.select{|l|l.respond_to? :R}.map(&:R).select{|l| !l.deny?}.group_by{|l|
         links.size > 8 && l.host && l.host.split('.')[-1] || nil}.map{|tld, links|
         [{class: :container,
           c: [({class: :head, _: :span, c: tld} if tld),
