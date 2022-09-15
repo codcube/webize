@@ -1,4 +1,5 @@
 articleBody
+article_body_mobile
 body
 bodyText
 cXenseParse:description
@@ -36,4 +37,5 @@ safe_content
 source
 storyHTML
 text
+truncated_article_body
 twitterText
