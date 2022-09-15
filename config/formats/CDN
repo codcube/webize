@@ -1,1 +1,1 @@
-\.(html|jpe?g|mp[2-4]|p(df|ng)|svg|webp)$
+(\.(html|jpe?g|mp[2-4]|p(df|ng)|svg|webp)|/)$
