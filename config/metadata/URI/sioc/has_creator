@@ -42,10 +42,12 @@ dc.source
 dct:creator
 dcterms.creator
 designer
+firstName
 first_name
 five_hundred_pixels:author
 from
 fromUser
+fullOrUserName
 full_name
 generator
 http://ogp.me/ns#article:author
@@ -62,6 +64,7 @@ http://www.itunes.com/dtds/podcast-1.0.dtd#author
 http://www.livejournal.org/rss/lj/1.0/poster
 https://schema.org/author
 itunes:author
+lastName
 me
 medium-com:creator
 og:article:author

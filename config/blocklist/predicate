@@ -30,6 +30,7 @@ al:iphone:app_store_id
 al:iphone:url
 al:web:should_fallback
 alexaVerifyID
+alignment
 amphtml
 apple-app-site-association
 apple-itunes-app
@@ -112,6 +113,7 @@ has_downloads_left
 has_extended_profile
 has_nft_avatar
 hidden
+hideCredit
 hostname
 hovercard-subject-tag
 html-safe-nonce
@@ -123,6 +125,7 @@ isCookieBannerEnabled
 isEmailVerified
 isExternal
 isInitialsProfileEnabled
+isInternal
 isJuniorTeam
 isLogoVisible
 isPlaceholder
@@ -133,6 +136,7 @@ isRedBulletin
 isRookiesCup
 isShareButtonEnabled
 isShareLinksEnabled
+isStarred
 isVenmoEnabled
 isVisible
 isVisibleMobile
@@ -143,6 +147,7 @@ is_translation_enabled
 is_translator
 isrc
 layout
+layoutTemplate
 listed_count
 managed_by_feeds
 media_count
