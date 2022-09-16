@@ -348,7 +348,6 @@ class WebResource
     # Graph -> HTML
     def htmlDocument graph
       status = env[:origin_status]
-      elapsed = Time.now - env[:start_time] if env.has_key? :start_time
       icon = join('/favicon.ico').R env                                                            # well-known icon location
       if env[:links][:icon]                                                                        # icon reference in metadata
         env[:links][:icon] = env[:links][:icon].R env unless env[:links][:icon].class==WebResource # normalize icon class
@@ -397,7 +396,11 @@ class WebResource
                          c: [{_: :img, class: :favicon, src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href},
                              uri_toolbar,
                              ({_: :span, c: env[:origin_status], class: :bold} if env[:origin_status] && env[:origin_status] != 200), # origin status
-                             ({_: :span, c: '%.1fs' % elapsed, class: :bold} if elapsed > 1),                                         # elapsed time
+                             (elapsed = Time.now - env[:start_time] if env.has_key? :start_time
+                              {_: :span, c: '%.1fs' % elapsed, class: :bold} if elapsed > 1),                                         # elapsed time
+                             ((nGraphs = (env[:updates] || env[:repository]).graph_names.size
+                               [([nGraphs, :🗃] if nGraphs > 1),
+                                (env[:updates] || env[:repository]).size, :⋮]) if env.has_key? :repository),
                              (['<br>⚠️',{_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
                              link[:up,'&#9650;'],
 
