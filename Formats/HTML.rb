@@ -397,10 +397,12 @@ class WebResource
                              uri_toolbar,
                              ({_: :span, c: env[:origin_status], class: :bold} if env[:origin_status] && env[:origin_status] != 200), # origin status
                              (elapsed = Time.now - env[:start_time] if env.has_key? :start_time
-                              {_: :span, c: '%.1fs' % elapsed, class: :bold} if elapsed > 1),                                         # elapsed time
-                             ((nGraphs = (env[:updates] || env[:repository]).graph_names.size
+                              ['%.1fs' % elapsed, :⏱️] if elapsed > 1),                                         # elapsed time
+                             if env.has_key? :repository
+                               nGraphs = (env[:updates] || env[:repository]).graph_names.size
                                [([nGraphs, :🗃] if nGraphs > 1),
-                                (env[:updates] || env[:repository]).size, :⋮]) if env.has_key? :repository),
+                                (env[:updates] || env[:repository]).size, :⋮]
+                             end,
                              (['<br>⚠️',{_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
                              link[:up,'&#9650;'],
 
