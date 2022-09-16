@@ -46,7 +46,7 @@
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
-.stats > span {font-size: 1em; color: #eee}
+.stats > span {font-size: .96em; color: #eee}
 .title {font-size: 1.1em; background-color: #bbbbbb; color: #000; margin: 0; padding: .1em}
 .title:visited, a.uri:visited {background-color: #dbdbdb}
 .toolbox .path {color: #aaa; font-size: .8em}
