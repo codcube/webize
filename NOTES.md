@@ -1,6 +1,6 @@
 # WHAT
 
-fix the web in post-production. some suggest we abandon it, i'm fixing it (creating the "web i want") with format and protocol bridging to servers of the desired capability by adding a graph cache [to the hierarchy](https://gist.github.com/paniq/bf5b291949be14771344b19a38f042c0), facilitating offline scenarios and [automatic archiving](https://beepb00p.xyz/sad-infra.html)
+fix the web in post-production. some suggest we abandon it - i'm creating the "web i want" with format and protocol bridging to servers of the desired capability. we add a graph cache [to the hierarchy](https://gist.github.com/paniq/bf5b291949be14771344b19a38f042c0), facilitating offline scenarios and [automatic archiving](https://beepb00p.xyz/sad-infra.html)
 
 # WHY
 
