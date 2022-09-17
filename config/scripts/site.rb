@@ -202,9 +202,10 @@ class WebResource
         r.deny
       end}
 
-    GET 'm.youtube.com', -> r {[301, {'Location' => ['//www.youtube.com',  r.path,  '?', r.query].join.R(r.env).href}, []]}
-    GET 'youtube.com',   -> r {[301, {'Location' => ['//www.youtube.com',  r.path,  '?', r.query].join.R(r.env).href}, []]}
-    GET 'youtu.be',      -> r {[301, {'Location' => ['//www.youtube.com/watch?v=', r.path[1..-1]].join.R(r.env).href}, []]}
+    GET 'm.youtube.com',     -> r {[301, {'Location' => ['//www.youtube.com',  r.path,  '?', r.query].join.R(r.env).href}, []]}
+    GET 'music.youtube.com', -> r {[301, {'Location' => ['//www.youtube.com',  r.path,  '?', r.query].join.R(r.env).href}, []]}
+    GET 'youtube.com',       -> r {[301, {'Location' => ['//www.youtube.com',  r.path,  '?', r.query].join.R(r.env).href}, []]}
+    GET 'youtu.be', -> r {[301, {'Location' => ['//www.youtube.com/watch?v=', r.path[1..-1]].join.R(r.env).href}, []]}
 
     # site-specific RDF mapping methods for HTML and JSON
 
