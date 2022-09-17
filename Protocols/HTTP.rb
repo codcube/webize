@@ -479,7 +479,7 @@ class WebResource
       when '/feed'                   # subscription endpoint
         fetch adapt? ? Subscriptions[host] : nil
       when /^\/resizer/
-        if (ps = path.split /\/\d+x\d+\/((filter|smart)[^\/]*\/)?/).size > 1
+        if (ps = path.split /\/\d+x\d+[^.]*\//).size > 1
           [302, {'Location' => 'https://' + ps[-1]}, []]
         else
           fetch
