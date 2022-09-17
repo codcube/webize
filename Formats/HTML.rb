@@ -217,8 +217,7 @@ module Webize
               k = MetaMap[k] || k
               logger.warn ["predicate URI unmappped for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
               yield @base, k, v unless k == :drop || v.R.deny?}
-          elsif !%w(a base).member?(m.name)
-            puts "no @rel", m
+          elsif !%w(a base).member?(m.name) # @href with no @rel
             yield @base, Link, v
           end}
 
@@ -256,10 +255,10 @@ module Webize
           end}
 
         # <script>
-        @doc.css('script').map{|s| # nonstandard src-attrs for lazy-loaders etc
+        @doc.css('script').map{|s| # nonstandard src attrs used by lazy-loaders
           s.attribute_nodes.map{|a|
             unless %w(src type).member?(a.name) || !a.value.match?(/^(\/|http)/)
-              puts "SCRIPT @#{a.name} #{a.value}"
+              logger.debug "<script> @#{a.name} #{a.value}"
               yield @base, Link, @base.join(a.value)
             end}}
 
