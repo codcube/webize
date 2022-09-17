@@ -137,9 +137,9 @@ class WebResource
       body
     end
 
-    # return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop query
     def deny status = 200, type = nil
       env[:deny] = true
+      return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop query
       ext = File.extname basename if path
       type, content = if type == :stylesheet || ext == '.css'
                         ['text/css', '']
