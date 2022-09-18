@@ -1,3 +1,5 @@
+#https://mlml.io/events/index.xml
+#https://mlml.io/projects/index.xml
 gemini://skyjake.fi/~Cosmos
 gemini://warmedal.se/~antenna/
 https://0x00sec.org/latest.rss
@@ -254,6 +256,7 @@ https://medium.com/feed/mit-media-lab
 https://miixtapechiick.com/feed/
 https://mjg59.dreamwidth.org/data/atom
 https://mjg59.dreamwidth.org/data/rss
+https://mlml.io/index.xml
 https://motifri.com/feed/
 https://mountauburn.org/feed/
 https://mspnews.org/feed/
