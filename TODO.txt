@@ -1,5 +1,4 @@
 finger URIs gemini://freeshell.de/gemlog/2022-01-11.gmi
-fix dashjs x-javascript wrong-upstream-MIME issue (General better x-* support , maybe automagic mapping of these alias types)
 generate preview at resource caching time
 use ~/.config/webize instead of git dir for config
 grep inside list http://l/src/webize/config/feeds?q=gitter
