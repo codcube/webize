@@ -318,9 +318,9 @@ class WebResource
 
     def fetchLocal nodes = nil
       return fileResponse if !nodes && file? && (format = fileMIME) && # file if cached and one of:
-                             (env[:notransform] ||          # (mimeA → mimeB) transform disabled
-                              format.match?(FixedFormat) || # (mimeA → mimeB) transform unimplemented
-                              (format==selectFormat(format) && !ReFormat.member?(format))) # (mimeA) reformat disabled
+                             (env[:notransform] ||          # (mimeA → mimeB) transform disabled (client preference)
+                              format.match?(FixedFormat) || # (mimeA → mimeB) transform disabled or unimplemented (server preference)
+                              (format == selectFormat(format) && !ReFormat.member?(format))) # (mimeA) reformat disabled
       (nodes || fsNodes).map &:loadRDF                      # load node(s)
       dirMeta                                               # 👉 storage-adjacent nodes
       timeMeta unless host                                  # 👉 timeline-adjacent nodes
@@ -446,7 +446,7 @@ class WebResource
           head[key] = (v.class == Array && v.size == 1 && v[0] || v) unless SingleHopHeaders.member? key.downcase # set header
         end}
 
-      head['Accept'] = ['text/turtle', head['Accept']].join ',' unless env[:notransform] || head['Accept']&.match?(/text\/turtle/) # accept 🐢/turtle
+      head['Accept'] = ['text/turtle', head['Accept']].join ',' unless env[:notransform] || head['Accept']&.match?(/text\/turtle/) # accept 🐢/turtle. add ?notransform to base URI to disable this (to fetch upstream data-browser UI rather than graph data, and not reformat any upstream HTML or JS)
 
       head['Content-Type'] = 'application/json' if %w(api.mixcloud.com proxy.c2.com).member? host
 
