@@ -168,7 +168,13 @@ end
 
 class WebResource
   module HTML
-    MarkupPredicate['http://www.w3.org/1999/xhtml/vocab#role'] = -> roles, env {} # TODO where are these triples coming from?
+    MarkupPredicate['http://www.w3.org/1999/xhtml/vocab#role'] = -> roles, env {} # TODO find where are these triples coming from and either shut them off or make a real view if we figure out what they are and deem that useful
+
+    Markup['http://www.w3.org/ns/posix/stat#File'] = -> file, env {
+      [({class: :file,
+         c: [{_: :a, href: file['uri'], class: :icon, c: Icons['http://www.w3.org/ns/posix/stat#File']},
+             {_: :span, class: :name, c: file['uri'].R.basename}]} if file['uri']),
+       (HTML.keyval file, env)]}
 
     MarkupPredicate[Type] = -> types, env {
       types.map{|t|

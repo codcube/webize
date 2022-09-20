@@ -45,6 +45,7 @@ redir to stuff that's gonna be  blocked: http://l/2021/09/27/21/*blogpost*?view=
 cache redirects (instantly syndicate t.co dereferences, tokens and icons to peers) 🐕➡️  http://l/2021/09/29/11/*blogpost* →  //federalhillprov.com/favicon.ico  → https://federalhillprov.com/wp-content/uploads/2021/08/cropped-fed-hill-favicon-178px-32x32.png
 bat signal not in presumably-RDFa content (Can we twiddle HTML datatypes beforehand?) , URI-identified comments from RDFa graph not cached at canonical locaion http://universalhub.com/2021/steam-plant-catches-fire
 drop specific query keys - de-utmize and other gunk
+handl comments in configlist etc parsers
 ask all the peer-caches (pi/vps/phone from laptop) ahead of origin servers for static resources - HEAD All then cancel remaining HEADs on first response and GET winner? or cache availability notices recieved via UDP mesh.  - or announce availability at cache-time of stuff not autoimagically syndicated (larger static media stuff etc)
 auto-certgen for Falcon HTTPS
 systemd + openrc unit files
@@ -55,4 +56,3 @@ RDF::URI #query_values hates multiple/leading/trailing &s, submit patch upstream
 for node IDs in HTML content.. yield each as RDF HTML-content
 shift-right/left pagination shortcuts conflict with text-selection adjustment
 re-parsing PDFs when offline http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date - remove @path
-
