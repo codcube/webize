@@ -88,6 +88,7 @@ keyword
 keywords
 krux:description
 label_name
+localizedCaption
 log_category
 metaDescription
 msapplication-tooltip
@@ -121,6 +122,7 @@ section
 section-name
 section-slug
 sections
+seoCaption
 shareSnippet
 shortDescription
 shortDescriptionOrTagLine
