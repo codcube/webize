@@ -58,6 +58,7 @@ flattenedCaption
 fmSubsection
 genre
 genres
+gs_cat
 heading
 http://data-vocabulary.org/summary
 http://ogp.me/ns#article:section
@@ -87,10 +88,13 @@ itunes:subtitle
 keyword
 keywords
 krux:description
+kwl
 label_name
+ledeCaption
 localizedCaption
 log_category
 metaDescription
+mostRelevantTags
 msapplication-tooltip
 news_keywords
 og:article:section
@@ -138,6 +142,7 @@ subject
 subsection
 subtitle
 summary
+summaryText
 tab
 tag
 tagIds

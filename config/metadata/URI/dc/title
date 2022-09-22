@@ -27,6 +27,7 @@ fullName
 hdl
 hdl_p
 headline
+headlineText
 http://data-vocabulary.org/title
 http://ogp.me/ns#title
 http://opengraphprotocol.org/schema/title
