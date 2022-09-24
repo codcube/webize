@@ -11,7 +11,7 @@ module Webize
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri].R
-        @body = (input.respond_to?(:read) ? input.read : input).encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
+        @body = input.respond_to?(:read) ? input.read : input
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -29,13 +29,12 @@ module Webize
       end
 
       def pdf_tuples
-        html = RDF::Literal IO.popen(['pdftohtml', '-s', '-stdout', '-', '-'], 'r+'){|io|
+        IO.popen(['pdftohtml', '-s', '-stdout', '-', @base.fsPath.sub(/\.pdf$/,'')], 'r+'){|io|
           io.puts @body
           io.close_write
-          io.gets
-        }#.encode('UTF-8', invalid: :replace, undef: :replace)
-        html.datatype = RDF.XMLLiteral
-        yield Content.R, html
+          html = RDF::Literal io.gets
+          html.datatype = RDF.XMLLiteral
+          yield Content.R, html }
       end
     end
   end
