@@ -29,7 +29,11 @@ module Webize
       end
 
       def pdf_tuples
-        html = RDF::Literal IO.popen(['pdftohtml', '-s', '-stdout', '-']){|p|p.puts @body}.encode('UTF-8', invalid: :replace, undef: :replace)
+        html = RDF::Literal IO.popen(['pdftohtml', '-s', '-stdout', '-', '-'], 'r+'){|io|
+          io.puts @body
+          io.close_write
+          io.gets
+        }#.encode('UTF-8', invalid: :replace, undef: :replace)
         html.datatype = RDF.XMLLiteral
         yield Content.R, html
       end

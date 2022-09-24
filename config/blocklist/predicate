@@ -41,6 +41,7 @@ apple-touch-fullscreen
 applicationId
 article:content_tier
 articleid
+artifactId
 assetId
 authorization_endpoint
 baidu-site-verification
@@ -202,6 +203,7 @@ renderer
 request-id
 request_id
 require_some_consent
+resolutionMethod
 rest_id
 retweet_count
 retweeted
