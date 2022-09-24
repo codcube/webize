@@ -138,7 +138,10 @@ class WebResource
       dir = File.dirname path # container path
 
       until path == '.'       # unlink files and symlinks blocking container path
-        FileUtils.rm path if File.file?(path) || File.symlink?(path)
+        if File.file?(path) || File.symlink?(path)
+          puts '🧹 ' + path
+          FileUtils.rm path
+        end
         path = File.dirname path
       end
 

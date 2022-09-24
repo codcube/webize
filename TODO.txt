@@ -20,7 +20,6 @@ hash fetched entities to prevent redundant parsing/summarization work when origi
 log byte-range req
 if feed post-limit is 20 and we have 20 in updates, we're probably missing posts - save and highlight pagination next/prev links for graph
 feedURL hook
-make PDF triplr work without @path (file reference passed to triplr in addition to raw data)
 ipfs/ipns protocol handler https://archive.fosdem.org/2021/schedule/event/open_research_filecoin_ipfs/
 dedupe images, link to shown image from placeholder icons
 assemble dash/hls manifest for youtube data we have from the json , so we can stop using their borked player with the unskippable adloop bug
