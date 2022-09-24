@@ -13,7 +13,9 @@ DCTERMS.modified
 Modified
 REVISION_DATE
 _createdAt
+_createdDate
 _updatedAt
+_updatedDate
 article.created
 article.published
 article.updated
