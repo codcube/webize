@@ -14,4 +14,5 @@
 [id^='post']
 article
 li
+section
 td.subtext

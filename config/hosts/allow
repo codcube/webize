@@ -18,12 +18,10 @@ assets.msn.com
 assets.squarespace.com
 auctions.yahoo.co.jp
 books.google.com
-bostonglobe-prod.cdn.arcpublishing.com
 cartodb-basemaps-a.global.ssl.fastly.net
 cdn.mos.cms.futurecdn.net
 cdnjs.cloudflare.com
 cgi.ebay.com
-cloudfront-us-east-1.images.arcpublishing.com
 codeforboston.github.io
 datatracker.ietf.org
 duckduckgo.com
@@ -37,6 +35,7 @@ gist.github.com
 github.com
 gitlab-api.arkoselabs.com
 gitlab.com
+groups.google.com
 i.dailymail.co.uk
 i.guim.co.uk
 i.imgur.com
