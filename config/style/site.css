@@ -49,7 +49,7 @@
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title {font-size: 1.1em; background-color: #bbb; color: #000; margin: 0; padding: .1em}
-.title:visited, a.uri:visited {background-color: #dbdbdb}
+.title:visited, a.uri:visited, a.uri:visited > span {background-color: #dbdbdb}
 .toolbox .path {color: #aaa; font-size: .8em}
 .toolbox form input {background-color: #000; color: #fff; border-radius: .5em; border-width: 0; font-size: .8em}
 .toolbox svg {height: 1em; width: 1em}
