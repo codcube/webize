@@ -45,8 +45,8 @@
 .posts {border-style: solid; border-width: 0.125em; padding: 0; margin: .25em}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
-.stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .stats > span {font-size: .96em; color: #eee}
+.stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title {font-size: 1.1em; background-color: #bbbbbb; color: #000; margin: 0; padding: .1em}
 .title:visited, a.uri:visited {background-color: #dbdbdb}
 .toolbox .path {color: #aaa; font-size: .8em}
@@ -64,9 +64,9 @@ a.uri.path {background-color: #000; color: #fff; border: .1em solid #444}
 a.uri.path:visited {background-color: #3f3f3f}
 a:hover, a.uri:hover {border-color: #0ff; background-color: #0ff}
 audio {width: 80ex; float: right}
-blockquote {border-width: 0 .08em 0 .68em; border-radius: .2em 0 0 .2em; border-style: solid; border-color: #ccc; background-color: #000; color: #fff; padding-left: .2em}
+blockquote {border-width: 0 .08em 0 .68em; border-radius: .2em 0 0 .2em; border-style: solid; border-color: #ccc; padding-left: .2em}
+blockquote, body, p {background-color: #000; color: #fff; font-family: sans-serif}
 blockquote, ol, p, ul {max-width: 80ex}
-body {background-color: #000; color: #fff; font-family: sans-serif}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
