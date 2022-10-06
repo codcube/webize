@@ -7,7 +7,7 @@
 #rootpath {float: left}
 #up {background-color: #222; color: #aaa; border-radius: 0 0 .5em .5em; font-size: 2em; position: fixed; right: 3em; top: 0; padding: 0 .8em 0 .8em}
 .abstract {display: block; border-radius: 0 .4em 0 0; margin-left: -.2em; padding-left: .125em}
-.abstract, .abstract span {background-color: #bbbbbb; color: #000}
+.abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked, a.blocked.uri {background: repeating-linear-gradient(0deg, #000, #000, 1em, #f03 1em, #f03 2em); color: #fff; border: 1px solid #f03}
 .bold {font-weight: bold}
 .dimmed {opacity: 0.2}
@@ -48,21 +48,25 @@
 .preembed {position: relative; vertical-align: top}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
-.title {font-size: 1.1em; background-color: #bbbbbb; color: #000; margin: 0; padding: .1em}
+.title {font-size: 1.1em; background-color: #bbb; color: #000; margin: 0; padding: .1em}
 .title:visited, a.uri:visited {background-color: #dbdbdb}
 .toolbox .path {color: #aaa; font-size: .8em}
 .toolbox form input {background-color: #000; color: #fff; border-radius: .5em; border-width: 0; font-size: .8em}
 .toolbox svg {height: 1em; width: 1em}
-.toolbox {vertical-align: top; font-size: 1.33em; color: #fff; text-shadow: 1px 1px #000000}
+.toolbox {vertical-align: top; font-size: 1.33em; color: #fff; text-shadow: 1px 1px #000}
 .video {border: solid .3em #444; background-color: #000; margin: .2em;  border-radius: .5em}
 .warning {background-color: #ff0; color: #000; font-size: 1.1em}
 :target {background-color: #2ef !important; color : #000 !important; opacity: 1.0}
 a {text-decoration: none; border-radius: .14em; color: #eee; font-weight: bold; vertical-align: top; margin: 0; padding: 0 .125em 0 .125em}
 a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
 a.uri > img {float: left}
-a.uri {border-radius: .24em; background-color: #bbbbbb; color: #000; max-width: 40em; overflow: hidden; font-weight: bold}
-a.uri.path {background-color: #000; color: #fff; border: .1em solid #444}
-a.uri.path:visited {background-color: #3f3f3f}
+a.uri > span {color: #333}
+a.uri {color: #000; border-radius: .24em; max-width: 40em; overflow: hidden; font-weight: bold}
+a.uri, a.uri > span {background-color: #bbb}
+a.uri.path > span {color: #ccc}
+a.uri.path {color: #fff; border: .1em solid #444}
+a.uri.path, a.uri.path > span {background-color: #000}
+a.uri.path:visited, a.uri.path:visited > span {background-color: #333}
 a:hover, a.uri:hover {border-color: #0ff; background-color: #0ff}
 audio {width: 80ex; float: right}
 blockquote {border-width: 0 .08em 0 .68em; border-radius: .2em 0 0 .2em; border-style: solid; border-color: #ccc; padding-left: .2em}
@@ -71,14 +75,14 @@ blockquote, ol, p, ul {max-width: 80ex}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
-code {border: .0875em solid #383838}
+code {border: 1px solid #383838}
 div, a, svg, form, pre, table, textarea {display: inline-block}
 iframe, .preembed {border: .2em solid #fff}
 iframe.main_player {border: .25em solid red}
 img {border-radius: .3em}
 img, video, table {max-width: 100%}
-li, p {margin: .0875em; border-radius: .2em}
-ol, ul {border: .0875em solid #444}
+li, p {margin: 1px; border-radius: .2em}
+ol, ul {border: 1px solid #444}
 pre, code {white-space: pre-wrap; font-family: Consolas,'Courier New',Courier,monospace; max-width: 255ex}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6 {margin: 0}
 span.uri {font-size: 0.8em; font-weight: normal}

@@ -261,7 +261,7 @@ class WebResource
                   to,                                            # receiver
                   date,                                          # timestamp
                  ]}.update(color ? {style: ["border-color: #{color}",
-                                            'border-style: dotted',
+                                            'border-style: solid',
                                             blocked ? "background: repeating-linear-gradient(45deg, #000, #000, 1em, #{color} 1em, #{color} 2em" : nil].join('; ')} : {}),
              origin_ref,                                         # origin pointer
             ]}.update(id ? {id: id} : {})                        # representation identifier
