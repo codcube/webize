@@ -243,7 +243,7 @@ class WebResource
       end
 
       date = p[Date]
-      link = {class: titled ? :title : nil,c: titled ? p[Title] : :🔗}. # resource pointer
+      link = {class: titled ? (blocked ? 'blocked title' : 'title') : nil, c: titled ? p[Title] : :🔗}. # resource pointer
                update(cache_ref || {}).update((titled && color) ? {style: "background-color: #{color}; color: #{text_color || :black}"} : {})
 
       unless (re[Creator]||[]).find{|a| KillFile.member? a.to_s} # sender killfiled?
