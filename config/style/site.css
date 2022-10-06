@@ -61,7 +61,7 @@ a {text-decoration: none; border-radius: .14em; color: #eee; font-weight: bold; 
 a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
 a.uri > img {float: left}
 a.uri > span {color: #333}
-a.uri {color: #000; border-radius: .24em; max-width: 40em; overflow: hidden; font-weight: bold}
+a.uri {color: #000; border-radius: .24em; margin: 1px; max-width: 40em; overflow: hidden; font-weight: bold}
 a.uri, a.uri > span {background-color: #bbb}
 a.uri.path > span {color: #ccc}
 a.uri.path {color: #fff; border: .1em solid #444}
