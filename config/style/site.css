@@ -63,20 +63,20 @@ a.uri > img {float: left}
 a.uri > span {color: #222}
 a.uri {color: #000; border-radius: .24em; margin: 1px; max-width: 40em; overflow: hidden; font-weight: bold}
 a.uri, a.uri > span {background-color: #bbb}
+a.uri.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
 a.uri.path > span {color: #ccc}
 a.uri.path {color: #fff; border: .1em solid #444}
 a.uri.path, a.uri.path > span {background-color: #000}
 a.uri.path:visited, a.uri.path:visited > span {background-color: #282828}
 a:hover, a.uri:hover {border-color: #0ff; background-color: #0ff}
 audio {width: 80ex; float: right}
-blockquote {border-width: 0 .08em 0 .68em; border-radius: .2em 0 0 .2em; border-style: solid; border-color: #ccc; padding-left: .2em}
-blockquote, body, code, li, p, pre, span {background-color: #000; color: #fff; font-family: sans-serif}
+blockquote {background-color: #000; color: #eee; border-width: 0 .08em 0 .68em; border-radius: .2em 0 0 .2em; border-style: solid; border-color: #ccc; padding-left: .2em}
 blockquote, ol, p, ul {max-width: 80ex}
+body, code, li, p, pre, span {background-color: #000; color: #fff; font-family: sans-serif}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
 code {border: 1px solid #383838}
-a.uri.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
 div, a, svg, form, pre, table, textarea {display: inline-block}
 iframe, .preembed {border: .2em solid #fff}
 iframe.main_player {border: .25em solid red}
