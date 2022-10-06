@@ -8,7 +8,7 @@
 #up {background-color: #222; color: #aaa; border-radius: 0 0 .5em .5em; font-size: 2em; position: fixed; right: 3em; top: 0; padding: 0 .8em 0 .8em}
 .abstract {display: block; border-radius: 0 .4em 0 0; margin-left: -.2em; padding-left: .125em}
 .abstract, .abstract span {background-color: #bbb; color: #000}
-.blocked, a.blocked.uri {background: repeating-linear-gradient(0deg, #000, #000, 1em, #f03 1em, #f03 2em); color: #fff; border: 1px solid #f03}
+.blocked, a.blocked.uri, .post > .blocked.content {background: repeating-linear-gradient(0deg, #000, #000, 1em, #f03 1em, #f03 2em); color: #fff; border: 1px solid #f03}
 .bold {font-weight: bold}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
@@ -60,7 +60,7 @@
 a {text-decoration: none; border-radius: .14em; color: #eee; font-weight: bold; vertical-align: top; margin: 0; padding: 0 .125em 0 .125em}
 a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
 a.uri > img {float: left}
-a.uri > span {color: #333}
+a.uri > span {color: #222}
 a.uri {color: #000; border-radius: .24em; margin: 1px; max-width: 40em; overflow: hidden; font-weight: bold}
 a.uri, a.uri > span {background-color: #bbb}
 a.uri.path > span {color: #ccc}
@@ -76,6 +76,7 @@ body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
 code {border: 1px solid #383838}
+a.uri.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
 div, a, svg, form, pre, table, textarea {display: inline-block}
 iframe, .preembed {border: .2em solid #fff}
 iframe.main_player {border: .25em solid red}
