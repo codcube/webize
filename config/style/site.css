@@ -65,18 +65,20 @@ a.uri.path:visited {background-color: #3f3f3f}
 a:hover, a.uri:hover {border-color: #0ff; background-color: #0ff}
 audio {width: 80ex; float: right}
 blockquote {border-width: 0 .08em 0 .68em; border-radius: .2em 0 0 .2em; border-style: solid; border-color: #ccc; padding-left: .2em}
-blockquote, body, p {background-color: #000; color: #fff; font-family: sans-serif}
+blockquote, body, code, li, p, pre {background-color: #000; color: #fff; font-family: sans-serif}
 blockquote, ol, p, ul {max-width: 80ex}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
+code {border: .0875em solid #383838}
 div, a, svg, form, pre, table, textarea {display: inline-block}
 iframe, .preembed {border: .2em solid #fff}
 iframe.main_player {border: .25em solid red}
 img {border-radius: .3em}
 img, video, table {max-width: 100%}
+p {margin: .0875em; border-radius: .2em}
 pre, code {white-space: pre-wrap; font-family: Consolas,'Courier New',Courier,monospace; max-width: 255ex}
-pre, p, ul, ol, blockquote, h1, h2, h3, h4, h5, h6 {margin: 0}
+pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6 {margin: 0}
 span.uri {font-size: 0.8em; font-weight: normal}
 svg, img[src*="svg"] {max-width:2em; max-height: 2em}
 table {border-radius: .2em; vertical-align: top;}
