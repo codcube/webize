@@ -108,9 +108,9 @@ module Webize
                end,
                '</pre>'].join
             else                                                                                          # URI reference
-              ([' <span class=uri>', # show URI
+              ([(' <span class=uri>' unless color), # show URI
                 CGI.escapeHTML((offsite ? ref.uri.sub(/^https?:..(www.)?/,'') : [ref.path, ref.query ? ['?', ref.query] : nil, ref.fragment ? ['#', ref.fragment] : nil].join)[0..127]),
-                '</span> '] unless reader)
+                ('</span> ' unless color)] unless reader)
             end].join
           css = [:uri]
           css.push :path unless offsite                           # local or global reference class
