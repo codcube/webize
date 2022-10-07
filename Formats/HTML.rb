@@ -70,14 +70,23 @@ module Webize
           ref = (base.join e['href']).R                           # resolve @href
           ref.query = nil if ref.query&.match?(/utm[^a-z]/)       # deutmize query (tracker gunk)
           ref.fragment = nil if ref.fragment&.match?(/utm[^a-z]/) # deutmize fragment
-          blocked = ref.deny?
-          color = if WebResource::HTML::HostColor.has_key? ref.host
-                    WebResource::HTML::HostColor[ref.host]
-                  elsif blocked
-                    'red'
-                  end
-          offsite = ref.host != base.host
+
+          e['href'] = ref.to_s                                    # resolved href
           e['id'] = 'g' + Digest::SHA2.hexdigest(rand.to_s) if base.scheme == 'gemini'
+
+          blocked = ref.deny?
+          offsite = ref.host != base.host
+
+          if color = if WebResource::HTML::HostColor.has_key? ref.host
+                       WebResource::HTML::HostColor[ref.host]
+                     elsif ref.scheme == 'mailto'
+                       '#48f'
+                     elsif blocked
+                       'red'
+                     end
+            e['style'] = colorCSS = "#{offsite ? 'background-' : nil}color: #{color}" # host->color map
+          end
+
           e.inner_html = [
             if reader
               nil
@@ -88,7 +97,6 @@ module Webize
               when 'data'
                 :🧱
               when 'mailto'
-                color = '#48f'
                 :📭
               when 'gemini'
                 :🚀
@@ -108,18 +116,14 @@ module Webize
                end,
                '</pre>'].join
             else                                                                                          # URI reference
-              ([(' <span class=uri>' unless color), # show URI
+              ([' ', '<span class=uri', color ? [' style="', colorCSS, '"'] : nil, '>',                   # show URI
                 CGI.escapeHTML((offsite ? ref.uri.sub(/^https?:..(www.)?/,'') : [ref.path, ref.query ? ['?', ref.query] : nil, ref.fragment ? ['#', ref.fragment] : nil].join)[0..127]),
-                ('</span> ' unless color)] unless reader)
+                '</span>', ' '] unless reader)
             end].join
+
           css = [:uri]
-          css.push :path unless offsite                           # local or global reference class
-          if blocked                                              # blocked-resource class
-            css.push :blocked
-          elsif color                                             # host->color map
-            e['style'] = "#{offsite ? 'background-' : nil}color: #{color}"
-          end
-          e['href'] = ref.to_s                                    # resolved href
+          css.push :path unless offsite                           # local or global styling
+          css.push :blocked if blocked                            # blocked resource
           e['class'] = css.join ' '                               # add CSS classes
 
         elsif e['id'] && !reader                                  # identified node and verbose mode
