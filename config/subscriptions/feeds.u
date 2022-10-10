@@ -1,5 +1,3 @@
-#https://mlml.io/events/index.xml
-#https://mlml.io/projects/index.xml
 gemini://skyjake.fi/~Cosmos
 gemini://warmedal.se/~antenna/
 https://0x00sec.org/latest.rss
@@ -227,6 +225,7 @@ https://laurenfogelstrom.wordpress.com/feed/
 https://leahneukirchen.org/trivium/index.atom
 https://leftychan.net/leftypol/
 https://lemmy.ml/feeds/c/libre_culture.xml
+https://len.falken.directory/feed.xml
 https://lfod.life/feed/
 https://librelounge.org/atom-feed.atom
 https://linuxrocks.online/@dnkl
@@ -256,7 +255,9 @@ https://medium.com/feed/mit-media-lab
 https://miixtapechiick.com/feed/
 https://mjg59.dreamwidth.org/data/atom
 https://mjg59.dreamwidth.org/data/rss
+https://mlml.io/events/index.xml
 https://mlml.io/index.xml
+https://mlml.io/projects/index.xml
 https://motifri.com/feed/
 https://mountauburn.org/feed/
 https://mspnews.org/feed/
@@ -320,6 +321,7 @@ https://segreenhouse.org/feed/atom/
 https://seirdy.one/posts/index.xml
 https://shibumi.dev/posts/index.xml
 https://sigmasdr.blogspot.com/feeds/posts/default
+https://simonwillison.net/atom/everything/
 https://sites.tufts.edu/museumstudents/feed/
 https://socaholic.com/feed
 https://sourceforge.net/p/blissos-dev/activity/feed
@@ -528,4 +530,3 @@ https://year38.blogspot.com/feeds/posts/default
 https://yvng-mel.tumblr.com/rss
 https://zumixboston.wordpress.com/feed/
 https://zumixradio.blogspot.com/feeds/posts/default
-https://len.falken.directory/feed.xml
