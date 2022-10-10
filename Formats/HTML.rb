@@ -127,7 +127,7 @@ module Webize
           e['class'] = css.join ' '                               # add CSS classes
 
         elsif e['id'] && !reader                                  # identified node and verbose mode
-          e.add_child " <span class='id'>#{e['id']}</span> "      # show identifier
+          e.add_child " <span class='id'>##{e['id']}</span> "     # show identifier
         end}
 
       serialize ? html.to_html : html                             # serialize (string -> string) invocations
