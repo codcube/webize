@@ -59,17 +59,15 @@
 a {text-decoration: none; border-radius: .14em; color: #eee; font-weight: bold; vertical-align: top; margin: 0; padding: 0 .125em 0 .125em}
 a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
 a.uri > img {float: left}
-a.uri > span {color: #aaa}
-a.uri {color: #fff; border-radius: .28em; margin: 1px; max-width: 40em; overflow: hidden; font-weight: bold}
-a.uri, a.uri > span {background-color: #448}
+a.uri > span {color: #bbb}
+a.uri {color: #fff; border: .1em solid #444; border-radius: .28em; margin: 1px; max-width: 40em; overflow: hidden; font-weight: bold}
+a.uri, a.uri > span {background-color: #383888}
 a.uri.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
-a.uri.path > span {color: #ccc}
-a.uri.path {color: #fff; border: .1em solid #444}
 a.uri.path, a.uri.path > span {background-color: #000}
 a.uri:visited, a.uri:visited > span, a.uri.path:visited, a.uri.path:visited > span {background-color: #282828}
 a:hover, a.uri:hover {border-color: #0ff; background-color: #0ff}
 audio {width: 80ex; float: right}
-blockquote, blockquote *, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .2em}
+blockquote, blockquote > p, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .2em}
 blockquote, ol, p, ul {max-width: 80ex}
 body, code, li, p, pre, span {background-color: #000; color: #fff; font-family: sans-serif}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
@@ -82,7 +80,7 @@ iframe.main_player {border: .25em solid red}
 img {border-radius: .3em}
 img, video, table {max-width: 100%}
 li, p {margin: 1px; border-radius: .2em}
-ol, ul {border: 1px solid #444}
+ol, ul {border: 1px dotted #444}
 pre, code {white-space: pre-wrap; font-family: Consolas,'Courier New',Courier,monospace; max-width: 255ex}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6 {margin: 0}
 span.uri {font-size: 0.8em; font-weight: normal}

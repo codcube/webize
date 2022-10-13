@@ -50,6 +50,9 @@ bingbot
 botify-site-verification
 brightspot.cached
 brightspot.contentId
+browser-errors-url
+browser-optimizely-client-errors-url
+browser-stats-url
 business_profile_state
 bytedance-verification-code
 canHaveEpisodes
