@@ -48,7 +48,7 @@
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title {font-size: 1.1em; background-color: #bbb; color: #000; margin: 0; padding: .1em}
-.title:visited, a.uri:visited, a.uri:visited > span {background-color: #dbdbdb}
+.title:visited {background-color: #dbdbdb}
 .toolbox .path {color: #aaa; font-size: .8em}
 .toolbox form input {background-color: #000; color: #fff; border-radius: .5em; border-width: 0; font-size: .8em}
 .toolbox svg {height: 1em; width: 1em}
@@ -59,14 +59,14 @@
 a {text-decoration: none; border-radius: .14em; color: #eee; font-weight: bold; vertical-align: top; margin: 0; padding: 0 .125em 0 .125em}
 a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
 a.uri > img {float: left}
-a.uri > span {color: #222}
-a.uri {color: #fff; border-radius: .24em; margin: 1px; max-width: 40em; overflow: hidden; font-weight: bold}
+a.uri > span {color: #aaa}
+a.uri {color: #fff; border-radius: .28em; margin: 1px; max-width: 40em; overflow: hidden; font-weight: bold}
 a.uri, a.uri > span {background-color: #448}
 a.uri.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
 a.uri.path > span {color: #ccc}
 a.uri.path {color: #fff; border: .1em solid #444}
 a.uri.path, a.uri.path > span {background-color: #000}
-a.uri.path:visited, a.uri.path:visited > span {background-color: #282828}
+a.uri:visited, a.uri:visited > span, a.uri.path:visited, a.uri.path:visited > span {background-color: #282828}
 a:hover, a.uri:hover {border-color: #0ff; background-color: #0ff}
 audio {width: 80ex; float: right}
 blockquote, blockquote *, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .2em}
