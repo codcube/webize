@@ -22,7 +22,8 @@ command -v xbps-install && sudo xbps-install -S base-devel curl libexif-devel li
 
 # Ruby https://www.ruby-lang.org/
 command -v bundle || gem install bundler
-bundle install
-# nokogiri binaries often broken on bionic/musl libc or ARM/RISC-V CPU or bleeding-edge Ruby. wipe them and build locally:
+bundle install && rm Gemfile.lock
+
+# Nokogiri - if gem binaries broken on bionic/musl libc, ARM/RISC-V CPU or bleeding-edge Ruby version, build locally:
 # gem uninstall nokogiri -a
 # gem install --platform=ruby nokogiri -- --use-system-libraries
