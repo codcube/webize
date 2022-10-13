@@ -32,7 +32,7 @@
 .post .creator > a, .post .to > a {color: #000}
 .post .creator {float: right}
 .post .to {margin-left: -.2em; float: left}
-.post > .content {border-radius: 0 .4em .38em .38em; border: 1px solid #585858; margin: 0; padding: 0 0 0 .2em}
+.post > .content {border-radius: 0 .4em .38em .38em; border: 1px dotted #555; margin: 0; padding: 0 0 0 .2em}
 .post > .title { border-radius: .4em .4em 0 0}
 .post a.pointer {font-size: .8em; color: #aaa; font-weight: normal; margin: 0; float: right}
 .post a.pointer:visited {background-color: #888; color: #000}
