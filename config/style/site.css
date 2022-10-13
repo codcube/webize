@@ -15,7 +15,6 @@
 .file > .icon {font-size: 4.2em; background-color: #000; color: #fff}
 .file > .name {font-size: .8em; position: absolute; top: 4.8em; left: .4em}
 .file {position: relative}
-.greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .2em}
 .group > .label {font-weight: bold; font-size: 1.1em; background-color: #000; border-width: .125em .125em 0 .125em; border-radius: .25em .25em 0 0; border-style: solid}
 .group > .resources {padding: .2em; border-radius: 0 .3em .3em .3em; border-width: .125em; border-style: solid}
 .group {margin: .2em}
@@ -70,8 +69,7 @@ a.uri.path, a.uri.path > span {background-color: #000}
 a.uri.path:visited, a.uri.path:visited > span {background-color: #282828}
 a:hover, a.uri:hover {border-color: #0ff; background-color: #0ff}
 audio {width: 80ex; float: right}
-blockquote {background-color: #000; border-width: 0 .08em 0 .68em; border-radius: .2em 0 0 .2em; border-style: solid; border-color: #ccc; padding-left: .2em}
-blockquote, blockquote p {color: #eee}
+blockquote, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .2em}
 blockquote, ol, p, ul {max-width: 80ex}
 body, code, li, p, pre, span {background-color: #000; color: #fff; font-family: sans-serif}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
