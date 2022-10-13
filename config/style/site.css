@@ -60,8 +60,8 @@ a {text-decoration: none; border-radius: .14em; color: #eee; font-weight: bold; 
 a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
 a.uri > img {float: left}
 a.uri > span {color: #222}
-a.uri {color: #000; border-radius: .24em; margin: 1px; max-width: 40em; overflow: hidden; font-weight: bold}
-a.uri, a.uri > span {background-color: #bbb}
+a.uri {color: #fff; border-radius: .24em; margin: 1px; max-width: 40em; overflow: hidden; font-weight: bold}
+a.uri, a.uri > span {background-color: #448}
 a.uri.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
 a.uri.path > span {color: #ccc}
 a.uri.path {color: #fff; border: .1em solid #444}
@@ -69,7 +69,7 @@ a.uri.path, a.uri.path > span {background-color: #000}
 a.uri.path:visited, a.uri.path:visited > span {background-color: #282828}
 a:hover, a.uri:hover {border-color: #0ff; background-color: #0ff}
 audio {width: 80ex; float: right}
-blockquote, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .2em}
+blockquote, blockquote *, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .2em}
 blockquote, ol, p, ul {max-width: 80ex}
 body, code, li, p, pre, span {background-color: #000; color: #fff; font-family: sans-serif}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
