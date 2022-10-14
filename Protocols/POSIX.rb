@@ -16,9 +16,9 @@ class WebResource
     # document location for resource
     def docPath
       loc = fsPath
-      if loc[-1] == '/' # dir/ (declarative /-URI, skip fs-stat)
+      if loc[-1] == '/' # declarative dir/ URI, skip fs-stat
         loc + 'index'
-      elsif directory?  # dir (no /-URI, found via fs-stat)
+      elsif directory?  # directory exists per fs-stat
         loc + '/index'
       else              # file
         loc
@@ -131,19 +131,17 @@ class WebResource
 
   module POSIX
 
-    # create containing dir for path
+    # create container(s) for path
     def self.container path
-      dir = File.dirname path # container path
-
-      until path == '.'       # unlink files and symlinks blocking container path
+      dir = File.dirname path    # container path
+      until path == '.'          # walking up to root
         if File.file?(path) || File.symlink?(path)
           puts '🧹 ' + path
-          FileUtils.rm path
+          FileUtils.rm path      # remove file or symlink blocking directory location
         end
-        path = File.dirname path
+        path = File.dirname path # up a level
       end
-
-      FileUtils.mkdir_p dir   # create container(s)
+      FileUtils.mkdir_p dir      # create directory entries
     end
 
     # HTTP-level pointers for directory navigation
