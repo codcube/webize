@@ -15,16 +15,14 @@ class WebResource
 
     # document location for resource
     def docPath
-      file = fsPath                          # resource path
-
-      if file[-1] == '/'                     # directory locator - no fs stat needed
-        file += 'index'
-      elsif directory?                       # directory at location
-        file += '/index'
+      loc = fsPath
+      if loc[-1] == '/' # dir/ (declarative /-URI, skip fs-stat)
+        loc + 'index'
+      elsif directory?  # dir (no /-URI, found via fs-stat)
+        loc + '/index'
+      else              # file
+        loc
       end
-
-      POSIX.container file                   # create container(s)
-      file                                   # document path
     end
 
     # find filesystem nodes and map to URI space

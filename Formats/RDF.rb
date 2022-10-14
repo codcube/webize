@@ -6,7 +6,7 @@ class WebResource
     if node.file?                                                    # file
       readRDF fileMIME, File.open(fsPath).read, graph
     elsif node.directory?                                            # directory
-      (dirURI? ? self : join((basename||'')+'/').R(env)).dir_triples graph
+      (dirURI? ? self : join((basename || '') + '/').R(env)).dir_triples graph
     end
     self
   end
