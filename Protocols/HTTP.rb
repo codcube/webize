@@ -256,19 +256,19 @@ class WebResource
             end
             charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset
             body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # encode in UTF-8
-            format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML?
+            format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML
             static = env[:notransform] || format.match?(FixedFormat)      # transformable content?
-            file = docPath                                                # cache location
+            doc = document                                                # cache location
             if (formats = RDF::Format.content_types[format]) &&           # content type
                (extensions = formats.map(&:file_extension).flatten) &&    # name suffix(es) for content type
-               !extensions.member?((File.extname(file)[1..-1]||'').to_sym)# upstream suffix maps to content-type?
-              file = [(link = file), '.', extensions[0]].join             # append valid MIME suffix
-              FileUtils.ln_s File.basename(file), link                    # link corrected name to canonical name
+               !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix maps to content-type?
+              doc = [(link = doc), '.', extensions[0]].join               # append valid MIME suffix
+              FileUtils.ln_s File.basename(doc), link                     # link corrected name to canonical name
             end
-            File.open(file, 'w'){|f| f << body }                          # update cache content
+            File.open(doc, 'w'){|f| f << body }                           # update cache content
             if timestamp = h['Last-Modified']                             # HTTP metadata timestamp
               if t = Time.httpdate(timestamp) rescue nil                  # parse timestamp
-                FileUtils.touch file, mtime: t                            # update cache timestamp
+                FileUtils.touch doc, mtime: t                             # update cache timestamp
                 env[:repository] << RDF::Statement.new(self, Date.R, t.iso8601) # emit timestamp to request graph
               end
             end

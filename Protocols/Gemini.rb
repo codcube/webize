@@ -15,7 +15,7 @@ class WebResource
         format.downcase!
         env[:origin_format] = format           # record upstream format for log
         fixed_format = format.match? FixedFormat
-        File.open(docPath, 'w'){|f| f << body } # update cache
+        File.open(document, 'w'){|f| f << body } # update cache
 
         if reader = RDF::Reader.for(content_type: format)
           env[:repository] ||= RDF::Repository.new
