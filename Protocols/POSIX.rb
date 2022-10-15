@@ -24,10 +24,8 @@ class WebResource
     # document location
     def documentPath
       doc = fsPath
-      if doc[-1] == '/' # dir/
+      if doc[-1] == '/' # directory/
         doc + 'index'
-#      elsif directory? # dir
-#        doc + '/index'
       else              # file
         doc
       end

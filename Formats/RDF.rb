@@ -97,11 +97,11 @@ class WebResource
 
     (repository || env[:repository]).each_graph.map{|graph|          # graph
       g = graph.name ? (graph.name.R env) : graphURI                 # graph URI
-      f = g.docPath + '.🐢'                                          # 🐢 path
+      f = [g.document, :🐢].join '.'                                 # 🐢 location
       log = []
 
       unless File.exist? f
-        RDF::Writer.for(:turtle).open(f){|f|f << graph}              # store 🐢 at canonical location
+        RDF::Writer.for(:turtle).open(f){|f|f << graph}              # save 🐢
         env[:updates] << graph if env.has_key? :updates
         log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] unless g.in_doc?
       end
