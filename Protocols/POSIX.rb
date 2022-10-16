@@ -13,12 +13,10 @@ class WebResource
 
   module URIs
 
-    # initialize document storage
+    # initialize document container and return locator
     def document
-      doc = documentPath
-      # puts '🧹' # TODO version stashing
-      FileUtils.mkdir_p File.dirname doc # init container
-      doc
+      mkdir
+      documentPath
     end
 
     # document location
@@ -100,6 +98,18 @@ class WebResource
                       flatten.compact
                   end.join('/')
     end
+  end
+
+  def mkdir
+    dir = cursor = File.dirname fsPath # dir name
+    until cursor == '.'                # visit containing dir(s)
+      if File.file?(cursor) || File.symlink?(cursor)
+        FileUtils.rm cursor            # unlink file/link blocking dir location
+        puts '🧹 ' + cursor
+      end
+      cursor = File.dirname cursor
+    end
+    FileUtils.mkdir_p dir              # make dir
   end
 
   def shellPath

@@ -227,7 +227,8 @@ class WebResource
       end
     end
 
-    def fetchHTTP thru: true                                # option: return HTTP response through to caller?
+    # fetch to request-time repository and update static cache
+    def fetchHTTP thru: true                                # thru: return HTTP response to caller?
       URI.open(uri, headers.merge({redirect: false})) do |response|
         h = headers response.meta                           # response headera
         case env[:origin_status] = response.status[0].to_i  # response status
@@ -265,11 +266,11 @@ class WebResource
               doc = [(link = doc), '.', extensions[0]].join               # append valid MIME suffix
               FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) # link original name
             end
-            File.open(doc, 'w'){|f| f << body }                           # update cache content
-            if timestamp = h['Last-Modified']                             # HTTP metadata timestamp
+            File.open(doc, 'w'){|f| f << body } if thru                   # update cache
+            if timestamp = h['Last-Modified']                             # HTTP timestamp?
               if t = Time.httpdate(timestamp) rescue nil                  # parse timestamp
-                FileUtils.touch doc, mtime: t                             # update cache timestamp
-                env[:repository] << RDF::Statement.new(self, Date.R, t.iso8601) # emit timestamp to request graph
+                FileUtils.touch doc, mtime: t                             # set cache timestamp
+                env[:repository] << RDF::Statement.new(self, Date.R, t.iso8601) # timestamp RDF data
               end
             end
             readRDF format, body, env[:repository]                        # read fetched data into request graph
