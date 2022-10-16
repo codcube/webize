@@ -61,7 +61,7 @@ a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; 
 a.uri > img {float: left}
 a.uri > span {color: #bbb}
 a.uri {color: #fff; border: .1em solid #484848; border-radius: .28em; margin: 1px; max-width: 40em; overflow: hidden; font-weight: bold}
-a.uri, a.uri > span {background-color: #383888}
+a.uri, a.uri > span {background-color: #226}
 a.uri.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
 a.uri.path, a.uri.path > span {background-color: #000}
 a.uri:visited, a.uri:visited > span, a.uri.path:visited, a.uri.path:visited > span {background-color: #282828}

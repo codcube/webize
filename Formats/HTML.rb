@@ -357,7 +357,7 @@ class WebResource
         if !env[:links][:icon].dataURI? &&                                                         # icon ref isn't data URI,
            env[:links][:icon].path != icon.path && env[:links][:icon] != self &&                   # isn't at well-known location, and
            !env[:links][:icon].node.directory? && !icon.node.exist? && !icon.node.symlink?         # target location is unlinked?
-          POSIX.container icon.fsPath                                                              # create container(s)
+          FileUtils.mkdir_p File.dirname icon.fsPath                                               # create container(s)
           FileUtils.ln_s (env[:links][:icon].node.relative_path_from icon.node.dirname), icon.node # link well-known location
         end
       end
