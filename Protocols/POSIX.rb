@@ -101,7 +101,7 @@ class WebResource
   end
 
   def mkdir
-    dir = cursor = dirURI? ? fsPath : File.dirname(fsPath) # dirname
+    dir = cursor = dirURI? ? fsPath[0..-2] : File.dirname(fsPath) # dir name
     until cursor == '.'                # visit containing dir(s)
       if File.file?(cursor) || File.symlink?(cursor)
         FileUtils.rm cursor            # unlink file/link blocking dir location
