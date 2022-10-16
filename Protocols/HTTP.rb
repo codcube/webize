@@ -263,7 +263,7 @@ class WebResource
                (extensions = formats.map(&:file_extension).flatten) &&    # name suffix(es) for content type
                !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix maps to content-type?
               doc = [(link = doc), '.', extensions[0]].join               # append valid MIME suffix
-              FileUtils.ln_s File.basename(doc), link                     # link corrected name to canonical name
+              FileUtils.ln_s File.basename(doc), link unless dirURI?      # link corrected name to original name
             end
             File.open(doc, 'w'){|f| f << body }                           # update cache content
             if timestamp = h['Last-Modified']                             # HTTP metadata timestamp

@@ -84,7 +84,7 @@ module Webize
                      elsif blocked
                        'red'
                      end
-            e['style'] = colorCSS = "#{offsite ? 'background-' : nil}color: #{color}" # host->color map
+            e['style'] = colorCSS = "#{offsite ? 'color: black; background-' : nil}color: #{color}" # host->color map
           end
 
           e.inner_html = [
