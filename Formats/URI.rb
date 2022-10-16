@@ -42,7 +42,7 @@ class WebResource < RDF::URI
         d.empty? }                                           # is name leaf in tree?
     end
 
-    def dirURI?; path && path[-1] == '/' end
+    def dirURI?; !path || path[-1] == '/' end
 
     def display_host
       return unless host

@@ -94,14 +94,14 @@ class WebResource
                        (query ? join(dirURI? ? query_hash : [basename, query_hash, extname].join('.')).R : self).parts.map{|part|
                          Rack::Utils.unescape_path part}   # path map
                      end,
-                     ((!path || dirURI?) && !query) ? '' : nil]. # trailing slash on directory URI
+                     (dirURI? && !query) ? '' : nil].      # preserve trailing slash on directory name
                       flatten.compact
                   end.join('/')
     end
   end
 
   def mkdir
-    dir = cursor = dirURI? ? fsPath : (File.dirname fsPath) # dirname
+    dir = cursor = dirURI? ? fsPath : File.dirname(fsPath) # dirname
     until cursor == '.'                # visit containing dir(s)
       if File.file?(cursor) || File.symlink?(cursor)
         FileUtils.rm cursor            # unlink file/link blocking dir location
