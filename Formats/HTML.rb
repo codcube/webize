@@ -293,8 +293,8 @@ module Webize
           Webize::JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
         # <body>
-        if body = @doc.css('body')[0] # only emit new content on origin refresh
-          if NewsHosts.member? @base.host
+        if body = @doc.css('body')[0]
+          if NewsHosts.member? @base.host # only emit updates (host-wide, eliminates sidebars and boilerplate)
             hashed_nodes = 'article, aside, div, footer, h1, h2, h3, nav, p, section, b, span, ul, li'
             hashs = {}
             links = {}
