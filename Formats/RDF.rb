@@ -27,7 +27,7 @@ class WebResource
     miniGraph = RDF::Repository.new                                  # summary graph
 
     loadRDF graph: fullGraph                                         # load graph
-    saveRDF fullGraph if basename.index('msg.') == 0                 # cache RDF extracted from nonRDF
+    saveRDF fullGraph if basename&.index('msg.') == 0                # cache RDF extracted from nonRDF
     treeFromGraph(fullGraph).map{|subject, resource|                 # resources to summarize
       subject = subject.R                                            # subject resource
       full = (resource[Type]||[]).find{|t| NoSummary.member? t}      # resource types retaining full content
