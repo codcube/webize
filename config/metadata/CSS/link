@@ -1,6 +1,7 @@
 .age > a
 .entry-title a
 .postNum a
+.tweet-link
 .u-url
 .views-field-title a
 a.chat-item__time

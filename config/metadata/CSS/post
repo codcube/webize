@@ -10,6 +10,7 @@
 .postCell
 .post_wrapper
 .spin-item
+.timeline-item
 .views-row
 [id^='post']
 article
