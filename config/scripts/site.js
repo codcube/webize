@@ -4,23 +4,25 @@ NodeList.prototype.map = function(f,a){
     return this;
 };
 document.addEventListener("DOMContentLoaded", function(){
-    // construct node-ring
+
+    // construct selection ring
     var first = null;
     var last = null;
     document.querySelectorAll('[id]').map(function(e){
-	if(!first)
+	if(!first)     // first node
 	    first = this;	
-	if(last){ // link to prior node
+	if(last){      // link to previous node
 	    this.setAttribute('prev', last.getAttribute('id'));
 	    last.setAttribute('next', this.getAttribute('id'));
 	};
-	last = this;
+	last = this;   // last visited node
     });
     if(first && last){ // close ring
 	last.setAttribute('next',first.getAttribute('id'));
 	first.setAttribute('prev',last.getAttribute('id'));
     };
-    // keyboard control
+
+    // keyboard controls
     document.addEventListener("keydown",function(e){
 	var key = e.keyCode;
 	var selectNextLink = function(){
