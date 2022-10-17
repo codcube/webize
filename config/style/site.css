@@ -67,7 +67,7 @@ a.uri.path, a.uri.path > span {background-color: #000}
 a.uri:visited, a.uri:visited > span, a.uri.path:visited, a.uri.path:visited > span {background-color: #282828}
 a:hover, a.uri:hover {border-color: #0ff; background-color: #0ff}
 audio {width: 80ex; float: right}
-blockquote, blockquote > p, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .2em}
+blockquote, blockquote > p, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .38em; border-radius: .38em}
 blockquote, ol, p, ul {max-width: 80ex}
 body, code, li, p, pre, span {background-color: #000; color: #fff; font-family: sans-serif}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
