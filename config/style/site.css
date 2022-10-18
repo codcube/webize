@@ -80,7 +80,7 @@ iframe.main_player {border: .25em solid red}
 img {border-radius: .3em}
 img, video, table {max-width: 100%}
 li, p {margin: 1px; border-radius: .2em}
-li:nth-child(even), li:nth-child(even) a.uri.path, li:nth-child(even) a.uri.path span {background-color: #222}
+li:nth-child(even), li:nth-child(even) a.uri.path, li:nth-child(even) a.uri.path span, li:nth-child(even) p {background-color: #222}
 li:nth-child(odd) {background-color: #000}
 ol, ul {border: 1px solid #333; border-radius: .3em; background-color: #111}
 pre, code {white-space: pre-wrap; font-family: Consolas,'Courier New',Courier,monospace; max-width: 255ex}
