@@ -64,7 +64,7 @@ a.uri {color: #fff; border: .1em solid #484848; border-radius: .28em; margin: 1p
 a.uri, a.uri > span {background-color: #226}
 a.uri.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
 a.uri.path, a.uri.path > span {background-color: #000}
-a.uri:visited, a.uri.path:visited {border-color: #888}
+a.uri:visited, a.uri.path:visited {border-color: #888; border-style: dotted}
 a:hover, a.uri:hover {border-color: #0ff; background-color: #0ff}
 audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .3em; border-radius: .2em}
