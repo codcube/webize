@@ -69,7 +69,7 @@ a:hover, a.uri:hover {border-color: #0ff; background-color: #0ff}
 audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .3em; border-radius: .2em}
 blockquote, ol, p, ul {max-width: 80ex}
-body, code, li, p, pre, span {background-color: #000; color: #fff; font-family: sans-serif}
+body, code, li, p, pre, span {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}

@@ -44,6 +44,7 @@ http://www.w3.org/2005/Atom#link
 http://www.w3.org/2005/Atom#self
 https://ogp.me/ns#url
 link
+linkURL
 lnkd:url
 localLinkUrl
 mapsLink
