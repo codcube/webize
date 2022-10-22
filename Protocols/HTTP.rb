@@ -333,9 +333,7 @@ class WebResource
       case scheme                                           # request scheme
       when 'gemini'
         fetchGemini                                         # fetch w/ Gemini
-      when 'http'
-        fetchHTTP **opts                                    # fetch w/ HTTP
-      when 'https'
+      when /https?/
         if ENV.has_key?('http_proxy')
           insecure.fetchHTTP **opts                         # fetch w/ HTTP from proxy
         elsif PeerAddrs.has_key? env[:addr]

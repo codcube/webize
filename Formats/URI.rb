@@ -191,8 +191,9 @@ class WebResource < RDF::URI
   module HTTP
 
     def insecure
+      return self if scheme == 'http'
       _ = dup.env env
-      _.scheme = 'http' if _.scheme == 'https'
+      _.scheme = 'http'
       _.env[:base] = _
     end
 
