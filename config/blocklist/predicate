@@ -122,6 +122,7 @@ hostname
 hovercard-subject-tag
 html-safe-nonce
 imageEssenceContainsCaption
+indexable
 indices
 instapp:owner_user_id
 isActive
