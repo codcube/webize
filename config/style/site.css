@@ -73,7 +73,7 @@ body, code, li, p, pre, span {background-color: #000; color: #fff; font-family: 
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
-code {border: 1px solid #383838}
+code {border: 1px solid #fff; color: #000; background-color: #eee}
 div, a, svg, form, pre, table, textarea {display: inline-block}
 iframe, .preembed {border: .2em solid #fff}
 iframe.main_player {border: .25em solid red}
