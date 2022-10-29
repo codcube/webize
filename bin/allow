@@ -1,0 +1,4 @@
+#!/bin/sh
+allowlist=$HOME/src/webize/config/hosts/allow
+echo $1 >> $allowlist
+sort $allowlist -o $allowlist
