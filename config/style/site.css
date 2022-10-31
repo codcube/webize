@@ -63,8 +63,10 @@ a.uri > span {color: #bbb}
 a.uri {color: #fff; border-width: .1em; border-color: #484848; border-style: solid; border-radius: .38em; margin: 1px; max-width: 40em; overflow: hidden; font-weight: bold}
 a.uri, a.uri > span {background-color: #226}
 a.uri.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
-a.uri.path, a.uri.path > span {background-color: #000}
-a.uri:visited, a.uri.path:visited {border-color: #666; border-style: dotted}
+a.uri.path, a.uri.path > span, a.uri.path:visited, a.uri.path:visited > span {background-color: #000}
+a.uri.path:visited {border-color: #666}
+a.uri:visited {border-color: #305}
+a.uri:visited, a.uri:visited > span {background-color: #406}
 a:hover, a.uri:hover {border-color: #0ff; background-color: #0ff}
 audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .3em; border-radius: .2em}
