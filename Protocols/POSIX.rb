@@ -100,16 +100,17 @@ class WebResource
     end
   end
 
+  # create containing directory for resource
   def mkdir
-    dir = cursor = dirURI? ? fsPath[0..-2] : File.dirname(fsPath) # dir name
-    until cursor == '.'                # visit containing dir(s)
+    dir = cursor = dirURI? ? fsPath.sub(/\/$/,'') : File.dirname(fsPath) # set cursor to container name without trailing-slash (blocking file/link won't have one)
+    until cursor == '.'                # cursor at root?
       if File.file?(cursor) || File.symlink?(cursor)
-        FileUtils.rm cursor            # unlink file/link blocking dir location
-        puts '🧹 ' + cursor
+        FileUtils.rm cursor            # unlink file/link blocking location
+        puts '🧹 ' + cursor            # note in log about fs-sweep
       end
-      cursor = File.dirname cursor
+      cursor = File.dirname cursor     # up to parent container
     end
-    FileUtils.mkdir_p dir              # make dir
+    FileUtils.mkdir_p dir              # make container
   end
 
   def shellPath
