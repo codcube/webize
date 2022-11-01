@@ -82,28 +82,18 @@ iframe.main_player {border: .25em solid red}
 img {border-radius: .3em}
 img, video, table {max-width: 100%}
 li, p {margin: 1px; border-radius: .2em}
-li:nth-child(even), tr:nth-child(even) > td {background-color: #000}
-li:nth-child(odd), tr:nth-child(odd) > td {background-color: #222}
+li:nth-child(even), tr:nth-child(even) > td.v {background-color: #000}
+li:nth-child(odd), tr:nth-child(odd) > td.v {background-color: #222}
 ol, ul {border: 1px solid #333; border-radius: .3em; background-color: #111}
 pre, code {white-space: pre-wrap; font-family: Consolas,'Courier New',Courier,monospace; max-width: 255ex}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6 {margin: 0}
 span.uri {font-size: 0.8em; font-weight: normal}
 svg, img[src*="svg"] {max-width:2em; max-height: 2em}
 table {border-radius: .2em; vertical-align: top;}
-table.kv {float: right}
-table.tabular td {padding: 0}
+table.kv {float: right; border: 1px dotted #444; border-radius: 0}
+table.tabular td {padding: 0; border-width: 0 1px 0 0; border-style: dotted; border-color: #555}
 table.tabular {border-spacing: 0}
-td {border-width: 0 1px 0 0; border-style: dotted; border-color: #555}
-td.k a {color: #ccc; background-color: #000; max-width: 28ex; padding: 0 .1em 0 .1em}
+td.k a {color: #000; background-color: #bbb; max-width: 28ex; padding: 0 .1em 0 .1em}
 td.k {text-align: right; font-weight: bold}
-td.v {}
 td[property="http://rdfs.org/sioc/ns#addressed_to"] > a {white-space: nowrap}
-th {border-radius: 0; border-width: 0 0 1px 0}
-th.sort {background-color: #bbb; color: #000; border-radius: .38em}
-thead a {color: #eee}
-tr:first-child > th:first-child {border-radius: .48em 0 0 0}
-tr:first-child > th:first-child:last-child {border-radius: .48em .48em 0 0}
-tr:first-child > th:last-child {border-radius: 0 .48em 0 0}
-tr:hover td {background: #333}
-tr:last-child > th:first-child {border-radius: 0 0 0 .4em; border-width: 0}
 video {min-width: 40ex}
