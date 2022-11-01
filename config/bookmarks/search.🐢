@@ -2,5 +2,5 @@
 <../src/webize/config/bookmarks/search.html> a <http://xmlns.com/foaf/0.1/Document>;
   <http://rdfs.org/sioc/ns#content> """<form action=\"http://localhost:8000/https://www.google.com/search\" method=\"GET\"><input name=\"q\" placeholder=\"google\"></form>
 <form action=\"https://duckduckgo.com/\"><input name=\"q\" placeholder=\"ddg\"></form>
-<img src=\"https://radar.weather.gov/ridge/lite/KBOX_loop.gif\">
+<img src=\"https://radar.weather.gov/ridge/standard/KBOX_loop.gif\">
 """^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML> .
