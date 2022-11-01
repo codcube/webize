@@ -50,6 +50,7 @@ class WebResource < RDF::URI
     end
 
     def display_name
+      return uri.split(',')[0] if dataURI?
       return fragment if fragment && !fragment.empty?                     # fragment
       return query_values['id'] if query_values&.has_key? 'id' rescue nil # query
       return basename if path && basename && !['','/'].member?(basename)  # basename

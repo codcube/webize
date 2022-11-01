@@ -65,6 +65,7 @@ csp-nonce
 csrf-param
 csrf-token
 debug
+default-theme
 default_profile
 default_profile_image
 derivedScore
