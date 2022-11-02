@@ -93,7 +93,7 @@ table {border-radius: .2em; vertical-align: top;}
 table.kv {float: right; border: 1px dotted #444; border-radius: 0}
 table.kv, table.tabular {border-spacing: 0}
 table.tabular td {padding: 0; border-width: 0 1px 0 0; border-style: dotted; border-color: #555}
-td.k a {color: #000; background-color: #a8a8a8; max-width: 28ex; padding: 0 .1em 0 .1em}
+td.k a {color: #000; background-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0 .1em 0 .1em}
 td.k {text-align: right; font-weight: bold}
 td[property="http://rdfs.org/sioc/ns#addressed_to"] > a {white-space: nowrap}
 video {min-width: 40ex}
