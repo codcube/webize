@@ -45,7 +45,7 @@ class WebResource
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
 
-      URIs.blocklist if env['HTTP_CACHE_CONTROL']=='no-cache' # refresh blocklist on force-reload (browser ctrl-shift-R)
+      URIs.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache' # refresh blocklist (eventually other/all declarative config)
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status,head,body| # call request and inspect response
         inFmt = uri.format_icon env[:origin_format]                 # input format
@@ -104,7 +104,7 @@ class WebResource
         env['HTTP_COOKIE'] = cookie.node.read
         logger.debug [:🍪, host, env['HTTP_COOKIE']].join ' '
       end
-      # host-specific token wrangling
+      # host-specific token wrangling TODO register these in site.rb
       case host
       when 'gitter.im'
         gitterAuth
