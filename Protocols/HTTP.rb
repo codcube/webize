@@ -72,7 +72,7 @@ class WebResource
              ([' ⟵ ', inFmt, ' '] if inFmt && inFmt != outFmt),     # input format, if transcoded
              (qs.map{|k,v|" \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?), # query
              head['Location'] ? [" → \e[#{color}m", head['Location'].R.unproxyURI, "\e[0m"] : nil, # redirected location
-             env[:warning] ? [" \e[38;5;226m⚠️", env[:warning], "\e[0m"] : nil, # warning
+             env[:warning] ? [" \e[38;5;226m⚠️ ", env[:warning], "\e[0m"] : nil, # warning
             ].flatten.compact.map{|t|t.to_s.encode 'UTF-8'}.join
 
         [status, head, body]}                                       # response
@@ -248,11 +248,11 @@ class WebResource
                        charset = nil if charset.empty? || charset == 'empty'
                      end
                      ct[0]
-                   elsif content_type = fileMIMEsuffix
-                     logger.warn env[:warning] = "⚠️  MIME unspecified, using #{content_type} from suffix map"
+                   elsif content_type = (fileMIMEsuffix File.extname path)
+                     env[:warning] = "MIME unspecified, using #{content_type} from suffix map"
                      content_type
                    else
-                     logger.warn env[:warning] = "⚠️  MIME unspecified"
+                     env[:warning] = "MIME unspecified"
                      'application/octet-stream'
                    end
           format.downcase!                                              # normalize format symbol

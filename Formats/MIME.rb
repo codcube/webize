@@ -23,8 +23,7 @@ class WebResource
     end
   end
 
-  def fileMIMEsuffix
-    suffix = File.extname File.realpath fsPath
+  def fileMIMEsuffix suffix = (File.extname File.realpath fsPath)
     return if suffix.empty?
     Rack::Mime::MIME_TYPES[suffix] || # Rack map
       fileMIMEsuffixRDF(suffix)       # RDF map
