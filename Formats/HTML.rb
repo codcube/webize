@@ -512,13 +512,13 @@ class WebResource
             o.to_s                      # HTML literal
           end
         else                            # String literal
-          {_: :span, c: CGI.escapeHTML(o.to_s)}
+          CGI.escapeHTML o.to_s
         end
       when RDF::URI                     # RDF::URI
         o = o.R env
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       when String                       # String
-        {_: :span, c: CGI.escapeHTML(o.to_s)}
+        CGI.escapeHTML o
       when Time                         # Time
         Markup[Date][o, env]
       when TrueClass                    # booleam
