@@ -7,10 +7,6 @@ class WebResource
   ReFormat = %w(text/html)
   AV = [Audio, Video, 'RECTANGULAR', 'FORMAT_STREAM_TYPE_OTF'] # audio/video RDF types
 
-  # filename -> MIME type mappings
-
-  MimeTypes = {'.apk' => 'application/vnd.android.package-archive'}
-
   def fileMIME
     (!host && fileMIMEprefix) ||  # name prefix
       fileMIMEsuffix ||           # name suffix
@@ -20,7 +16,7 @@ class WebResource
 
   def fileMIMEprefix
     name = basename.downcase      # normalize case
-    if TextFiles.member? name     # well-known textfiles
+    if TextFiles.member? name     # well-known textfile names (README etc)
       'text/plain'
     elsif name.index('msg.') == 0 || path.index('/sent/cur') == 0
       'message/rfc822'            # procmail $PREFIX or maildir container
@@ -30,9 +26,8 @@ class WebResource
   def fileMIMEsuffix
     suffix = File.extname File.realpath fsPath
     return if suffix.empty?
-    MimeTypes[suffix] ||                # local preference
-      Rack::Mime::MIME_TYPES[suffix] || # Rack library
-      fileMIMEsuffixRDF(suffix)         # RDF library
+    Rack::Mime::MIME_TYPES[suffix] || # Rack map
+      fileMIMEsuffixRDF(suffix)       # RDF map
   end
 
   def fileMIMEsuffixRDF suffix

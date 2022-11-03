@@ -239,44 +239,51 @@ class WebResource
           [206, h, [response.read]]
         else                                                # massage metadata, cache and return data
           body = HTTP.decompress h, response.read           # decompress body
-          if format = if path == '/feed'                    # format override on remote /feed due to common upstream text/html or text/plain headers
-                        'application/atom+xml'
-                      elsif content_type = h['Content-Type'] # format defined in HTTP header
-                        ct = content_type.split(/;/)
-                        if ct.size == 2 && ct[1].index('charset') # charset defined in HTTP header
-                          charset = ct[1].sub(/.*charset=/i,'')
-                          charset = nil if charset.empty? || charset == 'empty'
-                        end
-                        ct[0]
-                      end
-            env[:repository] ||= RDF::Repository.new        # request graph
-            env[:origin_format] = format                    # original format
-            format.downcase!                                # normalize format
-            if !charset && format.index('html') && metatag = body[0..4096].encode('UTF-8', undef: :replace, invalid: :replace).match(/<meta[^>]+charset=['"]?([^'">]+)/i)
-              charset = metatag[1]                          # charset defined in-band in content
-            end
-            charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset
-            body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # encode in UTF-8
-            format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML
-            static = env[:notransform] || format.match?(FixedFormat)      # transformable content?
-            doc = document                                                # cache location
-            if (formats = RDF::Format.content_types[format]) &&           # content type
-               (extensions = formats.map(&:file_extension).flatten) &&    # name suffix(es) for content type
-               !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix maps to content-type?
-              doc = [(link = doc), '.', extensions[0]].join               # append valid MIME suffix
-              FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) # link original name
-            end
-            File.open(doc, 'w'){|f| f << body } if thru                   # update cache
-            if timestamp = h['Last-Modified']                             # HTTP timestamp?
-              if t = Time.httpdate(timestamp) rescue nil                  # parse timestamp
-                FileUtils.touch doc, mtime: t                             # set cache timestamp
-                env[:repository] << RDF::Statement.new(self, Date.R, t.iso8601) # timestamp RDF data
-              end
-            end
-            readRDF format, body, env[:repository]                        # read fetched data into request graph
+          format = if path == '/feed' && adapt?             # format override on upstream /feed due to ubiquitous text/html and text/plain headers
+                     'application/atom+xml'
+                   elsif content_type = h['Content-Type']   # format defined in HTTP header
+                     ct = content_type.split(/;/)
+                     if ct.size == 2 && ct[1].index('charset') # charset defined in HTTP header
+                       charset = ct[1].sub(/.*charset=/i,'')
+                       charset = nil if charset.empty? || charset == 'empty'
+                     end
+                     ct[0]
+                   elsif content_type = fileMIMEsuffix
+                     logger.warn env[:warning] = "⚠️  MIME unspecified, using #{content_type} from suffix map"
+                     content_type
+                   else
+                     logger.warn env[:warning] = "⚠️  MIME unspecified"
+                     'application/octet-stream'
+                   end
+          format.downcase!                                              # normalize format symbol
+          if !charset && format.index('html') && metatag = body[0..4096].encode('UTF-8', undef: :replace, invalid: :replace).match(/<meta[^>]+charset=['"]?([^'">]+)/i)
+            charset = metatag[1]                                        # charset defined in-band in document
           end
-          return format unless thru                                       # return HTTP response to caller?
-          static ? (staticResponse format, body) : (graphResponse format) # response in content-negotiated format
+          charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset symbol
+          body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # encode in UTF-8
+          format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML
+          readRDF format, body, env[:repository] ||= RDF::Repository.new # read data to request graph
+          return format unless thru                                     # return HTTP response to caller?
+          doc = document                                                # cache location
+          if (formats = RDF::Format.content_types[format]) &&           # content type
+             (extensions = formats.map(&:file_extension).flatten) &&    # suffixes for content type
+             !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix in mapped set?
+            doc = [(link = doc), '.', extensions[0]].join               # append valid suffix
+            FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) # link origin and storage names
+          end
+          if timestamp = h['Last-Modified']                             # HTTP timestamp?
+            if t = Time.httpdate(timestamp) rescue nil                  # parse timestamp
+              FileUtils.touch doc, mtime: t                             # set cache timestamp
+              env[:repository] << RDF::Statement.new(self, Date.R, t.iso8601) # timestamp RDF data
+            end
+          end
+          File.open(doc, 'w'){|f| f << body }                           # cache content
+          if env[:notransform] || format.match?(FixedFormat)
+            staticResponse format, body                                 # response in upstream format
+          else
+            env[:origin_format] = format                                # upstream format
+            graphResponse format                                        # response in content-negotiated format
+          end
         end
       end
     rescue Exception => e
