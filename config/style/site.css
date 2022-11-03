@@ -61,7 +61,7 @@ a.uri > span {color: #bbb}
 a.uri {color: #fff; border-width: .1em; border-color: #444; border-style: solid; border-radius: .38em; margin: 1px; max-width: 40em; overflow: hidden; font-weight: bold}
 a.uri, a.uri > span {background-color: #115}
 a.uri.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
-a.uri.path, a.uri.path > span, a.uri.path:visited, a.uri.path:visited > span {background-color: #000}
+a.uri.path, a.uri.path > span, a.uri.path:visited, a.uri.path:visited > span {background-color: #000; color: #fff}
 a.uri.path:visited {border-color: #666}
 a.uri:visited {border-color: #416}
 a.uri:visited, a.uri:visited > span {background-color: #406}
