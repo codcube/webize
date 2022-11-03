@@ -54,18 +54,15 @@
 .video {border: solid .3em #444; background-color: #000; margin: .2em;  border-radius: .5em}
 .warning {background-color: #ff0; color: #000; font-size: 1.1em}
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}
-a {text-decoration: none; border-radius: .14em; color: #eee; font-weight: bold; vertical-align: top; margin: 0; padding: 0 .125em 0 .125em}
+a img {float: left}
+a span {color: #bbb}
+a {text-decoration: none; border-radius: .3em; background-color: #000; color: #fff; font-weight: bold; margin: 1px; padding: 0 .125em 0 .125em; max-width: 40em; overflow: hidden;}
+a.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
 a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
-a.uri > img {float: left}
-a.uri > span {color: #bbb}
-a.uri {color: #fff; border-width: .1em; border-color: #444; border-style: solid; border-radius: .38em; margin: 1px; max-width: 40em; overflow: hidden; font-weight: bold}
-a.uri, a.uri > span {background-color: #115}
-a.uri.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
-a.uri.path, a.uri.path > span, a.uri.path:visited, a.uri.path:visited > span {background-color: #000; color: #fff}
-a.uri.path:visited {border-color: #666}
-a.uri:visited {border-color: #416}
-a.uri:visited, a.uri:visited > span {background-color: #406}
-a:hover, a.uri:hover {border-color: #0ff; background-color: #0ff}
+a.global, a.global > span {background-color: #115}
+a.global, a.local {border: 1px solid #444}
+a.global:visited, a.global:visited > span {background-color: #406}
+a.local:visited, a.local:visited > span {background-color: #333}
 audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .3em; border-radius: .2em}
 blockquote, ol, p, ul {max-width: 80ex}
