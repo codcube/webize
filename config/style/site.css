@@ -59,10 +59,10 @@ a span {color: #bbb; font-weight: normal; font-size: 0.82em}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; margin: 0; padding: 0 .125em 0 .125em; max-width: 40em; overflow: hidden; vertical-align: top}
 a.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
 a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
-a.global, a.global span {background-color: #115}
+a.global, a.global span.id {background-color: #115}
 a.global, a.local {border: 1px solid #333333; border-radius: .38em; margin: 1px}
-a.global:visited, a.global:visited span {background-color: #406}
-a.local:visited, a.local:visited span {background-color: #222; border-color: #444}
+a.global:visited, a.global:visited span.id {background-color: #406}
+a.local:visited, a.local:visited span.id {background-color: #222; border-color: #444}
 audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .25em}
 blockquote, ol, p, ul {max-width: 80ex}

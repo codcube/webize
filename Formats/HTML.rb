@@ -116,7 +116,7 @@ module Webize
                end,
                '</pre>'].join
             else                                                  # show URI
-              ([' ', '<span', (color && offsite) ? [' style="', colorCSS, '"'] : nil, '>',
+              ([' ', '<span class="id"', (color && offsite) ? [' style="', colorCSS, '"'] : nil, '>',
                 CGI.escapeHTML((offsite ? ref.uri.sub(/^https?:..(www.)?/,'') : [ref.path, ref.query ? ['?', ref.query] : nil, ref.fragment ? ['#', ref.fragment] : nil].join)[0..127]),
                 '</span>', ' '] unless reader)
             end].join
