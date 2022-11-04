@@ -107,22 +107,22 @@ module Webize
               end
             end,
             e.inner_html == ref.uri ? nil : e.inner_html,
-            if ref.dataURI?                                                                               # inline data?
+            if ref.dataURI?                                       # inline data?
               ['<pre>',
-               if ref.path.index('text/plain,') == 0                                                      # show text content
+               if ref.path.index('text/plain,') == 0              # show text content
                  CGI.escapeHTML(Rack::Utils.unescape ref.to_s[16..-1])
                else
-                 ref.path.split(',',2)[0]                                                                 # show content-type
+                 ref.path.split(',',2)[0]                         # show content-type
                end,
                '</pre>'].join
-            else                                                                                          # URI reference
-              ([' ', '<span class=uri', color ? [' style="', colorCSS, '"'] : nil, '>',                   # show URI
+            else                                                  # show URI
+              ([' ', '<span', color ? [' style="', colorCSS, '"'] : nil, '>',
                 CGI.escapeHTML((offsite ? ref.uri.sub(/^https?:..(www.)?/,'') : [ref.path, ref.query ? ['?', ref.query] : nil, ref.fragment ? ['#', ref.fragment] : nil].join)[0..127]),
                 '</span>', ' '] unless reader)
             end].join
 
-          css = [:uri]
-          css.push :path unless offsite                           # local or global styling
+          css = []
+          css.push offsite ? :global : :local                     # local or global styling
           css.push :blocked if blocked                            # blocked resource
           e['class'] = css.join ' '                               # add CSS classes
 

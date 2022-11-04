@@ -55,14 +55,14 @@
 .warning {background-color: #ff0; color: #000; font-size: 1.1em}
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}
 a img {float: left}
-a span {color: #bbb}
-a {text-decoration: none; border-radius: .3em; background-color: #000; color: #fff; font-weight: bold; margin: 1px; padding: 0 .125em 0 .125em; max-width: 40em; overflow: hidden;}
+a span {color: #bbb; font-weight: normal}
+a {text-decoration: none; border-radius: .3em; background-color: #000; color: #fff; font-weight: bold; margin: 0; padding: 0 .125em 0 .125em; max-width: 40em; overflow: hidden;}
 a.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
 a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
-a.global, a.global > span {background-color: #115}
-a.global, a.local {border: 1px solid #444}
-a.global:visited, a.global:visited > span {background-color: #406}
-a.local:visited, a.local:visited > span {background-color: #333}
+a.global, a.global span {background-color: #115}
+a.global, a.local {border: 1px solid #444; margin: 1px}
+a.global:visited, a.global:visited span {background-color: #406}
+a.local:visited, a.local:visited span {background-color: #282828}
 audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .3em; border-radius: .2em}
 blockquote, ol, p, ul {max-width: 80ex}
