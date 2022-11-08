@@ -377,7 +377,7 @@ class WebResource
                 else
                   '#282828'                                                                        # online -> dark gray
                 end
-      css = "body {background: repeating-linear-gradient(-45deg, #000, #000 1.2em, #{bgcolor} 1.2em, #{bgcolor} 2.4em)}" # CSS
+      css = "body {background: repeating-linear-gradient(-60deg, #000, #000 1.2em, #{bgcolor} 1.2em, #{bgcolor} 2.4em)}" # CSS
 
       htmlGrep graph                                                                               # grep results to markup
 
