@@ -352,6 +352,7 @@ class WebResource
     def htmlDocument graph
       status = env[:origin_status]
       icon = join('/favicon.ico').R env                                                            # well-known icon location
+
       if env[:links][:icon]                                                                        # icon reference in metadata
         env[:links][:icon] = env[:links][:icon].R env unless env[:links][:icon].class==WebResource # normalize icon class
         if !env[:links][:icon].dataURI? &&                                                         # icon ref isn't data URI,
@@ -361,7 +362,9 @@ class WebResource
           FileUtils.ln_s (env[:links][:icon].node.relative_path_from icon.node.dirname), icon.node # link well-known location
         end
       end
+
       env[:links][:icon] ||= icon.node.exist? ? icon : '/favicon.ico'.R(env)                       # default icon
+
       bgcolor = if env[:deny]                                                                      # background color
                   if HostColor.has_key? host
                     HostColor[host]
@@ -372,12 +375,11 @@ class WebResource
                   end
                 elsif StatusColor.has_key? status
                   StatusColor[status]                                                              # status-code color
-                elsif !host || offline?
-                  '#000'                                                                           # offline or local -> black
                 else
-                  '#282828'                                                                        # online -> dark gray
+                  '#282828'
                 end
-      css = "body {background: repeating-linear-gradient(-60deg, #000, #000 1.2em, #{bgcolor} 1.2em, #{bgcolor} 2.4em)}" # CSS
+
+      css = "body {background: repeating-linear-gradient(-60deg, #000, #000 1.2em, #{bgcolor} 1.2em, #{bgcolor} 2.4em)}"
 
       htmlGrep graph                                                                               # grep results to markup
 
