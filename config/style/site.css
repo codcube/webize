@@ -83,7 +83,7 @@ pre, code {white-space: pre-wrap; font-family: Consolas,'Courier New',Courier,mo
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6 {margin: 0}
 svg, img[src*="svg"] {max-width:2em; max-height: 2em}
 table {border-radius: .2em; vertical-align: top;}
-table.kv {border: 1px dotted #444}
+table.kv {border: 1px solid #333}
 table.kv, table.tabular {border-spacing: 0}
 table.tabular td {padding: 0; border-width: 0 1px 0 0; border-style: dotted; border-color: #555}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0 .1em 0 .1em}

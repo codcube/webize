@@ -1,3 +1,4 @@
+
 # coding: utf-8
 module Webize
   module CSS
@@ -81,10 +82,8 @@ module Webize
                        WebResource::HTML::HostColor[ref.host]
                      elsif ref.scheme == 'mailto'
                        '#48f'
-                     elsif blocked
-                       'red'
                      end
-            e['style'] = colorCSS = "color: #{color}"             # host->color map
+            e['style'] = colorCSS = "color: black; background-color: #{color}" # host color
           end
 
           e.inner_html = [
@@ -116,7 +115,7 @@ module Webize
                end,
                '</pre>'].join
             else                                                  # show URI
-              ([' ', '<span class="id"', (color && offsite) ? [' style="', colorCSS, '"'] : nil, '>',
+              ([' ', '<span class="id"', color ? [' style="', colorCSS, '"'] : nil, '>',
                 CGI.escapeHTML((offsite ? ref.uri.sub(/^https?:..(www.)?/,'') : [ref.path, ref.query ? ['?', ref.query] : nil, ref.fragment ? ['#', ref.fragment] : nil].join)[0..127]),
                 '</span>', ' '] unless reader)
             end].join
