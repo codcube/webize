@@ -8,7 +8,7 @@
 #up {background-color: #222; color: #aaa; border-radius: 0 0 .5em .5em; font-size: 2em; position: fixed; right: 3em; top: 0; padding: 0 .8em 0 .8em}
 .abstract {display: block; border-radius: 0 .4em 0 0; margin-left: -.2em; padding-left: .125em}
 .abstract, .abstract span {background-color: #bbb; color: #000}
-.blocked, a.blocked.uri, .post > .blocked.content {background: repeating-linear-gradient(0deg, #f03, #f03 1em, #000 1em, #000 2em); color: #fff; border: 1px solid #f03}
+.blocked {background: repeating-linear-gradient(0deg, #f03, #f03 1em, #000 1em, #000 2em); color: #fff; border: 1px solid #f03}
 .bold {font-weight: bold}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
@@ -57,7 +57,6 @@
 a img {float: left}
 a span {color: #bbb; font-weight: normal; font-size: 0.82em}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; margin: 0; padding: 0 .125em 0 .125em; max-width: 40em; overflow: hidden; vertical-align: top}
-a.blocked {max-width: 1px; max-height: 1px; overflow: hidden}
 a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
 a.global, a.global span.id {background-color: #115}
 a.global, a.local {border: 1px solid #333333; border-radius: .38em; margin: 1px}
