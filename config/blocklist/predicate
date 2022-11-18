@@ -40,6 +40,7 @@ apple-mobile-web-app-status-bar-style
 apple-mobile-web-app-title
 apple-touch-fullscreen
 applicationId
+applicationServerKey
 article:content_tier
 articleid
 artifactId
@@ -244,6 +245,7 @@ station_permalink
 station_urn
 statuses_count
 streamable
+style-nonce
 stylesheet
 super_follow_eligible
 super_followed_by
@@ -275,6 +277,7 @@ twitter:domain
 twitter:maxage
 twitter:partner
 twitter:widgets:csp
+upc_or_ean
 uploadId
 uriSlug
 urn
