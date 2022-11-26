@@ -12,6 +12,7 @@ module Webize
 
       def scanMessages
         @doc.css(MsgCSS[:post]).map{|post|                                 # post
+          post.css(MsgCSS[:post]).map{|childPost| childPost.remove}
 
           links = post.css(MsgCSS[:link])
 
