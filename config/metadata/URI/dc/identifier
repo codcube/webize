@@ -5,4 +5,5 @@ dc.identifier
 dcterms.identifier
 fragment
 id
+nodeId
 uid

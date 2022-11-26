@@ -94,6 +94,7 @@ label_name
 ledeCaption
 localizedCaption
 log_category
+message
 metaDescription
 mostRelevantTags
 msapplication-tooltip
