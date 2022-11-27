@@ -64,7 +64,7 @@ a.global:visited, a.global:visited span.id {background-color: #406}
 a.local {background-color: #000}
 a.local:visited, a.local:visited span.id {background-color: #222; border-color: #444}
 audio {width: 80ex; float: right}
-blockquote, blockquote > p, .greentext, .quote, .q {background-color: #ccc; color: #000; padding-left: .25em}
+blockquote, blockquote > p, .greentext, .quote, .q, .QuotedText {background-color: #ccc; color: #000; padding-left: .25em}
 blockquote, ol, p, ul {max-width: 80ex}
 body, code, li, p, pre, span {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
