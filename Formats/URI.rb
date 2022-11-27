@@ -161,8 +161,8 @@ class WebResource < RDF::URI
     Markup = {}          # markup resource of RDF type
     MarkupPredicate = {} # markup objects of predicate
 
-    MarkupPredicate['uri'] = -> uris, env {
-      uris.map{|uri|
+    MarkupPredicate['uri'] = -> us, env {
+      (us.class == Array ? us : [us]).map{|uri|
         uri = uri.R env
         {_: :a, href: uri.href, c: uri.display_name}}}
 
