@@ -1,5 +1,6 @@
 CHANGED
 CREATED
+CreationDate
 DC.Date
 DC.Date.X-MetadataLastModified
 DC.date
@@ -10,6 +11,7 @@ DC.date.reviewed
 DC.date.valid
 DCTERMS.issued
 DCTERMS.modified
+Date
 Modified
 REVISION_DATE
 _createdAt
@@ -82,7 +84,11 @@ http://prismstandard.org/namespaces/basic/2.0/publicationDate
 http://purl.org/atom/ns#created
 http://purl.org/atom/ns#issued
 http://purl.org/atom/ns#modified
+http://purl.org/dc/elements/1.1/date
 http://purl.org/dc/terms/created
+http://purl.org/dc/terms/date
+http://purl.org/rss/1.0/LastModified
+http://purl.org/rss/1.0/pubDate
 http://schema.org/commentTime
 http://schema.org/dateCreated
 http://schema.org/dateModified
@@ -92,6 +98,8 @@ http://schema.org/published
 http://schema.org/updated
 http://schema.org/uploadDate
 http://www.w3.org/2005/Atom#pubDate
+http://www.w3.org/2005/Atom#published
+http://www.w3.org/2005/Atom#updated
 https://ogp.me/ns#updated_time
 https://ogp.me/ns/article#modified_time
 https://ogp.me/ns/article#published_time
