@@ -98,24 +98,12 @@ module Webize
 
       def mapPredicates *f
         send(*f){|s,p,o|
-          dateType = {'CreationDate' => true,
-                      'Date' => true,
-                      RSS+'pubDate' => true,
-                      RSS+'LastModified' => true,
-                      Date => true,
-                      'http://purl.org/dc/elements/1.1/date' => true,
-                      Atom+'published' => true,
-                      Atom+'updated' => true}[p]
-          if dateType
-            if !o.empty?
-              yield s, Date, Time.parse(o).utc.iso8601 rescue nil
-            end
-          else
-            p = MetaMap[p] if MetaMap.has_key? p
+          p = MetaMap[p] if MetaMap.has_key? p # map to predicate URI
+          o = Webize.date o if p.to_s == Date  # normalize date format
+          unless p == :drop
             logger.warn ['no RDF predicate found:', p, o].join ' ' unless p.match? /^https?:/
-            yield s,p,o
-          end
-        }
+            yield s, p, o
+          end}
       end
 
       def rawTriples
