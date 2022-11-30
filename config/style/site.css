@@ -66,7 +66,7 @@ a.local:visited, a.local:visited span.id {background-color: #222; border-color: 
 audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .quote, .q, .QuotedText {background-color: #ccc; color: #000; padding-left: .25em}
 blockquote, ol, p, ul {max-width: 80ex}
-body, code, li, p, pre, span {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans}
+body, figcaption, li, p, pre, span {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, Sans Serif}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
