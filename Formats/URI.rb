@@ -154,11 +154,11 @@ class WebResource < RDF::URI
              feed = feed.R(env)
              {_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'feed' + Digest::SHA2.hexdigest(feed.uri)}.
                update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {})}, # highlight canonical feed
-           (:🔌 if offline?)]} # denote offline request
+           (:🔌 if offline?)]} # denote offline mode
     end
     
     # URI -> lambda
-    Markup = {}          # markup resource of RDF type
+    Markup = {}          # markup resource type
     MarkupPredicate = {} # markup objects of predicate
 
     MarkupPredicate['uri'] = -> us, env {
