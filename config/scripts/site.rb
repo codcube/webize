@@ -4,10 +4,8 @@ module Webize
     class Reader
       Triplr = {
         'gitter.im' => :GitterHTML,
-        'universalhub.com' => :UHub,
         'www.google.com' => :GoogleHTML,
         'www.qrz.com' => :QRZ,
-        'www.universalhub.com' => :UHub,
         'www.youtube.com' => :YouTube,
       }
 
@@ -319,21 +317,6 @@ class WebResource
       doc.css('script').map{|script|
         script.inner_text.scan(%r(biodata'\).html\(\s*Base64.decode\("([^"]+))xi){|data|
           yield self, Content, Base64.decode64(data[0]).encode('UTF-8', undef: :replace, invalid: :replace, replace: ' ')}}
-    end
-
-    def UHub doc
-      doc.css('.pager-next > a[href]').map{|n|     env[:links][:next] ||= (join n['href'])}
-      doc.css('.pager-previous > a[href]').map{|p| env[:links][:prev] ||= (join p['href'])}
-      doc.css('.views-field-created').map{|c|
-        date, time = c.css('.field-content')[0].inner_text.split '-'
-        m, d, y = date.strip.split '/'
-        time ||= '00:00'
-        time, ampm = time.strip.split /\s/
-        hour, min = time.split(':').map &:to_i
-        hour += 12 if ampm == 'pm' && hour != 12
-        c.add_next_sibling "<time datetime='20#{y}-#{m}-#{d}T#{hour}:#{min}:00Z'>"
-        c.remove
-      }
     end
 
     def YouTube doc, &b
