@@ -83,7 +83,7 @@ module Webize
                      elsif ref.scheme == 'mailto'
                        '#48f'
                      end
-            e['style'] = colorCSS = "color: black; background-color: #{color}" # host color
+            e['style'] = colorCSS = "color: black; background-color: #{color}; border-color: #{color}; border-radius: .3em"
           end
 
           e.inner_html = [
