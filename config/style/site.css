@@ -64,7 +64,7 @@ a.global:visited, a.global:visited span.id {background-color: #305}
 a.local {background-color: #003}
 a.local:visited, a.local:visited span.id {background-color: #222; border-color: #444}
 audio {width: 80ex; float: right}
-blockquote, blockquote > p, .greentext, .quote, .q, .QuotedText {background: repeating-linear-gradient(45deg, #ccc, #ccc 1em, #fff 1em, #fff 2em); color: #000; padding-left: .2em; border-radius: 0 .4em .4em 0}
+blockquote, blockquote > p, .greentext, .quote, .q, .QuotedText {background: repeating-linear-gradient(-30deg, #ccc, #ccc 1em, #000 1em, #000 1.1em); color: #000; padding-left: .2em; border-radius: .1em .4em .4em .1em; border: .1em solid #888}
 blockquote, ol, p, ul {max-width: 80ex}
 body, dfn, figcaption, li, p, pre, span {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, Sans Serif}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
