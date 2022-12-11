@@ -59,7 +59,7 @@ a span {color: #bbb; font-weight: normal; font-size: 0.82em}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; max-width: 40em; overflow: hidden; vertical-align: top}
 a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
 a.global, a.global span.id {background-color: #005}
-a.global, a.local {border: 1px dotted #00007e; border-radius: .38em}
+a.global, a.local {border: 1px dotted #008; border-radius: .38em}
 a.global:visited, a.global:visited span.id, a.local:visited, a.local:visited span.id {background-color: #305}
 a.local, a.local span.id {background-color: #003}
 audio {width: 80ex; float: right}
