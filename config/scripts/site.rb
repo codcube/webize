@@ -163,42 +163,38 @@ class WebResource
       r.env[:searchterm] = 'search_query'
       path = r.parts[0]
       qs = r.query_values || {}
-      if %w(attribution_link browse_ajax c channel embed feed feeds generate_204 get_video_info guide_ajax heartbeat iframe_api live_chat manifest.json opensearch playlist redirect results s shorts user v watch watch_videos yts).member?(path) || !path
-        case path
-        when /ajax|embed/
-          r.env[:notransform] = true
-          r.fetch.yield_self{|s,h,b|
-            if h['Content-Type']&.index('html')
-              doc = Nokogiri::HTML.parse b[0]
-              edited = false
-              doc.css('script').map{|s|
-                js = /\/\/www.google.com\/js\//
-                if s.inner_text.match? js
-                  edited = true
-                  s.content = s.inner_text.gsub(js,'#')
-                end}
-              if edited
-                b = [doc.to_html]
-                h.delete 'Content-Length'
-              end
+      case path
+      when /ajax|embed/
+        r.env[:notransform] = true
+        r.fetch.yield_self{|s,h,b|
+          if h['Content-Type']&.index('html')
+            doc = Nokogiri::HTML.parse b[0]
+            edited = false
+            doc.css('script').map{|s|
+              js = /\/\/www.google.com\/js\//
+              if s.inner_text.match? js
+                edited = true
+                s.content = s.inner_text.gsub(js,'#')
+              end}
+            if edited
+              b = [doc.to_html]
+              h.delete 'Content-Length'
             end
-            [s,h,b]}
-        when /attribution_link|redirect/
-          [301, {'Location' => r.join(qs['q']||qs['u']).R(r.env).href}, []]
-        when 'get_video_info'
-          if r.query_values['el'] == 'adunit' # TODO ads
-            [200, {"Access-Control-Allow-Origin"=>"https://www.youtube.com", "Content-Type"=>"application/x-www-form-urlencoded", "Content-Length"=>"0"}, ['']]
-          else
-            r.env[:notransform] = true
-            r.fetch
           end
-        when 'v'
-          [301, {'Location' => r.join('/watch?v='+r.parts[1]).R(r.env).href}, []]
+          [s,h,b]}
+      when /attribution_link|redirect/
+        [301, {'Location' => r.join(qs['q']||qs['u']).R(r.env).href}, []]
+      when 'get_video_info'
+        if r.query_values['el'] == 'adunit' # TODO ads
+          [200, {"Access-Control-Allow-Origin"=>"https://www.youtube.com", "Content-Type"=>"application/x-www-form-urlencoded", "Content-Length"=>"0"}, ['']]
         else
+          r.env[:notransform] = true
           r.fetch
         end
+      when 'v'
+        [301, {'Location' => r.join('/watch?v='+r.parts[1]).R(r.env).href}, []]
       else
-        r.deny
+        r.fetch
       end}
 
     GET 'm.youtube.com',     -> r {[301, {'Location' => ['//www.youtube.com',  r.path,  '?', r.query].join.R(r.env).href}, []]}
