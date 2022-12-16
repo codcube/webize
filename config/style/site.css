@@ -63,8 +63,7 @@ a.global, a.local {border: 1px dotted #008; border-radius: .38em}
 a.global:visited, a.global:visited span.id, a.local:visited, a.local:visited span.id {background-color: #305}
 a.local, a.local span.id {background-color: #003}
 audio {width: 80ex; float: right}
-blockquote, .greentext, .quote, .q, .QuotedText {background: repeating-linear-gradient(135deg, #000, #000 0.5em, #444 .5em, #444 1em); color: #fff; padding-left: .2em; border-radius: .1em .4em .4em .1em; border: .15em dashed #666}
-blockquote p {background: repeating-linear-gradient(135deg, #000, #000 0.5em, #333 .5em, #333 1em);}
+blockquote, blockquote p, .greentext, .quote, .q, .QuotedText {background: repeating-linear-gradient(120deg, #000, #000 1.45em, #444 1.45em, #444 1.6em); color: #fff; padding-left: .2em; border-radius: .1em .4em .4em .1em; border: 1px dotted #888}
 blockquote, ol, p, ul {max-width: 80ex}
 body, dfn, figcaption, li, p, pre, span {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, Sans Serif}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
