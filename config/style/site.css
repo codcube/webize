@@ -29,7 +29,7 @@
 .links .path a {font-weight: normal}
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .path_crumb {color: #bbb}
-.post .content {border-radius: 0 .4em .38em .38em; border: 1px solid #333; margin: 0; padding: 0 0 0 .2em; background: repeating-linear-gradient(-60deg, #000, #000 1.2em, #131313 1.2em, #131313 2.4em)}
+.post .content {border-radius: 0 .4em .38em .38em; border: 1px solid #333; margin: 0; padding: 0 0 0 .2em; background: repeating-linear-gradient(120deg, #000, #000 .618em, #111 .618em, #111 1em)}
 .post .creator a, .post .to a {color: #000}
 .post .creator {float: right}
 .post .title { border-radius: .4em .4em 0 0}
