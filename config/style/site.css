@@ -29,7 +29,7 @@
 .links .path a {font-weight: normal}
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .path_crumb {color: #bbb}
-.post .content {border-radius: 0 .4em .38em .38em; border: 1px solid #333; margin: 0; padding: 0 0 0 .2em; background: repeating-linear-gradient(-60deg, #000, #000 1.2em, #111 1.2em, #111 2.4em)}
+.post .content {border-radius: 0 .4em .38em .38em; border: 1px solid #333; margin: 0; padding: 0 0 0 .2em; background: repeating-linear-gradient(-60deg, #000, #000 1.2em, #131313 1.2em, #131313 2.4em)}
 .post .creator a, .post .to a {color: #000}
 .post .creator {float: right}
 .post .title { border-radius: .4em .4em 0 0}
@@ -63,7 +63,7 @@ a.global, a.local {border: 1px dotted #008; border-radius: .38em}
 a.global:visited, a.global:visited span.id, a.local:visited, a.local:visited span.id {background-color: #305}
 a.local, a.local span.id {background-color: #003}
 audio {width: 80ex; float: right}
-blockquote, blockquote p, .greentext, .quote, .q, .QuotedText {background: repeating-linear-gradient(120deg, #000, #000 1.45em, #444 1.45em, #444 1.6em); color: #fff; padding-left: .2em; border-radius: .1em .4em .4em .1em; border: 1px dashed #888}
+blockquote, blockquote p, .greentext, .quote, .q, .QuotedText {background: repeating-linear-gradient(120deg, #000, #000 1.45em, #333 1.45em, #333 1.6em); color: #fff; border-color: #666; border-style: solid; border-width: 1px 1px 1px .4em}
 blockquote, ol, p, ul {max-width: 80ex}
 body, dfn, figcaption, li, p, pre, span {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, Sans Serif}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
