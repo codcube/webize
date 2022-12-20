@@ -83,7 +83,7 @@ module Webize
                      elsif ref.scheme == 'mailto'
                        '#48f'
                      end
-            e['style'] = colorCSS = "color: black; background-color: #{color}; border-color: #{color}; border-radius: .3em"
+            e['style'] = "border-color: black; border-style: solid; color: black; background-color: #{color}"
           end
 
           e.inner_html = [
@@ -115,7 +115,7 @@ module Webize
                end,
                '</pre>'].join
             else                                                  # show identifier
-              [' ', '<span class="id"', color ? [' style="', colorCSS, '"'] : nil, '>',
+              [' ', '<span class="id"', color ? " style=\"color: black; background-color: #{color}\"" : nil, '>',
                CGI.escapeHTML((if offsite
                                ref.uri.sub /^https?:..(www.)?/, ''
                               elsif ref.fragment
