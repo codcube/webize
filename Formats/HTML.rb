@@ -27,8 +27,9 @@ module Webize
         serialize = true
       end
 
-      # drop upstream formatting and scripts
+      # drop upstream embeds, scripts, and styles
       dropnodes = 'frame, iframe, script, style, link[rel="stylesheet"], link[type="text/javascript"], link[as="script"], a[href^="javascript"]'
+      #html.css(dropnodes).map{|n| Console.logger.debug "🚩 \e[31;1m#{n}\e[0m"}
       html.css(dropnodes).remove
 
       # <img> mapping
