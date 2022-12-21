@@ -178,6 +178,7 @@ module Webize
         @base = options[:base_uri]
         @env = @base.respond_to?(:env) ? @base.env : WebResource::HTTP.env
         @doc = Nokogiri::HTML.parse input.respond_to?(:read) ? input.read : input.to_s
+
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)

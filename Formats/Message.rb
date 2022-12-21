@@ -11,9 +11,7 @@ module Webize
       DateAttr = %w(data-time data-timestamp data-utc date datetime time timestamp unixtime title)
 
       def scanMessages
-        @doc.css(MsgCSS[:post]).map{|post|                                 # post
-          post.css(MsgCSS[:post]).map{|childPost| childPost.remove}
-
+        @doc.css(MsgCSS[:post]).map{|post|                            # post
           links = post.css(MsgCSS[:link])
 
           subject = if !links.empty?
@@ -23,6 +21,9 @@ module Webize
                     end
 
           if subject                                                       # identifier found?
+            post.css(MsgCSS[:post]).map{|childPost|                        # child posts are emitted separately
+              childPost.remove if !childPost.css(MsgCSS[:link]).empty? || childPost['id']}
+
             subject = @base.join subject                                   # resolve subject URI
             graph = ['//', subject.host, subject.path&.sub(/\.html$/, ''), # resolve graph URI
                      '/', subject.fragment].join.R                         # fragment URI to graph path (posts/replies to their own files)
