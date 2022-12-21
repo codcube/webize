@@ -300,7 +300,9 @@ module Webize
 
         # <body>
         if body = @doc.css('body')[0]
-          if NewsHosts.member? @base.host # only emit updates (host-wide, eliminates sidebars and boilerplate)
+
+          # 'news' pages: only emit updated content (also eliminates sidebars and boilerplate) on repeat visit
+          if NewsHosts.member? @base.host
             hashed_nodes = 'article, aside, div, footer, h1, h2, h3, nav, p, section, b, span, ul, li'
             hashs = {}
             links = {}
@@ -332,7 +334,7 @@ module Webize
             linkfile.writeFile links.keys.join "\n" # update linkfile
           end
 
-                                                    # <body> content
+          # <body> content
           yield @base, Content, HTML.format(body, @base).inner_html
         else                                        # entire document
           yield @base, Content, HTML.format(@doc, @base).to_html

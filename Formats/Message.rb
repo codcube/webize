@@ -89,7 +89,6 @@ module Webize
 
             post.remove
           end}
-
         @doc.css(MsgCSS[:gunk]).map &:remove                               # sweep gunk nodes
 
       end
