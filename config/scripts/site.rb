@@ -46,8 +46,8 @@ class WebResource
 
     Subscriptions['www.mixcloud.com'] = Webize.configList('subscriptions/mixcloud').map{|c|"https://api.mixcloud.com/#{c}/cloudcasts/"}
 
-    SC = {client_id: 'JkheilXydZj1NOqnrlAVEne8LXJJGyWX',
-          version: 1669107539}
+    SC = {client_id: 'axONSn9wunfrHxx4sF5BJFXKNjHlQNVr',
+          version: 1671614072}
 
     Subscriptions['soundcloud.com'] = Webize.configList('subscriptions/soundcloud').map{|chan|
       "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{SC[:client_id]}&limit=20&offset=0&linked_partitioning=1&app_version=#{SC[:version]}&app_locale=en"}
