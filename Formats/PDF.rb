@@ -32,7 +32,7 @@ module Webize
         IO.popen(['pdftohtml', '-s', '-stdout', '-', @base.fsPath.sub(/\.pdf$/,'')], 'r+'){|io|
           io.puts @body
           io.close_write
-          html = RDF::Literal io.read
+          html = RDF::Literal Webize::HTML.format io.read, @base
           html.datatype = RDF.XMLLiteral
           yield Content.R, html }
       end
