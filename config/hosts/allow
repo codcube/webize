@@ -23,6 +23,7 @@ cdnjs.cloudflare.com
 cgi.ebay.com
 datatracker.ietf.org
 duckduckgo.com
+entitlement.auth.adobe.com
 external-content.duckduckgo.com
 feeds.bizjournals.com
 feeds.soundcloud.com
@@ -61,6 +62,7 @@ s3.amazonaws.com
 scontent-bos5-1.cdninstagram.com
 signin.ebay.com
 soundcloud.com
+sp.auth.adobe.com
 static.cargo.site
 static.wixstatic.com
 static01.nyt.com
