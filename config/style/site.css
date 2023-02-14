@@ -62,7 +62,7 @@ a.global, a.local {border: 1px dotted #008; border-radius: .38em}
 a.global:visited, a.global:visited span.id, a.local:visited, a.local:visited span.id {background-color: #305}
 a.local, a.local span.id {background-color: #003}
 audio {width: 80ex; float: right}
-blockquote, blockquote p, .greentext, .original, .quote, .q, .QuotedText {background-color: #000; color: #fff; border-color: #777; border-radius: .3em; padding: 0; margin: 0; border-style: solid; border-width: 0 0 0 .4em}
+blockquote, blockquote p, .greentext, .original, .quote, .q, .QuotedText {background-color: #aaa; color: #000; border-radius: .4em .1em .1em .3em; padding-left: .4em}
 blockquote, ol, p, ul {max-width: 80ex}
 body, dfn, figcaption, li, p, pre, span {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, Sans Serif}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
