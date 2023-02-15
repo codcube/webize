@@ -3,7 +3,6 @@ module Webize
   module HTML
     class Reader
       Triplr = {
-        'gitter.im' => :GitterHTML,
         'www.google.com' => :GoogleHTML,
         'www.qrz.com' => :QRZ,
         'www.youtube.com' => :YouTube,
@@ -15,7 +14,6 @@ module Webize
     Triplr = {
       'api.imgur.com' => :Imgur,
       'api.mixcloud.com' => :Mixcloud,
-      'gitter.im' => :GitterJSON,
       'proxy.c2.com' => :C2,
     }
   end
@@ -25,11 +23,6 @@ class WebResource
   module HTTP
 
     ## auth handlers
-
-    def gitterAuth
-      token = join('/token').R
-      env['x-access-token'] = token.node.read if parts[0] == 'api' && !env.has_key?('x-access-token') && token.node.exist?
-    end
 
     def twAuth
       return unless env['HTTP_COOKIE']
@@ -207,53 +200,6 @@ class WebResource
     def C2 tree, &b
       yield self, Date, tree['date']
       yield self, Content, (Webize::HTML.format tree['text'].hrefs, self)
-    end
-
-    def GitterHTML doc
-      doc.css('script').map{|script|
-        text = script.inner_text
-        if text.match? /^window.gitterClientEnv/     # environment JSON
-          if token = text.match(/accessToken":"([^"]+)/)
-            token = token[1]
-            tFile = join('/token').R
-            unless tFile.node.exist? && tFile.node.read == token
-              tFile.writeFile token                  # save updated client-token
-              logger.info ['🎫 ', host, token].join ' '
-            end
-          end
-          if room = text.match(/"id":"([^"]+)/)
-            room_id = room[1]                         # room id
-            room = ('http://gitter.im/api/v1/rooms/' + room_id + '/').R # room URI
-            env[:links][:prev] = room.uri + 'chatMessages?lookups%5B%5D=user&includeThreads=false&limit=31'
-            yield room, Schema + 'sameAs', self, room # link room API URI to canonical URI 
-            yield room, Type, (SIOC + 'ChatChannel').R
-          end
-        end}
-    end
-
-    def GitterJSON tree, &b
-      return if tree.class == Array
-      return unless items = tree['items']
-      items.map{|item|
-        id = item['id']                              # message identifier
-        room_id = parts[3]                           # room identifier
-        room = ('http://gitter.im/api/v1/rooms/'  + room_id + '/').R # room URI
-        env[:links][:prev] ||= room.uri + 'chatMessages?lookups%5B%5D=user&includeThreads=false&beforeId=' + id + '&limit=31'
-        date = item['sent']
-        uid = item['fromUser']
-        user = tree['lookups']['users'][uid]
-        graph = ['/' + date.sub('-','/').sub('-','/').sub('T','/').sub(':','/').gsub(/[-:]/,'.'), 'gitter', user['username'], id].join('.').R # graph on timeline
-        subject = 'http://gitter.im' + path + '?at=' + id # subject URI
-        yield subject, Date, date, graph
-        yield subject, Type, (SIOC + 'MicroPost').R, graph
-        yield subject, Creator, join(user['url']), graph
-        yield subject, Creator, user['displayName'], graph
-        yield subject, To, room, graph
-        if image = user['avatarUrl']
-          yield subject, Image, join(image), graph
-        end
-        yield subject, Content, (Webize::HTML.format item['html'], self), graph
-      }
     end
 
     def GoogleHTML doc
