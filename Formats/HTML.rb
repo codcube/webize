@@ -160,6 +160,18 @@ module Webize
       html.to_html                                                # serialize
     end
 
+    QuotePrefix = /^\s*&gt;\s*/
+
+    def self.wrapQuote line
+      if line.match? QuotePrefix
+        ['<span class="quote">',
+         wrapQuote(line.sub QuotePrefix, ''),
+         '</span>'].join
+      else
+        line
+      end
+    end
+
     class Format < RDF::Format
       content_type 'text/html',
                    aliases: %w(application/xhtml+xml),
