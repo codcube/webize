@@ -167,10 +167,14 @@ module Webize
     QuotePrefix = /^\s*&gt;\s*/
 
     def self.wrapQuote line
-      if line.match? QuotePrefix
-        ['<span class="quote">',
-         wrapQuote(line.sub QuotePrefix, ''),
-         '</span>'].join
+      if m = (line.match QuotePrefix)
+        if m.post_match.empty?
+          nil
+        else
+          ['<span class="quote">',
+           (wrapQuote m.post_match),
+           '</span>'].join
+        end
       else
         line
       end
