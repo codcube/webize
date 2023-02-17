@@ -47,6 +47,10 @@ module Webize
       html.css("slide").map{|s|                                   # slide -> img
         s.add_child "<img src=\"#{s['original']}\" alt=\"#{s['caption']}\">"}
 
+      # <pre> formatting
+      html.css('pre').map{|pre|
+        pre.inner_html = pre.inner_html.lines.map{|l| wrapQuote l}.join}
+
       html.traverse{|e|
         e.respond_to?(:attribute_nodes) && e.attribute_nodes.map{|a| # inspect attributes
           attr = a.name                                           # attribute name
