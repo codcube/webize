@@ -262,6 +262,7 @@ translator_type
 truncated
 turbo-body-classes
 turbo-cache-control
+turbo-visit-control
 twitter:app:country
 twitter:app:id:googleplay
 twitter:app:id:ipad
