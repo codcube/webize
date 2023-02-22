@@ -3,15 +3,26 @@ module Webize
   module HTML
     class Reader
 
-      MsgCSS = {}
-
-      %w(content creator creatorHref date freeformDate gunk image imageP imagePP link post reply title video).map{|a| # attribute selectors
+      MsgCSS = {} # {CSS selector -> RDF attribute}
+      %w(
+ content
+ creator
+ creatorHref
+ date
+ freeformDate
+ gunk
+ image imageP imagePP
+ link
+ post
+ reply
+ title
+ video).map{|a| # load user-defined mappings
         MsgCSS[a.to_sym] = Webize.configList('metadata/CSS/' + a).join ', '}
 
       DateAttr = %w(data-time data-timestamp data-utc date datetime time timestamp unixtime title)
 
       def scanMessages
-        @doc.css(MsgCSS[:post]).map{|post|                            # post
+        @doc.css(MsgCSS[:post]).map{|post|                                 # visit post(s)
           links = post.css(MsgCSS[:link])
 
           subject = if !links.empty?
