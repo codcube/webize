@@ -72,6 +72,7 @@ displayDate
 display_date
 editedAt
 firstPublished
+first_publication_date
 five_hundred_pixels:uploaded
 http://data-vocabulary.org/startDate
 http://ogp.me/ns#article:modified_time
@@ -114,6 +115,7 @@ lastMajorModification
 lastModified
 lastPublishedAt
 last_modified
+last_publication_date
 last_status_at
 last_updated_date
 lastmod

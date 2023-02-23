@@ -1,4 +1,4 @@
 #!/bin/sh
-feedlist=$HOME/src/webize/config/subscriptions/feeds.u
+feedlist=$HOME/src/webize/config/subscriptions/net.u
 echo $1 >> $feedlist
 sort $feedlist -o $feedlist

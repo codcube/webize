@@ -25,6 +25,7 @@ item-type
 itemType
 kind
 linkType
+link_type
 medium
 node_type
 objectType
@@ -46,7 +47,7 @@ targetType
 taxonomyType
 trackType
 type
-typename
 typeName
+typename
 urlType
 webPageType

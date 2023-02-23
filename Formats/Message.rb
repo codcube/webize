@@ -16,7 +16,7 @@ module Webize
  post
  reply
  title
- video).map{|a| # load user-defined mappings
+ video).map{|a| # load user-defined maps
         MsgCSS[a.to_sym] = Webize.configList('metadata/CSS/' + a).join ', '}
 
       DateAttr = %w(data-time data-timestamp data-utc date datetime time timestamp unixtime title)
