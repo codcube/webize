@@ -625,9 +625,9 @@ class WebResource
                   #HTML.keyval(re,env), # key/val render remaining data
                   to,                                            # receiver
                   date,                                          # timestamp
+                  origin_ref,                                    # origin pointer
                  ]}.update(color ? {style: ["border-color: #{color}", 'border-style: dotted',
                                             blocked ? "background: repeating-linear-gradient(45deg, #000, #000, 1em, #{color} 1em, #{color} 2em" : nil].join('; ')} : {}),
-             origin_ref,                                         # origin pointer
             ]}.update(id ? {id: id} : {})                        # representation identifier
       end}
 
