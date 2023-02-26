@@ -581,20 +581,19 @@ class WebResource
 
     # default resource -> HTML render
     Markup['http://www.w3.org/2000/01/rdf-schema#Resource'] = -> re, env {
-
-      p = -> a {MarkupPredicate[a][re.delete(a),env] if re.has_key? a} # predicate renderer
+      env[:last] ||= {}
+      p = -> a {MarkupPredicate[a][re[a], env] if re.has_key? a} # predicate renderer
 
       types = re.delete(Type) || []
-      im = types.member? SIOC+'InstantMessage'
-      titled = re.has_key? Title
+      im = types.member? SIOC + 'InstantMessage'
+      titled = (re.has_key? Title) && env[:last][Title] != re[Title]
       re.delete Date if im
 
       if uri = re.delete('uri')                                  # unless blank node,
         uri = uri.R env;  id = uri.local_id                      # full and local-fragment URIs
         blocked = uri.deny?                                      # resource blocked?
-        origin_ref = {_: :a, class: :pointer, href: uri,         # origin pointer
-                      c: CGI.escapeHTML(uri.path || '')}         # cache pointer
-        cache_ref = {_: :a, href: uri.href, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}
+        origin_ref = {_: :a, class: :pointer, href: uri, c: :🔗} # origin pointer
+        cache_ref = {_: :a, href: uri.href, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)} # cache pointer
         color = HostColor[uri.host] if HostColor.has_key? uri.host
       end
 
@@ -605,25 +604,25 @@ class WebResource
           color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5]
           text_color = color[3..4].hex > 127 ? :black : :white
         end
-        to = {class: :to, c: p[To]}
+        to = {class: :to, c: p[To]} unless env[:last][To] == re[To]
       end
 
       date = p[Date]
-      link = {class: titled ? (blocked ? 'blocked title' : 'title') : nil, c: titled ? p[Title] : :🔗}. # resource pointer
-               update(cache_ref || {}).update((titled && color) ? {style: "background-color: #{color}; color: #{text_color || :black}"} : {})
+      link = {class: :title, c: p[Title]}. # resource pointer
+               update(cache_ref || {}).update(color ? {style: "background-color: #{color}; color: #{text_color || :black}"} : {}) if titled
+      env[:last] = re
 
       unless (re[Creator]||[]).find{|a| KillFile.member? a.to_s} # sender killfiled?
         {class: im ? 'post im' : 'post',                         # resource
-         c: [(link if titled),                                   # title + resource pointer
+         c: [link,                                               # title
              {class: blocked ? 'blocked content' : :content,
-              c: [(link unless titled),                          # resource pointer (untitled)
-                  p[Abstract],                                   # abstract
+              c: [p[Abstract],                                   # abstract
                   from,                                          # creator
                   p[Image],                                      # image(s)
                   [Content, SIOC+'richContent'].map{|p|
                     (re.delete(p)||[]).map{|o|markup o,env}},    # body
                   p[Link],                                       # untyped links
-                  (HTML.keyval(re,env) unless re.keys.size < 1), # key/val render remaining data
+                  #HTML.keyval(re,env), # key/val render remaining data
                   to,                                            # receiver
                   date,                                          # timestamp
                  ]}.update(color ? {style: ["border-color: #{color}", 'border-style: dotted',
