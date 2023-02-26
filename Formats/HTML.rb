@@ -452,12 +452,12 @@ class WebResource
                                   end]},
                              (['<br>⚠️',{_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
                              link[:up,'&#9650;'],
-                             case env[:view] # render function:
+                             case env[:view] # layout function:
                              when 'table'    # tabular layout
-                               HTML.tabular resources, env
-                             else            # columnar layout w/ type-indexed resource render
+                               HTML.tabular graph.values, env
+                             else            # columnar layout w/ type-indexed resource renderers
                                {class: :columns,
-                                c: HTML.sort(resources, env).map{|v|
+                                c: HTML.sort(graph.values, env).map{|v|
                                   HTML.markup v, env}}
                              end,
                              link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
