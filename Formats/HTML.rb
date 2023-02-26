@@ -447,8 +447,7 @@ class WebResource
                                HTML.tabular graph.values, env
                              else            # columnar layout w/ type-indexed resource renderers
                                {class: :columns,
-                                c: HTML.sort(graph.values, env).map{|v|
-                                  HTML.markup v, env}}
+                                c: HTML.sort(HTML.sort(graph.values, Date, env), env[:sort]||To, env).map{|v| HTML.markup v, env}}
                              end,
                              link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
                              {_: :script, c: Webize::Code::SiteJS}]}]}]
@@ -568,16 +567,15 @@ class WebResource
       end
     end
 
-    def self.sort graph, env
-      attr = env[:sort] || To                     # default to timestamp sorting
-      attr = Webize::MetaMap[attr] || attr        # map sort-attribute to URI
-      numeric = true if attr == Schema+'position' # numeric sort types
-      sortable, unsorted = graph.partition{|r|    # to be sortable,
-        r.class == Hash && (r.has_key? attr)}     # object needs sort-attribute
-      sorted = sortable.sort_by{|r|               # sort the sortable objects
+    def self.sort graph, attr, env
+      attr = Webize::MetaMap[attr] || attr          # map sort-attribute to URI
+      numeric = true if attr == Schema + 'position' # numeric sort types
+      sortable, unsorted = graph.partition{|r|      # to be sortable,
+        r.class == Hash && (r.has_key? attr)}       # object needs sort-attribute
+      sorted = sortable.sort_by{|r|                 # sort the sortable objects
         numeric ? r[attr][0].yield_self{|i| i.class == Integer ? i : i.to_s.to_i} : r[attr][0].to_s}
-      sorted.reverse! unless env[:order] == 'asc' # default to descending order
-      [*sorted, *unsorted]                        # preserve unsorted to end of list
+      sorted.reverse! unless env[:order] == 'asc'   # default to descending order
+      [*sorted, *unsorted]                          # preserve unsorted to end of list
     end
 
     # default resource -> HTML render
@@ -609,7 +607,7 @@ class WebResource
       link = {class: :title, c: p[Title]}. # resource pointer
                update(cache_ref || {}).update(color ? {style: "color: #{color}"} : {}) if titled
       env[:last] = re
-
+      sz = rand(10) / 3.0
       unless (re[Creator]||[]).find{|a| KillFile.member? a.to_s} # sender killfiled?
         {class: im ? 'post im' : 'post',                         # resource
          c: [to,                                                 # message destination
@@ -622,10 +620,10 @@ class WebResource
                     (re.delete(p)||[]).map{|o|markup o,env}},    # body
                   p[Link],                                       # untyped links
                   #HTML.keyval(re,env), # key/val render remaining data
-                  date,                                          # timestamp
                   origin_ref,                                    # origin pointer
+                  date,                                          # timestamp
                  ]}.update(color ? {style: ["border-color: #{color}",
-                                            "background: repeating-linear-gradient(60deg, #000, #000, 2em, #{color} 2em, #{color} 3em"].join('; ')} : {}),
+                                            "background: repeating-linear-gradient(#{rand(6) * 60}deg, #000, #000, #{sz}em, #{color} #{sz}em, #{color} #{sz * 2}em"].join('; ')} : {}),
             ]}.update(id ? {id: id} : {})                        # representation identifier
       end}
 
