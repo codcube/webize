@@ -601,16 +601,13 @@ class WebResource
       from = {class: :creator, c: p[Creator]} if re.has_key? Creator
 
       if re.has_key? To
-        if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
-          color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5]
-          text_color = color[3..4].hex > 127 ? :black : :white
-        end
+        color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5] if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
         to = p[To] unless env[:last][To] == re[To]
       end
 
       date = p[Date]
       link = {class: :title, c: p[Title]}. # resource pointer
-               update(cache_ref || {}).update(color ? {style: "background-color: #{color}; color: #{text_color || :black}"} : {}) if titled
+               update(cache_ref || {}).update(color ? {style: "color: #{color}"} : {}) if titled
       env[:last] = re
 
       unless (re[Creator]||[]).find{|a| KillFile.member? a.to_s} # sender killfiled?

@@ -29,7 +29,7 @@
 .path_crumb {color: #bbb}
 .post .content {border: 1px solid #282828; margin: 0}
 .post .from, .post .to {color: #000}
-.post .to {font-size: 1.25em; border-radius: 0; margin-top: .42em}
+.post .to {font-size: 1.25em; border-radius: .3em .3em 0 0; margin-top: .42em}
 .post a.pointer {font-size: .8em; color: #aaa; font-weight: normal; margin: 0; float: right}
 .post a.pointer:visited {background-color: #888; color: #000}
 .post {margin: 0 .25em 0 0; max-width: 80em}
@@ -40,7 +40,7 @@
 .quote > .quote {background-color: #aaa}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
-.title {font-size: 1.1em; background-color: #bbb; color: #000; border-radius: 0; max-width: 80ex}
+.title {font-size: 1.1em; background-color: #000; border-radius: 0; max-width: 80ex}
 .title:visited {background-color: #ddd}
 .toolbox .path {color: #aaa; font-size: .8em}
 .toolbox form input {background-color: #000; color: #fff; border-radius: .5em; border-width: 0; font-size: .8em}
