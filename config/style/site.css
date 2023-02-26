@@ -28,14 +28,16 @@
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .path_crumb {color: #bbb}
 .post .content {border: 1px solid #282828; margin: 0}
-.post .creator a, .post .to a {color: #000}
-.post .to {float: left}
+.post .from, .post .to {color: #000}
+.post .to {font-size: 1.25em; border-radius: 0; margin-top: .42em}
 .post a.pointer {font-size: .8em; color: #aaa; font-weight: normal; margin: 0; float: right}
 .post a.pointer:visited {background-color: #888; color: #000}
 .post {margin: 0 .25em 0 0; max-width: 80em}
-.post.im, .post.im > .content {margin: 0; padding: 0; border-width: 0}
+.post.im, .post.im > .content {margin: 0; padding: 0; border-width;5;9~: 0}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
+.quote > .quote > .quote {background-color: #777}
+.quote > .quote {background-color: #aaa}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title {font-size: 1.1em; background-color: #bbb; color: #000; border-radius: 0; max-width: 80ex}
@@ -57,8 +59,6 @@ a.global:visited, a.global:visited span.id, a.local:visited, a.local:visited spa
 a.local, a.local span.id {background-color: #003}
 audio {width: 80ex; float: right}
 blockquote, .greentext, .original, .quote, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .4em .1em .1em .3em; padding-left: .4em}
-.quote > .quote {background-color: #aaa}
-.quote > .quote > .quote {background-color: #777}
 blockquote, ol, p, ul {max-width: 80ex}
 body, dfn, figcaption, li, p, pre, span {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, Sans Serif}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}

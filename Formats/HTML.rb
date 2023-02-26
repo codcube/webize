@@ -605,7 +605,7 @@ class WebResource
           color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5]
           text_color = color[3..4].hex > 127 ? :black : :white
         end
-        to = {class: :to, c: p[To]} unless env[:last][To] == re[To]
+        to = p[To] unless env[:last][To] == re[To]
       end
 
       date = p[Date]
@@ -615,16 +615,16 @@ class WebResource
 
       unless (re[Creator]||[]).find{|a| KillFile.member? a.to_s} # sender killfiled?
         {class: im ? 'post im' : 'post',                         # resource
-         c: [link,                                               # title
+         c: [to,                                                 # message destination
              {class: blocked ? 'blocked content' : :content,
-              c: [p[Abstract],                                   # abstract
-                  from,                                          # creator
+              c: [link,                                          # title
+                  p[Abstract],                                   # abstract
+                  from,                                          # message source
                   p[Image],                                      # image(s)
                   [Content, SIOC+'richContent'].map{|p|
                     (re.delete(p)||[]).map{|o|markup o,env}},    # body
                   p[Link],                                       # untyped links
                   #HTML.keyval(re,env), # key/val render remaining data
-                  to,                                            # receiver
                   date,                                          # timestamp
                   origin_ref,                                    # origin pointer
                  ]}.update(color ? {style: ["border-color: #{color}",

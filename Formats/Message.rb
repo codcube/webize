@@ -194,15 +194,26 @@ class WebResource
         t = t.R env
         {_: :a, href: t.href, c: Icons[t.uri] || t.display_name}.update(Icons[t.uri] ? {class: :icon} : {})}}
 
-    MarkupPredicate[Creator] = MarkupPredicate[To] = MarkupPredicate['http://xmlns.com/foaf/0.1/maker'] = -> creators, env {
+    MarkupPredicate[Creator] = MarkupPredicate['http://xmlns.com/foaf/0.1/maker'] = -> creators, env {
       creators.map{|creator|
         if [WebResource, RDF::URI].member? creator.class
           uri = creator.R env
           name = uri.display_name
           color = Digest::SHA2.hexdigest(name)[0..5]
-          {_: :a, href: uri.href, style: "background-color: ##{color}", c: name}
+          {_: :a, class: :from, href: uri.href, style: "background-color: ##{color}", c: name}
         else
           markup creator, env
+        end}}
+
+    MarkupPredicate[To] = -> recipients, env {
+      recipients.map{|r|
+        if [WebResource, RDF::URI].member? r.class
+          uri = r.R env
+          name = uri.display_name
+          color = Digest::SHA2.hexdigest(name)[0..5]
+          {_: :a, class: :to, href: uri.href, style: "background-color: ##{color}", c: name}
+        else
+          markup r, env
         end}}
 
     MarkupPredicate[Abstract] = -> as, env {
