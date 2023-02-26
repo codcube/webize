@@ -16,7 +16,7 @@ class WebResource
                Schema + 'Readme',
                SIOC + 'MicroPost'].map &:R
 
-  # file -> 🐢 abstract/summary of RDF data
+  # file -> 🐢 file (abstract/summary of data)
   def preview
     hash = Digest::SHA2.hexdigest uri
     file = [:cache,:overview,hash[0..1],hash[2..-1]+'.🐢'].join '/'  # summary path
@@ -53,7 +53,7 @@ class WebResource
     summary                                                          # return summary
   end
 
-  # type, content -> Repository
+  # MIME type, data -> Repository
   def readRDF format, content, graph
     return if content.empty?
     case format                                                    # content type:
@@ -106,7 +106,7 @@ class WebResource
         log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] unless g.in_doc?
       end
 
-      # if location isn't on timeline, link to timeline. TODO other indexing
+      # if location isn't on timeline, link to timeline. TODO additional indexing. https://github.com/solid/solid/blob/main/proposals/data-discovery.md#type-index-registry
       if !g.to_s.match?(HourDir) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
 
         t = ts.split /\D/                                            # split timestamp
