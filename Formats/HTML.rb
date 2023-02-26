@@ -323,6 +323,7 @@ module Webize
         if body = @doc.css('body')[0]
 
           # 'news' pages: only emit updated content (also eliminates sidebars and boilerplate) on repeat visit
+          # TODO the updates-graph can obsolete this once we emit more granular subject URIs w/ upstream or locally minted fragment identifiers
           if NewsHosts.member? @base.host
             hashed_nodes = 'article, aside, div, footer, h1, h2, h3, nav, p, section, b, span, ul, li'
             hashs = {}
@@ -568,7 +569,7 @@ class WebResource
     end
 
     def self.sort graph, env
-      attr = env[:sort] || Date                   # default to timestamp sorting
+      attr = env[:sort] || To                     # default to timestamp sorting
       attr = Webize::MetaMap[attr] || attr        # map sort-attribute to URI
       numeric = true if attr == Schema+'position' # numeric sort types
       sortable, unsorted = graph.partition{|r|    # to be sortable,
@@ -627,7 +628,7 @@ class WebResource
                   date,                                          # timestamp
                   origin_ref,                                    # origin pointer
                  ]}.update(color ? {style: ["border-color: #{color}",
-                                            "background: repeating-linear-gradient(30deg, #000, #000, .5em, #{color} .5em, #{color} 1em"].join('; ')} : {}),
+                                            "background: repeating-linear-gradient(60deg, #000, #000, 2em, #{color} 2em, #{color} 3em"].join('; ')} : {}),
             ]}.update(id ? {id: id} : {})                        # representation identifier
       end}
 
