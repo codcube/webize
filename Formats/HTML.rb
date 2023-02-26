@@ -377,6 +377,29 @@ class WebResource
     StatusColor.keys.map{|s|
       StatusColor[s.to_i] = StatusColor[s]}
 
+    def self.group graph, env, attr=nil
+      attr ||= env[:group]
+      if attr                                # grouping attribute
+        attr = Webize::MetaMap[attr] || attr # normalize grouping attribute
+        graph.group_by{|r|                   # group resources
+          (r.delete(attr) || [])[0]}
+      else
+        {'' => graph}                        # default group
+      end
+    end
+
+    def self.sort graph, env
+      attr = env[:sort] || Date                   # default to timestamp sorting
+      attr = Webize::MetaMap[attr] || attr        # map sort-attribute to URI
+      numeric = true if attr == Schema+'position' # numeric sort types
+      sortable, unsorted = graph.partition{|r|    # to be sortable,
+        r.class == Hash && (r.has_key? attr)}     # object needs sort-attribute
+      sorted = sortable.sort_by{|r|               # sort the sortable objects
+        numeric ? r[attr][0].yield_self{|i| i.class == Integer ? i : i.to_s.to_i} : r[attr][0].to_s}
+      sorted.reverse! unless env[:order] == 'asc' # default to descending order
+      [*sorted, *unsorted]                        # preserve unsorted to end of list
+    end
+
     # Graph -> HTML
     def htmlDocument graph
       status = env[:origin_status]
