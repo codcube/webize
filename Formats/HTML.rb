@@ -377,17 +377,6 @@ class WebResource
     StatusColor.keys.map{|s|
       StatusColor[s.to_i] = StatusColor[s]}
 
-    def self.group graph, env, attr=nil
-      attr ||= env[:group]
-      if attr                                # grouping attribute
-        attr = Webize::MetaMap[attr] || attr # normalize grouping attribute
-        graph.group_by{|r|                   # group resources
-          (r.delete(attr) || [])[0]}
-      else
-        {'' => graph}                        # default group
-      end
-    end
-
     # Graph -> HTML
     def htmlDocument graph
       status = env[:origin_status]
