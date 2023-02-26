@@ -106,7 +106,7 @@ class WebResource
         log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] unless g.in_doc?
       end
 
-      # if location isn't on timeline, link to timeline. TODO additional indexing. https://github.com/solid/solid/blob/main/proposals/data-discovery.md#type-index-registry
+      # if location isn't on timeline, link to timeline. TODO additional indexing. ref https://pdsinterop.org/solid-typeindex-parser/ https://github.com/solid/solid/blob/main/proposals/data-discovery.md#type-index-registry
       if !g.to_s.match?(HourDir) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
 
         t = ts.split /\D/                                            # split timestamp
@@ -128,7 +128,7 @@ class WebResource
     self
   end
 
-  # Repository -> JSON {s -> p -> o} tree
+  # Repository -> {s -> p -> o} tree
   def treeFromGraph graph = nil
     graph ||= env[:updates] || env[:repository]
     return {} unless graph
@@ -145,7 +145,7 @@ class WebResource
   end
 end
 
-RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl] # add 🐢 suffix for Turtle
+RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl] # enable 🐢 suffix for turtle files
 
 module Webize
 
