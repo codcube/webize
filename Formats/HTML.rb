@@ -452,30 +452,14 @@ class WebResource
                                   end]},
                              (['<br>⚠️',{_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
                              link[:up,'&#9650;'],
-
-                             HTML.group(graph.values, env).map{|group, resources|
-                               group ||= ''
-                               group = group.to_s if group.class == RDF::Literal # TODO cast to data: URI
-                               nogroup = group == ''
-                               group = group.R env
-                               name = group.display_name
-                               ch = nogroup ? '222222' : Digest::SHA2.hexdigest(name)[0..5]
-                               color = ['#', ch].join
-                               label = {_: :a,  href: group.href, style: "border-color: #{color}; color: #{color}",
-                                        class: :label, c: CGI.escapeHTML(name)}
-
-                               {class: :group,
-                                c: [(label unless nogroup), '<br>',
-                                    {class: :resources, style: "border-color: #{color}",
-                                     c: case env[:view]
-                                        when 'table'
-                                          HTML.tabular resources, env
-                                        else
-                                          {style: "columns: auto 80ex; column-gap: 0",
-                                           c: HTML.sort(resources, env).map{|v|
-                                             HTML.markup v, env}}
-                                        end}]}},
-
+                             case env[:view] # render function:
+                             when 'table'    # tabular layout
+                               HTML.tabular resources, env
+                             else            # columnar layout w/ type-indexed resource render
+                               {class: :columns,
+                                c: HTML.sort(resources, env).map{|v|
+                                  HTML.markup v, env}}
+                             end,
                              link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
                              {_: :script, c: Webize::Code::SiteJS}]}]}]
     end
