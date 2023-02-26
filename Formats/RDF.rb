@@ -143,61 +143,6 @@ class WebResource
     bnodes.map{|n|tree.delete n} # sweep bnodes from subject index
     tree                         # output tree
   end
-  module HTML
-
-    # default resource renderer when nothing more specific is defined
-    Markup['http://www.w3.org/2000/01/rdf-schema#Resource'] = -> re, env {
-
-      p = -> a {MarkupPredicate[a][re.delete(a),env] if re.has_key? a} # predicate renderer
-
-      types = re.delete(Type) || []
-      im = types.member? SIOC+'InstantMessage'
-      titled = re.has_key? Title
-      re.delete Date if im
-
-      if uri = re.delete('uri')                                  # unless blank node,
-        uri = uri.R env;  id = uri.local_id                      # full and local-fragment URIs
-        blocked = uri.deny?                                      # resource blocked?
-        origin_ref = {_: :a, class: :pointer, href: uri,         # origin pointer
-                      c: CGI.escapeHTML(uri.path || '')}         # cache pointer
-        cache_ref = {_: :a, href: uri.href, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}
-        color = HostColor[uri.host] if HostColor.has_key? uri.host
-      end
-
-      from = {class: :creator, c: p[Creator]} if re.has_key? Creator
-
-      if re.has_key? To
-        if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
-          color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5]
-          text_color = color[3..4].hex > 127 ? :black : :white
-        end
-        to = {class: :to, c: p[To]}
-      end
-
-      date = p[Date]
-      link = {class: titled ? (blocked ? 'blocked title' : 'title') : nil, c: titled ? p[Title] : :🔗}. # resource pointer
-               update(cache_ref || {}).update((titled && color) ? {style: "background-color: #{color}; color: #{text_color || :black}"} : {})
-
-      unless (re[Creator]||[]).find{|a| KillFile.member? a.to_s} # sender killfiled?
-        {class: im ? 'post im' : 'post',                         # resource
-         c: [(link if titled),                                   # title + resource pointer
-             {class: blocked ? 'blocked content' : :content,
-              c: [(link unless titled),                          # resource pointer (untitled)
-                  p[Abstract],                                   # abstract
-                  from,                                          # creator
-                  p[Image],                                      # image(s)
-                  [Content, SIOC+'richContent'].map{|p|
-                    (re.delete(p)||[]).map{|o|markup o,env}},    # body
-                  p[Link],                                       # untyped links
-                  (HTML.keyval(re,env) unless re.keys.size < 1), # key/val render remaining data
-                  to,                                            # receiver
-                  date,                                          # timestamp
-                 ]}.update(color ? {style: ["border-color: #{color}", 'border-style: dotted',
-                                            blocked ? "background: repeating-linear-gradient(45deg, #000, #000, 1em, #{color} 1em, #{color} 2em" : nil].join('; ')} : {}),
-             origin_ref,                                         # origin pointer
-            ]}.update(id ? {id: id} : {})                        # representation identifier
-      end}
-  end
 end
 
 RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl] # add 🐢 suffix for Turtle
