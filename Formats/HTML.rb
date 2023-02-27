@@ -447,7 +447,7 @@ class WebResource
                                HTML.tabular graph.values, env
                              else            # columnar layout w/ type-indexed resource renderers
                                {class: :columns,
-                                c: HTML.sort(HTML.sort(graph.values, Date, env), env[:sort]||To, env).map{|v| HTML.markup v, env}}
+                                c: HTML.sort(graph.values, env[:sort] || To, env).map{|v| HTML.markup v, env}}
                              end,
                              link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
                              {_: :script, c: Webize::Code::SiteJS}]}]}]
@@ -596,8 +596,7 @@ class WebResource
         color = HostColor[uri.host] if HostColor.has_key? uri.host
       end
 
-      from = {class: :creator, c: p[Creator]} if re.has_key? Creator
-
+      from = p[Creator] if re.has_key? Creator
       if re.has_key? To
         color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5] if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
         to = p[To] unless env[:last][To] == re[To]
