@@ -8,6 +8,7 @@ From     http://rdfs.org/sioc/ns#has_creator
 Image    http://purl.org/dc/terms/Image
 Link     http://purl.org/dc/terms/link
 Post     http://rdfs.org/sioc/ns#Post
+Resource http://www.w3.org/2000/01/rdf-schema#Resource
 SIOC     http://rdfs.org/sioc/ns#
 Schema   http://schema.org/
 Title    http://purl.org/dc/terms/title

@@ -135,7 +135,7 @@ class WebResource
              {_: :video, src: v.uri, controls: :true}.update(dashJS ? {'data-dashjs-player' => 1} : {}), '<br>',
              {_: :a, href: v.uri, c: v.display_name}]
            end,
-           (Markup['http://www.w3.org/2000/01/rdf-schema#Resource'][resource, env] if resource)]}}
+           (Markup[Resource][resource, env] if resource)]}}
 
   end
 end
