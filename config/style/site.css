@@ -27,7 +27,7 @@
 .links .path a {font-weight: normal}
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .path_crumb {color: #bbb}
-.post .content {border-width: 0 1px 1px 1px; border-style: solid; border-color: #282828; margin: 0}
+.post .content {border-width: 0 1px 1px 1px; border-style: solid; border-color: #333; margin: 0}
 .post .from {background-color: #000; border-style: solid; border-width: 0 0 1px 0; border-radius: .3em .3em 0 0}
 .post .to {font-size: 1.25em; border-radius: .3em .3em 0 0; color: #000; margin-top: .42em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
@@ -39,8 +39,8 @@
 .quote > .quote {background-color: #aaa}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
-.title {font-size: 1.1em; background-color: #000; border-radius: 0; max-width: 80ex}
-.title:visited {background-color: #ddd}
+.title {background-color: #000; border-radius: 0; max-width: 80ex}
+.title:visited {background-color: #222}
 .toolbox .path {color: #aaa; font-size: .8em}
 .toolbox form input {background-color: #000; color: #fff; border-radius: .5em; border-width: 0; font-size: .8em}
 .toolbox svg {height: 1em; width: 1em}
