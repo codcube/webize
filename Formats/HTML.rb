@@ -596,7 +596,7 @@ class WebResource
         color = HostColor[uri.host] if HostColor.has_key? uri.host
       end
 
-      from = p[Creator] if re.has_key? Creator
+      from = p[Creator] unless env[:last][Creator] == re[Creator]
       if re.has_key? To
         color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5] if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
         to = p[To] unless env[:last][To] == re[To]
@@ -613,14 +613,14 @@ class WebResource
              {class: blocked ? 'blocked content' : :content,
               c: [link,                                          # title
                   p[Abstract],                                   # abstract
+                  origin_ref,                                    # origin pointer
+                  date,                                          # timestamp
                   from,                                          # message source
                   p[Image],                                      # image(s)
                   [Content, SIOC+'richContent'].map{|p|
                     (re.delete(p)||[]).map{|o|markup o,env}},    # body
                   p[Link],                                       # untyped links
                   #HTML.keyval(re,env), # key/val render remaining data
-                  origin_ref,                                    # origin pointer
-                  date,                                          # timestamp
                  ]}.update(color ? {style: ["border-color: #{color}",
                                             "background: repeating-linear-gradient(#{rand(6) * 60}deg, #000, #000, #{sz}em, #{color} #{sz}em, #{color} #{sz * 2}em"].join('; ')} : {}),
             ]}.update(id ? {id: id} : {})                        # representation identifier
