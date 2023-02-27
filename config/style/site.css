@@ -32,7 +32,7 @@
 .post .to {font-size: 1.25em; border-radius: .3em .3em 0 0; color: #000; margin-top: .42em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
 .post {margin: 0 .25em 0 0; max-width: 80em}
-.post.im, .post.im > .content {margin: 0; padding: 0; border-width;5;9~: 0}
+.post.im, .post.im > .content {margin: 0; padding: 0; border-width: 0}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
 .quote > .quote > .quote {background-color: #777}
