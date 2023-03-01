@@ -27,7 +27,7 @@
 .links .path a {font-weight: normal}
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .path_crumb {color: #bbb}
-.post .content {border-width: 0 1px 1px 1px; border-style: solid; border-color: #333; margin: 0}
+.post .content {border-width: 0 1px 1px 1px; border-style: solid; border-color: #383838; margin: 0}
 .post .from {background-color: #000; border-style: solid; border-width: 0 0 1px 0; border-radius: .3em .3em 0 0}
 .post .to {font-size: 1.25em; border-radius: .3em .3em 0 0; color: #000; margin-top: .42em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
