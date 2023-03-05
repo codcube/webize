@@ -1,5 +1,5 @@
-[INSTALL](INSTALL.sh)
+[INSTALL](INSTALL.sh) script
 
-[USAGE](USAGE.md)
+[USAGE](USAGE.md) tips
 
-[NOTES](NOTES.md)
+design [NOTES](NOTES.md)
