@@ -582,49 +582,43 @@ class WebResource
     Markup[Resource] = -> re, env {
       env[:last] ||= {}
       p = -> a {MarkupPredicate[a][re[a], env] if re.has_key? a} # predicate renderer
-
-      types = re.delete(Type) || []
-      im = types.member? SIOC + 'InstantMessage'
       titled = (re.has_key? Title) && env[:last][Title] != re[Title]
-      re.delete Date if im
-
       if uri = re.delete('uri')                                  # unless blank node,
         uri = uri.R env;  id = uri.local_id                      # full and local-fragment URIs
-        blocked = uri.deny?                                      # resource blocked?
         origin_ref = {_: :a, class: :pointer, href: uri, c: :🔗} # origin pointer
         cache_ref = {_: :a, href: uri.href, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)} # cache pointer
-        color = HostColor[uri.host] if HostColor.has_key? uri.host
+        color = if HostColor.has_key? uri.host
+                  HostColor[uri.host]
+                elsif uri.deny?
+                  :red
+                end
       end
-
       from = p[Creator] unless env[:last][Creator] == re[Creator]
       if re.has_key? To
         color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5] if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
         to = p[To] unless env[:last][To] == re[To]
       end
-
       date = p[Date]
-      link = {class: :title, c: p[Title]}. # resource pointer
+      link = {class: :title, c: p[Title]}.                     # title
                update(cache_ref || {}).update(color ? {style: "color: #{color}"} : {}) if titled
       env[:last] = re
       sz = rand(10) / 3.0
-      unless (re[Creator]||[]).find{|a| KillFile.member? a.to_s} # sender killfiled?
-        {class: im ? 'post im' : 'post',                         # resource
-         c: [to,                                                 # message destination
-             {class: blocked ? 'blocked content' : :content,
-              c: [link,                                          # title
-                  p[Abstract],                                   # abstract
-                  origin_ref,                                    # origin pointer
-                  date,                                          # timestamp
-                  from,                                          # message source
-                  p[Image],                                      # image(s)
-                  [Content, SIOC+'richContent'].map{|p|
-                    (re.delete(p)||[]).map{|o|markup o,env}},    # body
-                  p[Link],                                       # untyped links
-                  #HTML.keyval(re,env), # key/val render remaining data
-                 ]}.update(color ? {style: ["border-color: #{color}",
-                                            "background: repeating-linear-gradient(#{rand(6) * 60}deg, #000, #000, #{sz}em, #{color} #{sz}em, #{color} #{sz * 2}em"].join('; ')} : {}),
-            ]}.update(id ? {id: id} : {})                        # representation identifier
-      end}
+      {class: :post,                                           # resource
+       c: [to,                                                 # destination
+           {class: :content,
+            c: [link,                                          # title
+                p[Abstract],                                   # abstract
+                origin_ref,                                    # pointer
+                date,                                          # timestamp
+                from,                                          # source
+                p[Image],                                      # image(s)
+                [Content, SIOC+'richContent'].map{|p|
+                  (re.delete(p)||[]).map{|o|markup o,env}},    # body
+                p[Link],                                       # untyped links
+                #HTML.keyval(re,env), # key/val render remaining data
+               ]}.update(color ? {style: ["border-color: #{color}",
+                                          "background: repeating-linear-gradient(#{rand(6) * 60}deg, #000, #000, #{sz}em, #{color} #{sz}em, #{color} #{sz * 2}em"].join('; ')} : {}),
+          ]}.update(id ? {id: id} : {})}                       # representation identifier
 
   end
   include HTML

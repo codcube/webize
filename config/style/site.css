@@ -8,7 +8,7 @@
 #up {background-color: #222; color: #aaa; border-radius: 0 0 .5em .5em; font-size: 2em; position: fixed; right: 3em; top: 0; padding: 0 .8em 0 .8em}
 .abstract {display: block}
 .abstract, .abstract span {background-color: #bbb; color: #000}
-.blocked {background: repeating-linear-gradient(0deg, #f03, #f03 1em, #000 1em, #000 2em); color: #fff; border: 1px solid #f03}
+.blocked {background: repeating-linear-gradient(45deg, #f00, #f00 .5em, #000 .5em, #000 1em); color: #fff}
 .bold {font-weight: bold}
 .columns {columns: auto 80ex; column-gap: 0}
 .dimmed {opacity: 0.2}
@@ -32,7 +32,6 @@
 .post .to {font-size: 1.25em; border-radius: .3em .3em 0 0; color: #000; margin-top: .42em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
 .post {margin: 0 .25em 0 0; max-width: 80em}
-.post.im, .post.im > .content {margin: 0; padding: 0; border-width: 0}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
 .quote > .quote > .quote {background-color: #777}
