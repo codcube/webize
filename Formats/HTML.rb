@@ -596,13 +596,16 @@ class WebResource
       from = p[Creator] unless env[:last][Creator] == re[Creator]
       if re.has_key? To
         color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5] if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
+        text_color = :white if (color[1..2].hex * 3 + color[3..4].hex * 10 + color[5..6].hex) < 1500
         to = p[To] unless env[:last][To] == re[To]
       end
       date = p[Date]
       link = {class: :title, c: p[Title]}.                     # title
-               update(cache_ref || {}).update(color ? {style: "color: #{color}"} : {}) if titled
+               update(cache_ref || {}).update(color ? {style: "color: #{text_color || color}"} : {}) if titled
       env[:last] = re
       sz = rand(10) / 3.0
+      rest = {}
+      
       {class: :post,                                           # resource
        c: [to,                                                 # destination
            {class: :content,
@@ -613,7 +616,7 @@ class WebResource
                 from,                                          # source
                 p[Image],                                      # image(s)
                 [Content, SIOC+'richContent'].map{|p|
-                  (re.delete(p)||[]).map{|o|markup o,env}},    # body
+                  (re[p]||[]).map{|o|markup o,env}},           # body
                 p[Link],                                       # untyped links
                 #HTML.keyval(re,env), # key/val render remaining data
                ]}.update(color ? {style: ["border-color: #{color}",
