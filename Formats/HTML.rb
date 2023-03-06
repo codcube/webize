@@ -393,7 +393,6 @@ class WebResource
         end
       end
 
-      env[:pattern] = rand 3
       env[:links][:icon] ||= icon.node.exist? ? icon : '/favicon.ico'.R(env)                       # default icon
 
       bgcolor = if env[:deny]                                                                      # background color
@@ -597,7 +596,7 @@ class WebResource
       from = p[Creator] unless env[:last][Creator] == re[Creator]
       if re.has_key? To
         color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5] if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
-        text_color = :white if (color[1..2].hex * 3 + color[3..4].hex * 10 + color[5..6].hex) < 1500
+        text_color = :white if color && (color[1..2].hex * 3 + color[3..4].hex * 10 + color[5..6].hex) < 1500
         if env[:last][To] != re[To]
           env[:pattern] = rand 3
           to = p[To]
@@ -626,9 +625,9 @@ class WebResource
                ]}.update(color ? {style: ["border-color: #{color}",
                                           case env[:pattern]
                                           when 0 # blank
-                                            'background: #000'
+                                            nil
                                           when 1 # striped
-                                            "background: repeating-linear-gradient(#{rand(6) * 60}deg, #000, #000, #{sz}em, #{color} #{sz}em, #{color} #{sz * 2}em"
+                                            "background: repeating-linear-gradient(60deg, #000, #000 1em, #{color} 1em, #{color} 2em"
                                           when 2 # solid
                                             "background-color: #{color}"
                                           end].join('; ')} : {}),
