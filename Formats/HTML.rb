@@ -595,8 +595,10 @@ class WebResource
       end
       from = p[Creator] unless env[:last][Creator] == re[Creator]
       if re.has_key? To
-        color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5] if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
-        text_color = :white if color && (color[1..2].hex * 3 + color[3..4].hex * 10 + color[5..6].hex) < 1500
+        if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
+          color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5]
+          text_color = :white if (color[1..2].hex * 3 + color[3..4].hex * 10 + color[5..6].hex) < 1500
+        end
         if env[:last][To] != re[To]
           env[:pattern] = rand 3
           to = p[To]
