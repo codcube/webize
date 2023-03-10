@@ -372,13 +372,16 @@ class WebResource
       HostGET[arg] = lambda
     end
 
-    Webize.configList('hosts/shorturl').map{|h|GET h, -> r {r.dropQS}}
+    GotoURL = -> r {
+      q = r.query_values || {}
+      dest = q['url'] || q['u'] || q['q']
+      dest ? [301, {'Location' => dest.R(r.env).href}, []] : r.notfound}
+
+    Webize.configList('hosts/shorturl').map{|h|
+      GET h, -> r {r.dropQS}}
 
     Webize.configList('hosts/url').map{|h|
-      GET h, -> r {
-        q = r.query_values || {}
-        dest = q['url'] || q['u'] || q['q']
-        dest ? [301, {'Location' => dest.R(r.env).href}, []] : r.notfound}}
+      GET h, GotoURL}
 
     def GET
       return hostGET if host                  # remote node at canonical URI

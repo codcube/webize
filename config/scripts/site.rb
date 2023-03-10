@@ -68,6 +68,8 @@ class WebResource
       when 'sorry' # denied, goto DDG
         q = r.query_values['continue'].R.query_values['q']
         [302, {'Location' => 'https://duckduckgo.com/' + HTTP.qs({q: q})}, []]
+      when 'url'
+        GotoURL[r]
       else
         r.deny
       end}
