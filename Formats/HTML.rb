@@ -128,7 +128,7 @@ module Webize
                               else
                                 [ref.path, ref.query ? ['?', ref.query] : nil].join
                                end)[0..127]),
-               '</span>', ' '] unless blocked || reader
+               '</span>', ' '] unless reader
             end].join
 
           css = []
