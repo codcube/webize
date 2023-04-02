@@ -1,6 +1,6 @@
 # WHAT
 
-fix the web in post-production. some suggest we abandon it - i'm creating the "web i want" with format and protocol bridging to servers of the desired capability
+fix the web in post-production. some suggest we abandon it - i'm creating the "[web i want](https://webwewant.org/)" with format and protocol bridging to servers of the desired capability
 
 # WHY
 
