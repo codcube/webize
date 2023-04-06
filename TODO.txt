@@ -1,3 +1,4 @@
+see also https://rdf-sak.ibis.makethingsmakesense.com 
 finger URIs gemini://freeshell.de/gemlog/2022-01-11.gmi
 generate preview at resource caching time
 use ~/.config/webize instead of git dir for config
