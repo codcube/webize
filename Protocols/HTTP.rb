@@ -109,8 +109,6 @@ class WebResource
       end
       # host-specific token wrangling TODO register these in site.rb
       case host
-      when 'gitter.im'
-        gitterAuth
       when 'twitter.com'
         twAuth
       end
