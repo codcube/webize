@@ -244,7 +244,7 @@ class WebResource
                        charset = nil if charset.empty? || charset == 'empty'
                      end
                      ct[0]
-                   elsif content_type = (fileMIMEsuffix File.extname path)
+                   elsif path && content_type = (fileMIMEsuffix File.extname path)
                      env[:warning] = "MIME unspecified, using #{content_type} from suffix map"
                      content_type
                    else
