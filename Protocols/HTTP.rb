@@ -107,11 +107,6 @@ class WebResource
         env['HTTP_COOKIE'] = cookie.node.read
         logger.debug [:🍪, host, env['HTTP_COOKIE']].join ' '
       end
-      # host-specific token wrangling TODO register these in site.rb
-      case host
-      when 'twitter.com'
-        twAuth
-      end
     end
 
     def debug?
@@ -139,7 +134,7 @@ class WebResource
     end
 
     def deny status = 200, type = nil
-      env[:deny] = true
+      env[:deny] = true 
       return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop query
       ext = File.extname basename if path
       type, content = if type == :stylesheet || ext == '.css'

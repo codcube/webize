@@ -110,6 +110,7 @@ class WebResource
      end}
 
     GET 'twitter.com', -> r {
+      r.twAuth
       parts = r.parts
       if parts.size == 1 && !%w(favicon.ico manifest.json push_service_worker.js search sw.js users).member?(parts[0]) ## user page
         uid = nil
