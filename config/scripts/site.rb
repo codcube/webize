@@ -22,19 +22,6 @@ class WebResource
 
   module HTTP
 
-    ## auth handlers
-
-    def twAuth
-      return unless env['HTTP_COOKIE']
-      attrs = {}
-      env['HTTP_COOKIE'].split(';').map{|attr|
-        k, v = attr.split('=').map &:strip
-        attrs[k] = v}
-      env['authorization'] ||= 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA'
-      env['x-csrf-token'] ||= attrs['ct0'] if attrs['ct0']
-      env['x-guest-token'] ||= attrs['gt'] if attrs['gt']
-    end
-
     ## subscriptions
 
     Subscriptions['www.mixcloud.com'] = Webize.configList('subscriptions/mixcloud').map{|c|"https://api.mixcloud.com/#{c}/cloudcasts/"}
