@@ -38,6 +38,4 @@ command -v trust && sudo trust anchor --store $cert
 
 ## install certificate
 sudo cp $cert $certbase/$hash.0
-sudo cp $cert /android/system/system/etc/security/cacerts/$hash.0
 sudo chmod 644 $certbase/$hash.0
-sudo chmod 644 /android/system/system/etc/security/cacerts/$hash.0
