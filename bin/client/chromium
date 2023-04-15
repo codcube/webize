@@ -1,5 +1,2 @@
 #!/bin/sh
-chromium-browser "http://localhost:8000/$1"
-# http_proxy=http://localhost:8000
-# flatpak run com.github.Eloston.UngoogledChromium
-# --enable-features=UseOzonePlatform --ozone-platform=wayland
+flatpak run com.github.Eloston.UngoogledChromium "http://localhost:8000/$1"
