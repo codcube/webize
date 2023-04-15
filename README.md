@@ -1,3 +1,9 @@
+# BEGIN
+
+[INSTALL](INSTALL.sh) script
+
+[USAGE](USAGE.md) tips
+
 # WHAT
 
 fix the web in post-production. some suggest we abandon it - we'd rather create the [web we want](https://webwewant.org/) via a healthy dose of format and protocol bridging to tools of the desired capability
@@ -29,9 +35,3 @@ in theory, this project can go away once clients and servers are [privacy respec
 # WHO
 
 IX or poka on EFNet/Rizon (eventually OFTC/Libera once a credential-capable IRC bridge exists) chat. msg on IRC to notify if you've emailed the git address or created a bug-report/issue/PR on an online git mirror as those accounts have solely been for public backups/clone-points so far
-
-## GETTING STARTED
-
-[INSTALL](INSTALL.sh) script
-
-[USAGE](USAGE.md) tips
