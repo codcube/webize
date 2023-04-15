@@ -21,20 +21,20 @@ if [ -x "$(command -v pkg)" ]; then
 fi
 
 # Alpine
-which apk && sudo /usr/lib/squid/security_file_certgen -c -s /var/cache/squid/ssl_db -M 4MB && sudo chown -R $uid:$uid /var/cache/squid
+command -v apk && sudo /usr/lib/squid/security_file_certgen -c -s /var/cache/squid/ssl_db -M 4MB && sudo chown -R $uid:$uid /var/cache/squid
 
 # Arch
-which pacman && sudo /usr/lib/squid/security_file_certgen -c -s /var/cache/squid/ssl_db -M 4MB && sudo chown -R $uid:$uid /var/cache/squid
+command -v pacman && sudo /usr/lib/squid/security_file_certgen -c -s /var/cache/squid/ssl_db -M 4MB && sudo chown -R $uid:$uid /var/cache/squid
 
 # Debian
 command -v apt-get && sudo cp $cert /usr/local/share/ca-certificates/CA.crt
 sudo update-ca-certificates
 
 # Void
-which xbps-install && sudo /usr/libexec/squid/security_file_certgen -c -s /var/cache/squid/ssl_db -M 4MB
+command -v xbps-install && sudo /usr/libexec/squid/security_file_certgen -c -s /var/cache/squid/ssl_db -M 4MB
 
 ## p11-kit-trust
-which trust && sudo trust anchor --store $cert
+command -v trust && sudo trust anchor --store $cert
 
 ## install certificate
 sudo cp $cert $certbase/$hash.0
