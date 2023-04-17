@@ -583,8 +583,8 @@ class WebResource
       env[:last] ||= {}
       p = -> a {MarkupPredicate[a][re[a], env] if re.has_key? a} # predicate renderer
       titled = (re.has_key? Title) && env[:last][Title] != re[Title]
-      if uri = re.delete('uri')                                  # unless blank node,
-        uri = uri.R env;  id = uri.local_id                      # full and local-fragment URIs
+      if uri = re['uri']                                         # unless blank node:
+        uri = uri.R env;  id = uri.local_id                      # full URI and fragment identifier
         origin_ref = {_: :a, class: :pointer, href: uri, c: :🔗} # origin pointer
         cache_ref = {_: :a, href: uri.href, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)} # cache pointer
         color = if HostColor.has_key? uri.host
@@ -610,7 +610,9 @@ class WebResource
       env[:last] = re
       sz = rand(10) / 3.0
       rest = {}
-      
+      re.map{|k,v|
+        rest[k] = re[k] unless [Abstract, Content, Creator, Date, From, Image, Link, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
+
       {class: :post,                                           # resource
        c: [to,                                                 # destination
            {class: :content,
@@ -623,7 +625,7 @@ class WebResource
                 [Content, SIOC+'richContent'].map{|p|
                   (re[p]||[]).map{|o|markup o,env}},           # body
                 p[Link],                                       # untyped links
-                #HTML.keyval(re,env), # key/val render remaining data
+                HTML.keyval(rest, env),                        # key/val render of remaining data
                ]}.update(color ? {style: ["border-color: #{color}",
                                           case env[:pattern]
                                           when 0 # blank
