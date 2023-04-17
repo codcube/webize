@@ -1,4 +1,3 @@
-
 # coding: utf-8
 module Webize
   module CSS
@@ -612,7 +611,6 @@ class WebResource
       rest = {}
       re.map{|k,v|
         rest[k] = re[k] unless [Abstract, Content, Creator, Date, From, Image, Link, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
-
       {class: :post,                                           # resource
        c: [to,                                                 # destination
            {class: :content,
@@ -625,7 +623,7 @@ class WebResource
                 [Content, SIOC+'richContent'].map{|p|
                   (re[p]||[]).map{|o|markup o,env}},           # body
                 p[Link],                                       # untyped links
-                HTML.keyval(rest, env),                        # key/val render of remaining data
+                (HTML.keyval(rest, env) unless rest.empty?),   # key/val render of remaining data
                ]}.update(color ? {style: ["border-color: #{color}",
                                           case env[:pattern]
                                           when 0 # blank

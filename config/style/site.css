@@ -27,7 +27,7 @@
 .links .path a {font-weight: normal}
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .path_crumb {color: #bbb}
-.post .content {border: 1px solid #444; margin: 0}
+.post .content {border: 1px solid #484848; margin: 0}
 .post .from {background-color: #000; border-style: solid; border-width: 0 0 1px 0; border-radius: .3em .3em 0 0}
 .post .to {font-size: 1.25em; border-radius: .3em .3em 0 0; color: #000; margin-top: .42em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
@@ -53,6 +53,7 @@ a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; p
 a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
 a.global, a.global span.id {background-color: #005}
 a.global, a.local {border: 1px dotted #008; border-radius: .38em}
+a.global:visited, a.local:visited {border-color: #408}
 a.global:visited, a.global:visited span.id, a.local:visited, a.local:visited span.id {background-color: #305}
 a.local, a.local span.id {background-color: #003}
 audio {width: 80ex; float: right}
