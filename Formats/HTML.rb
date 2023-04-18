@@ -87,7 +87,7 @@ module Webize
                      elsif ref.scheme == 'mailto'
                        '#48f'
                      end
-            e['style'] = "border-color: black; border-style: solid; color: black; background-color: #{color}"
+            e['style'] = "border-color: #{color}; border-style: solid; color: #{color}; background-color: #000; margin-bottom: 1px"
           end
 
           e.inner_html = [
@@ -378,7 +378,7 @@ class WebResource
       StatusColor[s.to_i] = StatusColor[s]}
 
     # Graph -> HTML
-    def htmlDocument graph
+    def htmlDocument graph={}
       status = env[:origin_status]
       icon = join('/favicon.ico').R env                                                            # well-known icon location
 

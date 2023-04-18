@@ -148,10 +148,7 @@ class WebResource
                       elsif type == :JSON || ext == '.json'
                         ['application/json','{}']
                       else
-                        env.delete :view
-                        env[:qs].map{|k,v|
-                          env[:qs][k] = v.R if v && v.index('http')==0 && !v.index(' ')}
-                        ['text/html; charset=utf-8', htmlDocument({'#req'=>env})]
+                        ['text/html; charset=utf-8', htmlDocument]
                       end
       [status,
        {'Access-Control-Allow-Credentials' => 'true',
