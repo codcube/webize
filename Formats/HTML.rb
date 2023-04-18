@@ -447,7 +447,7 @@ class WebResource
                              else            # columnar
                                {class: :columns,
                                 c: if env.has_key? :sort
-                                 sort graph.values, env[:sort], env
+                                 HTML.sort graph.values, env[:sort], env
                                else
                                  graph.values
                                 end.map{|v|
@@ -629,15 +629,14 @@ class WebResource
                   (re[p]||[]).map{|o|markup o,env}},           # body
                 p[Link],                                       # untyped links
                 (HTML.keyval(rest, env) unless rest.empty?),   # key/val render of remaining data
-               ]}.update(color ? {style: ["border-color: #{color}",
-                                          case env[:pattern]
-                                          when 0 # blank
-                                            nil
-                                          when 1 # striped
-                                            "background: repeating-linear-gradient(60deg, #000, #000 1em, #{color} 1em, #{color} 2em"
-                                          when 2 # solid
-                                            "background-color: #{color}"
-                                          end].join('; ')} : {}),
+               ]}.update(color ? {style: case env[:pattern]
+                                         when 0 # blank
+                                           "border-color: #{color}"
+                                         when 1 # striped
+                                           "background: repeating-linear-gradient(60deg, #000, #000 1em, #{color} 1em, #{color} 2em; border-color: #{color}"
+                                         when 2 # solid
+                                           "background-color: #{color}; border-color: #000"
+                                         end} : {}),
           ]}.update(id ? {id: id} : {})}                       # representation identifier
 
   end
