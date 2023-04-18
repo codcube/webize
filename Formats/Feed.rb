@@ -68,8 +68,8 @@ module Webize
                   yield subject, Image, link
                 elsif %w{.mp4 .webm}.member?(ext) || link.host&.match(/v.redd.it|vimeo|youtu/)
                   yield subject, Video, link
-                elsif link != subject
-                  yield subject, DC+'link', link
+#                elsif link != subject
+#                  yield subject, DC+'link', link
                 end
               end}
 
