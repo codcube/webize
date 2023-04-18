@@ -23,7 +23,7 @@ class WebResource
                   [{_: :th, class: p == sortAttr ? :sort : '', # ☛ sorted columns
                     c: {_: :a, href: HTTP.qs(env[:qs].merge({'sort' => p.uri, 'order' => env[:order] == 'asc' ? 'desc' : 'asc'})), c: icon}}, "\n"]}}}, "\n",
            {_: :tbody,
-            c: sort(graph,env).map{|resource| # resource data
+            c: sort(graph, sortAttr, env).map{|resource| # resource data
               re = if resource['uri']         # resource URI
                      resource['uri']
                    elsif resource[DC + 'identifier']

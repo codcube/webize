@@ -442,11 +442,16 @@ class WebResource
                              (['<br>⚠️',{_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
                              link[:up,'&#9650;'],
                              case env[:view] # layout function:
-                             when 'table'    # tabular layout
+                             when 'table'    # tabular
                                HTML.tabular graph.values, env
-                             else            # columnar layout w/ type-indexed resource renderers
+                             else            # columnar
                                {class: :columns,
-                                c: HTML.sort(graph.values, env[:sort] || To, env).map{|v| HTML.markup v, env}}
+                                c: if env.has_key? :sort
+                                 sort graph.values, env[:sort], env
+                               else
+                                 graph.values
+                                end.map{|v|
+                                  HTML.markup v, env}}
                              end,
                              link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
                              {_: :script, c: Webize::Code::SiteJS}]}]}]
