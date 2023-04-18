@@ -10,7 +10,7 @@
 .abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked {background: repeating-linear-gradient(45deg, #f00, #f00 .5em, #000 .5em, #000 1em); color: #fff}
 .bold {font-weight: bold}
-.columns {columns: auto 80ex; column-gap: 0}
+.columns {column-width: 80ex; column-gap: 0}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 4.2em; background-color: #000; color: #fff}
@@ -66,7 +66,6 @@ body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
 code {color: #000; background-color: #eee; padding: .1em}
-div, a, svg, form, pre, table, textarea {display: inline-block}
 iframe, .preembed {border: .2em solid #fff}
 iframe.main_player {border: .25em solid red}
 img, li, p  {border-radius: .25em; margin: 0 1px 0 1px}

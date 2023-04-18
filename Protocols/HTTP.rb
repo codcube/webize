@@ -53,9 +53,6 @@ class WebResource
         color = env[:deny] ? '38;5;196' : (FormatColor[outFmt]||0)  # format -> color
         referer = env['HTTP_REFERER'].R if env['HTTP_REFERER']      # referer
 
-
-        # \e]8;;https://localhost:8000\alocalhost\e]8;;\a
-
         log [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil, # transport security
              if env[:deny]                                          # action taken:
                '🛑'                                                 # blocked
