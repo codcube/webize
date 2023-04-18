@@ -95,7 +95,7 @@ class DNSServer
                 end
         puts [Time.now.iso8601[11..15],
               [color,
-               "\e]8;;https://#{hostname}/\a#{hostname}\e]8;;\a",
+               resource.deny_domain? ? hostname : "\e]8;;https://#{hostname}/\a#{hostname}\e]8;;\a",
                "\e[0m"].join].join ' '
       end
       src.reply r.response(result)

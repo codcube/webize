@@ -120,6 +120,7 @@ last_publication_date
 last_status_at
 last_updated_date
 lastmod
+modDate
 modified
 modifiedDate
 modifiedOn
@@ -135,6 +136,7 @@ originalPublicationTimestamp
 originalPublishDate
 parsely-pub-date
 pdate
+pubDate
 pub_date
 pubdate
 publicationTimestamp
