@@ -24,15 +24,16 @@ class WebResource
 
     ## subscriptions
 
-    Subscriptions['www.mixcloud.com'] = Webize.configList('subscriptions/mixcloud').map{|c|"https://api.mixcloud.com/#{c}/cloudcasts/"}
+    Subscriptions['www.mixcloud.com'] = Webize.configList('subscriptions/mixcloud').map{|c|
+      "https://api.mixcloud.com/#{c}/cloudcasts/"}
 
-    SC = {client_id: 'nBNZK2jas9ofvx4mqT6KYcUoDFeOdlRn',
-          version: 1680773289}
+    SC = {client_id: 'nBNZK2jas9ofvx4mqT6KYcUoDFeOdlRn', version: 1680773289}
 
     Subscriptions['soundcloud.com'] = Webize.configList('subscriptions/soundcloud').map{|chan|
       "https://api-v2.soundcloud.com/stream/users/#{chan}?client_id=#{SC[:client_id]}&limit=20&offset=0&linked_partitioning=1&app_version=#{SC[:version]}&app_locale=en"}
 
-    Subscriptions['www.youtube.com'] = Webize.configList('subscriptions/youtube').map{|c|'https://www.youtube.com/feeds/videos.xml?channel_id=' + c}
+    Subscriptions['www.youtube.com'] = Webize.configList('subscriptions/youtube').map{|c|
+      'https://www.youtube.com/feeds/videos.xml?channel_id=' + c}
 
     ## GET handlers
 
