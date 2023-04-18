@@ -635,7 +635,7 @@ class WebResource
                                          when 1 # striped
                                            "background: repeating-linear-gradient(60deg, #000, #000 1em, #{color} 1em, #{color} 2em; border-color: #{color}"
                                          when 2 # solid
-                                           "background-color: #{color}; border-color: #000; border-width: 0 0 1px 0; padding-bottom: .2em"
+                                           "background-color: #{color}; border-color: #000; border-width: 0 0 .125em 0"
                                          end} : {}),
           ]}.update(id ? {id: id} : {})}                       # representation identifier
 
