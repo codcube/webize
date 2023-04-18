@@ -22,6 +22,7 @@
 .interactionCount .type {border-radius: .38em 0 0 .38em}
 .interactionCount span {background-color: #fff; color: #000; padding: .1em}
 .interactionCount {white-space: nowrap; margin: .06em}
+.links {border: 1px dashed #666}
 .links .host img {max-width: 4em}
 .links .host {text-align: right}
 .links .path a {font-weight: normal}
