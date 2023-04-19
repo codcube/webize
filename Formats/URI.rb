@@ -125,7 +125,7 @@ class WebResource < RDF::URI
       end
     end
 
-    def uri_toolbar breadcrumbs=nil
+    def toolbar breadcrumbs=nil
       bc = ''                                                       # breadcrumb path
       env[:searchterm] ||= 'q'                                      # query argument
 
@@ -136,7 +136,7 @@ class WebResource < RDF::URI
            ({_: :a, id: :tabular, c: '↨',
              href: HTTP.qs(env[:qs].merge({'view' => 'table', 'sort' => 'date'}))} unless env[:view] == 'table'),       # 👉 tabular view
            ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed, c: :🛑} if host && !deny?),    # block host
-           {class: :path, c: env[:base].parts.map{|p|
+           {_: :span, class: :path, c: env[:base].parts.map{|p|
               bc += '/' + p                                                                                             # 👉 path breadcrumbs
               ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
                      href: env[:base].join(bc).R(env).href,
@@ -154,7 +154,17 @@ class WebResource < RDF::URI
              feed = feed.R(env)
              {_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'feed' + Digest::SHA2.hexdigest(feed.uri)}.
                update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {})}, # highlight canonical feed
-           (:🔌 if offline?)]} # denote offline mode
+           (:🔌 if offline?),                                                                                           # denote offline mode
+           {_: :span, class: :stats,
+            c: [({_: :span, c: env[:origin_status], class: :bold} if env[:origin_status] && env[:origin_status] != 200),# origin status
+                (elapsed = Time.now - env[:start_time] if env.has_key? :start_time
+                 [{_: :span, c: '%.1f' % elapsed}, :⏱️] if elapsed > 1),                                                 # elapsed time
+                if env.has_key? :repository                                                                             # graph size
+                  nGraphs = (env[:updates] || env[:repository]).graph_names.size
+                  nTriples = (env[:updates] || env[:repository]).size
+                  [([{_: :span, c: nGraphs}, :🗃] if nGraphs > 1),
+                   ([{_: :span, c: nTriples}, :⋮] if nTriples > 0)]
+                end]}]}
     end
     
     # URI -> lambda

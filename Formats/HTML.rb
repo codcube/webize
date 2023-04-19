@@ -428,17 +428,7 @@ class WebResource
                                {_: :link, rel: type, href: CGI.escapeHTML(resource.R(env).href)}}]},
                         {_: :body,
                          c: [{_: :img, class: :favicon, src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href},
-                             uri_toolbar,
-                             {class: :stats,
-                              c: [({_: :span, c: env[:origin_status], class: :bold} if env[:origin_status] && env[:origin_status] != 200), # origin status
-                                  (elapsed = Time.now - env[:start_time] if env.has_key? :start_time
-                                   [{_: :span, c: '%.1f' % elapsed}, :⏱️] if elapsed > 1),                                         # elapsed time
-                                  if env.has_key? :repository
-                                    nGraphs = (env[:updates] || env[:repository]).graph_names.size
-                                    nTriples = (env[:updates] || env[:repository]).size
-                                    [([{_: :span, c: nGraphs}, :🗃] if nGraphs > 1),
-                                     ([{_: :span, c: nTriples}, :⋮] if nTriples > 0)]
-                                  end]},
+                             toolbar,
                              (['<br>⚠️',{_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
                              link[:up,'&#9650;'],
                              case env[:view] # layout function:
