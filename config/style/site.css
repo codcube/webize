@@ -41,10 +41,10 @@
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title {background-color: #000; border-radius: 0; max-width: 80ex}
 .title:visited {background-color: #222}
-.toolbox .path {color: #aaa; font-size: .8em}
+.toolbox .path {color: #aaa; font-size: .8em; text-shadow: 1px 1px #000}
 .toolbox form input {background-color: #000; color: #fff; border-radius: .5em; border-width: 0; font-size: .8em}
 .toolbox svg {height: 1em; width: 1em}
-.toolbox {vertical-align: top; font-size: 1.33em; color: #fff; text-shadow: 1px 1px #000}
+.toolbox {vertical-align: top}
 .video {border: solid .3em #444; background-color: #000; margin: .2em;  border-radius: .5em}
 .warning {background-color: #ff0; color: #000; font-size: 1.1em}
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}
