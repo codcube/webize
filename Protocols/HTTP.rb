@@ -17,7 +17,7 @@ class WebResource
     StatusIcon.keys.map{|s|                              # status code (int) -> char
       StatusIcon[s.to_i] = StatusIcon[s]}
 
-    def self.bwPrint kv; kv.map{|k,v| "\e[38;5;7;7m#{k}\e[0m#{v}" } end
+    def self.bwPrint kv; kv.map{|k,v| "\e[38;5;7;7m#{k}\e[0m#{v}\n" } end
 
     # Rack entry-point
     def self.call env
@@ -430,7 +430,7 @@ class WebResource
     def headers raw = nil
       raw ||= env || {}                               # raw headers
       head = {}                                       # cleaned headers
-      logger.debug ["\e[7m🥩 ← 🗣 \e[0m ", HTTP.bwPrint(raw)].join if debug? # raw debug-prints
+      logger.debug ["\e[7m🥩 ← 🗣 \e[0m #{uri}\n", HTTP.bwPrint(raw)].join if debug? # raw debug-prints
 
       raw.map{|k,v|                                   # (key, val) tuples
         unless k.class!=String || k.match?(/^(protocol|rack)\./i) # except rack/server-use fields
@@ -464,7 +464,7 @@ class WebResource
 
       head['User-Agent'] = 'curl/7.82.0' if %w(po.st t.co).member? host # to prefer HTTP HEAD redirections e over procedural Javascript, advertise a basic user-agent
 
-      logger.debug ["\e[7m🧽 ← 🗣 \e[0m ", HTTP.bwPrint(head)].join if debug? # clean debug-prints
+      logger.debug ["\e[7m🧽 ← 🗣 \e[0m #{uri}\n", HTTP.bwPrint(head)].join if debug? # clean debug-prints
 
       head
     end
