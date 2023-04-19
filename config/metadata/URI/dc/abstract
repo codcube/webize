@@ -81,6 +81,7 @@ ledeCaption
 localizedCaption
 log_category
 message
+meta_description
 mostRelevantTags
 msapplication-tooltip
 news_keywords
