@@ -87,7 +87,7 @@ module Webize
                      elsif ref.scheme == 'mailto'
                        '#48f'
                      end
-            e['style'] = "border-color: #{color}; border-style: solid; color: #{color}; background-color: #000; margin-bottom: 1px"
+            e['style'] = "border-color: #{color}; border-style: solid; color: #{color}; background-color: #000"
           end
 
           e.inner_html = [
@@ -429,7 +429,7 @@ class WebResource
                         {_: :body,
                          c: [{_: :img, class: :favicon, src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href},
                              toolbar,
-                             (['<br>⚠️',{_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
+                             (['<br>⚠️', {_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
                              link[:up,'&#9650;'],
                              case env[:view] # layout function:
                              when 'table'    # tabular

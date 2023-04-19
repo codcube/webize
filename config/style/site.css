@@ -54,7 +54,7 @@ a span {color: #bbb; font-weight: normal; font-size: 0.82em}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; max-width: 40em; overflow: hidden; vertical-align: top}
 a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
 a.global, a.global span.id {background-color: #005}
-a.global, a.local {border: 1px dotted #008; border-radius: .38em; display: inline-block}
+a.global, a.local {border: 1px dotted #008; border-radius: .38em; display: inline-block; margin-bottom: 1px}
 a.global:visited, a.local:visited {border-color: #40c}
 a.global:visited, a.global:visited span.id, a.local:visited, a.local:visited span.id {background-color: #305}
 a.local, a.local span.id {background-color: #003}
@@ -62,7 +62,7 @@ audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .original, .quote, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em}
 blockquote, ol, p, ul {max-width: 80ex}
 blockquote::before, .quote::before {content: '>'; float: left}
-body, dfn, figcaption, li, p, pre, .post span {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, Sans Serif}
+body, dfn, figcaption, li, p, pre, .post .content > span {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, Sans Serif}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
