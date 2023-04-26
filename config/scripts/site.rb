@@ -174,7 +174,7 @@ class WebResource
         data.map{|mix|
           graph = subject = mix['url'].R
           date = mix['created_time']
-          unless env.has_key?('HTTP_IF_MODIFIED_SINCE') && date < Time.httpdate(env['HTTP_IF_MODIFIED_SINCE']).iso8601
+          #unless env.has_key?('HTTP_IF_MODIFIED_SINCE') && date < Time.httpdate(env['HTTP_IF_MODIFIED_SINCE']).iso8601
             yield subject, Type, Post.R, graph
             yield subject, Title, mix['name'], graph
             yield subject, Date, date, graph
@@ -187,7 +187,8 @@ class WebResource
             end
             mix['tags'].map{|tag|
               yield subject, Abstract, tag['name'], graph}
-          end}
+          #end
+        }
       else
         puts "no data in #{uri}"
       end
