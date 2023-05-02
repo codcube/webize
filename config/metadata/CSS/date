@@ -1,5 +1,6 @@
 .age
 .byline > span[title]
+.note-header > a[title]
 [data-time]
 [data-timestamp]
 [data-utc]
