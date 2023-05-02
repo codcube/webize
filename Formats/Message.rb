@@ -50,33 +50,23 @@ module Webize
                 yield subject, Date, date.iso8601, graph
                 created.remove
               end}
-
-            post.css(MsgCSS[:creator]).map{|name|
-              yield subject, Creator, name.inner_text, graph               # author name
-              name.remove }
-
-            post.css(MsgCSS[:creatorHref]).map{|a|
-             yield subject, Creator, (@base.join a['href']), graph         # author URI
-             a.remove }
+                                                                           # author name and URI
+            (authorText = post.css(MsgCSS[:creator])).map{|c| yield subject, Creator, c.inner_text, graph }
+            (authorURI = post.css(MsgCSS[:creatorHref])).map{|c| yield subject, Creator, @base.join(c['href']), graph }
+            [authorURI, authorText].map{|a|a.map{|c| c.remove }}
 
             post.css(MsgCSS[:title]).map{|subj|
               yield subject, Title, subj.inner_text, graph                 # title
               subj.remove }
 
-            post.css('img').map{|i|
-              yield subject, Image, (@base.join i['src']), graph}          # image
+            post.css('img').map{|i| yield subject, Image, @base.join(i['src']), graph}           # image @src
+            post.css(MsgCSS[:image]).map{|a| yield subject, Image, @base.join(a['href']), graph} # image @href
+            post.css(MsgCSS[:imageP]).map{|img|                                                  # image @href on parent node
+              yield subject, Image, @base.join(img.parent['href']), graph }
+            post.css(MsgCSS[:imagePP]).map{|img|                                                 # image @href on parent-parent node
+              yield subject, Image, @base.join(img.parent.parent['href']), graph }
 
-            post.css(MsgCSS[:image]).map{|a|
-              yield subject, Image, (@base.join a['href']), graph}         # image reference
-
-            post.css(MsgCSS[:imageP]).map{|img|                            # image reference on parent node
-              yield subject, Image, (@base.join img.parent['href']), graph }
-
-            post.css(MsgCSS[:imagePP]).map{|img|                           # image reference on grandparent node
-              yield subject, Image, (@base.join img.parent.parent['href']), graph }
-
-            post.css(MsgCSS[:video]).map{|a|                               # video
-              yield subject, Video, (@base.join a['href']), graph }
+            post.css(MsgCSS[:video]).map{|a| yield subject, Video, @base.join(a['href']), graph} # video
 
             post.css('.comment-comments').map{|c|                          # comment count
               if count = c.inner_text.strip.match(/^(\d+) comments$/)
@@ -88,7 +78,7 @@ module Webize
 
             cs.map{|c|                                                     # content
               c.css(MsgCSS[:reply]).map{|reply_of|
-                yield subject, To, (@base.join reply_of['href']), graph    # reply-of reference
+                yield subject, To, @base.join(reply_of['href']), graph    # reply-of reference
                 reply_of.remove}
 
               c.traverse{|n|                                               # hrefize text nodes

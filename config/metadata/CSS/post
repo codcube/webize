@@ -6,6 +6,7 @@
 .comment
 .entry
 .message
+.note
 .op-msg
 .post
 .post-container

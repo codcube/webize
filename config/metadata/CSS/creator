@@ -13,3 +13,4 @@
 .postername
 .username
 [data-hovercard-type="user"]
+a.user
