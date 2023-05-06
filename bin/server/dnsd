@@ -1,1 +1,2 @@
-dnsd-mini4
+#!/usr/bin/env ruby
+# coding: utf-8
