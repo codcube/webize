@@ -1,10 +1,15 @@
 .age
 .byline > span[title]
+.datetime
+.labelCreated
 .note-header > a[title]
+.postdate
+.time-since
 [data-time]
 [data-timestamp]
 [data-utc]
 [datetime]
 [timestamp]
 [unixtime]
+td.thead > div.normal
 time

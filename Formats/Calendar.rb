@@ -92,15 +92,22 @@ end
 
 module Webize
 
-  def self.date o
-    return unless o
-    o = o.to_s
-    return o if o.empty?
-    (o.match?(/^\d+$/) ? Time.at(o.to_i) : Time.parse(o)).utc.iso8601
-  rescue Exception => e
-    #Console.logger.failure o, e
-    Console.logger.warn "failed to parse time: #{o}"
-    o
+  def self.date d
+    return unless d
+    d = d.to_s
+    return nil if d.empty?
+    if d.match? /^\d+$/
+      Time.at d.to_i        # UNIX time
+    else
+      Time.parse d          # stdlib parse
+    end.utc.iso8601
+  rescue
+    if c = Chronic.parse(d) # Chronic parse
+      c.utc.iso8601
+    else
+      Console.logger.warn "failed to parse time: #{d}"
+      d
+    end
   end
 
   module Calendar

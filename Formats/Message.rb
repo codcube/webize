@@ -9,7 +9,6 @@ module Webize
  creator
  creatorHref
  date
- freeformDate
  gunk
  image imageP imagePP
  link
@@ -19,7 +18,7 @@ module Webize
  video).map{|a| # load user-defined maps
         MsgCSS[a.to_sym] = Webize.configList('metadata/CSS/' + a).join ', '}
 
-      DateAttr = %w(data-time data-timestamp data-utc date datetime time timestamp unixtime title)
+      DateAttr = %w(data-time data-timestamp data-utc date datetime time timestamp unixtime data-content title)
 
       def scanMessages
         @doc.css(MsgCSS[:post]).map{|post|                                 # visit post(s)
@@ -44,12 +43,6 @@ module Webize
             post.css(MsgCSS[:date]).map{|d|                                # ISO8601 and UNIX timestamp
               yield subject, Date, d[DateAttr.find{|a| d.has_attribute? a }] || d.inner_text, graph
               d.remove}
-
-            post.css(MsgCSS[:freeformDate]).map{|created|                  # freeform timestamp
-              if date = Chronic.parse(created['data-content'] || created.inner_text)
-                yield subject, Date, date.iso8601, graph
-                created.remove
-              end}
                                                                            # author name and URI
             (authorText = post.css(MsgCSS[:creator])).map{|c| yield subject, Creator, c.inner_text, graph }
             (authorURI = post.css(MsgCSS[:creatorHref])).map{|c| yield subject, Creator, @base.join(c['href']), graph }
