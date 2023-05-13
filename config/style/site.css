@@ -39,7 +39,7 @@
 .quote > .quote {background-color: #aaa}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
-.title {background-color: #fff; color: #000; border-radius: 0; max-width: 80ex; border-style: solid; border-color: #888; border-width: 0 0 0 .3em; margin-left: -.2em}
+.title {background-color: #fff; color: #000; border-radius: 0; max-width: 80ex}
 .title:visited {background-color: #ccc}
 .toolbox .path {color: #aaa; font-size: .8em; text-shadow: 1px 1px #000}
 .toolbox form input {background-color: #000; color: #fff; border-radius: .5em; border-width: 0; font-size: .8em}
@@ -56,7 +56,7 @@ a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; 
 a.global, a.global span.id {background-color: #005}
 a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block; margin-bottom: 1px}
 a.global:visited, a.global:visited span.id, a.local:visited, a.local:visited span.id {background-color: #000}
-a.global:visited, a.local:visited {border-color: #a2f}
+a.global:visited, a.local:visited {border-color: #80f}
 a.local, a.local span.id {background-color: #003}
 audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .original, .quote, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em}
