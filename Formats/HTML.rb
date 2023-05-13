@@ -591,7 +591,6 @@ class WebResource
       if re.has_key? To
         if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
           color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5]
-          text_color = :white if (color[1..2].hex * 3 + color[3..4].hex * 10 + color[5..6].hex) < 1500
         end
         if env[:last][To] != re[To]
           env[:pattern] = rand 3
@@ -600,7 +599,7 @@ class WebResource
       end
       date = p[Date]
       link = {class: :title, c: p[Title]}.                     # title
-               update(cache_ref || {}).update(color ? {style: "color: #{text_color || color}"} : {}) if titled
+               update(cache_ref || {}) if titled
       env[:last] = re
       sz = rand(10) / 3.0
       rest = {}

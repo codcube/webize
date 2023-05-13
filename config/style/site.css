@@ -39,8 +39,8 @@
 .quote > .quote {background-color: #aaa}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
-.title {background-color: #000; border-radius: 0; max-width: 80ex; border-style: solid; border-color: #888; border-width: 0 0 0 .6em; margin-left: -.6em}
-.title:visited {background-color: #222}
+.title {background-color: #fff; color: #000; border-radius: 0; max-width: 80ex; border-style: solid; border-color: #888; border-width: 0 0 0 .3em; margin-left: -.2em}
+.title:visited {background-color: #ccc}
 .toolbox .path {color: #aaa; font-size: .8em; text-shadow: 1px 1px #000}
 .toolbox form input {background-color: #000; color: #fff; border-radius: .5em; border-width: 0; font-size: .8em}
 .toolbox svg {height: 1em; width: 1em}
@@ -52,7 +52,7 @@ a div, form {display: inline-block}
 a img {float: left}
 a span {color: #bbb; font-weight: normal; font-size: 0.82em}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; max-width: 40em; overflow: hidden; vertical-align: top}
-a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: .2em; margin: 0; font-size: .8em}
+a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: 0 0 .2em .2em; margin: 0; font-size: .8em}
 a.global, a.global span.id {background-color: #005}
 a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block; margin-bottom: 1px}
 a.global:visited, a.global:visited span.id, a.local:visited, a.local:visited span.id {background-color: #000}
