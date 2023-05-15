@@ -43,10 +43,14 @@ module Webize
             post.css(MsgCSS[:date]).map{|d|                                # ISO8601 and UNIX timestamp
               yield subject, Date, d[DateAttr.find{|a| d.has_attribute? a }] || d.inner_text, graph
               d.remove}
-                                                                           # author name and URI
-            (authorText = post.css(MsgCSS[:creator])).map{|c| yield subject, Creator, c.inner_text, graph }
-            (authorURI = post.css(MsgCSS[:creatorHref])).map{|c| yield subject, Creator, @base.join(c['href']), graph }
-            [authorURI, authorText].map{|a|a.map{|c| c.remove }}
+
+            (authorText = post.css(MsgCSS[:creator])).map{|c|              # author
+              yield subject, Creator, c.inner_text, graph }
+            (authorURI = post.css(MsgCSS[:creatorHref])).map{|c|
+              yield subject, Creator, @base.join(c['href']), graph }
+            [authorURI, authorText].map{|a|
+              a.map{|c|
+                c.remove }}
 
             post.css(MsgCSS[:title]).map{|subj|
               yield subject, Title, subj.inner_text, graph                 # title
