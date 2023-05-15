@@ -11,5 +11,6 @@
 [datetime]
 [timestamp]
 [unixtime]
+relative-time
 td.thead > div.normal
 time
