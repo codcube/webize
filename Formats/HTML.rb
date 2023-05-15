@@ -215,7 +215,7 @@ module Webize
           fn.call RDF::Statement.new(s.R, p.R,
                                      p == Content ? ((l = RDF::Literal o).datatype = RDF.HTML
                                                      l) : o,
-                                     graph_name: g ? g.R : @base)}
+                                     graph_name: g ? g.R : @base) if s && p && o}
       end
 
       def scanContent &f
