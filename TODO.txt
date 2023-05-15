@@ -21,6 +21,7 @@ hash fetched entities to prevent redundant parsing/summarization work when origi
 log byte-range req
 if feed post-limit is 20 and we have 20 in updates, we're probably missing posts - save and highlight pagination next/prev links for graph
 feedURL hook
+move inline container data to top breadcrumbs
 ipfs/ipns protocol handler https://archive.fosdem.org/2021/schedule/event/open_research_filecoin_ipfs/
 blank page https://efdn.notion.site/0314a1800b774258a8e6197487c479bc?v=15fb6b39a490413cbba3b7f78ad67c2b 
 dedupe images, link to shown image from placeholder icons
@@ -28,6 +29,8 @@ assemble dash/hls manifest for youtube data we have from the json , so we can st
 populate geographic index from encountered RDF https://www.jphs.org/20th-century/2017/11/13/boston-remembers-kurt-cobain
 multiple videos, using first:https://www.youtube.com/opensearch?locale=en_US, https://www.youtube.com/watch?v=k2sIDDco5xg, http://www.youtube.com/watch?v=k2sIDDco5xg&feature=applinks, @youtube
 propagate blocklist changes around to peers (unblock entire proxy chain at once) - still use git?
+12h: ⚠️ no RDF reader for application/opensearchdescription+xml
+RDF(a) from search hints to top searchbox params
 link from parent to child resources in generic JSON triplr
 drop nulls somewhere in the triplr pipeline http://localhost:8000/https://lilsilva.persona.co
 per-site upstreams/proxies for custom archival scenarios. also alleviates broken edge caching (wrt rm -rf .chromium or even just dropping out of the 1GB cache)
