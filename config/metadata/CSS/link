@@ -5,10 +5,10 @@
 .tweet-link
 .u-url
 .views-field-title a
+[id*="permalink"]
+a.Link--secondary
 a.chat-item__time
 a.linkSelf
 a.post_no
 a.titlelink
 h3 > a
-[id*="permalink"]
-a.Link--secondary
