@@ -11,3 +11,4 @@ a.post_no
 a.titlelink
 h3 > a
 [id*="permalink"]
+.Link--secondary

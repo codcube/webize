@@ -587,7 +587,7 @@ class WebResource
                   :red
                 end
       end
-      from = p[Creator] unless env[:last][Creator] == re[Creator]
+      from = p[Creator] # unless env[:last][Creator] == re[Creator]
       if re.has_key? To
         if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
           color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5]
