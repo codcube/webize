@@ -79,12 +79,13 @@ module Webize
                 reply_of.remove}
 
               c.traverse{|n|                                               # hrefize text nodes
-                if n.text? && n.to_s.match?(/https?:\/\//)
+                if n.text? && n.to_s.match?(/https?:\/\//) && n.parent.name != 'a'
                   n.add_next_sibling (CGI.unescapeHTML n.to_s).hrefs{|p,o| yield subject, p, o}
                   n.remove
                 end}
 
-              yield subject, Content, Webize::HTML.format(c.to_s, @base), graph}
+              yield subject, Content, Webize::HTML.format(c.to_s, @base), graph
+            }
 
             post.remove
           end}
