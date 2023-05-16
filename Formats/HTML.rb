@@ -87,7 +87,7 @@ module Webize
                      elsif ref.scheme == 'mailto'
                        '#48f'
                      end
-            e['style'] = "border-color: #{color}; border-style: solid; color: #{color}; background-color: #000"
+            e['style'] = "border-color: #{color}; " + (blocked ? "background: repeating-linear-gradient(#{rand(8) * 45}deg, #{color}, #{color} 1em, #000 1em, #000 2em); color: white" : "background-color: #000; color: #{color}")
           end
 
           e.inner_html = [
