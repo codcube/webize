@@ -61,4 +61,5 @@ RDF::URI #query_values hates multiple/leading/trailing &s, submit patch upstream
 for node IDs in HTML content.. yield each as RDF HTML-content
 shift-right/left pagination shortcuts conflict with text-selection adjustment
 re-parsing PDFs when offline http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date - remove @path
+PDF images missing http://localhost:8000/https://www.bc.edu/content/dam/bc1/schools/carroll/Centers/corcoran-center/Gallivan%20Boulevard%20Concept%20Final%20-%20Spreads.pdf
 when subscription results have page pointers and the first page is all new updates, fetch rhe next pages to catch up
