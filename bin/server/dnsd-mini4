@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 # previously Simple DNS server by Peter Cooper w/ MIT license
-# typical usage: system resolver set to 127.0.0.1,
-# and ip tables redirecting port 53 to port 1053 listener
 
 require_relative '../../index'
 

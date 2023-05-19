@@ -19,6 +19,7 @@ link to local-archive URL from timeline http://localhost/2021/07/04/12/*#r5a53af
 IRC linepointers are #hashonly, but resolution per-line might be expensive, investigate naive string-concat solution
 hash fetched entities to prevent redundant parsing/summarization work when origin caching is broken - essentially generate our own ETags
 log byte-range req
+title missing if source is RDF, not HTML
 if feed post-limit is 20 and we have 20 in updates, we're probably missing posts - save and highlight pagination next/prev links for graph
 feedURL hook
 move inline container data to top breadcrumbs
