@@ -91,6 +91,14 @@ class WebResource
      end}
 
     GET 'twitter.com', -> r {[301, {'Location' => ['//nitter.net',  r.path,  '?', r.query].join.R(r.env).href}, []]}
+    GET 'nitter.net', -> r {
+      ps = r.parts
+      if ps[0] == 'pic'
+        [301, {'Location' => ['//pbs.twimg.com/', Rack::Utils.unescape_path(ps[1])].join.R(r.env).href}, []]
+      else
+        r.fetch
+      end}
+
     GET 'wiki.c2.com', -> r {['https://proxy.c2.com/wiki/remodel/pages/', r.env['QUERY_STRING']].join.R(r.env).fetchHTTP}
 
     GET 'www.youtube.com', -> r {
