@@ -22,6 +22,7 @@ log byte-range req
 title missing if source is RDF, not HTML
 if feed post-limit is 20 and we have 20 in updates, we're probably missing posts - save and highlight pagination next/prev links for graph
 feedURL hook
+rewrite URLs on output to cut out local redirects (nitter 301s etc)
 move inline container data to top breadcrumbs
 ipfs/ipns protocol handler https://archive.fosdem.org/2021/schedule/event/open_research_filecoin_ipfs/
 blank page https://efdn.notion.site/0314a1800b774258a8e6197487c479bc?v=15fb6b39a490413cbba3b7f78ad67c2b 
