@@ -61,14 +61,15 @@ audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .original, .quote, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em}
 blockquote, ol, p, ul {max-width: 80ex}
 blockquote::before, .quote::before {content: '>'; float: left}
-body, dfn, figcaption, li, p, pre, .post .content > span, .content > td {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, Sans Serif; padding-top: 0; margin-top: 0}
+body {padding-top: 0; margin-top: 0}
+body, dfn, figcaption, li, p, pre, .post .content > span, .content > td {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, Sans Serif}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
 code {color: #000; background-color: #eee; padding: .1em}
 iframe, .preembed {border: .2em solid #fff}
 iframe.main_player {border: .25em solid red}
-img, li, p  {border-radius: .25em; margin: 0 1px 0 1px}
+img, li, p  {border-radius: .25em; margin: 1px}
 img, video, table {max-width: 100%}
 li:nth-child(even), tr:nth-child(even) > td.v {background-color: #000}
 li:nth-child(odd), tr:nth-child(odd) > td.v {background-color: #181818}
