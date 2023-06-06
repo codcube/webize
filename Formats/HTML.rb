@@ -12,7 +12,6 @@ module Webize
     CSSURL = /url\(['"]*([^\)'"]+)['"]*\)/
     CSSgunk = /font-face|url/
     ReaderHosts = Webize.configList 'hosts/reader'
-    NewsHosts = Webize.configList 'hosts/news'
 
     # (String -> String) or (Nokogiri -> Nokogiri)
     def self.format html, base
@@ -318,47 +317,11 @@ module Webize
         @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
           Webize::JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
-        # <body>
+        # HTML content
         if body = @doc.css('body')[0]
-
-          # 'news' pages: only emit updated content (also eliminates sidebars and boilerplate) on repeat visit
-          # TODO the updates-graph can obsolete this once we emit more granular subject URIs w/ upstream or locally minted fragment identifiers
-          if NewsHosts.member? @base.host
-            hashed_nodes = 'article, aside, div, footer, h1, h2, h3, nav, p, section, b, span, ul, li'
-            hashs = {}
-            links = {}
-            hashfile = ('//' + @base.host + '/.hashes').R
-            linkfile = ('//' + @base.host + '/.links.u').R
-            if linkfile.node.exist?
-              site_links = {}
-              linkfile.node.each_line{|l| site_links[l.chomp] = true}
-              body.css('a[href]').map{|a|
-                links[a['href']] = true
-                a.remove if site_links.has_key?(a['href'])}
-            else
-              body.css('a[href]').map{|a|
-                links[a['href']] = true}
-            end
-            if hashfile.node.exist?
-              site_hash = {}
-              hashfile.node.each_line{|l| site_hash[l.chomp] = true}
-              body.css(hashed_nodes).map{|n|
-                hash = Digest::SHA2.hexdigest n.to_s
-                hashs[hash] = true
-                n.remove if site_hash.has_key?(hash)}
-            else
-              body.css(hashed_nodes).map{|n|
-                hash = Digest::SHA2.hexdigest n.to_s
-                hashs[hash] = true}
-            end
-            hashfile.writeFile hashs.keys.join "\n" # update hashfile
-            linkfile.writeFile links.keys.join "\n" # update linkfile
-          end
-
-          # <body> content
-          yield @base, Content, HTML.format(body, @base).inner_html
-        else                                        # entire document
-          yield @base, Content, HTML.format(@doc, @base).to_html
+          yield @base, Content, HTML.format(body, @base).inner_html # yield <body>
+        else
+          yield @base, Content, HTML.format(@doc, @base).to_html    # yield entire document
         end
       end
     end
