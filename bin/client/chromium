@@ -1,2 +1,3 @@
 #!/bin/sh
-flatpak run com.github.Eloston.UngoogledChromium "http://localhost:8000/$1"
+#flatpak run com.github.Eloston.UngoogledChromium "http://localhost:8000/$1"
+chromium-browser "http://localhost:8000/$1"
