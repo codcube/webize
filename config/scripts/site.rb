@@ -36,45 +36,16 @@ class WebResource
 
     ## GET handlers
 
-    GET 'google.com', -> r {[301, {'Location' => ['//www.google.com', r.path, '?', r.query].join.R(r.env).href}, []]}
-    GET 'www.google.com', -> r {
-      case r.parts[0]
-      when 'amp'
-        r.path.index('/amp/s/') == 0 ? [301, {'Location' => ('https://' + r.path[7..-1]).R(r.env).href}, []] : r.deny
-      when 'imgres'
-        [301, {'Location' => r.query_values['imgurl'].R(r.env).href}, []]
-      when /^(dl|images|x?js|maps|search)$/
-        r.fetch
-      when 'sorry' # denied, goto DDG
-        q = r.query_values['continue'].R.query_values['q']
-        [302, {'Location' => 'https://duckduckgo.com/' + HTTP.qs({q: q})}, []]
-      when 'url'
-        GotoURL[r]
-      else
-        r.deny
-      end}
-
-    GET 'imgur.com', -> r {
-      p = r.parts
-      case p[0]
-      when /^(a|gallery)$/
-        [302, {'Location' => "https://api.imgur.com/post/v1/albums/#{p[1]}?client_id=546c25a59c58ad7&include=media%2Cadconfig%2Caccount".R(r.env).href}, []]
-      else
-        r.fetch
-      end}
-
-    # read page pointers visible in HTML <body> (old UI) as they're missing in HTTP HEAD and HTML <head> (old/new UI) and HTML <body> (new UI)
     GET 'old.reddit.com', -> r {
       r.fetch.yield_self{|status,head,body|
         if status.to_s.match? /^30/
           [status, head, body]
-        else
+        else # find page pointers in HTML <body> (old UI) as they're missing in HTTP HEAD and HTML <head> (old+new UI) and HTML <body> (new UI)
           links = []
           if body.class == Array && body[0].class == String
-            body[0].scan(/href="([^"]+after=[^"]+)/){|link| # page pointers in <body>
-              links << CGI.unescapeHTML(link[0]).R}
+            body[0].scan(/href="([^"]+after=[^"]+)/){|link| links << CGI.unescapeHTML(link[0]).R}
           end
-          [302, {'Location' => (links.empty? ? r.href : links.sort_by{|r|r.query_values['count'].to_i}[-1]).to_s.sub('old','www')}, []] # redirect to page with highest count
+          [302, {'Location' => (links.empty? ? r.href : links.sort_by{|r|r.query_values['count'].to_i}[-1]).to_s.sub('old','www')}, []] # redirect to previous page
         end}}
 
     GET 'www.reddit.com', -> r {
@@ -91,6 +62,7 @@ class WebResource
      end}
 
     GET 'twitter.com', -> r {[301, {'Location' => ['//nitter.net',  r.path,  '?', r.query].join.R(r.env).href}, []]}
+
     GET 'nitter.net', -> r {
       ps = r.parts
       if ps[0] == 'pic'
@@ -99,50 +71,6 @@ class WebResource
         r.fetch
       end}
 
-    GET 'wiki.c2.com', -> r {['https://proxy.c2.com/wiki/remodel/pages/', r.env['QUERY_STRING']].join.R(r.env).fetchHTTP}
-
-    GET 'www.youtube.com', -> r {
-      r.env[:searchbase] = '/results'
-      r.env[:searchterm] = 'search_query'
-      path = r.parts[0]
-      qs = r.query_values || {}
-      case path
-      when /ajax|embed/
-        r.env[:notransform] = true
-        r.fetch.yield_self{|s,h,b|
-          if h['Content-Type']&.index('html')
-            doc = Nokogiri::HTML.parse b[0]
-            edited = false
-            doc.css('script').map{|s|
-              js = /\/\/www.google.com\/js\//
-              if s.inner_text.match? js
-                edited = true
-                s.content = s.inner_text.gsub(js,'#')
-              end}
-            if edited
-              b = [doc.to_html]
-              h.delete 'Content-Length'
-            end
-          end
-          [s,h,b]}
-      when /attribution_link|redirect/
-        [301, {'Location' => r.join(qs['q']||qs['u']).R(r.env).href}, []]
-      when 'get_video_info'
-        if r.query_values['el'] == 'adunit' # TODO ads
-          [200, {"Access-Control-Allow-Origin"=>"https://www.youtube.com", "Content-Type"=>"application/x-www-form-urlencoded", "Content-Length"=>"0"}, ['']]
-        else
-          r.env[:notransform] = true
-          r.fetch
-        end
-      when 'v'
-        [301, {'Location' => r.join('/watch?v='+r.parts[1]).R(r.env).href}, []]
-      else
-        r.fetch
-      end}
-
-    GET 'm.youtube.com',     -> r {[301, {'Location' => ['//www.youtube.com',  r.path,  '?', r.query].join.R(r.env).href}, []]}
-    GET 'music.youtube.com', -> r {[301, {'Location' => ['//www.youtube.com',  r.path,  '?', r.query].join.R(r.env).href}, []]}
-    GET 'youtube.com',       -> r {[301, {'Location' => ['//www.youtube.com',  r.path,  '?', r.query].join.R(r.env).href}, []]}
     GET 'youtu.be', -> r {[301, {'Location' => ['//www.youtube.com/watch?v=', r.path[1..-1]].join.R(r.env).href}, []]}
 
     # site-specific RDF mapping methods for HTML and JSON

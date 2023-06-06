@@ -609,8 +609,8 @@ class WebResource
        c: [to,                                                 # destination
            {class: :content,
             c: [link,                                          # title
-                p[Abstract],                                   # abstract
                 origin_ref,                                    # pointer
+                p[Abstract],                                   # abstract
                 date,                                          # timestamp
                 from,                                          # source
                 p[Image],                                      # image(s)

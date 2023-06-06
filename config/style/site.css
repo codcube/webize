@@ -69,7 +69,7 @@ body.error {background: #f00; font-weight: bold}
 code {color: #000; background-color: #eee; padding: .1em}
 iframe, .preembed {border: .2em solid #fff}
 iframe.main_player {border: .25em solid red}
-img, li, p  {border-radius: .25em; margin: 1px}
+img, li, p  {border-radius: .25em; margin: 0 0 1px 1px}
 img, video, table {max-width: 100%}
 li:nth-child(even), tr:nth-child(even) > td.v {background-color: #000}
 li:nth-child(odd), tr:nth-child(odd) > td.v {background-color: #181818}
