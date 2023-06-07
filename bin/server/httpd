@@ -1,1 +1,5 @@
-cd ~/web && falcon -c ~/src/webize/Protocols/HTTP.rack.ru -n 1 --bind http://localhost:8000
+#!/bin/sh
+WEB=$HOME/web
+test -d $WEB || mkdir $WEB
+cd $WEB
+falcon -c ~/src/webize/Protocols/HTTP.rack.ru -n 1 --bind http://localhost:8000
