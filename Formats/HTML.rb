@@ -11,14 +11,9 @@ module Webize
 
     CSSURL = /url\(['"]*([^\)'"]+)['"]*\)/
     CSSgunk = /font-face|url/
-    ReaderHosts = Webize.configList 'hosts/reader'
 
     # (String -> String) or (Nokogiri -> Nokogiri)
     def self.format html, base
-
-      # reader mode, less verbosity in output doc
-      reader = ReaderHosts.member? base.host
-
       # parse string to nokogiri
       if html.class == String
         html = Nokogiri::HTML.fragment html.gsub(/<\/?(noscript|wbr)[^>]*>/i, '')
@@ -90,9 +85,7 @@ module Webize
           end
 
           e.inner_html = [
-            if reader
-              nil
-            elsif ref.imgURI? && e.css('img').empty?
+            if ref.imgURI? && e.css('img').empty?
               ['<img src="', ref.uri, '">']
             else
               case ref.scheme
@@ -126,7 +119,7 @@ module Webize
                               else
                                 [ref.path, ref.query ? ['?', ref.query] : nil].join
                                end)[0..127]),
-               '</span>', ' '] unless reader
+               '</span>', ' ']
             end].join
 
           css = []
@@ -134,7 +127,7 @@ module Webize
           css.push :blocked if blocked                            # blocked resource
           e['class'] = css.join ' '                               # add CSS classes
 
-        elsif e['id'] && !reader                                  # identified node and verbose mode
+        elsif e['id']                                             # identified node?
           e.add_child " <span class='id'>##{e['id']}</span> "     # show identifier
         end}
 
