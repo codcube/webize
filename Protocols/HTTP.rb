@@ -6,6 +6,7 @@ class WebResource
     Args = Webize.configList 'HTTP/arguments'            # permitted query arguments
     Methods = Webize.configList 'HTTP/methods'           # permitted HTTP methods
     HostGET = {}; Subscriptions = {}                     # host handler and subscription-list storage
+    FilterHosts = Webize.configList 'hosts/filter'
     PeerHosts = Hash[*File.open([ENV['PREFIX'],'/etc/hosts'].join).readlines.map(&:chomp).map{|l|
                        addr, *names = l.split
                        names.map{|host|
@@ -486,8 +487,8 @@ class WebResource
       else
         if (λ = HostGET[host.downcase]) && adapt?
           λ[self]                    # adapted remote
-        else
-          deny? ? deny : fetch       # generic remote node
+        else                         # generic remote
+          (deny? && !FilterHosts.member?(host)) ? deny : fetch
         end
       end
     end
