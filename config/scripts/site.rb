@@ -52,7 +52,10 @@ class WebResource
       ps = r.parts
       r.env[:links][:prev] = ['//old.reddit.com', (r.path || '/').sub('.rss',''), '?',r.query].join.R r.env # previous-page pointer
       if !ps[0] || %w(comments r u user).member?(ps[0])
-        r.path += '/' if ps[0] == 'user' && r.path[-1] != '/' # add / to URL as user.rss is a missing username, not a format hint
+        if ps[0] == 'user'
+          r.path += '/' unless r.path[-1] == '/' # append /: user.rss interpreted as missing username, not format hint
+          r.env[:sort] = To
+        end
         r.path += '.rss' unless r.offline? || !r.path || r.path.index('.rss') # add .rss to URL to request preferred content-type
         r.env.delete 'HTTP_REFERER'
         r.fetch
