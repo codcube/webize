@@ -31,7 +31,6 @@
 .post .from {background-color: #000; border-style: solid; border-width: 0 0 1px 0; border-radius: .3em .3em 0 0}
 .post .to {font-size: 1.25em; border-radius: .3em .3em 0 0; color: #000; margin-top: .42em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
-.post {margin: 0 .25em 0 0; max-width: 80em}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
 .quote > .quote > .quote {background-color: #777}
@@ -62,7 +61,7 @@ blockquote, blockquote > p, .greentext, .original, .quote, .q, .QuotedText {back
 blockquote, ol, p, ul {max-width: 80ex}
 blockquote::before, .quote::before {content: '>'; float: left}
 body {padding-top: 0; margin-top: 0}
-body, dfn, figcaption, li, p, pre, .post .content > span, .content > td {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, Sans Serif}
+body, dfn, figcaption, li, p, pre, .post .content > span, .content > td {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
@@ -74,7 +73,7 @@ img, video, table {max-width: 100%}
 li:nth-child(even), tr:nth-child(even) > td.v {background-color: #000}
 li:nth-child(odd), tr:nth-child(odd) > td.v {background-color: #181818}
 ol, ul {border: 1px solid #333; border-radius: .3em; background-color: #111}
-pre, code {white-space: pre-wrap; font-family: Consolas,'Courier New',Courier,monospace; max-width: 255ex}
+pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6 {margin: 0}
 svg, img[src*="svg"] {max-width:2em; max-height: 2em}
 table.kv {border: 1px solid #333}
