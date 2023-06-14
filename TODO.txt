@@ -11,6 +11,7 @@ view for event types https://jewishchronicle.timesofisrael.com/ - datetimeline v
 RDFa output - investigate HAML template-solution in RDF library or just add it to native views. not many to edit
 notification mesh
 #down link on google for all results inlined
+JS: 'n' key jumps to first in view
 gack (gemini) server
 serve gemini from cache when gone missing gemini://rfmpie.smol.pub/reviving-macbook-with-linux
 histogram on datedir per slice-resolution
