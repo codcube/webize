@@ -32,12 +32,11 @@ class WebResource
     # find filesystem nodes and map to URI space
     # (URI, env) -> [URI, URI, ..]
     def fsNodes
-      q = env[:qs]                                        # query
+      q = env[:qs]                                        # query params
       nodes = if directory?
                 if q['f'] && !q['f'].empty?               # FIND exact
-                  summarize = true
                   find q['f']
-                elsif q['find'] && !q['find'].empty?      # FIND substring
+                elsif q['find'] && !q['find'].empty?      # FIND substring matches
                   summarize = true
                   find '*' + q['find'] + '*'
                 elsif q['q'] && !q['q'].empty?            # GREP
@@ -69,8 +68,7 @@ class WebResource
               else                                        # default document-set
                 fromNodes Pathname.glob fsPath + '.*'
               end
-      nodes.map! &:preview if summarize                   # summarize nodes
-      #logger.debug [:nodes, nodes].join ' '
+      nodes.map! &:preview if summarize                   # summarize large result-sets
       nodes                                               # nodes
     end
 
