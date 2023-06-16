@@ -132,16 +132,24 @@ class WebResource
   def treeFromGraph graph = nil
     graph ||= env[:updates] || env[:repository]
     return {} unless graph
-    tree = {}   # output tree
-    bnodes = [] # blank-node list
-    graph.each_triple{|subj,pred,o| # visit triples
-      s = subj.to_s; p = pred.to_s  # stringify keys
-      tree[s] ||= subj.class==RDF::Node ? {} : {'uri' => s}    # subject
-      tree[s][p] ||= []                                        # predicate
-      tree[s][p].push o.class==RDF::Node ? (bnodes.push o.to_s # blank-node
-                                            tree[o.to_s] ||= {}) : o unless tree[s][p].member? o} # object
-    bnodes.map{|n|tree.delete n} # sweep bnodes from subject index
-    tree                         # output tree
+    tree = {}    # output tree
+    inlined = [] # inlined-node list
+
+    graph.each_triple{|subj,pred,obj| # walk graph
+      s = subj.to_s                   # subject URI
+      p = pred.to_s                   # predicate URI
+      blank = obj.class == RDF::Node  # bnode?
+      if blank || p == 'http://www.w3.org/ns/ldp#contains' # bnode or child-node?
+        o = obj.to_s                  # object URI
+        inlined.push o                # inline object
+        obj = tree[o] ||= blank ? {} : {'uri' => o}
+      end
+      tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
+      tree[s][p] ||= []                                       # predicate
+      tree[s][p].push obj                                     # object
+    }
+    inlined.map{|n|tree.delete n} # sweep inlined nodes from index
+    tree
   end
 end
 
