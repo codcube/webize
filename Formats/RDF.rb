@@ -22,10 +22,8 @@ class WebResource
     file = [:cache,:overview,hash[0..1],hash[2..-1]+'.🐢'].join '/'  # summary path
     summary = file.R env                                             # summary resource
     return summary if File.exist?(file) && File.mtime(file) >= mtime # cached summary up to date
-
     fullGraph = RDF::Repository.new                                  # full graph
     miniGraph = RDF::Repository.new                                  # summary graph
-
     loadRDF graph: fullGraph                                         # load graph
     saveRDF fullGraph if basename&.index('msg.') == 0                # cache RDF extracted from nonRDF
     treeFromGraph(fullGraph).map{|subject, resource|                 # resources to summarize
@@ -35,19 +33,11 @@ class WebResource
                     DC + 'identifier', Title, To, Type, Video, Schema + 'itemListElement']
       predicates.push Content if full                                # main content sometimes included in preview
       predicates.push Link unless subject.host                       # include untyped links in local content
-      predicates.map{|predicate|                                     # summary-statement predicate
+      predicates.map{|predicate|                                     # summary predicate
         if o = resource[predicate]
-          (o.class == Array ? o : [o]).map{|o|                       # summary-statement object(s)
-            if o.class == Hash                                       # blanknode object
-              object = RDF::Node.new
-              o.map{|p,objets|
-                objets.map{|objet|
-                  miniGraph << RDF::Statement.new(object, p.R, objet)}} # bnode triples
-            else
-              object = o
-            end
-            miniGraph << RDF::Statement.new(subject,predicate.R,object)} # summary-statement triple
-        end} if [Image,Abstract,Title,Link,Video].find{|p|resource.has_key? p} || full} # if summary-data exists
+          (o.class == Array ? o : [o]).map{|o|                       # summary object(s)
+            miniGraph << RDF::Statement.new(subject,predicate.R,o) unless o.class == Hash} # summary triple
+        end} if [Image,Abstract,Title,Link,Video].find{|p|resource.has_key? p} || full} # if summary data exists
 
     summary.writeFile miniGraph.dump(:turtle,base_uri: self,standard_prefixes: true) # cache summary
     summary                                                          # return summary

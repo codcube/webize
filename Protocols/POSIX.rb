@@ -32,44 +32,40 @@ class WebResource
     # find filesystem nodes and map to URI space
     # (URI, env) -> [URI, URI, ..]
     def fsNodes
-      q = env[:qs]                                        # query params
-      nodes = if directory?
-                if q['f'] && !q['f'].empty?               # FIND exact
-                  find q['f']
-                elsif q['find'] && !q['find'].empty?      # FIND substring matches
-                  summarize = true
-                  find '*' + q['find'] + '*'
-                elsif q['q'] && !q['q'].empty?            # GREP
-                  grep
-                elsif !host && path == '/'
-                  (Pathname.glob Webize::ConfigRelPath.join('bookmarks/{home.u,search.🐢}')).map{|_| _.R env}
-                else                                      # LS dir
-                  pat = if dirURI?                        # has trailing-slash?
-                          summarize = true                # summary of
-                          '*'                             #  all files
-                        else                              # minimal directory info
-                          env[:links][:down] = [basename, '/'].join
-                          [env[:links][:down], '{index,readme,README}*'].join
-                        end
-                  [self, *join(pat).R(env).glob]
+      q = env[:qs]                                # query params
+      if directory?
+        if q['f'] && !q['f'].empty?               # FIND exact
+          find q['f']
+        elsif q['find'] && !q['find'].empty?      # FIND substring matches
+          find '*' + q['find'] + '*'
+        elsif q['q'] && !q['q'].empty?            # GREP
+          grep
+        elsif !host && path == '/'
+          (Pathname.glob Webize::ConfigRelPath.join('bookmarks/{home.u,search.🐢}')).map{|_| _.R env}
+        else                                      # LS dir
+          pat = if dirURI?                        # has trailing-slash?
+                  '*'                             #  all files
+                else                              # minimal directory info
+                  env[:links][:down] = [basename, '/'].join
+                  [env[:links][:down], '{index,readme,README}*'].join
                 end
-              elsif file?                                 # LS file
-                [self]
-              elsif fsPath.match? GlobChars               # GLOB
-                if q['q'] && !q['q'].empty?               # GREP inside GLOB
-                  if (g = nodeGlob).empty?
-                    []
-                  else
-                    fromNodes nodeGrep g[0..999]
-                  end
-                else                                      # parametric GLOB
-                  glob
-                end
-              else                                        # default document-set
-                fromNodes Pathname.glob fsPath + '.*'
-              end
-      nodes.map! &:preview if summarize                   # summarize large result-sets
-      nodes                                               # nodes
+          [self, *join(pat).R(env).glob]
+        end
+      elsif file?                                 # LS file
+        [self]
+      elsif fsPath.match? GlobChars               # GLOB
+        if q['q'] && !q['q'].empty?               # GREP inside GLOB
+          if (g = nodeGlob).empty?
+            []
+          else
+            fromNodes nodeGrep g[0..999]
+          end
+        else                                      # parametric GLOB
+          glob
+        end
+      else                                        # default set
+        fromNodes Pathname.glob fsPath + '.*'
+      end
     end
 
     # URI -> pathname
