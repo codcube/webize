@@ -88,7 +88,7 @@ module Webize
             }
 
             post.remove
-          else
+#          else
 #            puts "no subject URI found for message: ", post
           end}
         @doc.css(MsgCSS[:gunk]).map &:remove                               # sweep gunk nodes
