@@ -88,8 +88,8 @@ module Webize
             }
 
             post.remove
-#          else
-#            puts "no subject URI found for message: ", post
+          else
+            puts "no subject URI found for message: ", post
           end}
         @doc.css(MsgCSS[:gunk]).map &:remove                               # sweep gunk nodes
 
@@ -170,7 +170,11 @@ end
 
 class WebResource
   module HTML
-    MarkupPredicate['http://www.w3.org/1999/xhtml/vocab#role'] = -> roles, env {} # TODO find where are these triples coming from and either shut them off or make a real view if we figure out what they are and deem that useful
+
+    Markup['http://www.w3.org/ns/ldp#Container'] = -> dir, env {
+      {class: :container,
+       c: [{class: :name, c: dir['uri'].R.basename},
+           {class: :content, c: [:items]}]}}
 
     Markup['http://www.w3.org/ns/posix/stat#File'] = -> file, env {
       [({class: :file,

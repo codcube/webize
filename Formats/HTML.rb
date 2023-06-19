@@ -528,7 +528,7 @@ class WebResource
       [*sorted, *unsorted]                          # preserve unsorted to end of list
     end
 
-    # default resource -> HTML render
+    # generic resource -> HTML
     Markup[Resource] = -> re, env {
       env[:last] ||= {}
       p = -> a {MarkupPredicate[a][re[a], env] if re.has_key? a} # predicate renderer
