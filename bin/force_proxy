@@ -1,4 +1,4 @@
 #!/bin/sh
 id=$(id -u)
-rules=$(command -v proxy_routes)
+rules=$(command -v force proxy_routes)
 command -v sudo && sudo $rules $id || su -c "$rules $id"
