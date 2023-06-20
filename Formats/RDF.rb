@@ -126,6 +126,8 @@ class WebResource
     inlined = [] # inlined-node list
 
     graph.each_triple{|subj,pred,obj| # walk graph
+#     puts [subj,pred,obj].join ' '   # inspect triples
+
       s = subj.to_s                   # subject URI
       p = pred.to_s                   # predicate URI
       blank = obj.class == RDF::Node  # bnode?

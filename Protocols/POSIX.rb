@@ -1,19 +1,9 @@
 # coding: utf-8
 %w(fileutils pathname shellwords).map{|d| require d }
 class WebResource
-
-  def dir_triples graph
-    graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
-    graph << RDF::Statement.new(self, Title.R, basename || host)
-    graph << RDF::Statement.new(self, Date.R, node.stat.mtime.iso8601)
-    nodes = node.children.select{|n|n.basename.to_s[0] != '.'} # find contained nodes
-    nodes.map{|child|                                          # 👉 contained nodes
-      graph << RDF::Statement.new(self, 'http://www.w3.org/ns/ldp#contains'.R, (join child.basename.to_s.gsub(' ','%20').gsub('#','%23')))}
-  end
-
   module URIs
 
-    # initialize document container and return locator
+    # create containing dir(s) and return locator for document
     def document
       mkdir
       documentPath
@@ -94,7 +84,7 @@ class WebResource
     end
   end
 
-  # create containing directory for resource
+  # create containing dir(s) for local resource
   def mkdir
     dir = cursor = dirURI? ? fsPath.sub(/\/$/,'') : File.dirname(fsPath) # set cursor to container name without trailing-slash (blocking file/link won't have one)
     until cursor == '.'                # cursor at root?
@@ -116,33 +106,10 @@ class WebResource
     File.open(fsPath,'w'){|f| f << o }
     self
   end
-  module HTTP
-
-    def fileResponse
-      if env[:client_etags].include?(etag = fileETag)     # cached at client
-        return [304, {}, []]
-      end
-
-      Rack::Files.new('.').serving(Rack::Request.new(env), fsPath).yield_self{|s,h,b|
-        case s                                            # status
-        when 200
-          s = env[:origin_status] if env[:origin_status]  # upstream status
-        when 304
-          return [304, {}, []]                            # cached at client
-        end
-        format = fileMIME                                 # file format
-        h['Content-Type'] = format
-        h['Content-Type'] = 'application/javascript; charset=utf-8' if h['Content-Type']=='application/javascript'
-        h['ETag'] = etag
-        h['Expires'] = (Time.now + 3e7).httpdate if format.match? FixedFormat
-        h['Last-Modified'] ||= mtime.httpdate
-        [s, h, b]}
-    end
-  end
 
   module POSIX
 
-    # HTTP-level pointers for directory navigation
+    # HTTP-header pointers for local navigation
     def dirMeta
       root = !path || path == '/'
       if host && root                                            # up to parent domain

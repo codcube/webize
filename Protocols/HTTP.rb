@@ -355,6 +355,27 @@ class WebResource
       end
     end
 
+    def fileResponse
+      if env[:client_etags].include?(etag = fileETag)     # cached at client
+        return [304, {}, []]
+      end
+
+      Rack::Files.new('.').serving(Rack::Request.new(env), fsPath).yield_self{|s,h,b|
+        case s                                            # status
+        when 200
+          s = env[:origin_status] if env[:origin_status]  # upstream status
+        when 304
+          return [304, {}, []]                            # cached at client
+        end
+        format = fileMIME                                 # file format
+        h['Content-Type'] = format
+        h['Content-Type'] = 'application/javascript; charset=utf-8' if h['Content-Type']=='application/javascript'
+        h['ETag'] = etag
+        h['Expires'] = (Time.now + 3e7).httpdate if format.match? FixedFormat
+        h['Last-Modified'] ||= mtime.httpdate
+        [s, h, b]}
+    end
+
     # define a host-specific GET handler
     def self.GET arg, lambda = -> r {r.send r.uri.match?(Gunk) ? :deny : :fetch}
       HostGET[arg] = lambda
