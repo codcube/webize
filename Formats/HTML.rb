@@ -582,7 +582,25 @@ class WebResource
                                          when 2 # solid
                                            "background-color: #{color}; border-color: #000; border-width: 0 0 .1em 0"
                                          end} : {}),
-          ]}.update(id ? {id: id} : {})}                       # representation identifier
+          ]}.update(id ? {id: id} : {})}                      # representation identifier
+
+    Markup['http://www.w3.org/ns/ldp#Container'] = -> dir, env {
+      [Title, Type, Date].map{|p| dir.delete p }
+      puts dir
+      content = dir.delete 'http://www.w3.org/ns/ldp#contains'
+      {class: :container, style: 'display: inline-block',
+       c: [{class: :name, c: dir['uri'].R.basename, _: :span}, '<br>',
+           {class: :contents, style: 'background-color: #fff; color: #000',
+            c: [content.map{|c| # contained items
+                  c[Title] ||= [c['uri'].R.basename]
+                  markup(c, env)}, '<hr>',
+                keyval(dir, env)]}]}} # remaining triples
+
+    Markup['http://www.w3.org/ns/posix/stat#File'] = -> file, env {
+      [({class: :file,
+         c: [{_: :a, href: file['uri'], class: :icon, c: Icons['http://www.w3.org/ns/posix/stat#File']},
+             {_: :span, class: :name, c: file['uri'].R.basename}]} if file['uri']),
+       (HTML.keyval file, env)]}
 
   end
   include HTML

@@ -171,17 +171,6 @@ end
 class WebResource
   module HTML
 
-    Markup['http://www.w3.org/ns/ldp#Container'] = -> dir, env {
-      {class: :container,
-       c: [{class: :name, c: dir['uri'].R.basename},
-           {class: :content, c: [:items]}]}}
-
-    Markup['http://www.w3.org/ns/posix/stat#File'] = -> file, env {
-      [({class: :file,
-         c: [{_: :a, href: file['uri'], class: :icon, c: Icons['http://www.w3.org/ns/posix/stat#File']},
-             {_: :span, class: :name, c: file['uri'].R.basename}]} if file['uri']),
-       (HTML.keyval file, env)]}
-
     MarkupPredicate[Type] = -> types, env {
       types.map{|t|
         t = t.to_s unless t.class == WebResource

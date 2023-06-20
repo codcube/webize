@@ -42,7 +42,7 @@
 .toolbox .path {color: #aaa; font-size: .8em; text-shadow: 1px 1px #000}
 .toolbox form input {background-color: #000; color: #fff; border-radius: .5em; border-width: 0; font-size: .8em}
 .toolbox svg {height: 1em; width: 1em}
-.toolbox {vertical-align: top}
+.toolbox, td, li {vertical-align: top}
 .video {border: solid .3em #444; background-color: #000; margin: .2em;  border-radius: .5em}
 .warning {background-color: #ff0; color: #000; font-size: 1.1em}
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}
@@ -78,7 +78,7 @@ pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6 {margin: 0}
 svg, img[src*="svg"] {max-width:2em; max-height: 2em}
 table.kv {border: 1px solid #333}
 table.kv, table.tabular {border-spacing: 0}
-table.tabular td {padding: 0; border-width: 0 1px 1px 0; border-style: dotted; border-color: #4d4d4d; vertical-align: top}
+table.tabular td {padding: 0; border-width: 0 1px 1px 0; border-style: dotted; border-color: #4d4d4d}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0 .1em 0 .1em}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
 td[property="http://rdfs.org/sioc/ns#addressed_to"] > a {white-space: nowrap}
