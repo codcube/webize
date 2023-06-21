@@ -318,8 +318,8 @@ class WebResource
     def fetchLocal nodes = nil
       return fileResponse if !nodes && file? && (format = fileMIME) && # file if cached and one of:
                              (env[:notransform] ||          # (mimeA → mimeB) transform disabled (client preference)
-                              format.match?(FixedFormat) || # (mimeA → mimeB) transform disabled or unimplemented (server preference)
-                              (format == selectFormat(format) && !ReFormat.member?(format))) # (mimeA) reformat disabled
+                              format.match?(FixedFormat) || # (mimeA → mimeB) transform disabled (server preference) or unimplemented
+                              (format == selectFormat(format) && !ReFormat.member?(format))) # (mimeA → mimeA) reformat disabled
       (nodes || fsNodes).map &:loadRDF                      # load node(s)
       dirMeta                                               # 👉 storage-adjacent nodes
       timeMeta unless host                                  # 👉 timeline-adjacent nodes
