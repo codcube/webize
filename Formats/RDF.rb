@@ -4,6 +4,7 @@ class WebResource
   # file -> Repository
   def loadRDF graph: env[:repository] ||= RDF::Repository.new
     if node.file?                                                    # file
+      graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/posix/stat#File'.R)
       readRDF fileMIME, File.open(fsPath).read, graph
     elsif node.directory?                                            # directory
       (dirURI? ? self : join((basename || '') + '/').R(env)).dir_triples graph
