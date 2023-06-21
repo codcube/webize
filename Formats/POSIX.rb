@@ -1,5 +1,11 @@
 class WebResource
-
+  def containment_triples graph
+    parent = join(File.dirname path).R
+    return if parent == self
+    graph << RDF::Statement.new(parent, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
+    graph << RDF::Statement.new(parent, 'http://www.w3.org/ns/ldp#contains'.R, self)
+    parent.containment_triples graph
+  end
   def dir_triples graph
     graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
     graph << RDF::Statement.new(self, Title.R, basename || host)
@@ -24,6 +30,7 @@ class WebResource
                 (['<hr>', keyval(dir, env)] unless dir.keys == %w(uri))]}]}} # remaining triples
 
     Markup['http://www.w3.org/ns/posix/stat#File'] = -> file, env {
+      [Title, Type, Date].map{|p| file.delete p }
       [({class: :file,
          c: [{_: :a, href: file['uri'], class: :icon, c: Icons['http://www.w3.org/ns/posix/stat#File']},
              {_: :span, class: :name, c: file['uri'].R.basename}]} if file['uri']),
