@@ -36,8 +36,8 @@ class WebResource
           [self]                                  # minimal (no trailing-slash)
         else                                      # detailed (trailing-slash)
           [self,
-           *join('{index,readme,README}*').R(env).glob,
-           *node.children.select{|c| c.directory? && c.basename.to_s[0] != '.'}.
+           *join('{index,readme,README}*').R(env).glob,                          # directory index data
+           *node.children.select{|c| c.directory? && c.basename.to_s[0] != '.'}. # visible child directories
               map{|c| join(c.basename.to_s).R(env)}]
         end
       elsif file?                                 # LS file
