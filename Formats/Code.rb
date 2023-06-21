@@ -19,8 +19,9 @@ module Webize
                    text/x-ruby;q=0.8
                    text/x-script.ruby;q=0.8
                    text/x-shellscript;q=0.8
+                   text/yaml;q=0.8
                    ),
-                   extensions: [:bash, :c, :css, :cpp, :erb, :gemspec, :go, :h, :hs, :js, :mk, :nim, :nix, :patch, :pl, :pm, :proto, :py, :rb, :sh, :zsh]
+                   extensions: [:bash, :c, :css, :cpp, :erb, :gemspec, :go, :h, :hs, :js, :mk, :nim, :nix, :patch, :pl, :pm, :proto, :py, :rb, :sh, :yaml, :zsh]
       content_encoding 'utf-8'
       reader { Reader }
     end
