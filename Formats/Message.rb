@@ -102,7 +102,6 @@ module Webize
 
       # IRC log -> RDF
       def chat_triples
-puts @base
         # irssi:
         #  /set autolog on
         #  /set autolog_path ~/web/%Y/%m/%d/%H/$tag.$0.irc

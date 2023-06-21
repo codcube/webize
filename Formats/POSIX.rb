@@ -21,9 +21,9 @@ class WebResource
       [Title, Type, Date].map{|p| dir.delete p }
       content = dir.delete('http://www.w3.org/ns/ldp#contains') || []
       {class: :container, style: 'margin: .2em',
-       c: [{class: :name, style: 'border-color: #888; border-style: solid; border-width: 1px 1px 0 1px; padding: 0 .2em 0 .2em; background-color: #ccc; color: #000',
+       c: [{class: :name, style: 'border-color: #888; border-style: solid; border-radius: 0; background-color: #000; color: #fff; border-width: 1px 1px 0 1px; padding: 0 .2em 0 .2em',
             c: dir['uri'].R.basename, _: :a, href: dir['uri']}, '<br>',
-           {class: :contents, style: 'border: 1px solid #888; border-radius: 0 .6em .6em .6em; background-color: #fff; color: #000; padding: .2em',
+           {class: :contents, style: 'border: 1px solid #888; padding: .1em',
             c: [content.map{|c| # contained items
                   c[Title] ||= [c['uri'].R.basename]
                   markup(c, env)},
