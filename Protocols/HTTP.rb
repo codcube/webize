@@ -196,7 +196,6 @@ class WebResource
         cache = self                      # cache reference
       elsif directory? && (🐢 = join('index.🐢').R env).exist? # cached directory index?
         cache = 🐢                        # cache reference
-        cache.loadRDF
       end
       env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
 

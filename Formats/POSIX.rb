@@ -20,10 +20,10 @@ class WebResource
     Markup['http://www.w3.org/ns/ldp#Container'] = -> dir, env {
       [Title, Type, Date].map{|p| dir.delete p }
       content = dir.delete('http://www.w3.org/ns/ldp#contains') || []
-      {class: :container, style: 'margin: .2em',
-       c: [{class: :name, style: 'border-color: #888; border-style: solid; border-radius: 0; background-color: #000; color: #fff; border-width: 1px 1px 0 1px; padding: 0 .2em 0 .2em',
+      {class: :container,
+       c: [{class: :name,
             c: dir['uri'].R.basename, _: :a, href: dir['uri']}, '<br>',
-           {class: :contents, style: 'border: 1px solid #888; padding: .1em',
+           {class: :contents,
             c: [content.map{|c| # contained items
                   c[Title] ||= [c['uri'].R.basename]
                   markup(c, env)},
