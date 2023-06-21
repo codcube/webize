@@ -32,15 +32,13 @@ class WebResource
           grep
         elsif !host && path == '/'
           (Pathname.glob Webize::ConfigRelPath.join('bookmarks/{home.u,search.🐢}')).map{|_| _.R env}
-        else                                      # LS dir
-          ix = '{index,readme,README}*'           # directory-info files
-          pat = if dirURI?                        # has trailing-slash?
-                  ix
-                else                              # minimal directory info
-                  env[:links][:down] = [basename, '/'].join
-                  [env[:links][:down], ix].join
-                end
-          [self, *join(pat).R(env).glob]
+        elsif !dirURI?                            # LS dir
+          [self]                                  # minimal (no trailing-slash)
+        else                                      # detailed (trailing-slash)
+          [self,
+           *join('{index,readme,README}*').R(env).glob,
+           *node.children.select{|c| c.directory? }.map{|c| join(c.basename.to_s).R(env)}
+          ]
         end
       elsif file?                                 # LS file
         [self]
