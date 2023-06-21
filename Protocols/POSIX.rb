@@ -37,8 +37,8 @@ class WebResource
         else                                      # detailed (trailing-slash)
           [self,
            *join('{index,readme,README}*').R(env).glob,
-           *node.children.select{|c| c.directory? }.map{|c| join(c.basename.to_s).R(env)}
-          ]
+           *node.children.select{|c| c.directory? && c.basename.to_s[0] != '.'}.
+              map{|c| join(c.basename.to_s).R(env)}]
         end
       elsif file?                                 # LS file
         [self]
