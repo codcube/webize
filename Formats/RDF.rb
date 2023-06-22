@@ -92,7 +92,7 @@ class WebResource
 
   # Repository -> tree {s -> p -> o}
   def treeFromGraph graph = nil
-    graph ||= env[:updates] || env[:repository]
+    graph ||= env[:repository]
     return {} unless graph
     tree = {}    # output tree
     inlined = [] # inlined-node list

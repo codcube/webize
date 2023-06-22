@@ -161,8 +161,8 @@ class WebResource < RDF::URI
                 (elapsed = Time.now - env[:start_time] if env.has_key? :start_time
                  [{_: :span, c: '%.1f' % elapsed}, :⏱️] if elapsed > 1),                                                 # elapsed time
                 if env.has_key? :repository                                                                             # graph size
-                  nGraphs = (env[:updates] || env[:repository]).graph_names.size
-                  nTriples = (env[:updates] || env[:repository]).size
+                  nGraphs = env[:repository].graph_names.size
+                  nTriples = env[:repository].size
                   [([{_: :span, c: nGraphs}, :🗃] if nGraphs > 1),
                    ([{_: :span, c: nTriples}, :⋮] if nTriples > 0)]
                 end]}]}
