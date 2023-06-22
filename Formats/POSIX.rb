@@ -11,15 +11,19 @@ class WebResource
 
   module HTML
 
+    ContainerStyle = {
+      '#updates' => 'background: repeating-linear-gradient(135deg, #fff, #fff .5em, #000 .5em, #000 1em); '}
+
     Markup['http://www.w3.org/ns/ldp#Container'] = -> dir, env {
-      [Title, Type, Date].map{|p| dir.delete p }
       content = dir.delete('http://www.w3.org/ns/ldp#contains') || []
+      [Title, Type, Date].map{|p| dir.delete p }
+
       uri = dir['uri'].R
-      style = {'#updates' => 'background-color: white; color: black'}
+
       {class: :container,
        c: [{class: :name, _: :a, href: uri.to_s,
             c: uri.fragment || uri.basename}, '<br>',
-           {class: :contents, style: style[uri.to_s] || '',
+           {class: :contents, style: ContainerStyle[uri.to_s] || '',
             c: [content.map{|c| # contained items
                   c[Title] ||= [c['uri'].R.basename]
                   markup(c, env)},

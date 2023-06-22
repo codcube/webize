@@ -10,7 +10,7 @@
 .blocked {background: repeating-linear-gradient(45deg, #f00, #f00 .5em, #000 .5em, #000 1em); color: #fff}
 .bold {font-weight: bold}
 .columns {column-width: 80ex; column-gap: 0}
-.container > .contents {border: 1px solid #888; padding: 1px}
+.container > .contents {border: 1px solid #eee}
 .container > .name {border-color: #888; border-style: solid; border-radius: 0; background-color: #000; color: #fff; border-width: 1px 1px 0 1px; padding: 0 .2em 0 .2em}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
@@ -18,7 +18,6 @@
 .file > .name {font-size: .8em; position: absolute; top: 4.8em; left: .4em}
 .file {position: relative}
 .id {color: #aaa; font-size: .72em; float: right; max-width: 40ex; overflow: hidden}
-.images div {margin: .1em}
 .interactionCount .count {font-weight: bold; border-radius: 0 .38em .38em 0}
 .interactionCount .type {border-radius: .38em 0 0 .38em}
 .interactionCount span {background-color: #fff; color: #000; padding: .1em}
@@ -29,7 +28,7 @@
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .links {border: 1px dotted #777; border-radius: .5em}
 .path_crumb {color: #bbb}
-.post .content {border-width: 1px; border-style: solid; border-color: #666; margin: 0}
+.post .content {border-width: 1px; border-style: solid; border-color: #666; margin-top: 0}
 .post .from {background-color: #000; border-style: solid; border-width: 0 0 1px 0; border-radius: .3em .3em 0 0}
 .post .to {font-size: 1.2em; border-radius: .3em .3em 0 0; margin-top: .42em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
