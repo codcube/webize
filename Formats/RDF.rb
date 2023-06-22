@@ -62,11 +62,9 @@ class WebResource
       log = []
 
       unless File.exist? f
-        RDF::Writer.for(:turtle).open(f){|f|f << graph}              # save 🐢
-        if env.has_key? :updates                                     # add to updated-resource set
-          graph << RDF::Statement.new('#updates'.R, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
-          graph << RDF::Statement.new('#updates'.R, 'http://www.w3.org/ns/ldp#contains'.R, g)
-        end
+        RDF::Writer.for(:turtle).open(f){|f|f << graph}              # save 🐢 and mark as updated
+        graph << RDF::Statement.new('#updates'.R, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
+        graph << RDF::Statement.new('#updates'.R, 'http://www.w3.org/ns/ldp#contains'.R, g)
         log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] unless g.in_doc?
       end
 
