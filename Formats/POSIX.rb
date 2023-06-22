@@ -3,6 +3,7 @@ class WebResource
     up = File.dirname path
     return if up == '/'
     parent = join up
+    puts "#{parent} -> #{self}"
     graph << RDF::Statement.new(parent, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
     graph << RDF::Statement.new(parent, 'http://www.w3.org/ns/ldp#contains'.R, self)
     parent.R.containment_triples graph
