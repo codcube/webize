@@ -4,9 +4,7 @@ class WebResource
   # file -> Repository
   def loadRDF graph: env[:repository] ||= RDF::Repository.new
     if node.file?                                                    # file
-
       graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/posix/stat#File'.R)
-      containment_triples graph
 
       readRDF fileMIME, File.open(fsPath).read, graph
     elsif node.directory?                                            # directory
@@ -96,9 +94,7 @@ class WebResource
     return {} unless graph
     tree = {}    # output tree
     inlined = [] # inlined-node list
-    #graph.subjects.map{|s|s.R.containment_triples graph if [RDF::URI, WebResource].member?(s.class) && s.path}
     graph.each_triple{|subj,pred,obj| # walk graph
-#     puts [subj,pred,obj].join ' '   # inspect triples
       s = subj.to_s                   # subject URI
       p = pred.to_s                   # predicate URI
       blank = obj.class == RDF::Node  # bnode?
@@ -109,8 +105,7 @@ class WebResource
       end
       tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
       tree[s][p] ||= []                                       # predicate
-      tree[s][p].push obj                                     # object
-    }
+      tree[s][p].push obj}                                    # object
     inlined.map{|n|tree.delete n} # sweep inlined nodes from index
     tree
   end
