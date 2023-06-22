@@ -65,7 +65,7 @@ class WebResource
                '🔌'                                                 # offline response
              end,
              (ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched]), # upstream type: origin or middlebox
-             ([(env[:updates] || env[:repository]).size, '⋮'] if env[:repository] && env[:repository].size > 0), ' ', # graph size
+             ([env[:repository].size, '⋮'] if env[:repository] && env[:repository].size > 0), ' ', # graph size
              referer ? ["\e[#{color}m", referer.display_host, "\e[0m → "] : nil, # referer
              outFmt, ' ',                                           # output format
              "\e[#{color}#{';7' if referer && referer.host != env[:base].host}m", # invert off-site referer
@@ -199,9 +199,9 @@ class WebResource
       end
       env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
 
-      if nodes # fetch node(s) asynchronously
-        env[:updates] = RDF::Repository.new # initialize updates graph
-        opts[:thru] = false
+      if nodes # fetch node(s)
+        env[:updates] = true # limit result-set to updates
+        opts[:thru] = false  # sub-requests not proxied through to caller
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
         nodes.map{|n|

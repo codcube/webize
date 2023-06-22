@@ -50,10 +50,11 @@ class WebResource
   def saveRDF repository = nil
     return self unless repository || env[:repository]                # repository to store
 
-    timestamp = RDF::Query::Pattern.new :s, Date.R, :o               # timestamp query-pattern
-    creator = RDF::Query::Pattern.new :s, Creator.R, :o              # sender query-pattern
-    to = RDF::Query::Pattern.new :s, To.R, :o                        # receiver query-pattern
-    type = RDF::Query::Pattern.new :s, Type.R, :o                    # RDF type query-pattern
+    # query patterns
+    timestamp = RDF::Query::Pattern.new :s, Date.R, :o               # timestamp
+    creator = RDF::Query::Pattern.new :s, Creator.R, :o              # sender
+    to = RDF::Query::Pattern.new :s, To.R, :o                        # receiver
+    type = RDF::Query::Pattern.new :s, Type.R, :o                    # type
 
     (repository || env[:repository]).each_graph.map{|graph|          # graph
       g = graph.name ? (graph.name.R env) : graphURI                 # graph URI
@@ -62,7 +63,10 @@ class WebResource
 
       unless File.exist? f
         RDF::Writer.for(:turtle).open(f){|f|f << graph}              # save 🐢
-        env[:updates] << graph if env.has_key? :updates
+        if env.has_key? :updates                                     # add to updated-resource set
+          graph << RDF::Statement.new('#updates'.R, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
+          graph << RDF::Statement.new('#updates'.R, 'http://www.w3.org/ns/ldp#contains'.R, g)
+        end
         log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] unless g.in_doc?
       end
 
