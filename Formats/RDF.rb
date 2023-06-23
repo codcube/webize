@@ -54,6 +54,7 @@ class WebResource
     to = RDF::Query::Pattern.new :s, To.R, :o           # receiver
     type = RDF::Query::Pattern.new :s, Type.R, :o       # type
 
+    env[:repository] << RDF::Statement.new('#updates'.R, Type.R, 'http://www.w3.org/ns/ldp#Container'.R) # updates
     env[:repository].each_graph.map{|graph|             # graph
       g = graph.name ? (graph.name.R env) : graphURI    # graph URI
       f = [g.document, :🐢].join '.'                    # 🐢 location
@@ -61,8 +62,6 @@ class WebResource
 
       unless File.exist? f
         RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
-
-        env[:repository] << RDF::Statement.new('#updates'.R, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
         graph.subjects.map{|subject|                    # annotate resource(s) as updated
           env[:repository] << RDF::Statement.new('#updates'.R, 'http://www.w3.org/ns/ldp#contains'.R, subject)}
 
