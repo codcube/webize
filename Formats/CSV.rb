@@ -16,10 +16,12 @@ class WebResource
                   p = p.R
                   slug = p.display_name
                   icon = Icons[p.uri] || slug
-                  [{_: :th, class: p == sortAttr ? :sort : '', # ☛ sorted columns
-                    c: {_: :a, href: HTTP.qs(env[:qs].merge({'sort' => p.uri, 'order' => env[:order] == 'asc' ? 'desc' : 'asc'})), c: icon}}, "\n"]}}}, "\n",
+                  [{_: :th,                   # ☛ sorted columns
+                    c: {_: :a, c: icon,
+                        href: HTTP.qs(env[:qs].merge({'sort' => p.uri,
+                                                      'order' => env[:order] == 'asc' ? 'desc' : 'asc'}))}}, "\n"]}}}, "\n",
            {_: :tbody,
-            c: graph.map{|resource| # resource data
+            c: graph.map{|resource|           # resource data
               re = if resource['uri']         # resource URI
                      resource['uri']
                    elsif resource[DC + 'identifier']
