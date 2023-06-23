@@ -105,7 +105,8 @@ class WebResource
       tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
       tree[s][p] ||= []                                       # predicate
       tree[s][p].push obj}                                    # object
-    inlined.map{|n|tree.delete n} # sweep inlined nodes from index
+    inlined.map{|n|
+      tree.delete n} # sweep inlined nodes from index
     env.has_key?(:updates) ? {'#updates' => tree['#updates']} : tree
   end
 end
