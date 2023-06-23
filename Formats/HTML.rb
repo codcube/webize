@@ -549,7 +549,6 @@ class WebResource
           color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5]
         end
         if env[:last][To] != re[To]
-          env[:pattern] = rand 3
           to = p[To]
         end
       end
@@ -574,14 +573,7 @@ class WebResource
                   (re[p]||[]).map{|o|markup o,env}},           # body
                 p[Link],                                       # untyped links
                 (HTML.keyval(rest, env) unless rest.empty?),   # key/val render of remaining data
-               ]}.update(color ? {style: case env[:pattern]
-                                         when 0 # blank
-                                           "border-color: #{color}"
-                                         when 1 # striped
-                                           "background: repeating-linear-gradient(60deg, #000, #000 1em, #{color} 1em, #{color} 2em; border-color: #{color}"
-                                         when 2 # solid
-                                           "background-color: #{color}; border-color: #000; border-width: 0 0 .1em 0"
-                                         end} : {}),
+               ]}.update(color ? {style: "background-color: black; border-color: #{color}"} : {}),
           ]}.update(id ? {id: id} : {})}                      # representation identifier
 
   end
