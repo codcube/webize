@@ -553,11 +553,11 @@ class WebResource
     def notfound
       format = selectFormat
       body = case format
-             when /html/                  # serialize HTML
-               htmlDocument treeFromGraph
+             when /html/    # serialize HTML
+               htmlDocument
              when /atom|rss|xml/
-               feedDocument treeFromGraph # serialize Atom/RSS
-             else                         # serialize RDF
+               feedDocument # serialize Atom/RSS
+             else           # serialize RDF
                if env[:repository] && writer = RDF::Writer.for(content_type: format)
                  env[:repository].dump writer.to_sym, base_uri: self
                end

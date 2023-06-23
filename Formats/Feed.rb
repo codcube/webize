@@ -248,7 +248,7 @@ end
 class WebResource
   module HTML
 
-    def feedDocument graph
+    def feedDocument graph={}
       HTML.render ['<?xml version="1.0" encoding="utf-8"?>',
                    {_: :feed,xmlns: 'http://www.w3.org/2005/Atom',
                     c: [{_: :id, c: uri},
