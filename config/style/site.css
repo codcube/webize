@@ -5,7 +5,7 @@
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #rootpath {float: left}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
-#updates > .contents {background: repeating-linear-gradient(300deg, #ccc, #ccc .4em, #000 .4em, #000 .8em); border: none}
+#updates > .contents {background: repeating-linear-gradient(300deg, #ccc, #ccc .4em, #000 .4em, #000 .8em); border-width: 1px 0 1px 0}
 #updates .post .content {border-color: #ccc; background-color: #000; color: #fff}
 .abstract {display: block}
 .abstract, .abstract span {background-color: #bbb; color: #000}

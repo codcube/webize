@@ -391,13 +391,7 @@ class WebResource
                              when 'table'    # tabular
                                HTML.tabular graph.values, env
                              else            # columnar
-                               {class: :columns,
-                                c: if env.has_key? :sort
-                                 HTML.sort graph.values, env[:sort], env
-                               else
-                                 graph.values
-                                end.map{|v|
-                                  HTML.markup v, env}}
+                               {class: :columns, c: HTML.sort(graph.values, env[:sort], env).map{|v| HTML.markup v, env }}
                              end,
                              link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
                              {_: :script, c: Webize::Code::SiteJS}]}]}]
@@ -517,15 +511,18 @@ class WebResource
       end
     end
 
-    def self.sort graph, attr, env
-      attr = Webize::MetaMap[attr] || attr          # map sort-attribute to URI
+    def self.sort graph, attr='uri', env
+      attr = Webize::MetaMap[attr] || attr     # map sort-attribute to URI
       numeric = true if attr == Schema + 'position' # numeric sort types
-      sortable, unsorted = graph.partition{|r|      # to be sortable,
-        r.class == Hash && (r.has_key? attr)}       # object needs sort-attribute
-      sorted = sortable.sort_by{|r|                 # sort the sortable objects
+
+      sortable, unsorted = graph.partition{|r| # to be sortable,
+        r.class == Hash && (r.has_key? attr)}  # object needs sort-attribute
+
+      sorted = sortable.sort_by{|r|            # sort the sortable objects
         numeric ? r[attr][0].yield_self{|i| i.class == Integer ? i : i.to_s.to_i} : r[attr][0].to_s}
-      sorted.reverse! unless env[:order] == 'asc'   # default to descending order
-      [*sorted, *unsorted]                          # preserve unsorted to end of list
+
+      sorted.reverse! if env[:order] == 'desc' # ascending/descending order
+      [*sorted, *unsorted]                     # preserve unsorted to end of list
     end
 
     # generic resource -> HTML
