@@ -11,9 +11,6 @@ class WebResource
 
   module HTML
 
-    ContainerStyle = {
-      '#updates' => 'background: repeating-linear-gradient(315deg, #aaa, #aaa .4em, #000 .4em, #000 .8em); '}
-
     Markup['http://www.w3.org/ns/ldp#Container'] = -> dir, env {
       content = dir.delete('http://www.w3.org/ns/ldp#contains') || []
       [Title, Type, Date].map{|p| dir.delete p }
@@ -23,7 +20,7 @@ class WebResource
       {class: :container, id: uri.fragment ? uri.fragment : '#container_' + Digest::SHA2.hexdigest(rand.to_s),
        c: [{class: :name, _: :a, href: uri.to_s,
             c: uri.fragment || uri.basename}, '<br>',
-           {class: :contents, style: ContainerStyle[uri.to_s] || '',
+           {class: :contents,
             c: [content.map{|c| # contained items
                   c[Title] ||= [c['uri'].R.basename]
                   markup(c, env)},
