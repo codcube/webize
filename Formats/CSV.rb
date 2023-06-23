@@ -3,7 +3,6 @@ class WebResource
   module HTML
 
     MarkupPredicate[Schema + 'itemListElement'] = MarkupPredicate['https://schema.org/itemListElement'] = -> list, env {
-      env[:sort] ||= Schema + 'position'
       list.map!{|i| i.class == Hash ? i : {'uri' => i.to_s}}
       tabular list, env}
 
@@ -11,9 +10,6 @@ class WebResource
     def self.tabular graph, env
       graph = graph.values if graph.class == Hash
       keys = graph.select{|r|r.respond_to? :keys}.map(&:keys).flatten.uniq
-      env[:sort] ||= Date
-      sortAttr = Webize::MetaMap[env[:sort]] || env[:sort]
-
       {_: :table, class: :tabular,            # table
        c: [{_: :thead,
             c: {_: :tr, c: keys.map{|p|       # table heading
@@ -23,7 +19,7 @@ class WebResource
                   [{_: :th, class: p == sortAttr ? :sort : '', # ☛ sorted columns
                     c: {_: :a, href: HTTP.qs(env[:qs].merge({'sort' => p.uri, 'order' => env[:order] == 'asc' ? 'desc' : 'asc'})), c: icon}}, "\n"]}}}, "\n",
            {_: :tbody,
-            c: sort(graph, sortAttr, env).map{|resource| # resource data
+            c: graph.map{|resource| # resource data
               re = if resource['uri']         # resource URI
                      resource['uri']
                    elsif resource[DC + 'identifier']
