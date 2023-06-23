@@ -388,10 +388,13 @@ class WebResource
                              (['<br>⚠️', {_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
                              link[:up,'&#9650;'],
                              case env[:view] # layout function:
-                             when 'table'    # tabular
+                             when 'table'    # tabular layout
                                HTML.tabular graph.values, env
-                             else            # columnar
-                               {class: :columns, c: HTML.sort(graph.values, env[:sort], env).map{|v| HTML.markup v, env }}
+                             else            # columnar layout
+                               [if updates = graph.delete('#updates')
+                                HTML.markup updates, env unless updates.keys.size < 3
+                                end,
+                               {class: :columns, c: graph.values.map{|v| HTML.markup v, env }}]
                              end,
                              link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
                              {_: :script, c: Webize::Code::SiteJS}]}]}]
@@ -509,20 +512,6 @@ class WebResource
       else
         CGI.escapeHTML x.to_s
       end
-    end
-
-    def self.sort graph, attr='uri', env
-      attr = Webize::MetaMap[attr] || attr     # map sort-attribute to URI
-      numeric = true if attr == Schema + 'position' # numeric sort types
-
-      sortable, unsorted = graph.partition{|r| # to be sortable,
-        r.class == Hash && (r.has_key? attr)}  # object needs sort-attribute
-
-      sorted = sortable.sort_by{|r|            # sort the sortable objects
-        numeric ? r[attr][0].yield_self{|i| i.class == Integer ? i : i.to_s.to_i} : r[attr][0].to_s}
-
-      sorted.reverse! if env[:order] == 'desc' # ascending/descending order
-      [*sorted, *unsorted]                     # preserve unsorted to end of list
     end
 
     # generic resource -> HTML
