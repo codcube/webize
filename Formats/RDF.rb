@@ -55,58 +55,59 @@ class WebResource
 
     env[:repository] << RDF::Statement.new('#updates'.R, Type.R, 'http://www.w3.org/ns/ldp#Container'.R) # updates
     env[:repository].each_graph.map{|graph|             # graph
-      g = graph.name ? (graph.name.R env) : graphURI    # graph URI
-      f = [g.document, :🐢].join '.'                    # 🐢 location
-      log = []
+      if g = graph.name                                 # graph URI
+        g = g.R env
+        f = [g.document, :🐢].join '.'                  # 🐢 location
+        log = []
 
-      unless File.exist? f
-        RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
-        graph.subjects.map{|subject|                    # annotate resource(s) as updated
-          env[:repository] << RDF::Statement.new('#updates'.R, 'http://www.w3.org/ns/ldp#contains'.R, subject)}
+        # store graph
+        unless File.exist? f
+          RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
+          graph.subjects.map{|subject|                    # annotate resource(s) as updated
+            puts "update #{subject}"
+            env[:repository] << RDF::Statement.new('#updates'.R, 'http://www.w3.org/ns/ldp#contains'.R, subject)}
 
-        log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] unless g.in_doc?
-      end
-
-      # if location isn't on timeline, link to timeline. TODO additional indexing. ref https://pdsinterop.org/solid-typeindex-parser/ https://github.com/solid/solid/blob/main/proposals/data-discovery.md#type-index-registry
-      if !g.to_s.match?(HourDir) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
-
-        t = ts.split /\D/                                            # split timestamp
-        🕒 = [t[0..3], t.size < 4 ? '0' : nil, [t[4..-1],            # timeline containers
-               ([g.slugs, [type, creator, to].map{|pattern|          # name tokens from graph and query pattern
-                   slugify = pattern==type ? :display_name : :slugs  # slug verbosity
-                   graph.query(pattern).objects.map{|o|              # query for slug-containing triples
-                  o.respond_to?(:R) ? o.R.send(slugify) : o.to_s.split(/[\W_]/)}}]. # tokenize
-                  flatten.compact.map(&:downcase).uniq - BasicSlugs)].          # apply slug skiplist
-                compact.join('.')[0..125].sub(/\.$/,'')+'.🐢'].compact.join '/' # 🕒 path
-
-        unless File.exist? 🕒
-          FileUtils.mkdir_p File.dirname 🕒                          # create timeline container(s)
-          FileUtils.ln f, 🕒 rescue FileUtils.cp f, 🕒               # hardlink 🐢 to 🕒, fallback to copy
-          log.unshift [:🕒, ts] unless g.in_doc?
+          log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] unless g.in_doc?
         end
-      end
-      logger.info log.join ' ' unless log.empty?}
+
+        # link graph to timeline
+        if !g.to_s.match?(HourDir) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
+          t = ts.split /\D/                                 # split timestamp
+          🕒 = [t[0..3], t.size < 4 ? '0' : nil, [t[4..-1], # timeline containers
+                                                  ([g.slugs, [type, creator, to].map{|pattern|          # name tokens from graph and query pattern
+                                                      slugify = pattern==type ? :display_name : :slugs  # slug verbosity
+                                                      graph.query(pattern).objects.map{|o|              # query for slug-containing triples
+                                                        o.respond_to?(:R) ? o.R.send(slugify) : o.to_s.split(/[\W_]/)}}]. # tokenize
+                                                     flatten.compact.map(&:downcase).uniq - BasicSlugs)].          # apply slug skiplist
+                                                   compact.join('.')[0..125].sub(/\.$/,'')+'.🐢'].compact.join '/' # 🕒 path
+          unless File.exist? 🕒
+            FileUtils.mkdir_p File.dirname 🕒            # create timeline container(s)
+            FileUtils.ln f, 🕒 rescue FileUtils.cp f, 🕒 # hardlink 🐢 to 🕒, fallback to copy
+            log.unshift [:🕒, ts] unless g.in_doc?
+          end
+        end
+        logger.info log.join ' ' unless log.empty?
+      end}
     self
   end
 
   # Repository -> tree {s -> p -> o}
   def treeFromGraph
-    tree = {}    # output tree
-    inlined = [] # inlined-node list
+    tree = {}                      # output tree
+    inlined = []                   # inlined nodes
     env[:repository].each_triple{|subj,pred,obj|
-      s = subj.to_s                   # subject URI
-      p = pred.to_s                   # predicate URI
-      blank = obj.class == RDF::Node  # bnode?
+      s = subj.to_s                # subject URI
+      p = pred.to_s                # predicate URI
+      blank = obj.class == RDF::Node # bnode?
       if blank || p == 'http://www.w3.org/ns/ldp#contains' # bnode or child-node?
-        o = obj.to_s                  # object URI
-        inlined.push o                # inline object
+        o = obj.to_s               # object URI
+        inlined.push o             # inline object
         obj = tree[o] ||= blank ? {} : {'uri' => o}
       end
       tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
       tree[s][p] ||= []                                       # predicate
       tree[s][p].push obj}                                    # object
-    inlined.map{|n|
-      tree.delete n} # sweep inlined nodes from index
+    inlined.map{|n| tree.delete n} # sweep inlined nodes from toplevel index
     env.has_key?(:updates) ? {'#updates' => tree['#updates']} : tree
   end
 end
