@@ -106,8 +106,7 @@ class WebResource
       tree[s][p] ||= []                                       # predicate
       tree[s][p].push obj}                                    # object
     inlined.map{|n|tree.delete n} # sweep inlined nodes from index
-    tree.keys.map{|k| tree.delete k unless k == '#updates'} if env.has_key? :updates
-    tree
+    env.has_key?(:updates) ? {'#updates' => tree['#updates']} : tree
   end
 end
 
