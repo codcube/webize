@@ -12,7 +12,7 @@ class WebResource
   module HTML
 
     ContainerStyle = {
-      '#updates' => 'background: repeating-linear-gradient(315deg, #aaa, #aaa .8em, #000 .8em, #000 1em); '}
+      '#updates' => 'background: repeating-linear-gradient(315deg, #aaa, #aaa .4em, #000 .4em, #000 .8em); '}
 
     Markup['http://www.w3.org/ns/ldp#Container'] = -> dir, env {
       content = dir.delete('http://www.w3.org/ns/ldp#contains') || []
