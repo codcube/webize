@@ -34,9 +34,8 @@ module Webize
             post.css(MsgCSS[:post]).map{|childPost|                        # child posts are emitted separately
               childPost.remove if !childPost.css(MsgCSS[:link]).empty? || childPost['id']}
 
-            subject = @base.join subject                                   # resolve subject URI
-            graph = ['//', subject.host, subject.path&.sub(/\.html$/, ''), # resolve graph URI
-                     '/', subject.fragment].join.R                         # fragment URI to graph path (posts/replies to their own files)
+            subject = @base.join subject                                   # subject URI
+            graph = ['//', subject.host, subject.path].join.R              # graph URI
 
             yield subject, Type, (SIOC + 'BoardPost').R, graph             # RDF type
 

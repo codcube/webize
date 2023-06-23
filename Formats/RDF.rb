@@ -47,24 +47,25 @@ class WebResource
   end
 
   # Repository -> 🐢 file(s)
-  def saveRDF repository = nil
-    return self unless repository || env[:repository]                # repository to store
-
+  def saveRDF
     # query patterns
-    timestamp = RDF::Query::Pattern.new :s, Date.R, :o               # timestamp
-    creator = RDF::Query::Pattern.new :s, Creator.R, :o              # sender
-    to = RDF::Query::Pattern.new :s, To.R, :o                        # receiver
-    type = RDF::Query::Pattern.new :s, Type.R, :o                    # type
+    timestamp = RDF::Query::Pattern.new :s, Date.R, :o  # timestamp
+    creator = RDF::Query::Pattern.new :s, Creator.R, :o # sender
+    to = RDF::Query::Pattern.new :s, To.R, :o           # receiver
+    type = RDF::Query::Pattern.new :s, Type.R, :o       # type
 
-    (repository || env[:repository]).each_graph.map{|graph|          # graph
-      g = graph.name ? (graph.name.R env) : graphURI                 # graph URI
-      f = [g.document, :🐢].join '.'                                 # 🐢 location
+    env[:repository].each_graph.map{|graph|             # graph
+      g = graph.name ? (graph.name.R env) : graphURI    # graph URI
+      f = [g.document, :🐢].join '.'                    # 🐢 location
       log = []
 
       unless File.exist? f
-        RDF::Writer.for(:turtle).open(f){|f|f << graph}              # save 🐢 and mark as updated
-        graph << RDF::Statement.new('#updates'.R, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
-        graph << RDF::Statement.new('#updates'.R, 'http://www.w3.org/ns/ldp#contains'.R, g)
+        RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
+
+        env[:repository] << RDF::Statement.new('#updates'.R, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
+        graph.subjects.map{|subject|                    # annotate resource(s) as updated
+          env[:repository] << RDF::Statement.new('#updates'.R, 'http://www.w3.org/ns/ldp#contains'.R, subject)}
+
         log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] unless g.in_doc?
       end
 
@@ -91,12 +92,10 @@ class WebResource
   end
 
   # Repository -> tree {s -> p -> o}
-  def treeFromGraph graph = nil
-    graph ||= env[:repository]
-    return {} unless graph
+  def treeFromGraph
     tree = {}    # output tree
     inlined = [] # inlined-node list
-    graph.each_triple{|subj,pred,obj| # walk graph
+    env[:repository].each_triple{|subj,pred,obj|
       s = subj.to_s                   # subject URI
       p = pred.to_s                   # predicate URI
       blank = obj.class == RDF::Node  # bnode?
