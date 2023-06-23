@@ -171,11 +171,11 @@ module Webize
                     SIOC + (reddit ? 'Board' : 'Blog') + 'Post'
                   end.R
 
-            # addressee/recipient/message-destination group
+            # addressee/recipient/destination group
             to = reddit ? ('https://www.reddit.com/' + subject.parts[0..1].join('/')).R : @base
             yield subject, WebResource::To, to
-            yield to, Type, 'http://www.w3.org/ns/ldp#Container'.R
-            yield to, 'http://www.w3.org/ns/ldp#contains', subject
+            #yield to, Type, 'http://www.w3.org/ns/ldp#Container'.R
+            #yield to, 'http://www.w3.org/ns/ldp#contains', subject
 
             # media links
             inner.scan(reMedia){|e|
