@@ -5,6 +5,7 @@
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #rootpath {float: left}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
+#updates .post .content div {background-color: #000; color: #fff}
 .abstract {display: block}
 .abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked {background: repeating-linear-gradient(45deg, #f00, #f00 .5em, #000 .5em, #000 1em); color: #fff}
@@ -28,11 +29,11 @@
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .links {border: 1px dotted #777; border-radius: .5em}
 .path_crumb {color: #bbb}
-.post {margin: .125em}
 .post .content {border-width: 1px; border-style: solid; border-color: #666}
 .post .from {background-color: #000; border-style: solid; border-width: 0 0 1px 0; border-radius: .3em .3em 0 0}
 .post .to {font-size: 1.2em; border-radius: .3em .3em 0 0; margin-top: .42em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
+.post {margin: .125em}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
 .quote > .quote > .quote {background-color: #777}
