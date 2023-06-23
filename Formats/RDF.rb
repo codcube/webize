@@ -47,8 +47,7 @@ class WebResource
   end
 
   # Repository -> 🐢 file(s)
-  def saveRDF
-    # query patterns
+  def saveRDF                                           # query pattern:
     timestamp = RDF::Query::Pattern.new :s, Date.R, :o  # timestamp
     creator = RDF::Query::Pattern.new :s, Creator.R, :o # sender
     to = RDF::Query::Pattern.new :s, To.R, :o           # receiver
@@ -107,6 +106,7 @@ class WebResource
       tree[s][p] ||= []                                       # predicate
       tree[s][p].push obj}                                    # object
     inlined.map{|n|tree.delete n} # sweep inlined nodes from index
+    tree.keys.map{|k| tree.delete k unless k == '#updates'} if env.has_key? :updates
     tree
   end
 end

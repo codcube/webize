@@ -20,7 +20,7 @@ class WebResource
 
       uri = dir['uri'].R
 
-      {class: :container,
+      {class: :container, id: uri.fragment ? uri.fragment : '#container_' + Digest::SHA2.hexdigest(rand.to_s),
        c: [{class: :name, _: :a, href: uri.to_s,
             c: uri.fragment || uri.basename}, '<br>',
            {class: :contents, style: ContainerStyle[uri.to_s] || '',
