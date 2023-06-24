@@ -5,9 +5,9 @@
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #rootpath {float: left}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
-#updates > .contents {background: repeating-linear-gradient(300deg, #ccc, #ccc .4em, #000 .4em, #000 .8em); border-width: 1px 0 1px 0}
-#updates .post {margin: .2em}
 #updates .post .content {border-color: #ccc; background-color: #000; color: #fff}
+#updates .post {margin: .2em}
+#updates > .contents {background: repeating-linear-gradient(300deg, #ccc, #ccc .4em, #000 .4em, #000 .8em); border-width: 1px 0 1px 0}
 .abstract {display: block}
 .abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked {background: repeating-linear-gradient(45deg, #f00, #f00 .5em, #000 .5em, #000 1em); color: #fff}
@@ -73,7 +73,6 @@ body.error {background: #f00; font-weight: bold}
 code {color: #000; background-color: #eee; padding: .1em}
 iframe, .preembed {border: .2em solid #fff}
 iframe.main_player {border: .25em solid red}
-img, li, p  {border-radius: .25em; margin: 0 0 1px 1px}
 img, video, table {max-width: 100%}
 li:nth-child(even), tr:nth-child(even) > td.v {background-color: #000}
 li:nth-child(odd), tr:nth-child(odd) > td.v {background-color: #181818}
