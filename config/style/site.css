@@ -5,16 +5,14 @@
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #rootpath {float: left}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
-#updates .post .content {border-color: #ccc; background-color: #000; color: #fff}
-#updates .post {margin: .2em}
-#updates > .contents {background: repeating-linear-gradient(300deg, #999, #999 1em, #000 1em, #000 2em); border-width: 0.125em}
+#updates > .contents {background: repeating-linear-gradient(300deg, #888, #888 .25em, #000 .25em, #000 .5em); border-width: 0.125em}
 .abstract {display: block}
 .abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked {background: repeating-linear-gradient(45deg, #f00, #f00 .5em, #000 .5em, #000 1em); color: #fff}
 .bold {font-weight: bold}
 .columns {column-width: 80ex; column-gap: 0}
-.container > .contents {border: 1px solid #999}
-.container > .name {border-color: #999; border-style: solid; border-radius: 0; background-color: #000; color: #fff; border-width: 1px 1px 0 1px; padding: 0 .2em 0 .2em}
+.container > .contents {border: 1px solid #888}
+.container > .name {border-color: #888; border-style: solid; border-radius: 0; background-color: #000; color: #fff; border-width: 1px 1px 0 1px; padding: 0 .2em 0 .2em}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 4.2em; background-color: #000; color: #fff}
@@ -31,7 +29,7 @@
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .links {border: 1px dotted #777; border-radius: .5em}
 .path_crumb {color: #bbb}
-.post .content {border-width: 1px; border-style: solid; border-color: #666; border-radius: 0 .5em .5em .5em}
+.post .content {border-width: 1px; border-style: solid; border-color: #888; border-radius: 0 .5em .5em .5em}
 .post .from {background-color: #000; border-style: solid; border-width: 0 0 1px 0; border-radius: .3em .3em 0 0}
 .post .to {font-size: 1.2em; border-radius: .3em .3em 0 0; margin-top: .42em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
