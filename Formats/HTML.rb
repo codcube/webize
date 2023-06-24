@@ -361,10 +361,8 @@ class WebResource
                 elsif StatusColor.has_key? status
                   StatusColor[status]                                                              # status-code color
                 else
-                  '#282828'
+                  '#000'
                 end
-
-      css = "body {background: repeating-linear-gradient(-60deg, #000, #000 1.2em, #{bgcolor} 1.2em, #{bgcolor} 2.4em)}"
 
       htmlGrep graph                                                                               # grep results to markup
 
@@ -379,7 +377,7 @@ class WebResource
                     c: [{_: :head,
                          c: [{_: :meta, charset: 'utf-8'},
                             ({_: :title, c: CGI.escapeHTML(graph[uri][Title].join ' ')} if graph.has_key?(uri) && graph[uri].has_key?(Title)),
-                             {_: :style, c: [Webize::CSS::SiteCSS, css]},
+                             {_: :style, c: [Webize::CSS::SiteCSS, "body {background-color: #{bgcolor}}"].join("\n")},
                              env[:links].map{|type, resource|
                                {_: :link, rel: type, href: CGI.escapeHTML(resource.R(env).href)}}]},
                         {_: :body,
@@ -559,7 +557,7 @@ class WebResource
                   (re[p]||[]).map{|o|markup o,env}},           # body
                 p[Link],                                       # untyped links
                 (HTML.keyval(rest, env) unless rest.empty?),   # key/val render of remaining data
-               ]}.update(color ? {style: "background-color: black; border-color: #{color}"} : {}),
+               ]}.update(color ? {style: "background-color: #{color}; border-color: #{color}; border-width: .125em"} : {}),
           ]}.update(id ? {id: id} : {})}                      # representation identifier
 
   end

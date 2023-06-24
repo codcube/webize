@@ -7,7 +7,7 @@
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
 #updates .post .content {border-color: #ccc; background-color: #000; color: #fff}
 #updates .post {margin: .2em}
-#updates > .contents {background: repeating-linear-gradient(300deg, #ccc, #ccc .4em, #000 .4em, #000 .8em); border-width: 1px 0 1px 0}
+#updates > .contents {background: repeating-linear-gradient(300deg, #999, #999 1em, #000 1em, #000 2em); border-width: 0.125em}
 .abstract {display: block}
 .abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked {background: repeating-linear-gradient(45deg, #f00, #f00 .5em, #000 .5em, #000 1em); color: #fff}
@@ -77,6 +77,7 @@ img, video, table {max-width: 100%}
 li:nth-child(even), tr:nth-child(even) > td.v {background-color: #000}
 li:nth-child(odd), tr:nth-child(odd) > td.v {background-color: #181818}
 ol, ul {border: 1px solid #333; border-radius: .3em; background-color: #111}
+p {border-color: #222; border-radius: .3em; border-width: 1px; border-style: solid}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6 {margin: 0}
 svg, img[src*="svg"] {max-width:2em; max-height: 2em}
