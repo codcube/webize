@@ -192,7 +192,7 @@ class WebResource
           uri = r.R env
           name = uri.display_name
           color = Digest::SHA2.hexdigest(name)[0..5]
-          {_: :a, class: :to, href: uri.href, style: "background-color: ##{color}", c: name}
+          {_: :a, class: :to, href: uri.href, style: "color: ##{color}", c: name}
         else
           markup r, env
         end}}
