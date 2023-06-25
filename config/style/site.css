@@ -5,15 +5,15 @@
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #rootpath {float: left}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
-#updates > .contents {background: repeating-linear-gradient(300deg, #888, #888 .125em, #000 .125em, #000 1em); border-width: .2em; border-radius: 0 .6em .6em .6em}
-#updates .post .content {border-color: #ccc}
+#updates > .contents {background: repeating-linear-gradient(300deg, #555, #555 .125em, #000 .125em, #000 3em); border-width: .125em; border-radius: 0 .6em .6em .6em}
+#updates .post .content {border-color: #bbb}
 .abstract {display: block}
 .abstract, .abstract span {background-color: #bbb; color: #000}
-.blocked {background: repeating-linear-gradient(45deg, #f00, #f00 .5em, #000 .5em, #000 1em); color: #fff}
+.blocked {background: repeating-linear-gradient(0deg, #f00, #f00 1em, #000 1em, #000 2em); color: #fff}
 .bold {font-weight: bold}
 .columns {column-width: 80ex; column-gap: 0}
 .container > .contents {border: 1px solid #888}
-.container > .name {border-color: #888; border-style: solid; border-radius: 0; background-color: #000; color: #fff; border-width: 1px 1px 0 1px; padding: 0 .2em 0 .2em}
+.container > .name {border-color: #888; border-style: solid; border-radius: 0; background-color: #000; color: #fff; border-width: 1px 1px 0 1px; border-radius: .5em .5em 0 0; padding: 0 .2em 0 .2em}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 4.2em; background-color: #000; color: #fff}
