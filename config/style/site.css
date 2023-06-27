@@ -11,7 +11,7 @@
 .blocked {background: repeating-linear-gradient(0deg, #f00, #f00 1em, #000 1em, #000 2em); color: #fff}
 .bold {font-weight: bold}
 .columns {column-width: 80ex; column-gap: 0}
-.container > .contents {border: 2px solid #888}
+.container > .contents {border: 1px solid #888}
 .container > .name {border-color: #888; border-style: solid; border-radius: 0; background-color: #000; color: #fff; border-width: 1px 1px 0 1px; border-radius: .5em .5em 0 0; padding: 0 .2em 0 .2em}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
@@ -29,7 +29,7 @@
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .links {border: 1px dotted #777; border-radius: .5em}
 .path_crumb {color: #bbb}
-.post .content {border-width: 2px; border-style: solid; border-color: #888; border-radius: .5em}
+.post .content {border-width: 0.15em; border-style: solid; border-color: #888; border-radius: .5em}
 .post .from {background-color: #000; border-style: solid; border-width: 0 0 1px 0; border-radius: .3em .3em 0 0}
 .post .to {font-size: 1.2em; border-radius: .3em .3em 0 0; margin-top: .42em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
