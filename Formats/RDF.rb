@@ -90,25 +90,6 @@ class WebResource
     self
   end
 
-  # Repository -> tree {s -> p -> o}
-  def treeFromGraph
-    tree = {}                      # output tree
-    inlined = []                   # inlined nodes
-    env[:repository].each_triple{|subj,pred,obj|
-      s = subj.to_s                # subject URI
-      p = pred.to_s                # predicate URI
-      blank = obj.class == RDF::Node # bnode?
-      if blank || p == 'http://www.w3.org/ns/ldp#contains' # bnode or child-node?
-        o = obj.to_s               # object URI
-        inlined.push o             # inline object
-        obj = tree[o] ||= blank ? {} : {'uri' => o}
-      end
-      tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
-      tree[s][p] ||= []                                       # predicate
-      tree[s][p].push obj}                                    # object
-    inlined.map{|n| tree.delete n} # sweep inlined nodes from toplevel index
-    env.has_key?(:updates) ? {'#updates' => tree['#updates']} : tree
-  end
 end
 
 RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl] # enable 🐢 suffix for turtle files
