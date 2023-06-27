@@ -200,7 +200,7 @@ class WebResource
       env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
 
       if nodes # fetch node(s)
-        env[:updates] = true # limit result-set to updates
+        env[:updates_only] = true # limit response to updates
         opts[:thru] = false  # sub-requests not proxied through to caller
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)

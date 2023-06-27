@@ -128,6 +128,9 @@ class WebResource
 
   # RDF::Repository -> JSON {subject -> predicate -> object}
   def treeFromGraph
+#    env[:repository].each_graph.map{|g|
+#      puts [g.name, g.size].join ' '
+#      puts g.query(RDF::Query::Pattern.new :s, Date.R, :o)}
     tree = {}                      # output tree
     inlined = []                   # inlined nodes
     env[:repository].each_triple{|subj,pred,obj|
@@ -143,7 +146,7 @@ class WebResource
       tree[s][p] ||= []                                       # predicate
       tree[s][p].push obj}                                    # object
     inlined.map{|n| tree.delete n} # sweep inlined nodes from toplevel index
-    env.has_key?(:updates) ? {'#updates' => tree['#updates']} : tree
+    env.has_key?(:updates_only) ? {'#updates' => tree['#updates']} : tree
   end
 
 end
