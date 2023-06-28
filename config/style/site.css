@@ -29,9 +29,9 @@
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .links {border: 1px dotted #777; border-radius: .5em}
 .path_crumb {color: #bbb}
-.post .content {border-width: 0.125em; border-style: solid; border-color: #888; border-radius: .6em}
+.post .content {border-width: 1px; border-style: solid; border-color: #666; border-radius: .6em}
 .post .from {background-color: #000; border-style: solid; border-width: 0 0 1px 0; border-radius: .3em .3em 0 0}
-.post .to {font-size: 1.125em}
+.post .to {font-size: 1.125em; border-width: 1px 0 0 0; border-style: solid; border-radius: 0}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
 .post {margin: .125em; max-width: 110ex}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
@@ -53,18 +53,17 @@ a div, form, p, .post {display: inline-block}
 a img {float: left}
 a span {color: #bbb; font-weight: normal; font-size: 0.82em}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; max-width: 40em; overflow: hidden; vertical-align: top}
-a.date {white-space: nowrap; float: right; background-color: #aaa; color: #000; border-radius: 0 0 .2em .2em; margin: 0; font-size: .8em}
-a.global, a.global span.id {background-color: #005}
-a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block; margin-bottom: 1px}
-a.global:visited, a.global:visited span.id, a.local:visited, a.local:visited span.id {background-color: #000}
-a.global:visited, a.local:visited {border-color: #40f}
-a.local, a.local span.id {background-color: #003}
+a.date {white-space: nowrap; float: right; color: #888; font-size: .8em}
+a.global {background-color: #005}
+a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block}
+a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
+a.local {background-color: #003}
 audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .original, .quote, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em}
 blockquote, ol, p, ul {max-width: 80ex}
 blockquote::before, .quote::before {content: '>'; float: left}
 body {padding-top: 0; margin-top: 0}
-body, dfn, div[dir="auto"], figcaption, li, p, pre, .post .content > span, .content > td {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans}
+body, dfn, div[dir="auto"], figcaption, p, pre, .post .content > span, .content > td {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}

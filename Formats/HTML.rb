@@ -557,7 +557,7 @@ class WebResource
                   (re[p]||[]).map{|o|markup o,env}},           # body
                 p[Link],                                       # untyped links
                 (HTML.keyval(rest, env) unless rest.empty?),   # key/val render of remaining data
-               ]}.update(color ? {style: "border-color: #{color}"} : {}),
+               ]}.update(color ? {style: "background: repeating-linear-gradient(300deg, #{color}, #{color} .125em, #000 .125em, #000 6em); border-color: #{color}"} : {}),
           ]}.update(id ? {id: id} : {})}                      # representation identifier
 
   end
