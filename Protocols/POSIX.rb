@@ -111,7 +111,7 @@ class WebResource
     # HTTP-header pointers for local navigation
     def dirMeta
       root = !path || path == '/'
-      path += '.rss' if host == 'www.reddit.com' && path && !path.index('.rss')
+      self.path += '.rss' if host == 'www.reddit.com' && path && !%w(favicon.ico gallery wiki video).member?(parts[0]) && !path.index('.rss')
       if host && root                                            # up to parent domain
         env[:links][:up] = '//' + host.split('.')[1..-1].join('.')
       elsif !root                                                # up to parent path
