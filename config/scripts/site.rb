@@ -34,40 +34,7 @@ class WebResource
     Subscriptions['www.youtube.com'] = Webize.configList('subscriptions/youtube').map{|c|
       'https://www.youtube.com/feeds/videos.xml?channel_id=' + c}
 
-    ## GET handlers
-
-    GET 'old.reddit.com', -> r {
-      r.fetch.yield_self{|status,head,body|
-        if status.to_s.match? /^30/
-          [status, head, body]
-        else # find page pointers in HTML <body> (old UI) as they're missing in HTTP HEAD and HTML <head> (old+new UI) and HTML <body> (new UI)
-          links = []
-          if body.class == Array && body[0].class == String
-            body[0].scan(/href="([^"]+after=[^"]+)/){|link| links << CGI.unescapeHTML(link[0]).R}
-          end
-          [302, {'Location' => (links.empty? ? r.href : links.sort_by{|r|r.query_values['count'].to_i}[-1]).to_s.sub('old','www')}, []] # redirect to previous page
-        end}}
-
-    GET 'www.reddit.com', -> r {
-      ps = r.parts
-      r.env[:links][:prev] = ['//old.reddit.com', (r.path || '/').sub('.rss',''), '?',r.query].join.R r.env # previous-page pointer
-      if !ps[0] || %w(comments r u user).member?(ps[0])
-        if ps[0] == 'user'
-          r.path += '/' unless r.path[-1] == '/' # append /: user.rss interpreted as missing username, not format hint
-          r.env[:sort] = To
-        end
-        r.path += '.rss' unless r.offline? || !r.path || r.path.index('.rss') # add .rss to URL to request preferred content-type
-        r.env.delete 'HTTP_REFERER'
-        r.fetch
-      elsif %w(favicon.ico gallery wiki video).member? ps[0]
-        r.fetch
-      else
-        r.deny
-     end}
-
-    GET 'youtu.be', -> r {[301, {'Location' => ['//www.youtube.com/watch?v=', r.path[1..-1]].join.R(r.env).href}, []]}
-
-    # site-specific RDF mapping methods for HTML and JSON
+    # site-specific RDF mapping
 
     def C2 tree, &b
       yield self, Date, tree['date']

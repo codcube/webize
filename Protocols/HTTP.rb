@@ -5,8 +5,9 @@ class WebResource
     include URIs
     Args = Webize.configList 'HTTP/arguments'            # permitted query arguments
     Methods = Webize.configList 'HTTP/methods'           # permitted HTTP methods
-    HostGET = {}; Subscriptions = {}                     # host handler and subscription-list storage
+    Subscriptions = {}                                   # subscription-list storage
     FilterHosts = Webize.configList 'hosts/filter'
+    URLHosts = Webize.configList 'hosts/url'
     PeerHosts = Hash[*File.open([ENV['PREFIX'],'/etc/hosts'].join).readlines.map(&:chomp).map{|l|
                        addr, *names = l.split
                        names.map{|host|
@@ -371,22 +372,6 @@ class WebResource
         [s, h, b]}
     end
 
-    # define a host-specific GET handler
-    def self.GET arg, lambda = -> r {r.send r.uri.match?(Gunk) ? :deny : :fetch}
-      HostGET[arg] = lambda
-    end
-
-    GotoURL = -> r {
-      q = r.query_values || {}
-      dest = q['url'] || q['u'] || q['q']
-      dest ? [301, {'Location' => dest.R(r.env).href}, []] : r.notfound}
-
-    Webize.configList('hosts/shorturl').map{|h|
-      GET h, -> r {r.dropQS}}
-
-    Webize.configList('hosts/url').map{|h|
-      GET h, GotoURL}
-
     def GET
       return hostGET if host                  # remote node at canonical URI
       p = parts[0]                            # path selector
@@ -478,6 +463,7 @@ class WebResource
 
       head['Referer'] = 'http://drudgereport.com/' if host&.match? /wsj\.com$/ # referer tweaks so stuff loads
       head['Referer'] = 'https://' + (host || env['HTTP_HOST']) + '/' if (path && %w(.gif .jpeg .jpg .png .svg .webp).member?(File.extname(path).downcase)) || parts.member?('embed')
+      head.delete 'Referer' if host == 'www.reddit.com' # fix empty RSS-feed issue
 
       head['User-Agent'] = 'curl/7.82.0' if %w(po.st t.co).member? host # to prefer HTTP HEAD redirections e over procedural Javascript, advertise a basic user-agent
 
@@ -487,12 +473,15 @@ class WebResource
     end
 
     def hostGET
-      dirMeta                        # directory metadata
-      cookieCache                    # save/restore cookies
+      return (q = query_values || {}
+              dest = q['url'] || q['u'] || q['q']
+              dest ? [301, {'Location' => dest.R(env).href}, []] : notfound) if URLHosts.member? host
+      dirMeta      # directory metadata
+      cookieCache  # save/restore cookies
       case path
       when /(gen(erate)?|log)_?204$/ # connectivity check
         [204, {}, []]
-      when '/feed'                   # subscription endpoint
+      when '/feed' # subscription endpoint
         fetch adapt? ? Subscriptions[host] : nil
       when /^\/resizer/
         if (ps = path.split /\/\d+x\d+[^.]*\//).size > 1
@@ -500,12 +489,8 @@ class WebResource
         else
           fetch
         end
-      else
-        if (λ = HostGET[host.downcase]) && adapt?
-          λ[self]                    # adapted remote
-        else                         # generic remote
-          (deny? && !FilterHosts.member?(host)) ? deny : fetch
-        end
+      else         # generic remote node
+        (deny? && !FilterHosts.member?(host)) ? deny : fetch
       end
     end
     
