@@ -65,16 +65,6 @@ class WebResource
         r.deny
      end}
 
-    GET 'twitter.com', -> r {[301, {'Location' => ['//nitter.net',  r.path,  '?', r.query].join.R(r.env).href}, []]}
-
-    GET 'nitter.net', -> r {
-      ps = r.parts
-      if ps[0] == 'pic'
-        [301, {'Location' => ['//pbs.twimg.com/', Rack::Utils.unescape_path(ps[1])].join.R(r.env).href}, []]
-      else
-        r.fetch
-      end}
-
     GET 'youtu.be', -> r {[301, {'Location' => ['//www.youtube.com/watch?v=', r.path[1..-1]].join.R(r.env).href}, []]}
 
     # site-specific RDF mapping methods for HTML and JSON
