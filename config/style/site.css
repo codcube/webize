@@ -29,8 +29,8 @@
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .links {border: 1px dotted #777; border-radius: .5em}
 .path_crumb {color: #bbb}
-.post .content {border-width: .1em; border-style: solid; border-color: #666; border-radius: .6em}
-.post .content div {background-color: #000; color: #fff; border-radius: .6em}
+.post .content {border-width: .125em; border-style: solid; border-color: #666; border-radius: .6em}
+.post .content div {background-color: #000; color: #fff; border-radius: .6em; display: inline-block}
 .post .from {border-style: solid; border-width: 0 0 1px 0; border-radius: .3em .3em 0 0}
 .post .to {font-size: 1.125em; border-width: 1px 0 0 0; border-style: solid; border-radius: 0}
 .post a.pointer {font-weight: normal; margin: 0; float: right}

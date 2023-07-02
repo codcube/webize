@@ -332,13 +332,9 @@ class WebResource
         fetchGemini                                         # fetch w/ Gemini
       when /https?/
         if ENV.has_key?('http_proxy')
-          insecure.fetchHTTP **opts                         # fetch w/ HTTP from proxy
-        elsif PeerAddrs.has_key? env[:addr]
-          url = insecure
-          url.port = 8000
-          url.fetchHTTP **opts                              # fetch w/ HTTP from peer
+          insecure.fetchHTTP **opts                         # fetch w/ HTTP
         else
-          fetchHTTP **opts                                  # fetch w/ HTTPS
+          fetchHTTP **opts                                  # fetch w/ HTTP(S)
         end
       when 'spartan'                                        # fetch w/ Spartan
         fetchSpartan
