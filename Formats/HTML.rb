@@ -377,7 +377,9 @@ class WebResource
                     c: [{_: :head,
                          c: [{_: :meta, charset: 'utf-8'},
                             ({_: :title, c: CGI.escapeHTML(graph[uri][Title].join ' ')} if graph.has_key?(uri) && graph[uri].has_key?(Title)),
-                             {_: :style, c: [Webize::CSS::SiteCSS, "body {background-color: #{bgcolor}}"].join("\n")},
+                            {_: :style,
+                             c: [Webize::CSS::SiteCSS,
+                                 "body {background: repeating-linear-gradient(90deg, #{bgcolor}, #{bgcolor} 8em, #000 8em, #000 16em)}"].join("\n")},
                              env[:links].map{|type, resource|
                                {_: :link, rel: type, href: CGI.escapeHTML(resource.R(env).href)}}]},
                         {_: :body,
@@ -557,7 +559,7 @@ class WebResource
                   (re[p]||[]).map{|o|markup o,env}},           # body
                 p[Link],                                       # untyped links
                 (HTML.keyval(rest, env) unless rest.empty?),   # key/val render of remaining data
-               ]}.update(color ? {style: "background: repeating-linear-gradient(300deg, #{color}, #{color} .125em, #000 .125em, #000 6em); border-color: #{color}"} : {}),
+               ]}.update(color ? {style: "background: repeating-linear-gradient(300deg, #{color}, #{color} .125em, #000 .125em, #000 1em); border-color: #{color}"} : {}),
           ]}.update(id ? {id: id} : {})}                      # representation identifier
 
   end

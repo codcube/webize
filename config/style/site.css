@@ -5,7 +5,7 @@
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #rootpath {float: left}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
-#updates > .contents {background: repeating-linear-gradient(300deg, #484848, #484848 .1em, #000 .1em, #000 6em); border-radius: 0 .6em .6em .6em}
+#updates > .contents {background: repeating-linear-gradient(300deg, #888, #888 .3em, #000 .3em, #000 .6em); border-radius: 0 .6em .6em .6em}
 .abstract {display: block}
 .abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked {background: repeating-linear-gradient(0deg, #f00, #f00 1em, #000 1em, #000 2em); color: #fff}
@@ -30,6 +30,7 @@
 .links {border: 1px dotted #777; border-radius: .5em}
 .path_crumb {color: #bbb}
 .post .content {border-width: .1em; border-style: solid; border-color: #666; border-radius: .6em}
+.post .content div {background-color: #000; color: #fff; border-radius: .6em}
 .post .from {border-style: solid; border-width: 0 0 1px 0; border-radius: .3em .3em 0 0}
 .post .to {font-size: 1.125em; border-width: 1px 0 0 0; border-style: solid; border-radius: 0}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
