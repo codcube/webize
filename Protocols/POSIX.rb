@@ -11,6 +11,13 @@ class WebResource
       graph << RDF::Statement.new(self, 'http://www.w3.org/ns/ldp#contains'.R, (join [child.basename.to_s.gsub(' ','%20').gsub('#','%23'), child.directory? ? '/' : nil].join))}
   end
 
+  def file_triples graph
+    graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/posix/stat#File'.R)
+    dir = join File.dirname path
+    graph << RDF::Statement.new(dir, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
+    graph << RDF::Statement.new(dir, 'http://www.w3.org/ns/ldp#contains'.R, self)
+  end
+
   module URIs
 
     # create containing dir(s) and return locator for document
