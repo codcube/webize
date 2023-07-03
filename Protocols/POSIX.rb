@@ -14,6 +14,7 @@ class WebResource
   def file_triples graph
     dir = join File.dirname path
     graph << RDF::Statement.new(dir, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
+    graph << RDF::Statement.new(dir, Type.R, 'http://www.w3.org/ns/posix/stat#Directory'.R)
     graph << RDF::Statement.new(dir, 'http://www.w3.org/ns/ldp#contains'.R, self)
     graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/posix/stat#File'.R)
     stat = File.stat fsPath
