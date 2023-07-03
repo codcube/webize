@@ -18,10 +18,10 @@ class String
                    WebResource::Image
                  when /(youtu.?be|(mkv|mp4|webm)(\?|$))/i
                    WebResource::Video
-                 else
-                   WebResource::Link
+#                 else
+#                   WebResource::Link
                  end
-          yield type, resource
+          yield type, resource if type
         end
         [img,
          CGI.escapeHTML(resource.uri.sub(/^http:../,'')[0..79])].join) +
