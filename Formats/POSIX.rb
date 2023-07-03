@@ -6,6 +6,7 @@ class WebResource
       tabular = dir[Type].member? 'http://www.w3.org/ns/posix/stat#Directory' # list directory in tabular layout
       content = dir.delete('http://www.w3.org/ns/ldp#contains') || []
       dir.delete Type
+      dir.delete Date
       {class: :container, id: uri.fragment ? uri.fragment : '#container_' + Digest::SHA2.hexdigest(rand.to_s),
        c: [{class: :name, _: :a, href: uri.to_s,
             c: uri.fragment || uri.basename}, '<br>',
