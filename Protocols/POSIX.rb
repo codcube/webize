@@ -5,9 +5,13 @@ class WebResource
   def dir_triples graph
     graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
     graph << RDF::Statement.new(self, Date.R, node.stat.mtime.iso8601)
-    nodes = node.children.select{|n|n.basename.to_s[0] != '.'} # find contained nodes
-    nodes.map{|child|                                          # 👉 contained nodes
-      graph << RDF::Statement.new(self, 'http://www.w3.org/ns/ldp#contains'.R, (join [child.basename.to_s.gsub(' ','%20').gsub('#','%23'), child.directory? ? '/' : nil].join))}
+    node.children.select{|n|n.basename.to_s[0] != '.'}.map{|child| # 👉 contained nodes
+      c = join child.basename.to_s.gsub(' ','%20').gsub('#','%23')
+      if child.directory?
+        c += '/'
+        graph << RDF::Statement.new(c, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
+      end
+      graph << RDF::Statement.new(self, 'http://www.w3.org/ns/ldp#contains'.R, c)}
   end
 
   def file_triples graph
@@ -58,8 +62,6 @@ class WebResource
         else                                      # detailed (trailing-slash)
           [self,
            *join('{index,readme,README}*').R(env).glob] # directory index
-#           *node.children.select{|c| c.directory? && c.basename.to_s[0] != '.'}. # visible child directories
-#              map{|c| join(c.basename.to_s).R(env)}]
         end
       elsif file?                                 # LS file
         [self]
