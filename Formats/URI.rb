@@ -131,9 +131,9 @@ class WebResource < RDF::URI
        c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;' * 3},                             # 👉 root node
            {_: :a, id: :UI, href: host ? env[:base].secureURL : HTTP.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, # 👉 origin UI
            {_: :a, id: :cache, href: '/' + fsPath, c: :📦},                                                             # 👉 archive
-           ({_: :a, id: :tabular, c: :🮕,
-             href: HTTP.qs(env[:qs].merge({'view' => 'table', 'sort' => 'date'}))} unless env[:view] == 'table'),       # 👉 tabular view
-           ({_: :a, id: :date, href: '?sort=date', c: :⏱️} unless env[:sort] == 'date'),                                 # 👉 date sort
+#           ({_: :a, id: :tabular, c: :🮕,
+#             href: HTTP.qs(env[:qs].merge({'view' => 'table', 'sort' => 'date'}))} unless env[:view] == 'table'),       # 👉 tabular view
+#           ({_: :a, id: :date, href: '?sort=date', c: :⏱️} unless env[:sort] == 'date'),                                 # 👉 date sort
            ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed, c: :🛑} if host && !deny?),    # block host
            {_: :span, class: :path, c: env[:base].parts.map{|p|
               bc += '/' + p                                                                                             # 👉 path breadcrumbs
