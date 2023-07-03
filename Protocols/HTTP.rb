@@ -332,8 +332,10 @@ class WebResource
       when 'gemini'
         fetchGemini                                         # fetch w/ Gemini
       when /https?/
-        if ENV.has_key?('http_proxy') || deny?
-          self.port = 8000 if deny?
+        if deny? && PeerAddrs.has_key?(env[:addr])
+          self.port = 8000
+          insecure.fetchHTTP **opts                         # fetch w/ HTTP via proxy
+        elsif ENV.has_key?('http_proxy')
           insecure.fetchHTTP **opts                         # fetch w/ HTTP via proxy
         else
           fetchHTTP **opts                                  # fetch w/ HTTP(S)
