@@ -334,9 +334,9 @@ class WebResource
       when /https?/
         if deny? && PeerAddrs.has_key?(env[:addr])
           self.port = 8000
-          insecure.fetchHTTP **opts                         # fetch w/ HTTP via proxy
+          insecure.fetchHTTP **opts                         # fetch w/ HTTP via peer-proxy
         elsif ENV.has_key?('http_proxy')
-          insecure.fetchHTTP **opts                         # fetch w/ HTTP via proxy
+          insecure.fetchHTTP **opts                         # fetch w/ HTTP via peer-proxy
         else
           fetchHTTP **opts                                  # fetch w/ HTTP(S)
         end
@@ -476,9 +476,13 @@ class WebResource
     end
 
     def hostGET
+
+      # host-specific handling
       return (q = query_values || {}
               dest = q['url'] || q['u'] || q['q']
               dest ? [301, {'Location' => dest.R(env).href}, []] : notfound) if URLHosts.member? host
+      return [301,{'Location' => ['//www.youtube.com/watch?v=', path[1..-1]].join.R(env).href},[]] if host == 'youtu.be'
+
       dirMeta      # directory metadata
       cookieCache  # save/restore cookies
       case path

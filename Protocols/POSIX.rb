@@ -131,7 +131,7 @@ class WebResource
 
   module POSIX
 
-    # HTTP-header pointers for local navigation
+    # HTTP-level navigation
     def dirMeta
       root = !path || path == '/'
       self.path += '.rss' if host == 'www.reddit.com' && path && !%w(favicon.ico gallery wiki video).member?(parts[0]) && !path.index('.rss')
