@@ -1,14 +1,4 @@
 class WebResource
-
-  def dir_triples graph
-    graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
-    graph << RDF::Statement.new(self, Title.R, basename || host)
-    graph << RDF::Statement.new(self, Date.R, node.stat.mtime.iso8601)
-    nodes = node.children.select{|n|n.basename.to_s[0] != '.'} # find contained nodes
-    nodes.map{|child|                                          # 👉 contained nodes
-      graph << RDF::Statement.new(self, 'http://www.w3.org/ns/ldp#contains'.R, (join [child.basename.to_s.gsub(' ','%20').gsub('#','%23'), child.directory? ? '/' : nil].join))}
-  end
-
   module HTML
 
     Markup['http://www.w3.org/ns/ldp#Container'] = -> dir, env {
