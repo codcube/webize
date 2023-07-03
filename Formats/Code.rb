@@ -53,7 +53,6 @@ module Webize
 
       def source_tuples
         yield Type.R, (Schema + 'Code').R
-        yield Title.R, @base.basename if @base.basename
 
         # Rouge
         if lexer = Rouge::Lexer.guess_by_filename(@base.basename) rescue nil

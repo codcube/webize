@@ -394,7 +394,7 @@ class WebResource
                                [if updates = graph.delete('#updates')
                                 HTML.markup updates, env unless updates.keys.size < 3
                                 end,
-                               {class: :columns, c: graph.values.map{|v| HTML.markup v, env }}]
+                                graph.values.map{|v| HTML.markup v, env }]
                              end,
                              link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
                              {_: :script, c: Webize::Code::SiteJS}]}]}]

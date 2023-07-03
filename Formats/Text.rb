@@ -68,7 +68,6 @@ module Webize
 
       def source_tuples
         yield Type.R, (Schema + 'Document').R
-        yield Title.R, @base.basename if @base.basename
         converter = File.extname(@path) == '.doc' ? :antiword : :docx2txt
         html = RDF::Literal '<pre>' + `#{converter} #{Shellwords.escape @path}` + '</pre>'
         html.datatype = RDF.XMLLiteral
