@@ -17,11 +17,11 @@ class WebResource
                 (['<hr>', keyval(dir, env)] unless dir.keys == %w(uri))]}]}} # remaining triples
 
     Markup['http://www.w3.org/ns/posix/stat#File'] = -> file, env {
-      [Title, Type, Date].map{|p| file.delete p }
-      [({class: :file,
-         c: [{_: :a, href: file['uri'], class: :icon, c: Icons['http://www.w3.org/ns/posix/stat#File']},
-             {_: :span, class: :name, c: file['uri'].R.basename}]} if file['uri']),
-       (HTML.keyval file, env)]}
+      file.delete Type
+      {class: :file,
+       c: [{_: :a, href: file['uri'], class: :icon,
+            c: Icons['http://www.w3.org/ns/posix/stat#File']},
+           (HTML.keyval file, env)]}}
 
   end
 end
