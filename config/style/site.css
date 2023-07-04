@@ -5,7 +5,7 @@
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #rootpath {float: left}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
-#updates > .contents {background: repeating-linear-gradient(300deg, #999, #999 .125em, #000 .125em, #000 1em); border-radius: 0 .6em .6em .6em}
+#updates > .contents {background: repeating-linear-gradient(300deg, #aaa, #aaa .15em, #000 .15em, #000 1.5em); border-radius: 0 .6em .6em .6em}
 .abstract {display: block}
 .abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked {background: repeating-linear-gradient(0deg, #f00, #f00 1em, #000 1em, #000 2em); color: #fff}
@@ -51,7 +51,7 @@ a div, form, p, .post {display: inline-block}
 a img {float: left}
 a span {color: #bbb; font-weight: normal; font-size: 0.82em}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; max-width: 40em; overflow: hidden; vertical-align: top}
-a.date {white-space: nowrap; float: right; color: #aaa; font-size: .8em; font-weight: normal}
+a.date {white-space: nowrap; float: right; color: #bbb; background-color: #000; font-size: .8em; font-weight: normal}
 a.global {background-color: #005}
 a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
