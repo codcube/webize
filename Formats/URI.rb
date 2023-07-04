@@ -131,9 +131,6 @@ class WebResource < RDF::URI
        c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;' * 3},                             # 👉 root node
            {_: :a, id: :UI, href: host ? env[:base].secureURL : HTTP.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, # 👉 origin UI
            {_: :a, id: :cache, href: '/' + fsPath, c: :📦},                                                             # 👉 archive
-#           ({_: :a, id: :tabular, c: :🮕,
-#             href: HTTP.qs(env[:qs].merge({'view' => 'table', 'sort' => 'date'}))} unless env[:view] == 'table'),       # 👉 tabular view
-#           ({_: :a, id: :date, href: '?sort=date', c: :⏱️} unless env[:sort] == 'date'),                                 # 👉 date sort
            ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed, c: :🛑} if host && !deny?),    # block host
            {_: :span, class: :path, c: env[:base].parts.map{|p|
               bc += '/' + p                                                                                             # 👉 path breadcrumbs
@@ -156,14 +153,8 @@ class WebResource < RDF::URI
            (:🔌 if offline?),                                                                                           # denote offline mode
            {_: :span, class: :stats,
             c: [({_: :span, c: env[:origin_status], class: :bold} if env[:origin_status] && env[:origin_status] != 200),# origin status
-                (elapsed = Time.now - env[:start_time] if env.has_key? :start_time
-                 [{_: :span, c: '%.1f' % elapsed}, :⏱️] if elapsed > 1),                                                 # elapsed time
-                if env.has_key? :repository                                                                             # graph size
-                  nGraphs = env[:repository].graph_names.size
-                  nTriples = env[:repository].size
-                  [([{_: :span, c: nGraphs}, :🗃] if nGraphs > 1),
-                   ([{_: :span, c: nTriples}, :⋮] if nTriples > 0)]
-                end]}]}
+                (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                      # elapsed time
+                 [{_: :span, c: '%.1f' % elapsed}, :⏱️] if elapsed > 1)]}]}
     end
     
     # URI -> lambda

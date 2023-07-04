@@ -333,7 +333,7 @@ class WebResource
         fetchGemini                                         # fetch w/ Gemini
       when /https?/
         if PeerAddrs.has_key?(env[:addr]) && deny_domain?   # blocked&adapted domain redirected to peer for handling
-          self.port = 8000                                  # peer port 
+          self.port = 8000                                  # peer port
           insecure.fetchHTTP **opts                         # fetch w/ HTTP via peer-proxy
         elsif ENV.has_key?('http_proxy')
           insecure.fetchHTTP **opts                         # fetch w/ HTTP via peer-proxy
