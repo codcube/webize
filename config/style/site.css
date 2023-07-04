@@ -5,7 +5,8 @@
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #rootpath {float: left; min-width: 2.8em}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
-#updates > .contents {background: repeating-linear-gradient(300deg, #aaa, #aaa .2em, #000 .2em, #000 1.6em); border-radius: 0 .6em .6em .6em}
+#updates > .contents {background: repeating-linear-gradient(300deg, #888, #888 1em, #000 1em, #000 2em); border-radius: 0 .6em .6em .6em}
+#updates .post .content {border-color: #ccc}
 .abstract {display: block}
 .abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked {background: repeating-linear-gradient(0deg, #f00, #f00 1em, #000 1em, #000 2em); color: #fff}
@@ -69,9 +70,8 @@ code {color: #000; background-color: #eee; padding: .1em}
 iframe, .preembed {border: .2em solid #fff}
 iframe.main_player {border: .25em solid red}
 img, video, table {max-width: 100%}
-li {border-color: #555; border-width: 0 0 1px 0; border-style: dotted; color: #fff}
 li:nth-child(even), tr:nth-child(even) > td {background-color: #000}
-li:nth-child(odd), tr:nth-child(odd) > td {background-color: #181818}
+li:nth-child(odd), tr:nth-child(odd) > td {background-color: #222}
 p {border-color: #222; border-radius: .3em; border-width: 0; border-style: solid; margin: 1px}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, img {margin: 0}
