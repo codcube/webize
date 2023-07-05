@@ -119,7 +119,10 @@ module Webize
         linkgroup = [nil, parts[0..2]].join('/') + '/#IRClinks'
         lines = 0
         ts = {}
+
         yield target, Type, Container.R
+        yield target, Type, 'http://rdfs.org/sioc/ns#ChatLog'.R
+
         @doc.lines.grep(/^[^-]/).map{|msg|
           tokens = msg.split /\s+/
           time = tokens.shift
