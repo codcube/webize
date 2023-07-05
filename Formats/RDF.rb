@@ -62,7 +62,7 @@ class WebResource
         unless File.exist? f
           RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
           graph.subjects.map{|subject|                    # annotate resource(s) as updated
-            repository << RDF::Statement.new('#updates'.R, 'http://www.w3.org/ns/ldp#contains'.R, subject)}
+            repository << RDF::Statement.new('#updates'.R, Contains.R, subject)}
 
           log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] unless g.in_doc?
         end

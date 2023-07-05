@@ -126,7 +126,7 @@ class WebResource
   end
 
 
-  # RDF::Repository -> JSON {subject -> predicate -> object}
+  # RDF::Repository -> tree {subject -> predicate -> object} - input for render functions
   def treeFromGraph graph
     tree = {}                      # output tree
     inlined = []                   # inlined nodes
@@ -134,7 +134,7 @@ class WebResource
       s = subj.to_s                # subject URI
       p = pred.to_s                # predicate URI
       blank = obj.class == RDF::Node # bnode?
-      if blank || p == 'http://www.w3.org/ns/ldp#contains' # bnode or child-node?
+      if blank || p == Contains # bnode or child-node?
         o = obj.to_s               # object URI
         inlined.push o             # inline object
         obj = tree[o] ||= blank ? {} : {'uri' => o}
@@ -145,5 +145,4 @@ class WebResource
     inlined.map{|n| tree.delete n} # sweep inlined nodes from toplevel index
     env.has_key?(:updates_only) ? {'#updates' => tree['#updates']} : tree
   end
-
 end

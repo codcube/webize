@@ -138,7 +138,7 @@ module Webize
           timestamp = day + time
           subject = '#' + channame + hourslug + (lines += 1).to_s
           yield subject, Type, type
-          yield target, 'http://www.w3.org/ns/ldp#contains', subject.R
+          yield target, Contains, subject.R
           ts[timestamp] ||= 0
           yield subject, Date, [timestamp, '%02d' % ts[timestamp]].join('.')
           ts[timestamp] += 1

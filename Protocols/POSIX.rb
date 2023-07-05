@@ -11,7 +11,7 @@ class WebResource
         c += '/'
         graph << RDF::Statement.new(c, Type.R, Container.R)
       end
-      graph << RDF::Statement.new(self, 'http://www.w3.org/ns/ldp#contains'.R, c)}
+      graph << RDF::Statement.new(self, Contains.R, c)}
   end
 
   def file_triples graph
@@ -19,7 +19,7 @@ class WebResource
     dir += '/' unless dir.to_s[-1] == '/'
     graph << RDF::Statement.new(dir, Type.R, Container.R)
     graph << RDF::Statement.new(dir, Type.R, 'http://www.w3.org/ns/posix/stat#Directory'.R)
-    graph << RDF::Statement.new(dir, 'http://www.w3.org/ns/ldp#contains'.R, self)
+    graph << RDF::Statement.new(dir, Contains.R, self)
     graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/posix/stat#File'.R)
     stat = File.stat fsPath
     graph << RDF::Statement.new(self, 'http://www.w3.org/ns/posix/stat#size'.R, stat.size)

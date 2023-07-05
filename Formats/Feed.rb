@@ -175,7 +175,7 @@ module Webize
             to = reddit ? ('https://www.reddit.com/' + subject.parts[0..1].join('/')).R : @base
             yield subject, WebResource::To, to
             #yield to, Type, WebResource::Container.R
-            #yield to, 'http://www.w3.org/ns/ldp#contains', subject
+            #yield to, WebResource::Contains, subject
 
             # media links
             inner.scan(reMedia){|e|
