@@ -10,6 +10,7 @@ class WebResource
       response = Net::Gemini.get_response URI uri
       head = response.header
       body = response.body
+      repository = RDF::Repository.new
 
       if format = {'.gmi' => 'text/gemini', '.ico' => 'image/png'}[path && File.extname(basename)] || head[:mimetype]
         format.downcase!
@@ -18,8 +19,7 @@ class WebResource
         File.open(document, 'w'){|f| f << body } # update cache
 
         if reader = RDF::Reader.for(content_type: format)
-          env[:repository] ||= RDF::Repository.new
-          reader.new(body, base_uri: self){|g|env[:repository] << g}
+          reader.new(body, base_uri: self){|g|repository << g}
         else
           logger.warn "⚠️ no RDF reader for #{format}" # ⚠️ undefined Reader
         end
@@ -33,7 +33,7 @@ class WebResource
         head['Expires']=(Time.now+3e7).httpdate if fixed_format # cache static assets
         [200, head, [body]]                    # response in upstream format
       else                                     # content-negotiated transform
-        graphResponse format                   # response in preferred format
+        graphResponse repository, format       # response in preferred format
       end
     rescue Exception => e
       logger.failure self, e

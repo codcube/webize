@@ -2,33 +2,32 @@
 class WebResource
 
   # file -> Repository
-  def loadRDF graph: env[:repository] ||= RDF::Repository.new
+  def loadRDF repository
     if node.file?                                                    # file
-      file_triples graph
-      readRDF fileMIME, File.open(fsPath).read, graph
+      file_triples repository
+      readRDF fileMIME, File.open(fsPath).read, repository
     elsif node.directory?                                            # directory
-      (dirURI? ? self : join((basename || '') + '/').R(env)).dir_triples graph
+      (dirURI? ? self : join((basename || '') + '/').R(env)).dir_triples repository
     end
     self
   end
 
   # MIME, data -> Repository
-  def readRDF format, content, graph
+  def readRDF format, content, repository
     return if content.empty?
     case format                                                    # content type:
     when /octet.stream/                                            #  blob
     when /^audio/                                                  #  audio
-      audio_triples graph
+      audio_triples repository
     when /^image/                                                  #  image
-      graph << RDF::Statement.new(self, Type.R, Image.R)
-      graph << RDF::Statement.new(self, Title.R, basename)
+      repository << RDF::Statement.new(self, Type.R, Image.R)
+      repository << RDF::Statement.new(self, Title.R, basename)
     when /^video/                                                  #  video
-      graph << RDF::Statement.new(self, Type.R, Video.R)
-      graph << RDF::Statement.new(self, Title.R, basename)
+      repository << RDF::Statement.new(self, Type.R, Video.R)
+      repository << RDF::Statement.new(self, Title.R, basename)
     else
       if reader ||= RDF::Reader.for(content_type: format)          # find reader
-
-        reader.new(content, base_uri: self){|_|graph << _}         # read RDF
+        reader.new(content, base_uri: self){|_|repository << _}    # read RDF
 
         if format == 'text/html' && reader != RDF::RDFa::Reader    # read RDFa
           RDF::RDFa::Reader.new(content, base_uri: self){|g|
@@ -37,7 +36,7 @@ class WebResource
                 next if predicate == :drop
                 statement.predicate = predicate.R
               end
-              graph << statement }} rescue (logger.debug "⚠️ RDFa::Reader failure #{uri}")
+              repository << statement }} rescue (logger.debug "⚠️ RDFa::Reader failure #{uri}")
         end
       else
         logger.warn ["⚠️ no RDF reader for " , format].join # reader not found
@@ -46,14 +45,14 @@ class WebResource
   end
 
   # Repository -> 🐢 file(s)
-  def saveRDF                                           # query pattern:
+  def saveRDF repository                                # query pattern:
     timestamp = RDF::Query::Pattern.new :s, Date.R, :o  # timestamp
     creator = RDF::Query::Pattern.new :s, Creator.R, :o # sender
     to = RDF::Query::Pattern.new :s, To.R, :o           # receiver
     type = RDF::Query::Pattern.new :s, Type.R, :o       # type
 
-    env[:repository] << RDF::Statement.new('#updates'.R, Type.R, 'http://www.w3.org/ns/ldp#Container'.R) # updates
-    env[:repository].each_graph.map{|graph|             # graph
+    repository << RDF::Statement.new('#updates'.R, Type.R, 'http://www.w3.org/ns/ldp#Container'.R) # updates
+    repository.each_graph.map{|graph|             # graph
       if g = graph.name                                 # graph URI
         g = g.R env
         f = [g.document, :🐢].join '.'                  # 🐢 location
@@ -63,7 +62,7 @@ class WebResource
         unless File.exist? f
           RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
           graph.subjects.map{|subject|                    # annotate resource(s) as updated
-            env[:repository] << RDF::Statement.new('#updates'.R, 'http://www.w3.org/ns/ldp#contains'.R, subject)}
+            repository << RDF::Statement.new('#updates'.R, 'http://www.w3.org/ns/ldp#contains'.R, subject)}
 
           log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] unless g.in_doc?
         end

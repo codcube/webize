@@ -127,13 +127,10 @@ class WebResource
 
 
   # RDF::Repository -> JSON {subject -> predicate -> object}
-  def treeFromGraph
-#    env[:repository].each_graph.map{|g|
-#      puts [g.name, g.size].join ' '
-#      puts g.query(RDF::Query::Pattern.new :s, Date.R, :o)}
+  def treeFromGraph graph
     tree = {}                      # output tree
     inlined = []                   # inlined nodes
-    env[:repository].each_triple{|subj,pred,obj|
+    graph.each_triple{|subj,pred,obj|
       s = subj.to_s                # subject URI
       p = pred.to_s                # predicate URI
       blank = obj.class == RDF::Node # bnode?
