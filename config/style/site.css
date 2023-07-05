@@ -29,8 +29,9 @@
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .links {border: 1px dotted #777; border-radius: .5em}
 .path_crumb {color: #bbb}
-.post .content {border-width: .125em; border-style: solid; border-color: #666; border-radius: .6em}
-.post .content div {border-radius: .6em; display: inline-block}
+.post .content {border-width: .125em; border-style: solid; border-color: #666}
+.post .content div {display: inline-block}
+.post .content, .post .content div, p, pre {border-radius: .6em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
 .post {margin: .125em; max-width: 110ex}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
@@ -72,7 +73,7 @@ iframe.main_player {border: .25em solid red}
 img, video, table {max-width: 100%}
 li:nth-child(even), tr:nth-child(even) > td {background-color: #000}
 li:nth-child(odd), tr:nth-child(odd) > td {background-color: #222}
-p {border-color: #222; border-radius: .3em; border-width: 0; border-style: solid; margin: 1px}
+p {border-color: #222; border-width: 0; border-style: solid; margin: 1px}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, img {margin: 0}
 svg, img[src*="svg"] {max-width:2em; max-height: 2em}

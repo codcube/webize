@@ -119,6 +119,7 @@ module Webize
         linkgroup = [nil, parts[0..2]].join('/') + '/#IRClinks'
         lines = 0
         ts = {}
+        yield target, Type, Container.R
         @doc.lines.grep(/^[^-]/).map{|msg|
           tokens = msg.split /\s+/
           time = tokens.shift
@@ -137,6 +138,7 @@ module Webize
           timestamp = day + time
           subject = '#' + channame + hourslug + (lines += 1).to_s
           yield subject, Type, type
+          yield target, 'http://www.w3.org/ns/ldp#contains', subject.R
           ts[timestamp] ||= 0
           yield subject, Date, [timestamp, '%02d' % ts[timestamp]].join('.')
           ts[timestamp] += 1
