@@ -304,10 +304,8 @@ class WebResource
         env[:origin_status] = status
         head = headers e.io.meta
         body = HTTP.decompress(head, e.io.read).encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
-        if head['Content-Type']&.index 'html'
-          repository ||= RDF::Repository.new
-          RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|repository << g} # read origin RDF
-        end
+        repository ||= RDF::Repository.new
+        RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|repository << g} if head['Content-Type']&.index 'html'
         head['Content-Length'] = body.bytesize.to_s
         env[:notransform] ? [status, head, [body]] : (graphResponse repository)
       else
