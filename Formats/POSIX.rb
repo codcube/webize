@@ -1,7 +1,7 @@
 class WebResource
   module HTML
 
-    Markup['http://www.w3.org/ns/ldp#Container'] = -> dir, env {
+    Markup[Container] = -> dir, env {
       uri = dir['uri'].R
       tabular = dir[Type].member? 'http://www.w3.org/ns/posix/stat#Directory' # list directory in tabular layout
       content = dir.delete('http://www.w3.org/ns/ldp#contains') || []

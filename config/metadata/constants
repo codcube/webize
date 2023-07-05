@@ -1,5 +1,6 @@
 Abstract http://purl.org/dc/terms/abstract
 Audio    http://purl.org/dc/terms/Audio
+Container http://www.w3.org/ns/ldp#Container
 Content  http://rdfs.org/sioc/ns#content
 Creator  http://rdfs.org/sioc/ns#has_creator
 DC       http://purl.org/dc/terms/

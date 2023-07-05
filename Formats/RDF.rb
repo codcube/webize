@@ -51,7 +51,7 @@ class WebResource
     to = RDF::Query::Pattern.new :s, To.R, :o           # receiver
     type = RDF::Query::Pattern.new :s, Type.R, :o       # type
 
-    repository << RDF::Statement.new('#updates'.R, Type.R, 'http://www.w3.org/ns/ldp#Container'.R) # updates
+    repository << RDF::Statement.new('#updates'.R, Type.R, Container.R) # updates
     repository.each_graph.map{|graph|             # graph
       if g = graph.name                                 # graph URI
         g = g.R env

@@ -3,13 +3,13 @@
 class WebResource
 
   def dir_triples graph
-    graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
+    graph << RDF::Statement.new(self, Type.R, Container.R)
     graph << RDF::Statement.new(self, Date.R, node.stat.mtime.iso8601)
     node.children.select{|n|n.basename.to_s[0] != '.'}.map{|child| # 👉 contained nodes
       c = join child.basename.to_s.gsub(' ','%20').gsub('#','%23')
       if child.directory?
         c += '/'
-        graph << RDF::Statement.new(c, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
+        graph << RDF::Statement.new(c, Type.R, Container.R)
       end
       graph << RDF::Statement.new(self, 'http://www.w3.org/ns/ldp#contains'.R, c)}
   end
@@ -17,7 +17,7 @@ class WebResource
   def file_triples graph
     dir = join File.dirname path
     dir += '/' unless dir.to_s[-1] == '/'
-    graph << RDF::Statement.new(dir, Type.R, 'http://www.w3.org/ns/ldp#Container'.R)
+    graph << RDF::Statement.new(dir, Type.R, Container.R)
     graph << RDF::Statement.new(dir, Type.R, 'http://www.w3.org/ns/posix/stat#Directory'.R)
     graph << RDF::Statement.new(dir, 'http://www.w3.org/ns/ldp#contains'.R, self)
     graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/posix/stat#File'.R)
