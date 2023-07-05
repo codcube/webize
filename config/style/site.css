@@ -12,7 +12,7 @@
 .blocked {background: repeating-linear-gradient(0deg, #f00, #f00 1em, #000 1em, #000 2em); color: #fff}
 .bold {font-weight: bold}
 .columns {column-width: 80ex; column-gap: 0}
-.container {margin: .2em}
+.container {margin: .2em; display: inline-block}
 .container > .contents {border: 1px solid #888}
 .container > .name {border-color: #888; border-style: solid; border-radius: 0; background-color: #000; color: #fff; border-width: 1px 1px 0 1px; border-radius: .5em .5em 0 0; padding: 0 .2em 0 .2em}
 .dimmed {opacity: 0.2}
@@ -77,7 +77,7 @@ p {border-color: #222; border-width: 0; border-style: solid; margin: 1px}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, img {margin: 0}
 svg, img[src*="svg"] {max-width:2em; max-height: 2em}
-table.kv, table.tabular {border-spacing: 0}
+table.kv, table.tabular {border-spacing: 0; display: inline-block}
 table.tabular td {padding: 0; border-width: 0 1px 1px 0; border-style: dotted; border-color: #4d4d4d}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0 .1em 0 .1em}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
