@@ -28,7 +28,7 @@
 .links {border: 1px dotted #777; border-radius: .5em}
 .path_crumb {color: #bbb}
 .post .content div.abstract {display: block; border-radius: 0}
-.post .content {border-width: .125em; border-style: solid; border-color: #666}
+.post .content {border-width: .12em; border-style: solid; border-color: #666}
 .post .content, .post .content div, p, pre {border-radius: .6em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
 .post {margin: .125em; max-width: 110ex}

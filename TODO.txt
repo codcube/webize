@@ -29,6 +29,7 @@ ipfs/ipns protocol handler https://archive.fosdem.org/2021/schedule/event/open_r
 blank page https://efdn.notion.site/0314a1800b774258a8e6197487c479bc?v=15fb6b39a490413cbba3b7f78ad67c2b 
 dedupe images, link to shown image from placeholder icons
 assemble dash/hls manifest for youtube data we have from the json , so we can stop using their borked player with the unskippable adloop bug
+leakage of <body> tag into emitted HTML. http://localhost:8000/https://www.cbsnews.com/news/rush-limbaugh-arrested-on-drug-charges/
 populate geographic index from encountered RDF https://www.jphs.org/20th-century/2017/11/13/boston-remembers-kurt-cobain
 multiple videos, using first:https://www.youtube.com/opensearch?locale=en_US, https://www.youtube.com/watch?v=k2sIDDco5xg, http://www.youtube.com/watch?v=k2sIDDco5xg&feature=applinks, @youtube
 propagate blocklist changes around to peers (unblock entire proxy chain at once) - still use git?
