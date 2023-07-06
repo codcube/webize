@@ -34,6 +34,7 @@ al:web:should_fallback
 alexaVerifyID
 alignment
 amphtml
+animation
 apple-app-site-association
 apple-itunes-app
 apple-mobile-web-app-capable
@@ -73,6 +74,7 @@ default_profile
 default_profile_image
 derivedScore
 directScore
+direction
 discogsId
 discourse/config/environment
 discourse_current_homepage
@@ -132,9 +134,11 @@ indexable
 indices
 instapp:owner_user_id
 isActive
+isAnimationEnabled
 isCookieBannerEnabled
 isEmailVerified
 isExternal
+isFront false
 isInitialsProfileEnabled
 isInternal
 isJuniorTeam
@@ -159,6 +163,7 @@ is_translator
 isrc
 layout
 layoutTemplate
+linecap
 listed_count
 managed_by_feeds
 media_count
