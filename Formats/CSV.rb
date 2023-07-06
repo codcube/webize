@@ -2,11 +2,7 @@
 class WebResource
   module HTML
 
-    MarkupPredicate[Schema + 'itemListElement'] = MarkupPredicate['https://schema.org/itemListElement'] = -> list, env {
-      list.map!{|i| i.class == Hash ? i : {'uri' => i.to_s}}
-      tabular list, env}
-
-    # tree -> table
+    # [resource, ..] -> HTML <table>
     def self.tabular graph, env
       graph = graph.values if graph.class == Hash
       keys = graph.select{|r|r.respond_to? :keys}.map(&:keys).flatten.uniq
