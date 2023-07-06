@@ -7,7 +7,6 @@
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
 #updates .post .content {border-color: #ccc}
 #updates > .contents {background: repeating-linear-gradient(300deg, #888, #888 1em, #000 1em, #000 2em); border-radius: 0 .6em .6em .6em}
-.abstract {display: block}
 .abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked {background: repeating-linear-gradient(0deg, #f00, #f00 1em, #000 1em, #000 2em); color: #fff}
 .bold {font-weight: bold}
@@ -28,6 +27,7 @@
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .links {border: 1px dotted #777; border-radius: .5em}
 .path_crumb {color: #bbb}
+.post .content div.abstract {display: block; border-radius: 0}
 .post .content {border-width: .125em; border-style: solid; border-color: #666}
 .post .content, .post .content div, p, pre {border-radius: .6em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
