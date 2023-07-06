@@ -138,7 +138,7 @@ isAnimationEnabled
 isCookieBannerEnabled
 isEmailVerified
 isExternal
-isFront false
+isFront
 isInitialsProfileEnabled
 isInternal
 isJuniorTeam
