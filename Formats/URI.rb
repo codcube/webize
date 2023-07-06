@@ -281,7 +281,6 @@ module Webize
 
       def each_statement &fn
         fn.call RDF::Statement.new @base, Type.R, Container.R
-        fn.call RDF::Statement.new @base, Type.R, (Schema + 'ItemList').R
         @doc.lines.map(&:chomp).map{|line|
           unless line.empty? || line.match?(/^#/) # skip empty and commented lines
             uri, title = line.split ' ', 2        # URI and optional title
