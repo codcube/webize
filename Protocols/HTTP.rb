@@ -342,7 +342,8 @@ class WebResource
       when 'spartan'                                        # fetch w/ Spartan
         fetchSpartan
       else
-        logger.warn "⚠️ unsupported scheme #{uri}"; notfound # unsupported scheme
+        logger.warn "⚠️ unsupported scheme #{uri}"           # unsupported scheme
+        notfound
       end
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
       env[:warning] = [e.class, e.message].join ' '         # warn on error/fallback condition
@@ -535,18 +536,16 @@ class WebResource
       c
     end
 
-    def notfound repository=nil
+    def notfound
       format = selectFormat
+
       body = case format
-             when /html/    # serialize HTML
+             when /html/
                htmlDocument
              when /atom|rss|xml/
-               feedDocument # serialize Atom/RSS
-             else           # serialize RDF
-               if repository && writer = RDF::Writer.for(content_type: format)
-                 repository.dump writer.to_sym, base_uri: self
-               end
+               feedDocument
              end
+
       [404, {'Content-Type' => format}, head? ? nil : [body ? body : '']]
     end
 
