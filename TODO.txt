@@ -21,6 +21,7 @@ IRC linepointers are #hashonly, but resolution per-line might be expensive, inve
 hash fetched entities to prevent redundant parsing/summarization work when origin caching is broken - essentially generate our own ETags
 log byte-range req
 title missing if source is RDF, not HTML
+repository stats for logger and status-bar
 if feed post-limit is 20 and we have 20 in updates, we're probably missing posts - save and highlight pagination next/prev links for graph
 feedURL hook
 rewrite URLs on output to cut out local redirects (nitter 301s etc)
@@ -41,6 +42,7 @@ per-site upstreams/proxies for custom archival scenarios. also alleviates broken
 offline/online content merge by default? following feeds (API or RSS/Atom) to canonical URL often results in empty page due to SPA stuff, but we have the content already
 define webresource level #join and call super/RDF::URI #join to eliminate manual environment threading.
 eliminate all the #R methods
+switch to RDF::Vocab instead of our hand-rolled constants?
 merge local dir-content at least. for nose following. http://l/gitter.im/solid/specification should link to spec, solidos etc 
 history -  store and browse versions, eg full blogpost and preview from feed
 remember insecure hosts so we don't keep trying HTTPS - enough hosts to bother?

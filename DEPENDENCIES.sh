@@ -22,6 +22,6 @@ command -v xbps-install && sudo xbps-install -S base-devel libltdl-devel libress
 command -v bundle || gem install bundler
 bundle install && rm Gemfile.lock
 
-# Nokogiri: if gems are broken on bionic/musl libc, ARM/RISC-V arch and/or bleeding-edge Ruby version, build locally
+# Nokogiri: if gems are broken on bionic/musl libc, ARM/RISC-V arch and/or bleeding-edge Ruby, build locally:
 #  gem uninstall nokogiri -a
 #  gem install --platform=ruby nokogiri -- --use-system-libraries
