@@ -1,6 +1,6 @@
 # WHAT
 
-fix the web in post-production. some suggest we abandon it - we'd rather create the [web we want](https://webwewant.org/) via format and protocol bridging to the desired capabilities
+fix the web in post-production. some suggest we abandon it - we'd rather create the [web we want](https://webwewant.org/) via format and protocol bridging to tools of the desired capabilities
 
 # WHY
 
@@ -28,4 +28,4 @@ in theory, this project can go away once clients and servers are [privacy respec
 
 # WHO
 
-IX or poka on EFNet/Rizon (eventually OFTC/Libera once a credential-capable IRC bridge exists) chat. msg on IRC to notify if you've emailed the git address or created a bug-report/issue/PR on an online git mirror as those accounts have solely been for public backups/clone-points so far
+IX or poka on EFNet/Rizon (eventually OFTC/Libera once our planned credential-capable IRC bridge exists) chat. msg on IRC to notify if you've emailed the git address or created a bug-report/issue/PR on an online git mirror as those accounts have solely been for public backups/clone-points so far

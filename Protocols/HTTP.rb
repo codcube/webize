@@ -390,7 +390,7 @@ class WebResource
 
     def graphResponse repository, defaultFormat = 'text/html'
       return notfound if repository.empty? # no graph data
-      saveRDF repository if host           # cache graph data
+      saveRDF repository if host           # cache graph data TODO more granular saves (insides per-req task)
 
       status = env[:origin_status] || 200  # response status
       format = selectFormat defaultFormat  # response format
