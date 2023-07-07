@@ -15,7 +15,7 @@ class WebResource
   # MIME, data -> Repository
   def readRDF format, content, repository
     return if content.empty?
-    case format                                                    # content type:
+    case format                                                    # content type:TODO needless reads? stop media reads earlier..
     when /octet.stream/                                            #  blob
     when /^audio/                                                  #  audio
       audio_triples repository

@@ -209,7 +209,7 @@ class WebResource
             print format_icon n.R(env).fetchRemote **opts
           end}
         barrier.wait
-        graphResponse repository
+        graphResponse repository # TODO
       else # fetch node
         # name may resolve to localhost. define hostname in HOSTS to get a path-only URI in #call and not reach this lookup
         env[:addr] = Resolv.getaddress host rescue '127.0.0.1'
@@ -307,7 +307,7 @@ class WebResource
         repository ||= RDF::Repository.new
         RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|repository << g} if head['Content-Type']&.index 'html'
         head['Content-Length'] = body.bytesize.to_s
-        env[:notransform] ? [status, head, [body]] : (graphResponse repository)
+        env[:notransform] ? [status, head, [body]] : (graphResponse repository) # TODO merge local cache via #fetchLocal or similar
       else
         raise
       end
@@ -322,7 +322,7 @@ class WebResource
       (nodes||fsNodes).map{|n| n.loadRDF repository}        # load node(s)
       dirMeta                                               # 👉 storage-adjacent nodes
       timeMeta unless host                                  # 👉 timeline-adjacent nodes
-      graphResponse repository                              # response
+      graphResponse repository                              # response TODO
     end
 
     def fetchRemote **opts
