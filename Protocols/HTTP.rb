@@ -308,13 +308,20 @@ class WebResource
       when /304/                                            # origin unmodified
         fetchLocal
       when /300|[45]\d\d/                                   # not allowed/available/found
+        puts "⚠️ #{status} #{uri}"
         env[:origin_status] = status
         head = headers e.io.meta
         body = HTTP.decompress(head, e.io.read).encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
         repository ||= RDF::Repository.new
         RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|repository << g} if head['Content-Type']&.index 'html'
         head['Content-Length'] = body.bytesize.to_s
-        env[:notransform] ? [status, head, [body]] : (respond [repository]) # TODO merge local cache via #fetchLocal or similar
+        if !thru
+          repository
+        elsif env[:notransform]
+          [status, head, [body]]
+        else
+          respond [repository] # TODO merge local cache via #fetchLocal or similar
+        end
       else
         raise
       end
