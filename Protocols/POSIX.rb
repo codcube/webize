@@ -12,6 +12,7 @@ class WebResource
         graph << RDF::Statement.new(c, Type.R, Container.R)
       end
       graph << RDF::Statement.new(self, Contains.R, c)}
+    graph
   end
 
   def file_triples graph
@@ -24,6 +25,11 @@ class WebResource
     stat = File.stat fsPath
     graph << RDF::Statement.new(self, 'http://www.w3.org/ns/posix/stat#size'.R, stat.size)
     graph << RDF::Statement.new(self, Date.R, stat.mtime.iso8601)
+    graph
+  end
+
+  def read
+    File.open(fsPath).read
   end
 
   module URIs

@@ -1,20 +1,9 @@
 # coding: utf-8
 class WebResource
 
-  # file -> Repository
-  def loadRDF repository
-    if node.file?                                                    # file
-      file_triples repository
-      readRDF fileMIME, File.open(fsPath).read, repository
-    elsif node.directory?                                            # directory
-      (dirURI? ? self : join((basename || '') + '/').R(env)).dir_triples repository
-    end
-    self
-  end
-
   # MIME, data -> Repository
-  def readRDF format, content, repository
-    return if content.empty?
+  def parseRDF format = fileMIME, content = read
+    repository = RDF::Repository.new
     case format                                                    # content type:TODO needless reads? stop media reads earlier..
     when /octet.stream/                                            #  blob
     when /^audio/                                                  #  audio
@@ -41,7 +30,8 @@ class WebResource
       else
         logger.warn ["⚠️ no RDF reader for " , format].join # reader not found
       end
-    end    
+    end
+    repository
   end
 
   # Repository -> 🐢 file(s)

@@ -201,15 +201,16 @@ class WebResource
 
       if nodes # fetch node(s)
         env[:updates_only] = true # limit response to updates
-        opts[:thru] = false  # sub-requests not proxied through to caller
+        opts[:thru] = false       # crafting our own merged response
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
+        repos = []
         nodes.map{|n|
           semaphore.async do
-            print format_icon n.R(env).fetchRemote **opts
+            repos << n.R(env).fetchRemote **opts
           end}
         barrier.wait
-        graphResponse repository # TODO
+        respond repos
       else # fetch node
         # name may resolve to localhost. define hostname in HOSTS to get a path-only URI in #call and not reach this lookup
         env[:addr] = Resolv.getaddress host rescue '127.0.0.1'
@@ -229,6 +230,7 @@ class WebResource
           [206, h, [response.read]]
         else                                                # massage metadata, cache and return data
           body = HTTP.decompress h, response.read           # decompress body
+
           format = if path == '/feed' && adapt?             # format override on upstream /feed due to ubiquitous text/html and text/plain headers
                      'application/atom+xml'
                    elsif content_type = h['Content-Type']   # format defined in HTTP header
@@ -245,17 +247,22 @@ class WebResource
                      env[:warning] = "MIME unspecified"
                      'application/octet-stream'
                    end
-          format.downcase!                                              # normalize format symbol
+          format.downcase!                                              # normalize format identifier
+                                                                        # detect in-band charset definition
           if !charset && format.index('html') && metatag = body[0..4096].encode('UTF-8', undef: :replace, invalid: :replace).match(/<meta[^>]+charset=['"]?([^'">]+)/i)
-            charset = metatag[1]                                        # charset defined in-band in document
+            charset = metatag[1]
           end
-          charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset symbol
-          body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # encode in UTF-8
-          format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML
-          repository = RDF::Repository.new                              # initialize repository
-          readRDF format, body, repository                              # read data to request graph
-          return format unless thru                                     # return HTTP response to caller?
-          doc = document                                                # cache location
+          charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset identifier
+
+          body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
+
+          format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # detect HTML served w/ XML MIME
+
+          repository = parseRDF format, body                            # read graph data
+          saveRDF repository                                            # cache graph data
+          (print format_icon format; return repository) unless thru     # return graph data
+                                                                        # return HTTP response with graph data
+          doc = document                                                # cache locator
           if (formats = RDF::Format.content_types[format]) &&           # content type
              (extensions = formats.map(&:file_extension).flatten) &&    # suffixes for content type
              !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix in mapped set?
@@ -268,12 +275,12 @@ class WebResource
               repository << RDF::Statement.new(self, Date.R, t.iso8601) # timestamp RDF data
             end
           end
-          File.open(doc, 'w'){|f| f << body }                           # cache content
+          File.open(doc, 'w'){|f| f << body }                           # cache data
           if env[:notransform] || format.match?(FixedFormat)
             staticResponse format, body                                 # response in upstream format
           else
             env[:origin_format] = format                                # upstream format
-            graphResponse repository, format                            # response in content-negotiated format
+            respond [repository], format                                # response in content-negotiated format
           end
         end
       end
@@ -307,7 +314,7 @@ class WebResource
         repository ||= RDF::Repository.new
         RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|repository << g} if head['Content-Type']&.index 'html'
         head['Content-Length'] = body.bytesize.to_s
-        env[:notransform] ? [status, head, [body]] : (graphResponse repository) # TODO merge local cache via #fetchLocal or similar
+        env[:notransform] ? [status, head, [body]] : (respond [repository]) # TODO merge local cache via #fetchLocal or similar
       else
         raise
       end
@@ -318,11 +325,15 @@ class WebResource
                              (env[:notransform] ||          # (mimeA → mimeB) transform disabled (client preference)
                               format.match?(FixedFormat) || # (mimeA → mimeB) transform disabled (server preference) or unimplemented
                               (format == selectFormat(format) && !ReFormat.member?(format))) # (mimeA → mimeA) reformat disabled
-      repository = RDF::Repository.new                      # instantiate repository
-      (nodes||fsNodes).map{|n| n.loadRDF repository}        # load node(s)
+      repos = (nodes || fsNodes).map{|x|                    # load specified or default node set
+        if x.node.file?                                     # file?
+          x.file_triples x.parseRDF                         # parse file + read file metadata
+        elsif x.node.directory?                             # directory?
+          x.dirURI.dir_triples RDF::Repository.new          # read directory metadata
+        end}
       dirMeta                                               # 👉 storage-adjacent nodes
       timeMeta unless host                                  # 👉 timeline-adjacent nodes
-      graphResponse repository                              # response TODO
+      respond repos                                         # response
     end
 
     def fetchRemote **opts
@@ -386,36 +397,6 @@ class WebResource
       return inbox if p == 'mailto'           # inbox redirect
       return block parts[1] if p == 'block'   # block site
       fetchLocal                              # local node
-    end
-
-    def graphResponse repository, defaultFormat = 'text/html'
-      return notfound if repository.empty? # no graph data
-      saveRDF repository if host           # cache graph data TODO more granular saves (insides per-req task)
-
-      status = env[:origin_status] || 200  # response status
-      format = selectFormat defaultFormat  # response format
-      format += '; charset=utf-8' if %w{text/html text/turtle}.member? format
-      head = {'Access-Control-Allow-Origin' => origin,
-              'Content-Type' => format,
-              'Last-Modified' => Time.now.httpdate,
-              'Link' => linkHeader}        # response header
-      return [status, head, nil] if head?  # header-only response
-
-      body = case format                   # response body
-             when /html/                   # serialize HTML
-               htmlDocument treeFromGraph repository
-             when /atom|rss|xml/           # serialize Atom/RSS
-               feedDocument treeFromGraph repository
-             else                          # serialize RDF
-               if writer = RDF::Writer.for(content_type: format)
-                 repository.dump writer.to_sym, base_uri: self
-               else
-                 logger.warn "⚠️  RDF::Writer undefined for #{format}" ; ''
-               end
-             end
-
-      head['Content-Length'] = body.bytesize.to_s # response size
-      [status, head, [body]]                      # response
     end
 
     def HEAD
@@ -574,6 +555,36 @@ class WebResource
       env[:deny] = true
       [202, {'Access-Control-Allow-Credentials' => 'true',
              'Access-Control-Allow-Origin' => origin}, []]
+    end
+
+    # default response - serialize graph per content-negotiation preference
+    def respond repositories, defaultFormat = 'text/html'
+      status = env[:origin_status] || 200  # response status
+      format = selectFormat defaultFormat  # response format
+      format += '; charset=utf-8' if %w{text/html text/turtle}.member? format
+      head = {'Access-Control-Allow-Origin' => origin,
+              'Content-Type' => format,
+              'Last-Modified' => Time.now.httpdate,
+              'Link' => linkHeader}        # response header
+      return [status, head, nil] if head?  # header-only response
+
+      body = case format                   # response body
+             when /html/                   # serialize HTML
+               htmlDocument treeFromGraph repositories
+             when /atom|rss|xml/           # serialize Atom/RSS
+               feedDocument treeFromGraph repositories
+             else                          # serialize RDF
+               if writer = RDF::Writer.for(content_type: format)
+                 out = RDF::Repository.new
+                 repositories.map{|r| out << r }
+                 out.dump writer.to_sym, base_uri: self
+               else
+                 logger.warn "⚠️  RDF::Writer undefined for #{format}" ; ''
+               end
+             end
+
+      head['Content-Length'] = body.bytesize.to_s # response size
+      [status, head, [body]]                      # response
     end
 
     def staticResponse format, body

@@ -42,6 +42,7 @@ class WebResource < RDF::URI
         d.empty? }                                           # is name leaf in tree?
     end
 
+    def dirURI; dirURI? ? self : join((basename || '') + '/').R(env) end
     def dirURI?; !path || path[-1] == '/' end
 
     def display_host

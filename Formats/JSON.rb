@@ -126,23 +126,24 @@ class WebResource
   end
 
 
-  # RDF::Repository -> tree {subject -> predicate -> object} - input for render functions
-  def treeFromGraph graph
-    tree = {}                      # output tree
-    inlined = []                   # inlined nodes
-    graph.each_triple{|subj,pred,obj|
-      s = subj.to_s                # subject URI
-      p = pred.to_s                # predicate URI
-      blank = obj.class == RDF::Node # bnode?
-      if blank || p == Contains # bnode or child-node?
-        o = obj.to_s               # object URI
-        inlined.push o             # inline object
-        obj = tree[o] ||= blank ? {} : {'uri' => o}
-      end
-      tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
-      tree[s][p] ||= []                                       # predicate
-      tree[s][p].push obj}                                    # object
-    inlined.map{|n| tree.delete n} # sweep inlined nodes from toplevel index
+  # [RDF::Repository] -> tree {subject -> predicate -> object} - input for render functions
+  def treeFromGraph repositories
+    tree = {}                        # output tree
+    inlined = []                     # inlined nodes
+    repositories.map{|repository|
+      repository.each_triple{|subj,pred,obj|
+        s = subj.to_s                # subject URI
+        p = pred.to_s                # predicate URI
+        blank = obj.class==RDF::Node # bnode?
+        if blank || p == Contains    # bnode or child-node?
+          o = obj.to_s               # object URI
+          inlined.push o             # inline object
+          obj = tree[o] ||= blank ? {} : {'uri' => o}
+        end
+        tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
+        tree[s][p] ||= []                                       # predicate
+        tree[s][p].push obj}}                                   # object
+      inlined.map{|n| tree.delete n} # sweep inlined nodes from toplevel index
     env.has_key?(:updates_only) ? {'#updates' => tree['#updates']} : tree
   end
 end
