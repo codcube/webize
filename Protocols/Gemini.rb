@@ -14,7 +14,7 @@ class WebResource
 
       if format = {'.gmi' => 'text/gemini', '.ico' => 'image/png'}[path && File.extname(basename)] || head[:mimetype]
         format.downcase!
-        env[:origin_format] = format           # record upstream format for log
+        env[:origin_format] = format             # record upstream format for log
         fixed_format = format.match? FixedFormat
         File.open(document, 'w'){|f| f << body } # update cache
 
@@ -27,13 +27,13 @@ class WebResource
         logger.warn "⚠️ format undefined on #{uri}"    # ⚠️ undefined format
       end
 
-      if env[:notransform] || fixed_format     # static content
-        head = {'Content-Type' => format,      # response header
+      if env[:notransform] || fixed_format # static content
+        head = {'Content-Type' => format,  # response header
                 'Content-Length' => body.bytesize.to_s}
-        head['Expires']=(Time.now+3e7).httpdate if fixed_format # cache static assets
-        [200, head, [body]]                    # response in upstream format
-      else                                     # content-negotiated transform
-        graphResponse repository, format       # response in preferred format
+        head['Expires'] = (Time.now+3e7).httpdate if fixed_format # cache expiry
+        [200, head, [body]]                # response in upstream format
+      else                                 # content-negotiated transform
+        respond [repository], format       # response in preferred format
       end
     rescue Exception => e
       logger.failure self, e

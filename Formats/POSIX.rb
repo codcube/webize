@@ -7,7 +7,7 @@ http://www.w3.org/ns/posix/stat#Directory)
 
     Markup[Container] = -> dir, env {
       uri = dir['uri'].R
-      tabular = dir[Type].find{|type| TabularLayout.member? type}
+      tabular = (dir[Type] || []).find{|type| TabularLayout.member? type}
       content = dir.delete(Contains) || []
       dir.delete Type
       dir.delete Date

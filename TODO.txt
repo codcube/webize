@@ -15,6 +15,7 @@ JS: 'n' key jumps to first in view
 gack (gemini) server
 serve gemini from cache when gone missing gemini://rfmpie.smol.pub/reviving-macbook-with-linux
 histogram on datedir per slice-resolution
+now that bnode/contained/referred subresource rendering is handled better, move DC:Image triples that are actually avatars to first-class avatar triple
 reload all the conf files on ctrl-shift-R (currently just blocklist
 link to local-archive URL from timeline http://localhost/2021/07/04/12/*#r5a53af0e893adbe0f1d10a3825eb1ceb7c28829a120be8a93d3dff98dc93046c
 IRC linepointers are #hashonly, but resolution per-line might be expensive, investigate naive string-concat solution

@@ -207,7 +207,7 @@ class WebResource
         repos = []
         nodes.map{|n|
           semaphore.async do
-            repos << n.R(env).fetchRemote **opts
+            repos << (n.R(env).fetchRemote **opts)
           end}
         barrier.wait
         respond repos

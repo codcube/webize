@@ -1,6 +1,4 @@
 ICON
-imageWide
-imageLarge
 Icon
 Image
 ImageRendition
@@ -50,9 +48,11 @@ image
 image1x
 image1x
 image:secure_url
+imageLarge
 imageSrc
 imageThumbnail
 imageUrl
+imageWide
 image_large
 image_src
 image_thumb
@@ -79,6 +79,7 @@ og:image:secure_url
 og:image:url
 og:images
 og:logo
+ownerAvatar
 parsely-image-url
 photo
 picture_url
