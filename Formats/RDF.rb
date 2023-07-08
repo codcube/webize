@@ -92,7 +92,7 @@ module Webize
     if vocabulary = vocab == 'rdf' ? {uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'} : RDF.vocab_map[vocab.to_sym] # vocabulary prefix
       Dir.children([ConfigPath, VocabPath, vocab].join '/').map{|predicate| # find predicates
         destURI = [vocabulary[:uri], predicate].join
-        configList([VocabPath, vocab, predicate].join '/').map{|srcURI|     # parse mapping
+         configList([VocabPath, vocab, predicate].join '/').map{|srcURI|     # parse mapping
           MetaMap[srcURI] = destURI}}                                       # map predicate
     else
       Console.logger.warn "❓ undefined prefix #{vocab} referenced by vocab map"

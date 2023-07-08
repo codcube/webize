@@ -387,15 +387,10 @@ class WebResource
                              toolbar,
                              (['<br>⚠️', {_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
                              link[:up,'&#9650;'],
-                             case env[:view] # layout function:
-                             when 'table'    # tabular layout
-                               HTML.tabular graph.values, env
-                             else            # columnar layout
-                               [if updates = graph.delete('#updates')
-                                HTML.markup updates, env unless updates.keys.size < 3
-                                end,
-                                graph.values.map{|v| HTML.markup v, env }]
+                             if updates = graph.delete('#updates')
+                               HTML.markup updates, env unless updates.keys.size < 3
                              end,
+                             graph.values.map{|v| HTML.markup v, env },
                              link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
                              {_: :script, c: Webize::Code::SiteJS}]}]}]
     end
