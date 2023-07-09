@@ -259,7 +259,7 @@ class WebResource
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # detect HTML served w/ XML MIME
 
           repository = parseRDF format, body                            # read graph data
-          saveRDF repository                                            # cache graph data
+          repository.persist                                            # cache graph data
           (print format_icon format; return repository) unless thru     # return graph data
                                                                         # return HTTP response with graph data
           doc = document                                                # cache locator
