@@ -19,8 +19,7 @@ module Webize
 
   configList('blocklist/predicate').map{|p|MetaMap[p] = :drop}              # load predicate blocklist
 
-  class GraphCache < RDF::Repository
-
+  module GraphCache
     # GraphCache -> 🐢 file(s)
     def persist                                           # query pattern:
       timestamp = RDF::Query::Pattern.new :s, Date.R, :o  # timestamp
@@ -30,9 +29,9 @@ module Webize
 
       self << RDF::Statement.new('#updates'.R, Type.R, Container.R) # updates
 
-      each_graph.map{|graph|             # graph
+      each_graph.map{|graph|                              # graph
         if g = graph.name                                 # graph URI
-          g = g.R env
+          g = g.R
           f = [g.document, :🐢].join '.'                  # 🐢 location
           log = []
           # TODO backup old versions instead of require new URI for new persistence. immutable-only graphs so far which have proven to be enough with smart graph-URI minting
@@ -41,26 +40,26 @@ module Webize
             graph.subjects.map{|subject|                    # annotate resource(s) as updated
               self << RDF::Statement.new('#updates'.R, Contains.R, subject)}
 
-            log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] unless g.in_doc?
+            log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join]
           end
 
-          # link graph to timeline
-          if !g.to_s.match?(HourDir) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
+          # link graph to timeline .. if not already there and we have valid timestamp
+          if !g.to_s.match?(/^\/\d\d\d\d\/\d\d\/\d\d\/\d\d/) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
             t = ts.split /\D/                                 # split timestamp
             🕒 = [t[0..3], t.size < 4 ? '0' : nil, [t[4..-1], # timeline containers
                                                     ([g.slugs, [type, creator, to].map{|pattern|          # name tokens from graph and query pattern
                                                         slugify = pattern==type ? :display_name : :slugs  # slug verbosity
                                                         graph.query(pattern).objects.map{|o|              # query for slug-containing triples
                                                           o.respond_to?(:R) ? o.R.send(slugify) : o.to_s.split(/[\W_]/)}}]. # tokenize
-                                                       flatten.compact.map(&:downcase).uniq - BasicSlugs)].          # apply slug skiplist
+                                                       flatten.compact.map(&:downcase).uniq - WebResource::URIs::BasicSlugs)].          # apply slug skiplist
                                                      compact.join('.')[0..125].sub(/\.$/,'')+'.🐢'].compact.join '/' # 🕒 path
             unless File.exist? 🕒
               FileUtils.mkdir_p File.dirname 🕒            # create timeline container(s)
               FileUtils.ln f, 🕒 rescue FileUtils.cp f, 🕒 # hardlink 🐢 to 🕒, fallback to copy
-              log.unshift [:🕒, ts] unless g.in_doc?
+              log.unshift [:🕒, ts]
             end
           end
-          logger.info log.join ' ' unless log.empty?
+          Console.logger.info log.join ' ' unless log.empty?
         end}
     end
   end
@@ -69,7 +68,8 @@ class WebResource
 
   # [MIME, data] -> GraphCache (in-memory, unpersisted)
   def parseRDF format = fileMIME, content = read
-    repository = Webize::GraphCache.new
+    repository = RDF::Repository.new
+    repository.extend Webize::GraphCache # TODO why does this work, but not subclassing RDF::Repository (missing methods like #insert_statement)
     case format                                                    # content type:TODO needless reads? stop media reads earlier..
     when /octet.stream/                                            #  blob
     when /^audio/                                                  #  audio

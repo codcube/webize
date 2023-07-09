@@ -11,7 +11,9 @@ class WebResource < RDF::URI
     Gunk = Webize.configRegex 'blocklist/regex'
     KillFile = Webize.configList 'blocklist/sender'
     Webize.configHash('metadata/constants').map{|symbol, uri|
-      self.const_set symbol, uri}
+      self.const_set symbol, uri
+      Webize.const_set symbol, uri
+    }
     DenyDomains = {}
 
     def self.blocklist

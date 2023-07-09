@@ -1,14 +1,6 @@
 %w(chronic date icalendar).map{|_| require _}
 
 class WebResource
-
-  module URIs
-
-    DayDir  = /^\/\d\d\d\d\/\d\d\/\d\d/
-    HourDir = /^\/\d\d\d\d\/\d\d\/\d\d\/\d\d/
-
-  end
-
   module HTML
     MarkupPredicate[Date] = -> dates, env {
       dates.map{|date| Markup[Date][date, env]}}
