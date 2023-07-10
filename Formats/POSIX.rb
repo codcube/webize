@@ -5,8 +5,8 @@ class WebResource
 
     Markup[Container] = -> dir, env {
       uri = dir['uri'].R
-      tabular = (dir[Type] || []).find{|type| TabularLayout.member? type}
       content = dir.delete(Contains) || []
+      tabular = (dir[Type] || []).find{|type| TabularLayout.member? type} && content.size > 1
       dir.delete Type
       dir.delete Date
       {class: :container, id: uri.fragment ? uri.fragment : '#container_' + Digest::SHA2.hexdigest(rand.to_s),
