@@ -68,9 +68,10 @@ module Webize
         end}
 
       # graph stats
-      out << RDF::Statement.new(dataset, Size.R, out.size)
+      count = out.size                              # triple count
+      out << RDF::Statement.new(dataset, Size.R, count) unless count == 0
       out << RDF::Statement.new('#datasets'.R, Contains.R, dataset)
-      if newest = query(timestamp).objects.sort[-1]
+      if newest = query(timestamp).objects.sort[-1] # latest timestamp
         out << RDF::Statement.new(dataset, Date.R, newest)
       end
 
@@ -80,8 +81,8 @@ module Webize
 end
 class WebResource
 
-  # [MIME, data] -> GraphCache (in-memory, unpersisted)
-  def parseRDF format = fileMIME, content = read
+  # [MIME, data] -> Repository (in-memory, unpersisted)
+  def readRDF format = fileMIME, content = read
     repository = RDF::Repository.new.extend Webize::GraphCache # TODO why does this work, but not subclassing RDF::Repository (missing methods like #insert_statement)
     case format                                                    # content type:TODO needless reads? stop media reads earlier..
     when /octet.stream/                                            #  blob

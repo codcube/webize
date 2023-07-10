@@ -130,7 +130,7 @@ class WebResource
   def treeFromGraph repositories
     stats = RDF::Repository.new                                     # statistics container
     stats << RDF::Statement.new('#updates'.R, Type.R, Container.R)  # updates container - 👉 updated resources
-    stats << RDF::Statement.new('#datasets'.R, Type.R, Container.R) # dataset container - 👉 upstream doc-graphs
+    stats << RDF::Statement.new('#datasets'.R, Type.R, Container.R) # dataset container - 👉 source graphs
     stats << RDF::Statement.new('#datasets'.R, Type.R, Directory.R)
     repositories.push stats
 

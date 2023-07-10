@@ -256,10 +256,10 @@ class WebResource
           body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # detect HTML served w/ XML MIME
 
-          repository = (parseRDF format, body).persist env, self        # read and locally cache graph data
+          repository = (readRDF format, body).persist env, self         # read and cache graph data
           (print format_icon format; return repository) unless thru     # return graph data
-                                                                        # return HTTP response with graph data
-          doc = document                                                # cache locator
+                                                                        # HTTP response with graph data:
+          doc = document                                                # uninterpreted/raw/upstream/static cache. mainly used when updating extractors in offline mode so we discard it unless a full 'thru' response is threaded through
           if (formats = RDF::Format.content_types[format]) &&           # content type
              (extensions = formats.map(&:file_extension).flatten) &&    # suffixes for content type
              !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix in mapped set?
@@ -331,7 +331,7 @@ class WebResource
                               (format == selectFormat(format) && !ReFormat.member?(format))) # (mimeA → mimeA) reformat disabled
       repos = (nodes || fsNodes).map{|x|                    # load specified or default node set
         if x.node.file?                                     # file?
-          x.file_triples x.parseRDF                         # parse file + read file metadata
+          x.file_triples x.readRDF                          # parse + read file metadata
         elsif x.node.directory?                             # directory?
           x.dirURI.dir_triples RDF::Repository.new          # read directory metadata
         end}
