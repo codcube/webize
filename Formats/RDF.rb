@@ -22,7 +22,9 @@ module Webize
   module GraphCache
 
     # Repository -> 🐢 file(s)
-    def persist env={}                                    # query pattern:
+    def persist env, dataset # environment, dataset URI
+
+      # query patterns
       timestamp = RDF::Query::Pattern.new :s, Date.R, :o  # timestamp
       creator = RDF::Query::Pattern.new :s, Creator.R, :o # sender
       to = RDF::Query::Pattern.new :s, To.R, :o           # receiver
@@ -64,6 +66,13 @@ module Webize
           end
           Console.logger.info log.join ' ' unless log.empty?
         end}
+
+      # graph stats
+      out << RDF::Statement.new(dataset, Size.R, out.size)
+      out << RDF::Statement.new('#datasets'.R, Contains.R, dataset)
+      if newest = query(timestamp).objects.sort[-1]
+        out << RDF::Statement.new(dataset, Date.R, newest)
+      end
 
       out # output graph
     end

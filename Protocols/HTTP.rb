@@ -253,21 +253,10 @@ class WebResource
             charset = metatag[1]
           end
           charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset identifier
-
           body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
-
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # detect HTML served w/ XML MIME
 
-          repository = (parseRDF format, body).persist env              # read and locally cache graph data
-          repository << RDF::Statement.new('#updates'.R, Type.R, Container.R) # updates container
-          repository << RDF::Statement.new('#datasets'.R, Type.R, Container.R) # dataset (per-request doc-graph collection) container
-          repository << RDF::Statement.new('#datasets'.R, Type.R, Directory.R)
-          repository << RDF::Statement.new('#datasets'.R, Contains.R, self)
-          repository << RDF::Statement.new(self, Size.R, repository.size)
-          if newest = repository.query(RDF::Query::Pattern.new :s, Date.R, :o).objects.sort[-1]
-            repository << RDF::Statement.new(self, Date.R, newest)
-          end
-
+          repository = (parseRDF format, body).persist env, self        # read and locally cache graph data
           (print format_icon format; return repository) unless thru     # return graph data
                                                                         # return HTTP response with graph data
           doc = document                                                # cache locator
