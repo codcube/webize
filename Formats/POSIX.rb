@@ -1,9 +1,7 @@
 class WebResource
   module HTML
 
-    TabularLayout = %w(
-http://rdfs.org/sioc/ns#ChatLog
-http://www.w3.org/ns/posix/stat#Directory)
+    TabularLayout = [Directory, 'http://rdfs.org/sioc/ns#ChatLog']
 
     Markup[Container] = -> dir, env {
       uri = dir['uri'].R

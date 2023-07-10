@@ -6,7 +6,7 @@ module Webize
   MetaMap = {}
   VocabPath = %w(metadata URI)
 
-  # read metadata-map configuration
+  # load metadata map
   Dir.children([ConfigPath, VocabPath].join '/').map{|vocab|                # find vocab
     if vocabulary = vocab == 'rdf' ? {uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'} : RDF.vocab_map[vocab.to_sym] # vocabulary prefix
       Dir.children([ConfigPath, VocabPath, vocab].join '/').map{|predicate| # find predicates
@@ -20,21 +20,19 @@ module Webize
   configList('blocklist/predicate').map{|p|MetaMap[p] = :drop}              # load predicate blocklist
 
   module GraphCache
-    # GraphCache -> 🐢 file(s)
+
+    # Repository -> 🐢 file(s)
     def persist                                           # query pattern:
       timestamp = RDF::Query::Pattern.new :s, Date.R, :o  # timestamp
       creator = RDF::Query::Pattern.new :s, Creator.R, :o # sender
       to = RDF::Query::Pattern.new :s, To.R, :o           # receiver
       type = RDF::Query::Pattern.new :s, Type.R, :o       # type
-
-      self << RDF::Statement.new('#updates'.R, Type.R, Container.R) # updates
-
       each_graph.map{|graph|                              # graph
         if g = graph.name                                 # graph URI
           g = g.R
           f = [g.document, :🐢].join '.'                  # 🐢 location
           log = []
-          # TODO backup old versions instead of require new URI for new persistence. immutable-only graphs so far which have proven to be enough with smart graph-URI minting
+          # TODO backup old versions instead of require new URI for new state - immutable graphs have so far proven to be enough paired with smart graph-URI minting
           unless File.exist? f                              # persist graph:
             RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
             graph.subjects.map{|subject|                    # annotate resource(s) as updated
