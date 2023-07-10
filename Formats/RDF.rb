@@ -70,6 +70,7 @@ module Webize
       # graph stats
       count = out.size                              # triple count
       out << RDF::Statement.new(dataset, Size.R, count) unless count == 0
+      out << RDF::Statement.new(dataset, Title.R, dataset.path)
       out << RDF::Statement.new('#datasets'.R, Contains.R, dataset)
       if newest = query(timestamp).objects.sort[-1] # latest timestamp
         out << RDF::Statement.new(dataset, Date.R, newest)

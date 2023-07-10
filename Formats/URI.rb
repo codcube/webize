@@ -167,7 +167,7 @@ class WebResource < RDF::URI
     MarkupPredicate['uri'] = -> us, env {
       (us.class == Array ? us : [us]).map{|uri|
         uri = uri.R env
-        {_: :a, href: uri.href, c: uri.display_name}}}
+        {_: :a, href: uri.href, c: :🔗}}}
 
     MarkupPredicate[Link] = -> links, env {
       links.select{|l|l.respond_to? :R}.map(&:R).select{|l| !l.deny?}.group_by{|l|

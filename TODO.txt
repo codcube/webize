@@ -22,7 +22,6 @@ IRC linepointers are #hashonly, but resolution per-line might be expensive, inve
 hash fetched entities to prevent redundant parsing/summarization work when origin caching is broken - essentially generate our own ETags
 log byte-range req
 title missing if source is RDF, not HTML
-repository stats for logger and status-bar
 if feed post-limit is 20 and we have 20 in updates, we're probably missing posts - save and highlight pagination next/prev links for graph
 feedURL hook
 rewrite URLs on output to cut out local redirects (nitter 301s etc)

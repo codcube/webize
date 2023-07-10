@@ -387,6 +387,9 @@ class WebResource
                              toolbar,
                              (['<br>⚠️', {_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
                              link[:up,'&#9650;'],
+                             if datasets = graph.delete('#datasets')
+                               HTML.markup datasets, env
+                             end,
                              if updates = graph.delete('#updates')
                                HTML.markup updates, env unless updates.keys.size < 3
                              end,
