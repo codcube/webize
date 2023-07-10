@@ -68,8 +68,7 @@ class WebResource
 
   # [MIME, data] -> GraphCache (in-memory, unpersisted)
   def parseRDF format = fileMIME, content = read
-    repository = RDF::Repository.new
-    repository.extend Webize::GraphCache # TODO why does this work, but not subclassing RDF::Repository (missing methods like #insert_statement)
+    repository = RDF::Repository.new.extend Webize::GraphCache # TODO why does this work, but not subclassing RDF::Repository (missing methods like #insert_statement)
     case format                                                    # content type:TODO needless reads? stop media reads earlier..
     when /octet.stream/                                            #  blob
     when /^audio/                                                  #  audio
