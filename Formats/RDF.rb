@@ -22,11 +22,14 @@ module Webize
   module GraphCache
 
     # Repository -> 🐢 file(s)
-    def persist                                           # query pattern:
+    def persist env={}                                    # query pattern:
       timestamp = RDF::Query::Pattern.new :s, Date.R, :o  # timestamp
       creator = RDF::Query::Pattern.new :s, Creator.R, :o # sender
       to = RDF::Query::Pattern.new :s, To.R, :o           # receiver
       type = RDF::Query::Pattern.new :s, Type.R, :o       # type
+
+      out = env.has_key?(:updates_only) ? RDF::Repository.new : self # update graph
+
       each_graph.map{|graph|                              # graph
         if g = graph.name                                 # graph URI
           g = g.R
@@ -35,8 +38,10 @@ module Webize
           # TODO backup old versions instead of require new URI for new state - immutable graphs have so far proven to be enough paired with smart graph-URI minting
           unless File.exist? f                              # persist graph:
             RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
-            graph.subjects.map{|subject|                    # annotate resource(s) as updated
-              self << RDF::Statement.new('#updates'.R, Contains.R, subject)}
+
+            out << graph if env.has_key? :updates_only      # add to update graph
+            graph.subjects.map{|subject|                    # denote resources as updated
+              out << RDF::Statement.new('#updates'.R, Contains.R, subject)}
 
             log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join]
           end
@@ -59,6 +64,8 @@ module Webize
           end
           Console.logger.info log.join ' ' unless log.empty?
         end}
+
+      out # output graph
     end
   end
 end

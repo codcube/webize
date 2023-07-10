@@ -144,6 +144,6 @@ class WebResource
         tree[s][p] ||= []                                       # predicate
         tree[s][p].push obj}}                                   # object
       inlined.map{|n| tree.delete n} # sweep inlined nodes from toplevel index
-    env.has_key?(:updates_only) ? {'#updates' => tree['#updates']} : tree
+      tree                           # treeized graph
   end
 end

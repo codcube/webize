@@ -258,7 +258,7 @@ class WebResource
 
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # detect HTML served w/ XML MIME
 
-          repository = (parseRDF format, body).persist             # read and locally cache graph data
+          repository = (parseRDF format, body).persist env              # read and locally cache graph data
           repository << RDF::Statement.new('#updates'.R, Type.R, Container.R) # updates container
           repository << RDF::Statement.new('#datasets'.R, Type.R, Container.R) # dataset (per-request doc-graph collection) container
           repository << RDF::Statement.new('#datasets'.R, Type.R, Directory.R)
