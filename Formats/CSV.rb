@@ -2,6 +2,14 @@
 class WebResource
   module HTML
 
+    def self.sort items, attr
+      attr = Webize::MetaMap[attr] || attr # map attribute to URI
+      sortable, rest = items.partition{|r| # to be sortable, object needs attribute
+        r.class == Hash && (r.has_key? attr)}
+      [*sortable.sort_by{|r|r[attr][0].to_s}.reverse, # sort
+       *rest]                              # output list
+    end
+
     # [resource, ..] -> HTML <table>
     def self.tabular graph, env
       graph = graph.values if graph.class == Hash

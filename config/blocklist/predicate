@@ -166,6 +166,8 @@ layoutTemplate
 linecap
 listed_count
 managed_by_feeds
+maxHeight
+maxWidth
 media_count
 media_key
 menuPosition

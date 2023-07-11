@@ -5,7 +5,7 @@ class WebResource
 
     Markup[Container] = -> dir, env {
       uri = dir['uri'].R
-      content = dir.delete(Contains) || []
+      content = HTML.sort (dir.delete(Contains)||[]), Date
       tabular = (dir[Type] || []).find{|type| TabularLayout.member? type} && content.size > 1
       dir.delete Type
       dir.delete Date

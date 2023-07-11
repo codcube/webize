@@ -1,3 +1,4 @@
+#datasets {float: left}
 #down {right: 4.5em; bottom: 0; border-radius: .6em .6em 0 0; border-width: .04em .04em 0 .04em}
 #next {right: 0; bottom: 0; border-radius: .6em 0 0 0; border-width: .04em 0 0 .04em}
 #prev {left: 0; bottom: 0; border-radius: 0 .6em 0 0; border-width: .04em .04em 0 0}
@@ -31,7 +32,7 @@
 .post .content {border-width: .12em; border-style: solid; border-color: #666}
 .post .content, .post .content div, p, pre {border-radius: .6em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
-.post {margin: .125em; max-width: 110ex}
+.post {margin: 1px; max-width: 110ex}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
 .quote > .quote > .quote {background-color: #777}
