@@ -69,8 +69,8 @@ div, form, table {display: inline-block}
 iframe, .preembed {border: .2em solid #fff}
 iframe.main_player {border: .25em solid red}
 img, video, table {max-width: 100%}
-li:nth-child(even), tr:nth-child(even) > td {background-color: #000}
-li:nth-child(odd), tr:nth-child(odd) > td {background-color: #222}
+li:nth-child(even), tr:nth-child(even) > td {background-color: #000; color: #fff}
+li:nth-child(odd), tr:nth-child(odd) > td {background-color: #222; color: #fff}
 p {border-color: #222; border-width: 0; border-style: solid; margin: 1px}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, img {margin: 0}
