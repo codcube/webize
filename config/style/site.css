@@ -12,6 +12,7 @@
 .blocked {background: repeating-linear-gradient(0deg, #f00, #f00 1em, #000 1em, #000 2em); color: #fff}
 .bold {font-weight: bold}
 .columns {column-width: 80ex; column-gap: 0}
+.container {margin: .125em}
 .container > .contents {border: 1px solid #888}
 .container > .name {border-color: #888; border-style: solid; border-radius: 0; background-color: #000; color: #fff; border-width: 1px 1px 0 1px; border-radius: .5em .5em 0 0; padding: 0 .2em 0 .2em}
 .dimmed {opacity: 0.2}
