@@ -15,6 +15,7 @@ class WebResource
         graph << RDF::Statement.new(c, Title.R, base + '/')
       else
         graph << RDF::Statement.new(c, Title.R, base)
+        graph << RDF::Statement.new(c, Type.R, format_icon(c.R.fileMIME))
       end
       graph << RDF::Statement.new(self, Contains.R, c)}
     graph
