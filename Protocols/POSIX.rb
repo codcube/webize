@@ -4,12 +4,17 @@ class WebResource
 
   def dir_triples graph
     graph << RDF::Statement.new(self, Type.R, Container.R)
+    graph << RDF::Statement.new(self, Type.R, Directory.R)
     graph << RDF::Statement.new(self, Date.R, node.stat.mtime.iso8601)
     node.children.select{|n|n.basename.to_s[0] != '.'}.map{|child| # 👉 contained nodes
-      c = join child.basename.to_s.gsub(' ','%20').gsub('#','%23')
+      base = child.basename.to_s
+      c = join base.gsub(' ','%20').gsub('#','%23')
       if child.directory?
         c += '/'
         graph << RDF::Statement.new(c, Type.R, Container.R)
+        graph << RDF::Statement.new(c, Title.R, base + '/')
+      else
+        graph << RDF::Statement.new(c, Title.R, base)
       end
       graph << RDF::Statement.new(self, Contains.R, c)}
     graph
