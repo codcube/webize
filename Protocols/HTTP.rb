@@ -312,13 +312,16 @@ class WebResource
         repository ||= RDF::Repository.new
         RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|repository << g} if head['Content-Type']&.index 'html'
         head['Content-Length'] = body.bytesize.to_s
-        writeFile HTML::SiteIcon if status == 404 && path == '/favicon.ico' # set default icon
-        if !thru
+        if status == 404 && path == '/favicon.ico' # set default icon
+          env.delete :origin_status
+          writeFile HTML::SiteIcon
+          fileResponse
+        elsif !thru
           repository
         elsif env[:notransform]
-          [status, head, [body]]
+          [status, head, [body]] # static response data
         else
-          respond [repository] # TODO merge local cache via #fetchLocal or similar
+          respond [repository] # dynamic/transformable response data
         end
       else
         raise
@@ -383,8 +386,7 @@ class WebResource
           return [304, {}, []]                            # cached at client
         end
         format = fileMIME                                 # file format
-        h['Content-Type'] = format
-        h['Content-Type'] = 'application/javascript; charset=utf-8' if h['Content-Type']=='application/javascript'
+        h['content-type'] = format
         h['ETag'] = etag
         h['Expires'] = (Time.now + 3e7).httpdate if format.match? FixedFormat
         h['Last-Modified'] ||= mtime.httpdate
