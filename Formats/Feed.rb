@@ -174,8 +174,6 @@ module Webize
             # addressee/recipient/destination group
             to = reddit ? ('https://www.reddit.com/' + subject.parts[0..1].join('/')).R : @base
             yield subject, WebResource::To, to
-            #yield to, Type, WebResource::Container.R
-            #yield to, WebResource::Contains, subject
 
             # media links
             inner.scan(reMedia){|e|
@@ -189,7 +187,7 @@ module Webize
                     else
                       Atom + rel
                     end
-                yield subject, p, o unless subject == o # emit link unless links to self
+                yield subject, p, o unless subject == o # emit link unless self-referential
               end}
 
             # process XML elements
