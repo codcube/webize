@@ -196,7 +196,9 @@ class WebResource
         set.to_s.scan(Webize::HTML::SrcSetRegex).map{|ref, _|
           Markup[Image][ref, env]}}}
 
-    MarkupPredicate[Image] = -> images, env {images.map{|i|Markup[Image][i,env]}}
+    MarkupPredicate[Image] = -> images, env {
+      images.map{|i|
+        [Markup[Image][i,env], ' ']}}
 
     Markup[Image] = -> image, env {
       if image.class == Hash
