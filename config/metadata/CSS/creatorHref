@@ -2,6 +2,7 @@
 .byline > a
 .p-author > a
 .poster a
+.sender > a
 a.author
 a.bigusername
 a.hnuser

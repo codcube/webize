@@ -2,6 +2,7 @@
 .note
 [class*="comment"]
 [class*="entry"]
+[class*="event"]
 [class*="item"]
 [class*="message"]
 [class*="msg"]

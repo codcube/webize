@@ -5,6 +5,7 @@
 .note-header > a[title]
 .postdate
 .time-since
+.timestamp > a
 .tweet-date > a
 [data-time]
 [data-timestamp]

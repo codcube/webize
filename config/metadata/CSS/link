@@ -1,6 +1,7 @@
 .CommentPoster > a
 .age > a
 .postNum a
+.timestamp > a
 .u-url
 [class*="title"] a
 [id*="permalink"]
