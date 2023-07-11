@@ -257,8 +257,8 @@ class WebResource
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # detect HTML served w/ XML MIME
 
           repository = (readRDF format, body).persist env, self         # read and cache graph data
-          (print format_icon format; return repository) unless thru     # return graph data
-                                                                        # HTTP response with graph data:
+          (print format_icon format; return repository) unless thru     # return graph data, or
+                                                                        # return HTTP response with graph or static/upatream data:
           doc = document                                                # uninterpreted/raw/upstream/static cache. mainly used when updating extractors in offline mode so we discard it unless a full 'thru' response is threaded through
           if (formats = RDF::Format.content_types[format]) &&           # content type
              (extensions = formats.map(&:file_extension).flatten) &&    # suffixes for content type
@@ -312,7 +312,7 @@ class WebResource
         repository ||= RDF::Repository.new
         RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|repository << g} if head['Content-Type']&.index 'html'
         head['Content-Length'] = body.bytesize.to_s
-        puts :writing_favico if status == 404 && path == '/favicon.ico'
+        writeFile HTML::SiteIcon if status == 404 && path == '/favicon.ico' # set default icon
         if !thru
           repository
         elsif env[:notransform]

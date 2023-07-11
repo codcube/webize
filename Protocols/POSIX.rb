@@ -118,13 +118,13 @@ class WebResource
     end
   end
 
-  # create containing dir(s) for local resource
+  # create containing dir(s)
   def mkdir
-    dir = cursor = dirURI? ? fsPath.sub(/\/$/,'') : File.dirname(fsPath) # set cursor to container name without trailing-slash (blocking file/link won't have one)
+    dir = cursor = dirURI? ? fsPath.sub(/\/$/,'') : File.dirname(fsPath) # strip slash from cursor (blocking filename doesn't have one)
     until cursor == '.'                # cursor at root?
       if File.file?(cursor) || File.symlink?(cursor)
         FileUtils.rm cursor            # unlink file/link blocking location
-        puts '🧹 ' + cursor            # note in log about fs-sweep
+        puts '🧹 ' + cursor            # log fs-sweep
       end
       cursor = File.dirname cursor     # up to parent container
     end
