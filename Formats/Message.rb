@@ -52,7 +52,8 @@ module Webize
                 c.remove }}
 
             post.css(MsgCSS[:title]).map{|subj|
-              yield subject, Title, subj.inner_text, graph                 # title
+              title = subj.inner_text
+              yield subject, Title, title, graph if title && !title.empty? # title
               subj.remove }
 
             post.css('img').map{|i| yield subject, Image, @base.join(i['src']), graph}           # image @src

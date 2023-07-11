@@ -286,7 +286,7 @@ module Webize
 
         # <title>
         @doc.css('title').map{|title|
-          yield @base, Title, title.inner_text }
+          yield @base, Title, title.inner_text unless title.inner_text.empty?}
 
         # <img>
         @doc.css('img[title], img[alt]').map{|img|
