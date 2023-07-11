@@ -13,7 +13,7 @@ class WebResource
     # [resource, ..] -> HTML <table>
     def self.tabular graph, env
       graph = graph.values if graph.class == Hash
-      keys = graph.select{|r|r.respond_to? :keys}.map(&:keys).flatten.uniq
+      keys = ['uri', Type, *graph.select{|r|r.respond_to? :keys}.map(&:keys).flatten.uniq.-(['uri',Type])]
       {_: :table, class: :tabular,            # table
        c: [{_: :thead,
             c: {_: :tr, c: keys.map{|p|       # table heading
