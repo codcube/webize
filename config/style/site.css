@@ -41,7 +41,8 @@
 .title {background-color: #fff; color: #000; border-radius: .5em 0 0 0; max-width: 80ex}
 .title:visited {background-color: #ccc}
 .toolbox form input {background-color: #333; color: #eee; border-radius: .5em; border-width: 0; font-size: .8em; margin-right: .1em; width: 24ex}
-.toolbox .path a {color: #bbb; font-weight: normal}
+.toolbox .path {color: #777}
+.toolbox .path a {color: #ccc; font-weight: normal}
 .toolbox svg {height: 1em; width: 1em}
 .toolbox {border: 1px solid #555; border-radius: 0 0 .8em .8em}
 .toolbox, td, li {vertical-align: top}
