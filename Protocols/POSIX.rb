@@ -22,11 +22,6 @@ class WebResource
   end
 
   def file_triples graph
-    dir = join File.dirname path
-    dir += '/' unless dir.to_s[-1] == '/'
-    graph << RDF::Statement.new(dir, Type.R, Container.R)
-    graph << RDF::Statement.new(dir, Type.R, Directory.R)
-    graph << RDF::Statement.new(dir, Contains.R, self)
     graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/posix/stat#File'.R)
     stat = File.stat fsPath
     graph << RDF::Statement.new(self, 'http://www.w3.org/ns/posix/stat#size'.R, stat.size)
