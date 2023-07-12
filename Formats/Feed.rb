@@ -196,7 +196,7 @@ module Webize
               if [Atom+'id', RSS+'link', RSS+'guid', RSS+'Key', Atom+'link'].member? p
               # subject URI element
               elsif p == RSS + 'ETag'
-                yield subject, Title, subject.basename
+                yield subject, Title, subject.basename || subject.host
               elsif [Atom+'author', RSS+'author', RSS+'creator', 'http://purl.org/dc/elements/1.1/creator'].member? p
                 # creators
                 crs = []

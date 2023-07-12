@@ -71,7 +71,7 @@ module Webize
       # graph stats
       count = out.size
       out << RDF::Statement.new(dataset, Size.R, count) unless count == 0 # dataset triple-count
-      out << RDF::Statement.new(dataset, Title.R, dataset.path)           # dataset title
+      out << RDF::Statement.new(dataset, Title.R, dataset.path || '/')    # dataset title
       out << RDF::Statement.new('#datasets'.R, Contains.R, dataset)       # dataset listing
       if newest = query(timestamp).objects.sort[-1]                       # dataset timestamp
         out << RDF::Statement.new(dataset, Date.R, newest)
@@ -107,7 +107,8 @@ class WebResource
                 next if predicate == :drop
                 statement.predicate = predicate.R
               end
-              repository << statement }} rescue (logger.debug "⚠️ RDFa::Reader failure #{uri}")
+              repository << statement
+            }} rescue (logger.debug "⚠️ RDFa::Reader failed on #{uri}")
         end
       else
         logger.warn ["⚠️ no RDF reader for " , format].join # reader not found
