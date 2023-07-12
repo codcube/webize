@@ -6,6 +6,7 @@
 .divMessage
 .e-content
 .entry-content
+.md
 .message
 .message-body
 .messageContent
@@ -16,5 +17,4 @@
 .text
 .views-field-body
 [id^='post_message']
-span.score
 span.sitestr
