@@ -2,18 +2,17 @@
 class WebResource
   module HTML
 
-    def self.sort items, attr
-      attr = Webize::MetaMap[attr] || attr # map attribute to URI
-      sortable, rest = items.partition{|r| # to be sortable, object needs attribute
-        r.class == Hash && (r.has_key? attr)}
-      [*sortable.sort_by{|r|r[attr][0].to_s}.reverse, # sort
-       *rest]                              # output list
-    end
-
     # [resource, ..] -> HTML <table>
     def self.tabular graph, env
       graph = graph.values if graph.class == Hash
       keys = ['uri', Type, *graph.select{|r|r.respond_to? :keys}.map(&:keys).flatten.uniq.-(['uri',Type])]
+      sort_attrs = [Size, Date, Title, 'uri']
+
+      sort_attr = sort_attrs.find{|a| keys.member? a}
+      sortable, rest = graph.partition{|r| # to be sortable, object needs attribute
+        r.class == Hash && (r.has_key? sort_attr)}
+      graph = [*sortable.sort_by{|r| r[sort_attr][0].to_s}.reverse, *rest] # sort resources
+
       {_: :table, class: :tabular,            # table
        c: [{_: :thead,
             c: {_: :tr, c: keys.map{|p|       # table heading
