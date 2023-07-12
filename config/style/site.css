@@ -4,7 +4,6 @@
 #prev {left: 0; bottom: 0; border-radius: 0 .6em 0 0; border-width: .04em .04em 0 0}
 #prev, #next, #up, #down {font-size: 2em; border-style: solid; border-color: #777; color: #bbb; padding: .2em .8em .2em .8em; position: fixed}
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
-#rootpath {float: left; min-width: 2.8em}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
 #updates .post .content {border-color: #ccc}
 #updates > .contents {background: repeating-linear-gradient(300deg, #888, #888 1em, #000 1em, #000 2em); border-radius: 0 .6em .6em .6em}
@@ -28,7 +27,6 @@
 .links .path a {font-weight: normal}
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .links {border: 1px dotted #777; border-radius: .5em}
-.path_crumb {color: #bbb}
 .post .content div.abstract {display: block; border-radius: 0}
 .post .content {border-width: .12em; border-style: solid; border-color: #666}
 .post .content, .post .content div, p, pre {border-radius: .6em}
@@ -42,10 +40,10 @@
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title {background-color: #fff; color: #000; border-radius: .5em 0 0 0; max-width: 80ex}
 .title:visited {background-color: #ccc}
-.toolbox .path {color: #aaa; font-size: .8em; text-shadow: 1px 1px #000}
-.toolbox form input {background-color: #000; color: #fff; border-radius: .5em; border-width: 0; font-size: .8em}
+.toolbox .path a {color: #222}
+.toolbox form input {background-color: #ccc; color: #000; border-radius: .5em; border-width: 0; font-size: .8em; margin-right: .2em; width: 20ex}
 .toolbox svg {height: 1em; width: 1em}
-.toolbox {border-style: dotted; border-color: #aaa; border-width: 0 1px 1px 1px; border-radius: 0 0 .6em .6em}
+.toolbox {background-color: #aaa; color: #000; border-radius: 0 0 .5em .5em}
 .toolbox, td, li {vertical-align: top}
 .video {border: solid .3em #444; background-color: #000; margin: .2em;  border-radius: .5em}
 .warning {background-color: #ff0; color: #000; font-size: 1.1em}
