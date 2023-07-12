@@ -40,17 +40,16 @@
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title {background-color: #fff; color: #000; border-radius: .5em 0 0 0; max-width: 80ex}
 .title:visited {background-color: #ccc}
-.toolbox .path a {color: #222}
-.toolbox form input {background-color: #ccc; color: #000; border-radius: .5em; border-width: 0; font-size: .8em; margin-right: .2em; width: 20ex}
+.toolbox form input {background-color: #444; color: #000; border-radius: .5em; border-width: 0; font-size: .8em; margin-right: .1em; width: 24ex}
 .toolbox svg {height: 1em; width: 1em}
-.toolbox {background-color: #aaa; color: #000; border-radius: 0 0 .5em .5em}
+.toolbox {background-color: #252525; color: #fff; border-radius: 0 0 .8em .8em}
 .toolbox, td, li {vertical-align: top}
 .video {border: solid .3em #444; background-color: #000; margin: .2em;  border-radius: .5em}
 .warning {background-color: #ff0; color: #000; font-size: 1.1em}
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}
 a img {float: left}
 a span {color: #bbb; font-weight: normal; font-size: 0.82em}
-a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; max-width: 40em; overflow: hidden; vertical-align: top}
+a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px; max-width: 40em; overflow: hidden; vertical-align: top}
 a.date {white-space: nowrap; float: right; color: #bbb; background-color: #000; font-size: .8em; font-weight: normal}
 a.global {background-color: #005}
 a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block}
