@@ -32,11 +32,12 @@ module Webize
 
       out = env.has_key?(:updates_only) ? RDF::Repository.new : self # update graph
 
-      each_graph.map{|graph|                              # graph
-        if g = graph.name                                 # graph URI
-          g = g.R
+      each_graph.map{|graph|                              # visit graph
+        if g = graph.name
+          g = g.R                                         # graph URI
           f = [g.document, :🐢].join '.'                  # 🐢 location
           log = []
+
           # TODO backup old versions instead of require new URI for new state - immutable graphs have so far proven to be enough paired with smart graph-URI minting
           unless File.exist? f                              # persist graph:
             RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
