@@ -214,12 +214,17 @@ class WebResource
       end
 
       src = env[:base].join(image).R(env).href
-      {c: [{_: :a, href: src,
-            c: {_: :img, src: src}},
-           (['<br>',
+      img = {_: :a, href: src,
+             c: {_: :img, src: src}}
+
+      if resource&.has_key? Abstract
+        {c: [img, '<br>',
              {class: :abstract,
               c: resource[Abstract].map{|a|
-                [(markup a,env),' ']}}] if resource&.has_key? Abstract)]}}
+                [(markup a,env),' ']}}]}
+      else
+        img
+      end}
 
   end
 end
