@@ -188,7 +188,7 @@ class WebResource < RDF::URI
                                           style: "background-color: #{HostColor[host] || '#000'}; color: #fff"} : []},
                               {_: :td, class: :path,
                                c: paths.map{|p|
-                                 {_: :a, href: p.uri, c: p.display_name}}}]}}}}, # links
+                                 [{_: :a, href: p.uri, c: p.display_name}, ' ']}}]}}}}, # links
                   '</tr></table>']}}]}, '&nbsp;']}}
 
   end
