@@ -42,8 +42,9 @@ module Webize
           unless File.exist? f                              # persist graph:
             RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
 
-            out << graph if env.has_key? :updates_only      # add to update graph
-            graph.subjects.map{|subject|                    # denote resources as updated
+            out << graph if env.has_key? :updates_only      # updates graph
+            out << RDF::Statement.new(dataset,Contains.R,g) # dataset membership
+            graph.subjects.map{|subject|                    # updated resources
               out << RDF::Statement.new('#updates'.R, Contains.R, subject)}
 
             log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join]
