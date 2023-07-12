@@ -128,7 +128,6 @@ class WebResource < RDF::URI
 
     def toolbar breadcrumbs=nil
       bc = ''                                                       # breadcrumb path
-      env[:searchterm] ||= 'q'                                      # query argument
 
       {class: :toolbox,
        c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;' * 3},                             # 👉 root node
@@ -145,10 +144,8 @@ class WebResource < RDF::URI
                 u = url.R(env)
                 {_: :a, class: :breadcrumb, href: u.href, c: crumb[Title] ? CGI.escapeHTML(crumb[Title].join(' ').strip) : u.display_name,
                  id: 'crumb'+Digest::SHA2.hexdigest(rand.to_s)}}} if breadcrumbs),
-           {_: :form, c: [({_: :input, name: env[:searchterm]} unless env[:qs].has_key? env[:searchterm]),              # searchbox
-                          env[:qs].map{|k,v|
-                            {_: :input, name: k, value: v}.update(k == env[:searchterm] ? {} : {type: :hidden})}        # preserve non-visible query arguments
-                         ]}.update(env[:searchbase] ? {action: env[:base].join(env[:searchbase]).R(env).href} : {}),
+           ({_: :form, c: env[:qs].map{|k,v|                                                                            # searchbox
+              {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}} if env[:qs].has_key? 'q'),       # preserve non-visible parameters
            env[:feeds].map{|feed|                                                                                       # 👉 feed(s)
              feed = feed.R(env)
              {_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'feed' + Digest::SHA2.hexdigest(feed.uri)}.

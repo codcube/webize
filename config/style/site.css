@@ -40,10 +40,10 @@
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title {background-color: #fff; color: #000; border-radius: .5em 0 0 0; max-width: 80ex}
 .title:visited {background-color: #ccc}
-.toolbox form input {background-color: #444; color: #000; border-radius: .5em; border-width: 0; font-size: .8em; margin-right: .1em; width: 24ex}
-.toolbox .path a {color: #aaa}
+.toolbox form input {background-color: #333; color: #eee; border-radius: .5em; border-width: 0; font-size: .8em; margin-right: .1em; width: 24ex}
+.toolbox .path a {color: #aaa; font-weight: normal}
 .toolbox svg {height: 1em; width: 1em}
-.toolbox {background-color: #252525; color: #fff; border-radius: 0 0 .8em .8em}
+.toolbox {border: 1px solid #444; border-radius: 0 0 .8em .8em}
 .toolbox, td, li {vertical-align: top}
 .video {border: solid .3em #444; background-color: #000; margin: .2em;  border-radius: .5em}
 .warning {background-color: #ff0; color: #000; font-size: 1.1em}
