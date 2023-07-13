@@ -34,7 +34,7 @@ class WebResource
                  else
                    (resource[k]||[]).yield_self{|r|r.class == Array ? r : [r]}.map{|v|
                      [(markup v, env), ' ']}
-                  end}}}.update resource.has_key?('uri') ? {id: resource['uri'].R(env).local_id} : {}}}]} # row identifier
+                  end}}}}}]} # row identifier
     end
   end
 end

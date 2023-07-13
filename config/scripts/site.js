@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function(){
     var first = null;
     var last = null;
     document.querySelectorAll('a.title[id], .toolbox a[id], td[property="uri"] a[id]').map(function(e){
+	console.log(this)
 	if(!first)     // first node
 	    first = this;	
 	if(last){      // link to previous node
