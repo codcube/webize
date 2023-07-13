@@ -305,14 +305,13 @@ class WebResource
       when /304/                                            # origin unmodified
         fetchLocal
       when /300|[45]\d\d/                                   # not allowed/available/found
-        puts "⚠️ #{status} #{uri}" unless status == 404
         env[:origin_status] = status
         head = headers e.io.meta
         body = HTTP.decompress(head, e.io.read).encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
         repository ||= RDF::Repository.new
         RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|repository << g} if head['Content-Type']&.index 'html'
         head['Content-Length'] = body.bytesize.to_s
-        if status == 404 && path == '/favicon.ico' # set default icon
+        if path == '/favicon.ico' && status / 100 == 4 # set default icon
           env.delete :origin_status
           writeFile HTML::SiteIcon
           fileResponse
