@@ -4,7 +4,6 @@ class WebResource
 
   def dir_triples graph
     graph << RDF::Statement.new(self, Type.R, Container.R)
-    graph << RDF::Statement.new(self, Type.R, Directory.R)
     graph << RDF::Statement.new(self, Date.R, node.stat.mtime.iso8601)
     node.children.select{|n|n.basename.to_s[0] != '.'}.map{|child| # 👉 contained nodes
       base = child.basename.to_s
@@ -21,7 +20,10 @@ class WebResource
       alpha = base[0].downcase
       alpha = '0' unless ('a'..'z').member? alpha
       a = ('#' + alpha).R
-      alphas[alpha] ||= graph << RDF::Statement.new(self, Contains.R, a)
+      alphas[alpha] ||= (
+        graph << RDF::Statement.new(a, Type.R, Container.R)
+        graph << RDF::Statement.new(a, Type.R, Directory.R)
+        graph << RDF::Statement.new(self, Contains.R, a))
       graph << RDF::Statement.new(a, Contains.R, c)
     }
     graph
