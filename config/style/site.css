@@ -11,9 +11,9 @@
 .blocked {background: repeating-linear-gradient(0deg, #f00, #f00 1em, #000 1em, #000 2em); color: #fff}
 .bold {font-weight: bold}
 .columns {column-width: 80ex; column-gap: 0}
-.container {margin: .2em}
 .container > .contents {border: 1px solid #888; border-radius: 0 .4em .4em .4em; padding: .125em}
 .container > .title {border-color: #888; border-style: solid; background-color: #000; color: #fff; border-width: 1px 1px 0 1px; border-radius: .5em .5em 0 0; padding: 0 .2em 0 .2em}
+.container {margin: .2em}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
@@ -39,10 +39,10 @@
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title {background-color: #fff; color: #000; border-radius: .5em 0 0 0; max-width: 80ex}
-.title:visited {background-color: #ccc}
-.toolbox form input {background-color: #333; color: #eee; border-radius: .5em; border-width: 0; font-size: .8em; margin-right: .1em; width: 24ex}
-.toolbox .path {color: #777}
+.title:visited {background-color: #ccc; color: #000}
 .toolbox .path a {color: #ccc; font-weight: normal}
+.toolbox .path {color: #777}
+.toolbox form input {background-color: #333; color: #eee; border-radius: .5em; border-width: 0; font-size: .8em; margin-right: .1em; width: 24ex}
 .toolbox svg {height: 1em; width: 1em}
 .toolbox {border: 1px solid #555; border-radius: 0 0 .8em .8em}
 .toolbox, td, li {vertical-align: top}
