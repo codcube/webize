@@ -3,7 +3,7 @@ class WebResource
   module HTML
 
     # [resource, ..] -> HTML <table>
-    def self.tabular graph, env
+    def self.tabular graph, env, show_header=true
       graph = graph.values if graph.class == Hash
 
       keys = graph.select{|r|r.respond_to? :keys}.map(&:keys).flatten.uniq
@@ -21,7 +21,7 @@ class WebResource
       graph = [*sortable.sort_by{|r| r[sort_attr][0].to_s}.reverse, *rest] # sort resources
 
       {_: :table, class: :tabular,            # table
-       c: [{_: :thead,
+       c: [({_: :thead,
             c: {_: :tr, c: keys.map{|p|       # table heading
                   p = p.R
                   slug = p.display_name
@@ -29,7 +29,7 @@ class WebResource
                   [{_: :th,                   # ☛ sorted columns
                     c: {_: :a, c: icon,
                         href: HTTP.qs(env[:qs].merge({'sort' => p.uri,
-                                                      'order' => env[:order] == 'asc' ? 'desc' : 'asc'}))}}, "\n"]}}}, "\n",
+                                                      'order' => env[:order] == 'asc' ? 'desc' : 'asc'}))}}, "\n"]}}} if show_header),
            {_: :tbody,
             c: graph.map{|resource|           # resource -> row
               predicate = -> a {MarkupPredicate[a][resource[a],env] if resource.has_key? a}

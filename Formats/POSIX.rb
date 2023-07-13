@@ -15,7 +15,7 @@ class WebResource
        c: [{class: :title, _: :a, href: uri.to_s, c: title, id: 'c' + Digest::SHA2.hexdigest(rand.to_s)}, '<br>',
            {class: :contents, # contained nodes
             c: [if tabular
-                HTML.tabular content, env
+                HTML.tabular content, env, false
                else
                  content.map{|c|markup(c, env)}
                 end,
