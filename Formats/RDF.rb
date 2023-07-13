@@ -46,6 +46,7 @@ module Webize
               out << RDF::Statement.new(dataset, Contains.R, g) # dataset 👉 updates graph
               out << graph                                      # updates graph
             else
+              env[:updates] ||= out << RDF::Statement.new('#updates'.R, Type.R, Container.R) # updates container
               graph.subjects.map{|subject|                      # updates container 👉 updates
                 out << RDF::Statement.new('#updates'.R, Contains.R, subject)}
             end
@@ -75,8 +76,10 @@ module Webize
       # graph stats
       count = out.size
       out << RDF::Statement.new(dataset, Size.R, count) unless count == 0 # dataset triple-count
-     #out << RDF::Statement.new(dataset, Title.R, dataset.path || '/')    # dataset title
-      out << RDF::Statement.new('#datasets'.R, Contains.R, dataset)       # dataset listing
+      env[:datasets] ||= (
+        out << RDF::Statement.new('#datasets'.R, Type.R, Container.R)     # dataset container
+        out << RDF::Statement.new('#datasets'.R, Type.R, Directory.R))
+      out << RDF::Statement.new('#datasets'.R, Contains.R, dataset)       # dataset
       if newest = query(timestamp).objects.sort[-1]                       # dataset timestamp
         out << RDF::Statement.new(dataset, Date.R, newest)
       end
