@@ -286,9 +286,9 @@ module Webize
         @doc.lines.map(&:chomp).map{|line|
           unless line.empty? || line.match?(/^#/) # skip empty and commented lines
             uri, title = line.split ' ', 2        # URI and optional title
-            uri = uri.R                           # uri-list item
-            fn.call RDF::Statement.new list, Contains.R, uri
-            fn.call RDF::Statement.new uri, Title.R, title if title
+            u = uri.R                             # URI-list item
+            fn.call RDF::Statement.new list, Contains.R, u
+            fn.call RDF::Statement.new u, Title.R, title || uri
           end}
       end
     end

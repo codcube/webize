@@ -5,8 +5,7 @@
 #prev, #next, #up, #down {font-size: 2em; border-style: solid; border-color: #777; color: #bbb; padding: .2em .8em .2em .8em; position: fixed}
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
-#updates .post .content {border-color: #ccc}
-#updates > .contents {background: repeating-linear-gradient(300deg, #888, #888 1em, #000 1em, #000 2em); border-radius: 0 .6em .6em .6em}
+#updates {background: repeating-linear-gradient(300deg, #888, #888 1em, #000 1em, #000 2em); border: 1px solid #888; border-radius: 1em}
 .abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked {background: repeating-linear-gradient(0deg, #f00, #f00 1em, #000 1em, #000 2em); color: #fff}
 .bold {font-weight: bold}

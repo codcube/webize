@@ -391,7 +391,7 @@ class WebResource
                                HTML.markup datasets, env
                              end,
                              if updates = graph.delete('#updates')
-                               HTML.markup updates, env unless updates.keys.size < 3
+                               {id: :updates, c: HTML.markup updates, env}
                              end,
                              graph.values.map{|v| HTML.markup v, env },
                              link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
