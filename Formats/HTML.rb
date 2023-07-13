@@ -111,7 +111,7 @@ module Webize
                end,
                '</pre>'].join
             else                                                  # show identifier
-              [' ', '<span class="id"', color ? " style=\"color: black; background-color: #{color}\"" : nil, '>',
+              [' ', '<span class="id">',
                CGI.escapeHTML((if offsite
                                ref.uri.sub /^https?:..(www.)?/, ''
                               elsif ref.fragment
@@ -557,7 +557,7 @@ class WebResource
                   (re[p]||[]).map{|o|markup o,env}},           # body
                 p[Link],                                       # untyped links
                 (HTML.keyval(rest, env) unless rest.empty?),   # key/val render of remaining data
-               ]}.update(color ? {style: "background: repeating-linear-gradient(#{env[:gradientR] ||= rand(360)}deg, #{color}, #{color} #{env[:gradientA] ||= (rand(16) + 1) / 16.0}em, #000 #{env[:gradientA]}em, #000 #{env[:gradientB] ||= (rand(16) + 1) / 16.0}em); border-color: #{color}"} : {}),
+               ]}.update(color ? {style: "background: repeating-linear-gradient(#{env[:gradientR] ||= rand(360)}deg, #{color}, #{color} #{env[:gradientA] ||= rand(16) / 16.0}em, #000 #{env[:gradientA]}em, #000 #{env[:gradientB] ||= env[:gradientA] + rand(16) / 16.0}em); border-color: #{color}"} : {}),
           ]}.update(id ? {id: id} : {})}                      # representation identifier
 
   end
