@@ -52,8 +52,6 @@ module Webize
       end
 
       def source_tuples
-        yield Type.R, (Schema + 'Code').R
-
         # Rouge
         if lexer = Rouge::Lexer.guess_by_filename(@base.basename) rescue nil
           html = Rouge::Formatters::HTMLPygments.new(Rouge::Formatters::HTML.new).format(lexer.lex(@doc))
