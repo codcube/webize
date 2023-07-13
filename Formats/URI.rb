@@ -280,12 +280,14 @@ module Webize
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        fn.call RDF::Statement.new @base, Type.R, Container.R
+        list = @base + '#list'
+        fn.call RDF::Statement.new list, Type.R, Container.R
+        fn.call RDF::Statement.new list, Type.R, Directory.R
         @doc.lines.map(&:chomp).map{|line|
           unless line.empty? || line.match?(/^#/) # skip empty and commented lines
             uri, title = line.split ' ', 2        # URI and optional title
-            uri = uri.R @base.env                 # list-item
-            fn.call RDF::Statement.new @base, Contains.R, uri
+            uri = uri.R                           # uri-list item
+            fn.call RDF::Statement.new list, Contains.R, uri
             fn.call RDF::Statement.new uri, Title.R, title if title
           end}
       end
