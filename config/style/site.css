@@ -5,8 +5,8 @@
 #prev, #next, #up, #down {font-size: 2em; border-style: solid; border-color: #777; color: #bbb; padding: .2em .8em .2em .8em; position: fixed}
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
-#updates {background: repeating-linear-gradient(300deg, #888, #888 1em, #000 1em, #000 2em); border: 1px solid #888; border-radius: 1em}
-#updates > .container > .contents {column-width: 80ex}
+#updates {background: repeating-linear-gradient(300deg, #888, #888 1em, #000 1em, #000 2em); border: 1px solid #888; border-radius: 1em; display: block}
+#updates > .container > .contents {column-width: 80ex; column-gap: 0}
 .abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked {background: repeating-linear-gradient(0deg, #f00, #f00 1em, #000 1em, #000 2em); color: #fff}
 .bold {font-weight: bold}
@@ -30,7 +30,7 @@
 .post .content {border-width: .12em; border-style: solid; border-color: #666}
 .post .content, .post .content div, p, pre {border-radius: .6em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
-.post {margin: 1px; max-width: 90ex}
+.post {margin: 1px; max-width: 98ex}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
 .quote > .quote > .quote {background-color: #777}
@@ -39,7 +39,7 @@
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title {background-color: #fff; color: #000; border-radius: .5em 0 0 0; max-width: 80ex}
 .title:visited {background-color: #ccc; color: #000}
-.toolbox .path a {color: #ccc; font-weight: normal}
+.toolbox .path a {color: #aaa; font-weight: normal; font-size: .88em}
 .toolbox .path {color: #777}
 .toolbox form input {background-color: #282828; color: #eee; border-radius: .5em; border-width: 0; font-size: .88em; width: 24ex}
 .toolbox svg {height: 1em; width: 1em}
