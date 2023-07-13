@@ -5,7 +5,14 @@ class WebResource
     # [resource, ..] -> HTML <table>
     def self.tabular graph, env
       graph = graph.values if graph.class == Hash
-      keys = ['uri', Type, *graph.select{|r|r.respond_to? :keys}.map(&:keys).flatten.uniq.-(['uri',Type])]
+
+      keys = graph.select{|r|r.respond_to? :keys}.map(&:keys).flatten.uniq
+      [Type, 'uri'].map{|k|
+        if keys.member? k # move key to head of list
+          keys.delete k
+          keys.unshift k
+        end}
+
       sort_attrs = [Size, Date, Title, 'uri']
 
       sort_attr = sort_attrs.find{|a| keys.member? a}
