@@ -69,7 +69,7 @@ code {color: #000; background-color: #eee; padding: .1em}
 div, form, table {display: inline-block}
 iframe, .preembed {border: .2em solid #fff}
 iframe.main_player {border: .25em solid red}
-img, video, table {max-width: 100%; border-radius: .4em}
+img, video, table, td {max-width: 100%; border-radius: .4em}
 li:nth-child(even), tr:nth-child(even) > td {background-color: #000; color: #fff}
 li:nth-child(odd), tr:nth-child(odd) > td {background-color: #222; color: #fff}
 p {border-color: #222; border-width: 0; border-style: solid; margin: 1px}
