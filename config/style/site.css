@@ -28,7 +28,7 @@
 .links {border: 1px dotted #777; border-radius: .5em}
 .post .content div.abstract {display: block; border-radius: 0}
 .post .content {border-width: .12em; border-style: solid; border-color: #666}
-.post .content, .post .content div, p, pre {border-radius: .6em}
+.post .content, .post .content div, p, pre {border-radius: .5em}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
 .post {margin: 1px; max-width: 98ex}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
