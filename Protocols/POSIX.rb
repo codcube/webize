@@ -17,7 +17,13 @@ class WebResource
         graph << RDF::Statement.new(c, Title.R, base)
         graph << RDF::Statement.new(c, Type.R, format_icon(c.R.fileMIME))
       end
-      graph << RDF::Statement.new(self, Contains.R, c)}
+      alphas = {}
+      alpha = base[0].downcase
+      alpha = '0' unless ('a'..'z').member? alpha
+      a = ('#' + alpha).R
+      alphas[alpha] ||= graph << RDF::Statement.new(self, Contains.R, a)
+      graph << RDF::Statement.new(a, Contains.R, c)
+    }
     graph
   end
 
