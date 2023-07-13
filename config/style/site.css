@@ -41,9 +41,9 @@
 .title:visited {background-color: #ccc; color: #000}
 .toolbox .path a {color: #ccc; font-weight: normal}
 .toolbox .path {color: #777}
-.toolbox form input {background-color: #333; color: #eee; border-radius: .5em; border-width: 0; font-size: .8em; margin-right: .1em; width: 24ex}
+.toolbox form input {background-color: #282828; color: #eee; border-radius: .5em; border-width: 0; font-size: .88em; width: 24ex}
 .toolbox svg {height: 1em; width: 1em}
-.toolbox {border: 1px solid #555; border-radius: 0 0 .8em .8em}
+.toolbox {border: 1px solid #666; border-radius: 0 0 .8em .8em; padding-right: .125em}
 .toolbox, td, li {vertical-align: top}
 .video {border: solid .3em #444; background-color: #000; margin: .2em;  border-radius: .5em}
 .warning {background-color: #ff0; color: #000; font-size: 1.1em}
