@@ -7,6 +7,7 @@ class WebResource
     graph << RDF::Statement.new(self, Date.R, node.stat.mtime.iso8601)
     children = node.children
     alpha_binning = children.size > 52
+    graph << RDF::Statement.new(self, Type.R, Directory.R) unless alpha_binning
     children.select{|n|n.basename.to_s[0] != '.'}.map{|child| # 👉 contained nodes
       base = child.basename.to_s
       c = join base.gsub(' ','%20').gsub('#','%23')

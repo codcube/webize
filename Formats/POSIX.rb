@@ -10,18 +10,16 @@ class WebResource
       tabular = (dir[Type] || []).find{|type| TabularLayout.member? type} && content.size > 1
       dir.delete Type
       dir.delete Date
-      {class: :container, id: uri.fragment ? uri.fragment : '#container_' + Digest::SHA2.hexdigest(rand.to_s),
-       c: [{class: :name, _: :a, href: uri.to_s,
-            c: uri.fragment || uri.basename}, '<br>',
+      title = dir.has_key?(Title) ? dir.delete(Title)[0] : uri.display_name
+      {class: :container,
+       c: [{class: :title, _: :a, href: uri.to_s, c: title, id: '#c' + Digest::SHA2.hexdigest(rand.to_s)}, '<br>',
            {class: :contents, # contained nodes
             c: [if tabular
                 HTML.tabular content, env
                else
-                 content.map{|c|
-                   c[Title] ||= [c['uri'].R.basename]
-                   markup(c, env)}
+                 content.map{|c|markup(c, env)}
                 end,
-                (['<hr>', keyval(dir, env)] unless dir.keys == %w(uri))]}]}} # remaining triples
+                (['<hr>', keyval(dir, env)] unless dir.keys == %w(uri))]}]}} # key/val render of remaining triples
 
     Markup['http://www.w3.org/ns/posix/stat#File'] = -> file, env {
       file.delete Type
