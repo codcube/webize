@@ -16,7 +16,7 @@ class WebResource
       end
       {class: :container,
        c: [([{class: :title, _: :a, href: uri, c: title,
-              id: 'c' + Digest::SHA2.hexdigest(rand.to_s)}.update(color ? {style: "background-color: #{color}"} : {}), '<br>'] if title),
+              id: 'c' + Digest::SHA2.hexdigest(rand.to_s)}.update(color ? {style: "border-color: #{color}; color: #{color}"} : {}), '<br>'] if title),
            {class: :contents, # contained nodes
             c: [if tabular
                 HTML.tabular content, env, false
