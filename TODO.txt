@@ -17,15 +17,11 @@ serve gemini from cache when gone missing gemini://rfmpie.smol.pub/reviving-macb
 histogram on datedir per slice-resolution
 now that bnode/contained/referred subresource rendering is handled better, move DC:Image triples that are actually avatars to first-class avatar triple
 reload all the conf files on ctrl-shift-R (currently just blocklist
-link to local-archive URL from timeline http://localhost/2021/07/04/12/*#r5a53af0e893adbe0f1d10a3825eb1ceb7c28829a120be8a93d3dff98dc93046c
-IRC linepointers are #hashonly, but resolution per-line might be expensive, investigate naive string-concat solution
 hash fetched entities to prevent redundant parsing/summarization work when origin caching is broken - essentially generate our own ETags
 log byte-range req
 title missing if source is RDF, not HTML
-if feed post-limit is 20 and we have 20 in updates, we're probably missing posts - save and highlight pagination next/prev links for graph
-feedURL hook
+resource/update/origin-triple count in dataset list
 rewrite URLs on output to cut out local redirects (nitter 301s etc)
-move inline container data to top breadcrumbs
 ipfs/ipns protocol handler https://archive.fosdem.org/2021/schedule/event/open_research_filecoin_ipfs/
 blank page https://efdn.notion.site/0314a1800b774258a8e6197487c479bc?v=15fb6b39a490413cbba3b7f78ad67c2b 
 dedupe images, link to shown image from placeholder icons
@@ -34,39 +30,33 @@ leakage of <body> tag into emitted HTML. http://localhost:8000/https://www.cbsne
 populate geographic index from encountered RDF https://www.jphs.org/20th-century/2017/11/13/boston-remembers-kurt-cobain
 do any scripts still break without 'application/javascript; charset=utf-8' if h['Content-Type']=='application/javascript'?
 multiple videos, using first:https://www.youtube.com/opensearch?locale=en_US, https://www.youtube.com/watch?v=k2sIDDco5xg, http://www.youtube.com/watch?v=k2sIDDco5xg&feature=applinks, @youtube
-propagate blocklist changes around to peers (unblock entire proxy chain at once) - still use git?
+propagate blocklist changes around to peers (unblock entire proxy chain at once)
 12h: ⚠️ no RDF reader for application/opensearchdescription+xml
-RDF(a) from search hints to top searchbox params
+RDF(a) search hints creates toolbar searchbox
 link from parent to child resources in generic JSON triplr
-drop nulls somewhere in the triplr pipeline http://localhost:8000/https://lilsilva.persona.co
-per-site upstreams/proxies for custom archival scenarios. also alleviates broken edge caching (wrt rm -rf .chromium or even just dropping out of the 1GB cache)
-offline/online content merge by default? following feeds (API or RSS/Atom) to canonical URL often results in empty page due to SPA stuff, but we have the content already
+offline/online content merge by default? following feeds (API or RSS/Atom) to canonical URL often results in empty page due to SPA stuff, but we have the content already. http://l/gitter.im/solid/specification should link to spec, solidos etc 
 define webresource level #join and call super/RDF::URI #join to eliminate manual environment threading.
 eliminate all the #R methods
-switch to RDF::Vocab instead of our hand-rolled constants?
-merge local dir-content at least. for nose following. http://l/gitter.im/solid/specification should link to spec, solidos etc 
+switch to RDF::Vocab instead of our hand-rolled constants, if comparable in perf
 history -  store and browse versions, eg full blogpost and preview from feed
-remember insecure hosts so we don't keep trying HTTPS - enough hosts to bother?
-small turtle documentatino of declarative config files
-reddit pagination breaking in chained proxy scenario (maybe we need to not eat adaptor-proxy-args when #adapt? return false)
-show request meta in HTML - graph/resource/doc sizes/dates at least (should i ctrl-R? etc)  
+turtle documenting of our declarative config files - maybe w3 CSV schema since it's mostly tabular?
 backlink indexing and more indexing in general - frequently linked posts 'daily heat'
 NNTP server/client
-redir to stuff that's gonna be  blocked: http://l/2021/09/27/21/*blogpost*?view=table&sort=date →  //link.mail.bloombergbusiness.com/favicon.ico  → https://cdn.sailthru.com/assets/images/favicon.ico
-cache redirects (instantly syndicate t.co dereferences, tokens and icons to peers) 🐕➡️  http://l/2021/09/29/11/*blogpost* →  //federalhillprov.com/favicon.ico  → https://federalhillprov.com/wp-content/uploads/2021/08/cropped-fed-hill-favicon-178px-32x32.png
-bat signal not in presumably-RDFa content (Can we twiddle HTML datatypes beforehand?) , URI-identified comments from RDFa graph not cached at canonical locaion http://universalhub.com/2021/steam-plant-catches-fire
-drop specific query keys - de-utmize and other gunk
-handl comments in configlist etc parsers
+stop redir to blocked contetnt: http://l/2021/09/27/21/*blogpost*?view=table&sort=date →  //link.mail.bloombergbusiness.com/favicon.ico  → https://cdn.sailthru.com/assets/images/favicon.ico
+cache redirects. instantly syndicate these (t.co dereferences, tokens and icons) to peers) 🐕➡️  http://l/2021/09/29/11/*blogpost* →  //federalhillprov.com/favicon.ico  → https://federalhillprov.com/wp-content/uploads/2021/08/cropped-fed-hill-favicon-178px-32x32.png
+drop specific query keys - less destructive than total qs strip - de-utmize and other gunk
+handl comments in config parsing
 ask all the peer-caches (pi/vps/phone from laptop) ahead of origin servers for static resources - HEAD All then cancel remaining HEADs on first response and GET winner? or cache availability notices recieved via UDP mesh.  - or announce availability at cache-time of stuff not autoimagically syndicated (larger static media stuff etc)
 auto-certgen for Falcon HTTPS
 http, (web)socket, DNS in one process (toplevel Async reactor?) for RAM efficiency on oldphone/pi3
 systemd + openrc unit files
+gems
+tests
 next/prev links in HTML not lifted to HTTP metadata and/or collide with proxy-added #next/#prev http://techrights.org/2021/11/30/freedom-respecting-internet/ http://www.w3.org/1999/xhtml/vocab#role
 link gemini posts to timeline - use current timestamp if server doesn't provide
 ruby-net-text is failing on URI parse errors all the time - it shouldn't even parse the body - write a Gemini client?
 RDF::URI #query_values hates multiple/leading/trailing &s, submit patch upstream 'https://minnit.chat/DOYOUFAMILY?embed&&nickname='.R.query_values
-for node IDs in HTML content.. yield each as RDF HTML-content
-shift-right/left pagination shortcuts conflict with text-selection adjustment
+shift-right/left pagination shortcuts conflict with text-selection adjustment - preventdefault//stop-buubbling in searchbox via JS , if that's where this issue was
 re-parsing PDFs when offline http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date - remove @path
 PDF images missing http://localhost:8000/https://www.bc.edu/content/dam/bc1/schools/carroll/Centers/corcoran-center/Gallivan%20Boulevard%20Concept%20Final%20-%20Spreads.pdf
-when subscription results have page pointers and the first page is all new updates, fetch rhe next pages to catch up
+if first news page is all new updates, bounded recursive fetch of next pages to catch up
