@@ -53,6 +53,7 @@ module Webize
                   env[:dests][dest] ||= (
                     dest_bin = RDF::Node.new
                     out << RDF::Statement.new(dest_bin, Type.R, Container.R)
+                    out << RDF::Statement.new(dest_bin, Title.R, dest.display_name)
                     out << RDF::Statement.new('#updates'.R, Contains.R, dest_bin)
                     dest_bin)
                   out << RDF::Statement.new(env[:dests][dest], Contains.R, subject)

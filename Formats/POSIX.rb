@@ -5,13 +5,13 @@ class WebResource
                      'http://rdfs.org/sioc/ns#ChatLog']
 
     Markup[Container] = -> dir, env {
-      uri = dir['uri'].R
+      uri = dir['uri'] ||= '#'
       content = dir.delete(Contains) || []
       tabular = (dir[Type] || []).find{|type| TabularLayout.member? type} && content.size > 1
       dir.delete Type
       dir.delete Date
       {class: :container,
-       c: [([{class: :title, _: :a, href: uri.to_s, c: dir.delete(Title)[0],
+       c: [([{class: :title, _: :a, href: uri, c: dir.delete(Title)[0],
               id: 'c' + Digest::SHA2.hexdigest(rand.to_s)}, '<br>'] if dir.has_key? Title),
            {class: :contents, # contained nodes
             c: [if tabular
