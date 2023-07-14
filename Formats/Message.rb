@@ -198,7 +198,7 @@ class WebResource
           uri = r.R env
           name = uri.display_name
           color = Digest::SHA2.hexdigest(name)[0..5]
-          {_: :a, class: :to, href: uri.href, style: "background-color: ##{color}; color: #000", c: name}
+          {_: :a, class: :to, href: uri.href, style: "background-color: ##{color}; color: #000", c: ['&rarr;', name].join}
         else
           markup r, env
         end}}
@@ -253,9 +253,7 @@ class WebResource
         if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
           color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5]
         end
-        if env[:last][To] != re[To]
-          to = p[To]
-        end
+        to = p[To]
       end
       date = p[Date]
       link = {class: :title, c: p[Title]}.              # title
