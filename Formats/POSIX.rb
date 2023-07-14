@@ -5,7 +5,6 @@ class WebResource
                      'http://rdfs.org/sioc/ns#ChatLog']
 
     Markup[Container] = -> dir, env {
-      uri = dir['uri'] ||= '#'
       content = dir.delete(Contains) || []
       tabular = (dir[Type] || []).find{|type| TabularLayout.member? type} && content.size > 1
       dir.delete Type
@@ -15,7 +14,7 @@ class WebResource
         color = '#' + Digest::SHA2.hexdigest(title)[0..5]
       end
       {class: :container,
-       c: [([{class: :title, _: :a, href: uri, c: title,
+       c: [([{class: :title, c: title,
               id: 'c' + Digest::SHA2.hexdigest(rand.to_s)}.update(color ? {style: "border-color: #{color}; color: #{color}"} : {}), '<br>'] if title),
            {class: :contents, # contained nodes
             c: [if tabular
@@ -23,8 +22,8 @@ class WebResource
                else
                  content.map{|c|markup(c, env)}
                 end,
-                (['<hr>', keyval(dir, env)] unless dir.keys == %w(uri))]}. # key/val render of remaining triples
-             update(color ? {style: "border-color: #{color}"} : {})]}}
+                (['<hr>', keyval(dir, env)] unless dir.keys.empty? || dir.keys == %w(uri))]}. # key/val render of remaining triples
+             update(color ? {style: "border-color: #{color}; column-width: 76ex; column-gap: 0"} : {})]}}
 
     Markup['http://www.w3.org/ns/posix/stat#File'] = -> file, env {
       file.delete Type
