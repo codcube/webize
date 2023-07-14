@@ -42,13 +42,24 @@ module Webize
           unless File.exist? f                              # persist graph:
             RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
 
-            if env.has_key? :updates_only                       # updates graph
+            if env.has_key? :updates_only                       # updates graph:
               out << RDF::Statement.new(dataset, Contains.R, g) # 👉 graph
-              out << graph                                      # populate updates graph
-            else                                                # add update pointers to graph
-              env[:updates] ||= out << RDF::Statement.new('#updates'.R, Type.R, Container.R) # updates container
+              out << graph                                      # init updates graph
+            else                                                # original graph:
+              env[:updates] ||= out << RDF::Statement.new('#updates'.R, Type.R, Container.R) # init updates container
               graph.subjects.map{|subject|                      # 👉 updates
-                out << RDF::Statement.new('#updates'.R, Contains.R, subject)}
+                if dest = graph.query(RDF::Query::Pattern.new subject, To.R, :o).first_object
+                  env[:dests] ||= {}
+                  env[:dests][dest] ||= (
+                    dest_bin = RDF::Node.new
+                    out << RDF::Statement.new(dest_bin, Type.R, Container.R)
+                    out << RDF::Statement.new('#updates'.R, Contains.R, dest_bin)
+                    dest_bin)
+                  out << RDF::Statement.new(env[:dests][dest], Contains.R, subject)
+                else
+                  out << RDF::Statement.new('#updates'.R, Contains.R, subject)
+                end
+              }
             end
 
             log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join]
