@@ -9,7 +9,7 @@
 .abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked {background: repeating-linear-gradient(300deg, #f00, #f00 1em, #000 1em, #000 2em); color: #fff}
 .bold {font-weight: bold}
-.container > .contents {border: 1px solid #888; border-radius: 0 .4em .4em .4em; padding: .125em}
+.container > .contents {border: 1px solid #888; border-radius: 0 .4em .4em .4em}
 .container > .title {border-color: #888; border-style: solid; background-color: #000; color: #fff; border-width: 1px 1px 0 1px; border-radius: .5em .5em 0 0; padding: 0 .2em 0 .2em}
 .container {margin: .125em}
 .dimmed {opacity: 0.2}

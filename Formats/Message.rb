@@ -234,5 +234,50 @@ class WebResource
        c: [{_: :span, class: :type, c: icon},
            {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
 
+    Markup[Resource] = -> re, env {
+      env[:last] ||= {}
+      p = -> a {MarkupPredicate[a][re[a], env] if re.has_key? a} # predicate renderer
+      titled = (re.has_key? Title) && env[:last][Title] != re[Title]
+      if uri = re['uri']                                         # unless blank node:
+        uri = uri.R env;  id = uri.local_id                      # full URI and fragment identifier
+        origin_ref = {_: :a, class: :pointer, href: uri, c: :🔗} # origin pointer
+        cache_ref = {_: :a, href: uri.href, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)} # cache pointer
+        color = if HostColor.has_key? uri.host
+                  HostColor[uri.host]
+                elsif uri.deny?
+                  :red
+                end
+      end
+      from = p[Creator] # unless env[:last][Creator] == re[Creator]
+      if re.has_key? To
+        if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
+          color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5]
+        end
+        if env[:last][To] != re[To]
+          to = p[To]
+        end
+      end
+      date = p[Date]
+      link = {class: :title, c: p[Title]}.              # title
+               update(cache_ref || {}) if titled
+      env[:last] = re
+      sz = rand(10) / 3.0
+      rest = {}
+      re.map{|k,v|
+        rest[k] = re[k] unless [Abstract, Content, Creator, Date, From, Image, Link, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
+      {class: :post,                                    # resource
+       c: [link,                                        # title
+           origin_ref,                                  # pointer
+           p[Abstract],                                 # abstract
+           date,                                        # timestamp
+           from,                                        # source
+           p[Image],                                    # image(s)
+           [Content, SIOC+'richContent'].map{|p|
+             (re[p]||[]).map{|o|markup o,env}},         # body
+           p[Link],                                     # untyped links
+           (HTML.keyval(rest, env) unless rest.empty?), # key/val render of remaining data
+           to                                           # destination
+          ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(#{env[:gradientR] ||= rand(360)}deg, #{color}, #{color} #{env[:gradientA] ||= rand(16) / 16.0}em, #000 #{env[:gradientA]}em, #000 #{env[:gradientB] ||= env[:gradientA] + rand(16) / 16.0}em); border-color: #{color}"} : {})}
+
   end
 end
