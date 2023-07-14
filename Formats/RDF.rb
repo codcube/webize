@@ -42,12 +42,12 @@ module Webize
           unless File.exist? f                              # persist graph:
             RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
 
-            if env.has_key? :updates_only
-              out << RDF::Statement.new(dataset, Contains.R, g) # dataset 👉 updates graph
-              out << graph                                      # updates graph
-            else
+            if env.has_key? :updates_only                       # updates graph
+              out << RDF::Statement.new(dataset, Contains.R, g) # 👉 graph
+              out << graph                                      # populate updates graph
+            else                                                # add update pointers to graph
               env[:updates] ||= out << RDF::Statement.new('#updates'.R, Type.R, Container.R) # updates container
-              graph.subjects.map{|subject|                      # updates container 👉 updates
+              graph.subjects.map{|subject|                      # 👉 updates
                 out << RDF::Statement.new('#updates'.R, Contains.R, subject)}
             end
 
@@ -62,7 +62,7 @@ module Webize
                                                         slugify = pattern==type ? :display_name : :slugs  # slug verbosity
                                                         graph.query(pattern).objects.map{|o|              # query for slug-containing triples
                                                           o.respond_to?(:R) ? o.R.send(slugify) : o.to_s.split(/[\W_]/)}}]. # tokenize
-                                                       flatten.compact.map(&:downcase).uniq - WebResource::URIs::BasicSlugs)].          # apply slug skiplist
+                                                       flatten.compact.map(&:downcase).uniq - WebResource::URIs::BasicSlugs)]. # apply slug skiplist
                                                      compact.join('.')[0..125].sub(/\.$/,'')+'.🐢'].compact.join '/' # 🕒 path
             unless File.exist? 🕒
               FileUtils.mkdir_p File.dirname 🕒            # create timeline container(s)
