@@ -8,7 +8,7 @@
 #updates {background: repeating-linear-gradient(300deg, #888, #888 1em, #000 1em, #000 2em); border: 1px solid #888; border-radius: 1em; display: block}
 #updates > .container > .contents {column-width: 80ex; column-gap: 0}
 .abstract, .abstract span {background-color: #bbb; color: #000}
-.blocked {background: repeating-linear-gradient(0deg, #f00, #f00 1em, #000 1em, #000 2em); color: #fff}
+.blocked {background: repeating-linear-gradient(300deg, #f00, #f00 1em, #000 1em, #000 2em); color: #fff}
 .bold {font-weight: bold}
 .container > .contents {border: 1px solid #888; border-radius: 0 .4em .4em .4em; padding: .125em}
 .container > .title {border-color: #888; border-style: solid; background-color: #000; color: #fff; border-width: 1px 1px 0 1px; border-radius: .5em .5em 0 0; padding: 0 .2em 0 .2em}
@@ -40,10 +40,10 @@
 .title {background-color: #fff; color: #000; border-radius: .5em 0 0 0; max-width: 80ex}
 .title:visited {background-color: #ccc; color: #000}
 .toolbox .path a {color: #aaa; font-weight: normal; font-size: .88em}
-.toolbox .path {color: #777}
+.toolbox .path {color: #888}
 .toolbox form input {background-color: #282828; color: #eee; border-radius: .5em; border-width: 0; font-size: .88em; width: 24ex}
 .toolbox svg {height: 1em; width: 1em}
-.toolbox {border: 1px solid #666; border-radius: 0 0 .8em .8em; padding-right: .125em}
+.toolbox {border: 1px solid #777; border-radius: 0 0 .7em .7em; padding-right: .125em}
 .toolbox, td, li {vertical-align: top}
 .video {border: solid .3em #444; background-color: #000; margin: .2em;  border-radius: .5em}
 .warning {background-color: #ff0; color: #000; font-size: 1.1em}
@@ -51,7 +51,7 @@
 a img {float: left}
 a span {color: #bbb; font-weight: normal; font-size: 0.82em}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px; max-width: 40em; overflow: hidden; vertical-align: top}
-a.date {white-space: nowrap; float: right; color: #bbb; background-color: #000; font-size: .8em; font-weight: normal}
+a.date {white-space: nowrap; float: right; color: #ccc; background-color: #000; font-size: .88em; font-weight: normal}
 a.global {background-color: #005}
 a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
