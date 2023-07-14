@@ -537,28 +537,26 @@ class WebResource
         end
       end
       date = p[Date]
-      link = {class: :title, c: p[Title]}.                     # title
+      link = {class: :title, c: p[Title]}.              # title
                update(cache_ref || {}) if titled
       env[:last] = re
       sz = rand(10) / 3.0
       rest = {}
       re.map{|k,v|
         rest[k] = re[k] unless [Abstract, Content, Creator, Date, From, Image, Link, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
-      {class: :post,                                           # resource
-       c: [to,                                                 # destination
-           {class: :content,
-            c: [link,                                          # title
-                origin_ref,                                    # pointer
-                p[Abstract],                                   # abstract
-                date,                                          # timestamp
-                from,                                          # source
-                p[Image],                                      # image(s)
-                [Content, SIOC+'richContent'].map{|p|
-                  (re[p]||[]).map{|o|markup o,env}},           # body
-                p[Link],                                       # untyped links
-                (HTML.keyval(rest, env) unless rest.empty?),   # key/val render of remaining data
-               ]}.update(color ? {style: "background: repeating-linear-gradient(#{env[:gradientR] ||= rand(360)}deg, #{color}, #{color} #{env[:gradientA] ||= rand(16) / 16.0}em, #000 #{env[:gradientA]}em, #000 #{env[:gradientB] ||= env[:gradientA] + rand(16) / 16.0}em); border-color: #{color}"} : {}),
-          ]}.update(id ? {id: id} : {})}                      # representation identifier
+      {class: :post,                                    # resource
+       c: [link,                                        # title
+           origin_ref,                                  # pointer
+           p[Abstract],                                 # abstract
+           date,                                        # timestamp
+           from,                                        # source
+           p[Image],                                    # image(s)
+           [Content, SIOC+'richContent'].map{|p|
+             (re[p]||[]).map{|o|markup o,env}},         # body
+           p[Link],                                     # untyped links
+           (HTML.keyval(rest, env) unless rest.empty?), # key/val render of remaining data
+           to                                           # destination
+          ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(#{env[:gradientR] ||= rand(360)}deg, #{color}, #{color} #{env[:gradientA] ||= rand(16) / 16.0}em, #000 #{env[:gradientA]}em, #000 #{env[:gradientB] ||= env[:gradientA] + rand(16) / 16.0}em); border-color: #{color}"} : {})}
 
   end
   include HTML

@@ -11,7 +11,7 @@
 .bold {font-weight: bold}
 .container > .contents {border: 1px solid #888; border-radius: 0 .4em .4em .4em; padding: .125em}
 .container > .title {border-color: #888; border-style: solid; background-color: #000; color: #fff; border-width: 1px 1px 0 1px; border-radius: .5em .5em 0 0; padding: 0 .2em 0 .2em}
-.container {margin: .2em}
+.container {margin: .125em}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
@@ -25,11 +25,12 @@
 .links .path a {font-weight: normal}
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .links {border: 1px dotted #777; border-radius: .5em}
-.post .content div.abstract {display: block; border-radius: 0}
-.post .content {border-width: .12em; border-style: solid; border-color: #666}
-.post .content, .post .content div, p, pre {border-radius: .5em}
+.post .abstract {display: block; border-radius: 0}
+.post .to {float: right}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
+.post {border-width: .12em; border-style: solid; border-color: #666}
 .post {margin: 1px; max-width: 96ex}
+.post, .post div, p, pre {border-radius: .5em}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
 .quote > .quote > .quote {background-color: #777}
@@ -60,7 +61,7 @@ blockquote, blockquote > p, .greentext, .original, .quote, .q, .QuotedText {back
 blockquote, ol, p, ul {max-width: 80ex}
 blockquote::before, .quote::before {content: '>'; float: left}
 body {padding-top: 0; margin: 0}
-body, dfn, div[dir="auto"], figcaption, p, pre, .content span, h1, h2, h3, h4, h5, h6 {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans}
+body, dfn, div[dir="auto"], figcaption, p, pre, span, h1, h2, h3, h4, h5, h6 {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
