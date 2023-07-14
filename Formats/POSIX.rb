@@ -5,6 +5,8 @@ class WebResource
                      'http://rdfs.org/sioc/ns#ChatLog']
 
     Markup[Container] = -> dir, env {
+      uri = dir['uri']
+      id = uri.R.fragment if uri
       content = dir.delete(Contains) || []
       tabular = (dir[Type] || []).find{|type| TabularLayout.member? type} && content.size > 1
       dir.delete Type
@@ -23,6 +25,7 @@ class WebResource
                  content.map{|c|markup(c, env)}
                 end,
                 (['<hr>', keyval(dir, env)] unless dir.keys.empty? || dir.keys == %w(uri))]}. # key/val render of remaining triples
+             update(id ? {id: id} : {}).
              update(color ? {style: "border-color: #{color}; column-width: 76ex; column-gap: 0"} : {})]}}
 
     Markup['http://www.w3.org/ns/posix/stat#File'] = -> file, env {

@@ -26,7 +26,7 @@
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .links {border: 1px dotted #777; border-radius: .5em}
 .post .abstract {display: block; border-radius: 0}
-.post .title {background-color: #fff; color: #000; border-radius: .5em 0 0 0; max-width: 80ex}
+.post .title {background-color: #fff; color: #000; border-radius: .5em .2em .2em 0; margin: 0; max-width: 80ex}
 .post .to {float: right; margin: 0}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
 .post {border-width: .12em; border-style: solid; border-color: #666}
@@ -43,7 +43,7 @@
 .toolbox .path {color: #666}
 .toolbox form input {background-color: #282828; color: #eee; border-radius: .5em; border-width: 0; font-size: .88em; width: 24ex}
 .toolbox svg {height: 1em; width: 1em}
-.toolbox {border: 1px solid #888; border-radius: 0 0 .7em .7em; padding-right: .125em}
+.toolbox {border-width: 0 1px 1px 1px; border-style: solid; border-color: #888; border-radius: 0 0 .7em .7em; padding-right: .125em}
 .toolbox, td, li {vertical-align: top}
 .video {border: solid .3em #444; background-color: #000; margin: .2em;  border-radius: .5em}
 .warning {background-color: #ff0; color: #000; font-size: 1.1em}
