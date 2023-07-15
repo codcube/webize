@@ -387,11 +387,11 @@ class WebResource
                              toolbar,
                              (['<br>⚠️', {_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
                              link[:up,'&#9650;'],
-                             if datasets = graph.delete('#datasets')
-                               HTML.markup datasets, env
-                             end,
-                             if updates = graph.delete('#updates')
+                             if updates = graph.delete('#updates') # show updates at the top
                                HTML.markup updates, env
+                             end,
+                             if datasets = graph.delete('#datasets') # datasets sidebar
+                               HTML.markup datasets, env
                              end,
                              graph.values.map{|v| HTML.markup v, env },
                              link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
