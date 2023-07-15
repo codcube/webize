@@ -38,10 +38,10 @@ module Webize
           f = [g.document, :🐢].join '.'                  # 🐢 location
           log = []
 
-          # TODO backup old versions instead of require new URI for new state - immutable graphs have so far proven to be enough paired with smart graph-URI minting
-          unless File.exist? f                              # persist graph:
+          if File.exist? f  # TODO store version instead of require new URI for new state. immutable graphs paired with smart graph-URI minting have so far proven to be (mostly) enough. new versions are also already stored at new timeline location.
+            
+          else # store graph:
             RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
-
             if env.has_key? :updates_only                       # updates graph:
               out << RDF::Statement.new(dataset, Contains.R, g) # 👉 graph
               out << graph                                      # init updates graph
