@@ -1,3 +1,4 @@
+remove WebResource class (use Webize::URI)
 see also https://rdf-sak.ibis.makethingsmakesense.com 
 finger URIs gemini://freeshell.de/gemlog/2022-01-11.gmi
 generate preview at resource caching time
@@ -9,7 +10,7 @@ git RDFize
 replace dnsd-mini4 with rubydns/async-dns
 view for event types https://jewishchronicle.timesofisrael.com/ - datetimeline vis
 RDFa output - investigate HAML template-solution in RDF library or just add it to native views. not many to edit
-notification mesh
+notification/update mesh - pick a protocol or create one like NNTPish atop Solid
 #down link on google for all results inlined
 JS: 'n' key jumps to first in view
 gack (gemini) server
@@ -30,7 +31,6 @@ leakage of <body> tag into emitted HTML. http://localhost:8000/https://www.cbsne
 populate geographic index from encountered RDF https://www.jphs.org/20th-century/2017/11/13/boston-remembers-kurt-cobain
 do any scripts still break without 'application/javascript; charset=utf-8' if h['Content-Type']=='application/javascript'?
 multiple videos, using first:https://www.youtube.com/opensearch?locale=en_US, https://www.youtube.com/watch?v=k2sIDDco5xg, http://www.youtube.com/watch?v=k2sIDDco5xg&feature=applinks, @youtube
-propagate blocklist changes around to peers (unblock entire proxy chain at once)
 12h: ⚠️ no RDF reader for application/opensearchdescription+xml
 RDF(a) search hints creates toolbar searchbox
 link from parent to child resources in generic JSON triplr
