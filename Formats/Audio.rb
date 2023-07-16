@@ -7,7 +7,6 @@ module Webize
     end
 
     class Reader < RDF::Reader
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -36,7 +35,6 @@ module Webize
 
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -66,7 +64,6 @@ module Webize
     end
 
     class Reader < RDF::Reader
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -98,7 +95,6 @@ module Webize
     end
 
     class Reader < RDF::Reader
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -126,7 +122,6 @@ module Webize
     end
 
     class Reader < RDF::Reader
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -155,7 +150,6 @@ module Webize
     end
 
     class Reader < RDF::Reader
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -175,7 +169,7 @@ module Webize
       def each_statement &fn
         playlist_triples{|s,p,o|
           fn.call RDF::Statement.new(@subject, p.R,
-                                     (o.class == WebResource || o.class == RDF::URI) ? o : (l = RDF::Literal o
+                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
                                                                                             l.datatype=RDF.XMLLiteral if p == Content
                                                                                             l),
                                      :graph_name => @subject)}
@@ -185,27 +179,26 @@ module Webize
       end
     end
   end
-end
 
-class WebResource
+  module Audio
+    # audio-file triples via taglib
+    def audio_triples graph
+      require 'taglib'
 
-  # audio-file triples via taglib
-  def audio_triples graph
-    require 'taglib'
-
-    graph << RDF::Statement.new(self, Type.R, Audio.R)
-    graph << RDF::Statement.new(self, Title.R, Rack::Utils.unescape_path(basename))
-    TagLib::FileRef.open(fsPath) do |fileref|
-      unless fileref.null?
-        tag = fileref.tag
-        graph << RDF::Statement.new(self, Title.R, tag.title)
-        graph << RDF::Statement.new(self, Creator.R, tag.artist)
-        graph << RDF::Statement.new(self, Date.R, tag.year) unless !tag.year || tag.year == 0
-        graph << RDF::Statement.new(self, Content.R, tag.comment)
-        graph << RDF::Statement.new(self, (Schema+'album').R, tag.album)
-        graph << RDF::Statement.new(self, (Schema+'track').R, tag.track)
-        graph << RDF::Statement.new(self, (Schema+'genre').R, tag.genre)
-        graph << RDF::Statement.new(self, (Schema+'length').R, fileref.audio_properties.length_in_seconds)
+      graph << RDF::Statement.new(self, Type.R, Audio.R)
+      graph << RDF::Statement.new(self, Title.R, Rack::Utils.unescape_path(basename))
+      TagLib::FileRef.open(fsPath) do |fileref|
+        unless fileref.null?
+          tag = fileref.tag
+          graph << RDF::Statement.new(self, Title.R, tag.title)
+          graph << RDF::Statement.new(self, Creator.R, tag.artist)
+          graph << RDF::Statement.new(self, Date.R, tag.year) unless !tag.year || tag.year == 0
+          graph << RDF::Statement.new(self, Content.R, tag.comment)
+          graph << RDF::Statement.new(self, (Schema+'album').R, tag.album)
+          graph << RDF::Statement.new(self, (Schema+'track').R, tag.track)
+          graph << RDF::Statement.new(self, (Schema+'genre').R, tag.genre)
+          graph << RDF::Statement.new(self, (Schema+'length').R, fileref.audio_properties.length_in_seconds)
+        end
       end
     end
   end

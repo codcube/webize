@@ -15,11 +15,11 @@ class String
           type = case link
                  when /[\.=](gif|jpg|jpeg|(jpg|png):(large|small|thumb)|png|webp)([\?&]|$)/i
                    img = '<img src="' + resource.uri + '">'
-                   WebResource::Image
+                   Webize::Image
                  when /(youtu.?be|(mkv|mp4|webm)(\?|$))/i
-                   WebResource::Video
+                   Webize::Video
 #                 else
-#                   WebResource::Link
+#                   Webize::Link
                  end
           yield type, resource if type
         end
@@ -44,7 +44,6 @@ module Webize
     end
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -83,7 +82,6 @@ module Webize
       reader { Reader }
     end
     class Reader < RDF::Reader
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -103,14 +101,14 @@ module Webize
       def each_statement &fn
         nfo_triples{|p,o|
           fn.call RDF::Statement.new(@base, p.R,
-                                     (o.class == WebResource || o.class == RDF::URI) ? o : (l = RDF::Literal o
+                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
                                                                                             l.datatype=RDF.XMLLiteral if p == Content
                                                                                             l),
                                      :graph_name => @base)}
       end
 
       def nfo_triples
-        yield Content, WebResource::HTML.render({_: :pre, c: @doc})
+        yield Content, HTML.render({_: :pre, c: @doc})
       end
     end
   end
@@ -122,7 +120,6 @@ module Webize
       reader { Reader }
     end
     class Reader
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -142,7 +139,7 @@ module Webize
       def each_statement &fn
         text_triples{|s, p, o, graph=nil|
           fn.call RDF::Statement.new(s.R, p.R,
-                                     (o.class == WebResource || o.class == RDF::URI) ? o : (l = RDF::Literal o
+                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
                                                                                             l.datatype=RDF.XMLLiteral if p == Content
                                                                                             l),
                                      graph_name: graph || @base)}
@@ -156,7 +153,7 @@ module Webize
           chat_triples &f
         else
           yield @base, Content,
-          Webize::HTML.format(WebResource::HTML.render({_: :pre,
+          Webize::HTML.format(HTML.render({_: :pre,
                                                         c: @doc.lines.map{|line|
                                                           line.hrefs{|p,o|
                                                             yield @base, p, o}}}), @base)
@@ -164,11 +161,7 @@ module Webize
       end
     end
   end
-
-end
-
-class WebResource
-  module URIs
+  class URI
 
     BasicSlugs = [nil, '', *Webize.configTokens('blocklist/slug')]
 

@@ -17,9 +17,6 @@ module Webize
       'proxy.c2.com' => :C2,
     }
   end
-end
-class WebResource
-
   module HTTP
 
     ## subscriptions

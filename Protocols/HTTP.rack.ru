@@ -1,2 +1,2 @@
 require_relative '../index'
-run WebResource::HTTP
+run Webize::HTTP

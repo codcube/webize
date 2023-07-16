@@ -7,7 +7,6 @@ module Webize
 
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -34,7 +33,6 @@ module Webize
     end
 
     class Reader < RDF::Reader
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -61,7 +59,6 @@ module Webize
     end
 
     class Reader < RDF::Reader
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -81,9 +78,6 @@ module Webize
       end
     end
   end
-end
-
-class WebResource
   module HTML
 
     MarkupPredicate[Video] = -> videos, env {videos.map{|v| Markup[Video][v, env]}}

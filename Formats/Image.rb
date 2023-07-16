@@ -13,7 +13,6 @@ module Webize
 
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -67,7 +66,6 @@ module Webize
 
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -89,7 +87,7 @@ module Webize
         image_tuples{|p, o|
           fn.call RDF::Statement.new(@subject,
                                      p.R,
-                                     (o.class == WebResource || o.class == RDF::URI) ? o : RDF::Literal(o),
+                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : RDF::Literal(o),
                                      :graph_name => @subject)}
       end
 
@@ -120,7 +118,6 @@ module Webize
 
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -138,7 +135,7 @@ module Webize
 
       def each_statement &fn
         image_tuples{|p, o|
-          fn.call RDF::Statement.new(@subject, p, (o.class == WebResource || o.class == RDF::URI) ? o : RDF::Literal(o),
+          fn.call RDF::Statement.new(@subject, p, (o.class == Webize::URI || o.class == RDF::URI) ? o : RDF::Literal(o),
                                      :graph_name => @subject)}
       end
 
@@ -156,7 +153,6 @@ module Webize
 
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -174,7 +170,7 @@ module Webize
 
       def each_statement &fn
         image_tuples{|p, o|
-          fn.call RDF::Statement.new(@subject, p, (o.class == WebResource || o.class == RDF::URI) ? o : RDF::Literal(o),
+          fn.call RDF::Statement.new(@subject, p, (o.class == Webize::URI || o.class == RDF::URI) ? o : RDF::Literal(o),
                                      :graph_name => @subject)}
       end
 
@@ -183,11 +179,6 @@ module Webize
       end
 
     end
-  end
-end
-class WebResource
-  module URIs
-    ImgExt = Webize.configList 'formats/image/ext'
   end
   module HTML
 

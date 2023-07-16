@@ -9,7 +9,6 @@ module Webize
 
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       Heading = /^#+/
@@ -35,7 +34,7 @@ module Webize
       def each_statement &fn
         gemtext_triples{|s,p,o|
           fn.call RDF::Statement.new(s, p.R,
-                                     (o.class == WebResource || o.class == RDF::URI) ? o : (l = RDF::Literal o
+                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
                                                                                             l.datatype=RDF.XMLLiteral if p == Content
                                                                                             l),
                                      :graph_name => @subject)}
@@ -57,19 +56,19 @@ module Webize
             case line
             when Heading
               depth = line.match(Heading).size
-              WebResource::HTML.render(
+              HTML.render(
                 {_: [:h, depth].join,
                  c: CGI.escapeHTML(line.sub(Heading, ''))})
             when Link
               _, uri, title = line.split /\s+/, 3
               uri = (@base.join uri).R
               videos.push uri if %w{www.youtube.com}.member? uri.host
-              [WebResource::HTML.render(
+              [HTML.render(
                  {_: :a, href: uri,
                   c: [uri.imgURI? ? {_: :img, src: uri} : nil,
                       CGI.escapeHTML(title || uri.to_s)]}), " \n"]
             when Bullet
-              WebResource::HTML.render(
+              HTML.render(
                 {_: :ul,
                  c: {_: :li,
                      c: CGI.escapeHTML(line.sub(Bullet, ''))}})

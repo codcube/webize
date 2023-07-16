@@ -7,8 +7,6 @@ module Webize
 
   end
   module HTML
-    include WebResource::URIs
-
     CSSURL = /url\(['"]*([^\)'"]+)['"]*\)/
     CSSgunk = /font-face|url/
 
@@ -76,8 +74,8 @@ module Webize
           blocked = ref.deny?
           offsite = ref.host != base.host
 
-          if color = if WebResource::HTML::HostColor.has_key? ref.host
-                       WebResource::HTML::HostColor[ref.host]
+          if color = if HTML::HostColor.has_key? ref.host
+                       HTML::HostColor[ref.host]
                      elsif ref.scheme == 'mailto'
                        '#48f'
                      end
@@ -182,12 +180,11 @@ module Webize
     # HTML document -> RDF
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
-        @env = @base.respond_to?(:env) ? @base.env : WebResource::HTTP.env
+        @env = @base.respond_to?(:env) ? @base.env : HTTP.env
         @doc = Nokogiri::HTML.parse input.respond_to?(:read) ? input.read : input.to_s
 
         if block_given?
@@ -319,9 +316,6 @@ module Webize
       end
     end
   end
-end
-
-class WebResource
   module HTML
 
     FeedIcon = Webize.configData 'style/icons/feed.svg'
@@ -339,7 +333,7 @@ class WebResource
       icon = join('/favicon.ico').R env                                                            # well-known icon location
 
       if env[:links][:icon]                                                                        # icon reference in metadata
-        env[:links][:icon] = env[:links][:icon].R env unless env[:links][:icon].class==WebResource # normalize icon class
+        env[:links][:icon] = env[:links][:icon].R env unless env[:links][:icon].class==Webize::URI # normalize icon class
         if !env[:links][:icon].dataURI? &&                                                         # icon ref isn't data URI,
            env[:links][:icon].path != icon.path && env[:links][:icon] != self &&                   # isn't at well-known location, and
            !env[:links][:icon].node.directory? && !icon.node.exist? && !icon.node.symlink?         # target location is unlinked?
@@ -483,7 +477,7 @@ class WebResource
         Markup[Date][o, env]
       when TrueClass                    # booleam
         {_: :input, type: :checkbox, checked: true}
-      when WebResource                  # URI
+      when Webize::URI                  # URI
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       else                              # renderer undefined
         {_: :span, c: CGI.escapeHTML(o.to_s)}

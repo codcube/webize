@@ -2,6 +2,9 @@ require 'console'
 require 'pathname'
 
 module Webize
+  include Console
+
+  Console.logger.verbose! false
 
   ConfigPath = [__dir__, '../config'].join '/'
   ConfigRelPath = Pathname(ConfigPath).relative_path_from Dir.pwd

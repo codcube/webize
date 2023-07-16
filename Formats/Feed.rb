@@ -24,7 +24,6 @@ module Webize
 
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       Atom = 'http://www.w3.org/2005/Atom#'
@@ -173,7 +172,7 @@ module Webize
 
             # addressee/recipient/destination group
             to = reddit ? ('https://www.reddit.com/' + subject.parts[0..1].join('/')).R : @base
-            yield subject, WebResource::To, to
+            yield subject, To, to
 
             # media links
             inner.scan(reMedia){|e|
@@ -183,7 +182,7 @@ module Webize
                 o = @base.join(url[2]).R; o.path ||= '/'
                 p = case File.extname o.path
                     when /jpg|png|webp/i
-                      WebResource::Image
+                      Image
                     else
                       Atom + rel
                     end
@@ -242,8 +241,6 @@ module Webize
       end
     end
   end
-end
-class WebResource
   module HTML
 
     def feedDocument graph={}

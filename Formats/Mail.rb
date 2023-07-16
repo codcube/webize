@@ -13,7 +13,6 @@ module Webize
 
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -33,7 +32,7 @@ module Webize
       def each_statement &fn
         mail_triples(@doc){|subject, predicate, o, graph|
           fn.call RDF::Statement.new(subject.R, predicate.R,
-                                     (o.class == WebResource || o.class == RDF::URI) ? o : (l = RDF::Literal o
+                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
                                                                                             l.datatype=RDF.XMLLiteral if predicate == Content
                                                                                             l),
                                      :graph_name => graph)}
@@ -64,8 +63,8 @@ module Webize
             ::Mail::Encodings.defined?(p.body.encoding)    # decodable?
         }.map{|p|
           yield mail, Content,
-                Webize::HTML.format(
-                  WebResource::HTML.render(
+                HTML.format(
+                  HTML.render(
                     p.decoded.lines.to_a.map{|l| # split lines
                       l = l.chomp # strip any remaining [\n\r]
                       if qp = l.match(/^(\s*[>|][>|\s]*)(.*)/) # quoted line
@@ -151,7 +150,7 @@ module Webize
           if p.main_type == 'image'           # image attachments
             yield mail, Image, file, graph    # image link in RDF
             yield mail, Content,              # image link in HTML
-                  WebResource::HTML.render({_: :a, href: file.uri, c: [{_: :img, src: file.uri}, p.filename]}), graph # render HTML
+                  HTML.render({_: :a, href: file.uri, c: [{_: :img, src: file.uri}, p.filename]}), graph # render HTML
           end }
 
         yield mail, SIOC+'user_agent', m['X-Mailer'].to_s, graph if m['X-Mailer']

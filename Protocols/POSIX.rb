@@ -1,50 +1,53 @@
 # coding: utf-8
 %w(fileutils pathname shellwords).map{|d| require d }
-class WebResource
+module Webize
+  module POSIX
 
-  def dir_triples graph
-    graph << RDF::Statement.new(self, Type.R, Container.R)
-    graph << RDF::Statement.new(self, Date.R, node.stat.mtime.iso8601)
-    children = node.children
-    alpha_binning = children.size > 52
-    graph << RDF::Statement.new(self, Type.R, Directory.R) unless alpha_binning
-    children.select{|n|n.basename.to_s[0] != '.'}.map{|child| # 👉 contained nodes
-      base = child.basename.to_s
-      c = join base.gsub(' ','%20').gsub('#','%23')
-      if child.directory?
-        c += '/'
-        graph << RDF::Statement.new(c, Type.R, Container.R)
-        graph << RDF::Statement.new(c, Title.R, base + '/')
-      else
-        graph << RDF::Statement.new(c, Title.R, base)
-        graph << RDF::Statement.new(c, Type.R, format_icon(c.R.fileMIME))
-      end
-      if alpha_binning
-        alphas = {}
-        alpha = base[0].downcase
-        alpha = '0' unless ('a'..'z').member? alpha
-        a = ('#' + alpha).R
-        alphas[alpha] ||= (
-          graph << RDF::Statement.new(a, Type.R, Container.R)
-          graph << RDF::Statement.new(a, Type.R, Directory.R)
-          graph << RDF::Statement.new(self, Contains.R, a))
-        graph << RDF::Statement.new(a, Contains.R, c)
-      else
-        graph << RDF::Statement.new(self, Contains.R, c)
-      end}
-    graph
-  end
+    def dir_triples graph
+      graph << RDF::Statement.new(self, Type.R, Container.R)
+      graph << RDF::Statement.new(self, Date.R, node.stat.mtime.iso8601)
+      children = node.children
+      alpha_binning = children.size > 52
+      graph << RDF::Statement.new(self, Type.R, Directory.R) unless alpha_binning
+      children.select{|n|n.basename.to_s[0] != '.'}.map{|child| # 👉 contained nodes
+        base = child.basename.to_s
+        c = join base.gsub(' ','%20').gsub('#','%23')
+        if child.directory?
+          c += '/'
+          graph << RDF::Statement.new(c, Type.R, Container.R)
+          graph << RDF::Statement.new(c, Title.R, base + '/')
+        else
+          graph << RDF::Statement.new(c, Title.R, base)
+          graph << RDF::Statement.new(c, Type.R, format_icon(c.R.fileMIME))
+        end
+        if alpha_binning
+          alphas = {}
+          alpha = base[0].downcase
+          alpha = '0' unless ('a'..'z').member? alpha
+          a = ('#' + alpha).R
+          alphas[alpha] ||= (
+            graph << RDF::Statement.new(a, Type.R, Container.R)
+            graph << RDF::Statement.new(a, Type.R, Directory.R)
+            graph << RDF::Statement.new(self, Contains.R, a))
+          graph << RDF::Statement.new(a, Contains.R, c)
+        else
+          graph << RDF::Statement.new(self, Contains.R, c)
+        end}
+      graph
+    end
 
-  def file_triples graph
-    graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/posix/stat#File'.R)
-    stat = File.stat fsPath
-    graph << RDF::Statement.new(self, 'http://www.w3.org/ns/posix/stat#size'.R, stat.size)
-    graph << RDF::Statement.new(self, Date.R, stat.mtime.iso8601)
-    graph
-  end
+    def file_triples graph
+      graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/posix/stat#File'.R)
+      stat = File.stat fsPath
+      graph << RDF::Statement.new(self, 'http://www.w3.org/ns/posix/stat#size'.R, stat.size)
+      graph << RDF::Statement.new(self, Date.R, stat.mtime.iso8601)
+      graph
+    end
 
-  def read
-    File.open(fsPath).read
+    def read
+      File.open(fsPath).read
+    end
+
   end
 
   module URIs

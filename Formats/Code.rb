@@ -2,8 +2,6 @@
 require 'rouge'
 module Webize
   module Code
-    include WebResource::URIs
-
     SiteJS = Webize.configData 'scripts/site.js'
 
     class Format < RDF::Format
@@ -28,7 +26,6 @@ module Webize
 
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)

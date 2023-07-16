@@ -1,19 +1,25 @@
 # coding: utf-8
 require 'linkeddata'
-class WebResource < RDF::URI
-  module URIs
+
+module Webize
+
+  # load URI-constant configuration
+  configHash('metadata/constants').map{|symbol, uri| const_set symbol, uri }
+
+  Gunk = configRegex 'blocklist/regex'
+
+  class URI < RDF::URI
+
     GlobChars = /[\*\{\[]/
     RegexChars = /[\^\(\)\|\[\]\$]/
+
     CDNhost = Webize.configRegex 'hosts/CDN'
     CDNdoc = Webize.configRegex 'formats/CDN'
+    ImgExt = Webize.configList 'formats/image/ext'
     AllowHosts = Webize.configList 'hosts/allow'
     BlockedSchemes = Webize.configList 'blocklist/scheme'
-    Gunk = Webize.configRegex 'blocklist/regex'
     KillFile = Webize.configList 'blocklist/sender'
-    Webize.configHash('metadata/constants').map{|symbol, uri|
-      self.const_set symbol, uri
-      Webize.const_set symbol, uri
-    }
+
     DenyDomains = {}
 
     def self.blocklist
@@ -69,6 +75,13 @@ class WebResource < RDF::URI
 
     def imgURI?; imgPath? || (dataURI? && path.index('image') == 0) end
 
+    def insecure
+      return self if scheme == 'http'
+      _ = dup.env env
+      _.scheme = 'http'
+       _.env[:base] = _
+    end
+
     def no_scheme; uri.split('//',2)[1] end
 
     def parts; @parts ||= path ? (path.split('/') - ['']) : [] end
@@ -91,6 +104,10 @@ class WebResource < RDF::URI
       end
     end
 
+    def R env_ = nil
+      env_ ? env(env_) : self
+    end
+
     def secureURL
       if !scheme
         'https:' + uri
@@ -100,18 +117,38 @@ class WebResource < RDF::URI
         uri
       end
     end
+
+    # Hash → querystring
+    def self.qs h
+      return '?' unless h
+      '?' + h.map{|k,v|
+        CGI.escape(k.to_s) + (v ? ('=' + CGI.escape([*v][0].to_s)) : '')
+      }.join("&")
+    end
+
+    # unproxy request/environment URLs
+    def unproxy
+      r = unproxyURI                                                                             # unproxy URI
+      r.scheme ||= 'https'                                                                       # default scheme
+      r.host = r.host.downcase if r.host.match? /[A-Z]/                                          # normalize hostname
+      env[:base] = r.uri.R env                                                                   # unproxy base URI
+      env['HTTP_REFERER'] = env['HTTP_REFERER'].R.unproxyURI.to_s if env.has_key? 'HTTP_REFERER' # unproxy referer URI
+      r                                                                                          # origin URI
+    end
+
+    # proxy URI -> canonical URI
+    def unproxyURI
+      p = parts[0]
+      return self unless p&.index /[\.:]/ # scheme or DNS name required
+      [(p && p[-1] == ':') ? path[1..-1] : ['/', path], query ? ['?', query] : nil].join.R env
+    end
+
+    alias_method :uri, :to_s
   end
 
-  include URIs
-  alias_method :uri, :to_s
-
-  include Console
-  Console.logger.verbose! false
-
   module HTML
-    include URIs
 
-    # relocate reference for current browsing context
+    # relocate reference for request context
     def href
       if in_doc? && fragment         # in-document ref
         '#' + fragment
@@ -155,104 +192,8 @@ class WebResource < RDF::URI
             c: [({_: :span, c: env[:origin_status], class: :bold} if env[:origin_status] && env[:origin_status] != 200),# origin status
                 (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                      # elapsed time
                  [{_: :span, c: '%.1f' % elapsed}, :⏱️] if elapsed > 1)]}]}
-    end
-    
-    # URI -> lambda
-    Markup = {}          # markup resource type
-    MarkupPredicate = {} # markup objects of predicate
-
-    MarkupPredicate['uri'] = -> us, env {
-      (us.class == Array ? us : [us]).map{|uri|
-        uri = uri.R env
-        {_: :a, href: uri.href, c: :🔗, id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}}
-
-    MarkupPredicate[Link] = -> links, env {
-      links.select{|l|l.respond_to? :R}.map(&:R).select{|l| !l.deny?}.group_by{|l|
-        links.size > 8 && l.host && l.host.split('.')[-1] || nil}.map{|tld, links|
-        [{class: :container,
-          c: [({class: :head, _: :span, c: tld} if tld),
-              {class: :body, c: links.group_by{|l|links.size > 25 ? ((l.host||'localhost').split('.')[-2]||' ')[0] : nil}.map{|alpha, links|
-                 ['<table><tr>',
-                  ({_: :td, class: :head, c: alpha} if alpha),
-                  {_: :td, class: :body,
-                   c: {_: :table, class: :links,
-                       c: links.group_by(&:host).map{|host, paths|
-                         h = ('//' + (host || 'localhost')).R env
-                         {_: :tr,
-                          c: [{_: :td, class: :host,
-                               c: host ? {_: :a, href: h.href,
-                                          c: {_: :img, alt: h.display_host, src: h.join('/favicon.ico').R(env).href},
-                                          style: "background-color: #{HostColor[host] || '#000'}; color: #fff"} : []},
-                              {_: :td, class: :path,
-                               c: paths.map{|p|
-                                 [{_: :a, href: p.uri, c: p.display_name}, ' ']}}]}}}}, # links
-                  '</tr></table>']}}]}, '&nbsp;']}}
-
+    end    
   end
-  module HTTP
-
-    def insecure
-      return self if scheme == 'http'
-      _ = dup.env env
-      _.scheme = 'http'
-      _.env[:base] = _
-    end
-
-    # Hash → querystring
-    def HTTP.qs h
-      return '?' unless h
-      '?' + h.map{|k,v|
-        CGI.escape(k.to_s) + (v ? ('=' + CGI.escape([*v][0].to_s)) : '')
-      }.join("&")
-    end
-
-    # unproxy request/environment URLs
-    def unproxy
-      r = unproxyURI                                                                             # unproxy URI
-      r.scheme ||= 'https'                                                                       # default scheme
-      r.host = r.host.downcase if r.host.match? /[A-Z]/                                          # normalize hostname
-      env[:base] = r.uri.R env                                                                   # unproxy base URI
-      env['HTTP_REFERER'] = env['HTTP_REFERER'].R.unproxyURI.to_s if env.has_key? 'HTTP_REFERER' # unproxy referer URI
-      r                                                                                          # origin URI
-    end
-
-    # proxy URI -> canonical URI
-    def unproxyURI
-      p = parts[0]
-      return self unless p&.index /[\.:]/ # scheme or DNS name required
-      [(p && p[-1] == ':') ? path[1..-1] : ['/', path], query ? ['?', query] : nil].join.R env
-    end
-
-  end
-end
-
-# cast to WebResource shorthand method. optional environment argument
-
-class Pathname
-  def R env=nil; env ? WebResource.new(to_s).env(env) : WebResource.new(to_s) end
-end
-
-class RDF::URI
-  def R env=nil; env ? WebResource.new(to_s).env(env) : WebResource.new(to_s) end
-end
-
-class RDF::Node
-  def R env=nil; env ? WebResource.new(to_s).env(env) : WebResource.new(to_s) end
-end
-
-class String
-  def R env=nil; env ? WebResource.new(self).env(env) : WebResource.new(self) end
-end
-
-class Symbol
-  def R env=nil; env ? WebResource.new(to_s).env(env) : WebResource.new(to_s) end
-end
-
-class WebResource
-  def R env_=nil; env_ ? env(env_) : self end
-end
-
-module Webize
   module URIlist
     class Format < RDF::Format
       content_type 'text/uri-list',
@@ -262,7 +203,7 @@ module Webize
     end
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
+      include Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -293,5 +234,26 @@ module Webize
       end
     end
   end
+end
 
+# cast to Webize::URI shorthand method, with optional environment argument
+# TODO remove this if doesn't make things too verbose (maybe single R -> Webize::URI constant alias)
+class Pathname
+  def R env=nil; env ? Webize::URI.new(to_s).env(env) : Webize::URI.new(to_s) end
+end
+
+class RDF::URI
+  def R env=nil; env ? Webize::URI.new(to_s).env(env) : Webize::URI.new(to_s) end
+end
+
+class RDF::Node
+  def R env=nil; env ? Webize::URI.new(to_s).env(env) : Webize::URI.new(to_s) end
+end
+
+class String
+  def R env=nil; env ? Webize::URI.new(self).env(env) : Webize::URI.new(self) end
+end
+
+class Symbol
+  def R env=nil; env ? Webize::URI.new(to_s).env(env) : Webize::URI.new(to_s) end
 end

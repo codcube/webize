@@ -2,6 +2,8 @@
 RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl] # add 🐢 suffix for turtle files
 
 module Webize
+  include HTML # TODO remove
+  include HTTP # TODO remove
 
   MetaMap = {}
   VocabPath = %w(metadata URI)
@@ -60,7 +62,7 @@ module Webize
             else                                                # original graph:
               env[:updates] ||= out << RDF::Statement.new('#updates'.R, Type.R, Container.R) # init updates container
               graph.subjects.map{|subject|                      # 👉 updates
-                if (dest = graph.query(RDF::Query::Pattern.new subject, To.R, :o).first_object) && dest.class == WebResource
+                if (dest = graph.query(RDF::Query::Pattern.new subject, To.R, :o).first_object) && dest.class == Webize::URI
                   env[:dests] ||= {}
                   env[:dests][dest] ||= (
                     dest_bin = RDF::Node.new
@@ -86,7 +88,7 @@ module Webize
                                                         slugify = pattern==type ? :display_name : :slugs  # slug verbosity
                                                         graph.query(pattern).objects.map{|o|              # query for slug-containing triples
                                                           o.respond_to?(:R) ? o.R.send(slugify) : o.to_s.split(/[\W_]/)}}]. # tokenize
-                                                       flatten.compact.map(&:downcase).uniq - WebResource::URIs::BasicSlugs)]. # apply slug skiplist
+                                                       flatten.compact.map(&:downcase).uniq - BasicSlugs)]. # apply slug skiplist
                                                      compact.join('.')[0..125].sub(/\.$/,'')+'.🐢'].compact.join '/' # 🕒 path
             unless File.exist? 🕒
               FileUtils.mkdir_p File.dirname 🕒            # create timeline container(s)
@@ -111,43 +113,41 @@ module Webize
       out # output graph
     end
   end
-end
-class WebResource
+  class URI
+    # [MIME, data] -> Repository (in-memory, unpersisted)
+    def readRDF format = fileMIME, content = read
+      repository = RDF::Repository.new.extend Webize::Graph::Cache
 
-  # [MIME, data] -> Repository (in-memory, unpersisted)
-  def readRDF format = fileMIME, content = read
-    repository = RDF::Repository.new.extend Webize::Graph::Cache
-
-    case format                                                 # content type:TODO needless reads? stop media reads earlier
-    when /octet.stream/                                         #  blob
-    when /^audio/                                               #  audio
-      audio_triples repository
-    when /^image/                                               #  image
-      repository << RDF::Statement.new(self, Type.R, Image.R)
-      repository << RDF::Statement.new(self, Title.R, basename)
-    when /^video/                                               #  video
-      repository << RDF::Statement.new(self, Type.R, Video.R)
-      repository << RDF::Statement.new(self, Title.R, basename)
-    else
-      if reader ||= RDF::Reader.for(content_type: format)       # find reader
-        reader.new(content, base_uri: self){|_|repository << _} # read RDF
-
-        if format == 'text/html' && reader != RDF::RDFa::Reader # read RDFa
-          RDF::RDFa::Reader.new(content, base_uri: self){|g|
-            g.each_statement{|statement|
-              if predicate = Webize::MetaMap[statement.predicate.to_s]
-                next if predicate == :drop
-                statement.predicate = predicate.R
-              end
-              repository << statement
-            }} rescue (logger.debug "⚠️ RDFa::Reader failed on #{uri}")
-        end
+      case format                                                 # content type:TODO needless reads? stop media reads earlier
+      when /octet.stream/                                         #  blob
+      when /^audio/                                               #  audio
+        audio_triples repository
+      when /^image/                                               #  image
+        repository << RDF::Statement.new(self, Type.R, Image.R)
+        repository << RDF::Statement.new(self, Title.R, basename)
+      when /^video/                                               #  video
+        repository << RDF::Statement.new(self, Type.R, Video.R)
+        repository << RDF::Statement.new(self, Title.R, basename)
       else
-        logger.warn ["⚠️ no RDF reader for " , format].join # reader not found
-      end
-    end
+        if reader ||= RDF::Reader.for(content_type: format)       # find reader
+          reader.new(content, base_uri: self){|_|repository << _} # read RDF
 
-    repository
+          if format == 'text/html' && reader != RDF::RDFa::Reader # read RDFa
+            RDF::RDFa::Reader.new(content, base_uri: self){|g|
+              g.each_statement{|statement|
+                if predicate = Webize::MetaMap[statement.predicate.to_s]
+                  next if predicate == :drop
+                  statement.predicate = predicate.R
+                end
+                repository << statement
+              }} rescue (logger.debug "⚠️ RDFa::Reader failed on #{uri}")
+          end
+        else
+          logger.warn ["⚠️ no RDF reader for " , format].join # reader not found
+        end
+      end
+
+      repository
+    end
   end
 end
-

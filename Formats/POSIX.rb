@@ -1,4 +1,4 @@
-class WebResource
+module Webize
   module HTML
 
     TabularLayout = [Directory,

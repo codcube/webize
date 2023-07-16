@@ -1,5 +1,5 @@
 # coding: utf-8
-class WebResource
+module Webize
   module HTML
 
     # [resource, ..] -> HTML <table>

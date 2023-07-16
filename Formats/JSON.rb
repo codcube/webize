@@ -25,7 +25,6 @@ module Webize
 
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -114,36 +113,35 @@ module Webize
         end
       end
     end
-  end
-end
-class WebResource
 
-  # RDF from JSON embedded in HTML
-  def JSONembed doc, pattern, &b
-    doc.css('script').map{|script|
-      script.inner_text.lines.grep(pattern).map{|line|
-        Webize::JSON::Reader.new(line.sub(/^[^{]+/,'').chomp.sub(/};.*/,'}'), base_uri: self).scanContent &b}}
-  end
+    # RDF from JSON embedded in HTML
+    def JSONembed doc, pattern, &b
+      doc.css('script').map{|script|
+        script.inner_text.lines.grep(pattern).map{|line|
+          Webize::JSON::Reader.new(line.sub(/^[^{]+/,'').chomp.sub(/};.*/,'}'), base_uri: self).scanContent &b}}
+    end
 
 
-  # [RDF::Repository] -> tree {subject -> predicate -> object} - input for render functions
-  def treeFromGraph repositories
-    tree = {}                        # output tree
-    inlined = []                     # inlined nodes
-    repositories.map{|repository|
-      repository.each_triple{|subj,pred,obj|
-        s = subj.to_s                # subject URI
-        p = pred.to_s                # predicate URI
-        blank = obj.class==RDF::Node # bnode?
-        if blank || p == Contains    # bnode or child-node?
-          o = obj.to_s               # object URI
-          inlined.push o             # inline object
-          obj = tree[o] ||= blank ? {} : {'uri' => o}
-        end
-        tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
-        tree[s][p] ||= []                                       # predicate
-        tree[s][p].push obj}}                                   # object
+    # [RDF::Repository] -> JSON tree {subject -> predicate -> object}. input data-structure for render methods
+    def self.fromGraph repositories
+      tree = {}                        # output tree
+      inlined = []                     # inlined nodes
+      repositories.map{|repository|
+        repository.each_triple{|subj,pred,obj|
+          s = subj.to_s                # subject URI
+          p = pred.to_s                # predicate URI
+          blank = obj.class==RDF::Node # bnode?
+          if blank || p == Contains    # bnode or child-node?
+            o = obj.to_s               # object URI
+            inlined.push o             # inline object
+            obj = tree[o] ||= blank ? {} : {'uri' => o}
+          end
+          tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
+          tree[s][p] ||= []                                       # predicate
+          tree[s][p].push obj}}                                   # object
       inlined.map{|n| tree.delete n} # sweep inlined nodes from toplevel index
       tree                           # treeized graph
+    end
   end
+
 end

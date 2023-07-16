@@ -1,6 +1,6 @@
 # coding: utf-8
 
-class WebResource
+module Webize
   module Gemini
 
     include URIs

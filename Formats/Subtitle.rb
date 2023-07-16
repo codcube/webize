@@ -8,7 +8,6 @@ module Webize
 
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       ENV['BUNDLE_GEMFILE'] = File.expand_path '../Gemfile', File.dirname(__FILE__)
@@ -33,7 +32,7 @@ module Webize
       def each_statement &fn
         vtt_triples{|s,p,o|
           fn.call RDF::Statement.new(s, p.R,
-                                     (o.class == WebResource || o.class == RDF::URI) ? o : (l = RDF::Literal o
+                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
                                                                                             l.datatype=RDF.XMLLiteral if p == Content
                                                                                             l),
                                      :graph_name => @base)}

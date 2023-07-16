@@ -170,20 +170,48 @@ module Webize
       end
     end
   end
-end
-
-class WebResource
   module HTML
+
+    # URI -> lambda
+    Markup = {}          # markup resource type
+    MarkupPredicate = {} # markup objects of predicate
+
+    MarkupPredicate['uri'] = -> us, env {
+      (us.class == Array ? us : [us]).map{|uri|
+        uri = uri.R env
+        {_: :a, href: uri.href, c: :🔗, id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}}
+
+    MarkupPredicate[Link] = -> links, env {
+      links.select{|l|l.respond_to? :R}.map(&:R).select{|l| !l.deny?}.group_by{|l|
+        links.size > 8 && l.host && l.host.split('.')[-1] || nil}.map{|tld, links|
+        [{class: :container,
+          c: [({class: :head, _: :span, c: tld} if tld),
+              {class: :body, c: links.group_by{|l|links.size > 25 ? ((l.host||'localhost').split('.')[-2]||' ')[0] : nil}.map{|alpha, links|
+                 ['<table><tr>',
+                  ({_: :td, class: :head, c: alpha} if alpha),
+                  {_: :td, class: :body,
+                   c: {_: :table, class: :links,
+                       c: links.group_by(&:host).map{|host, paths|
+                         h = ('//' + (host || 'localhost')).R env
+                         {_: :tr,
+                          c: [{_: :td, class: :host,
+                               c: host ? {_: :a, href: h.href,
+                                          c: {_: :img, alt: h.display_host, src: h.join('/favicon.ico').R(env).href},
+                                          style: "background-color: #{HostColor[host] || '#000'}; color: #fff"} : []},
+                              {_: :td, class: :path,
+                               c: paths.map{|p|
+                                 [{_: :a, href: p.uri, c: p.display_name}, ' ']}}]}}}}, # links
+                  '</tr></table>']}}]}, '&nbsp;']}}
 
     MarkupPredicate[Type] = -> types, env {
       types.map{|t|
-        t = t.to_s unless t.class == WebResource
+        t = t.to_s unless t.class == Webize::URI
         t = t.R env
         {_: :a, href: t.href, c: Icons[t.uri] || t.display_name}.update(Icons[t.uri] ? {class: :icon} : {})}}
 
     MarkupPredicate[Creator] = MarkupPredicate['http://xmlns.com/foaf/0.1/maker'] = -> creators, env {
       creators.map{|creator|
-        if [WebResource, RDF::URI].member? creator.class
+        if [Webize::URI, RDF::URI].member? creator.class
           uri = creator.R env
           name = uri.display_name
           color = Digest::SHA2.hexdigest(name)[0..5]
@@ -194,7 +222,7 @@ class WebResource
 
     MarkupPredicate[To] = -> recipients, env {
       recipients.map{|r|
-        if [WebResource, RDF::URI].member? r.class
+        if [Webize::URI, RDF::URI].member? r.class
           uri = r.R env
           name = uri.display_name
           color = Digest::SHA2.hexdigest(name)[0..5]
@@ -250,7 +278,7 @@ class WebResource
       end
       from = p[Creator] # unless env[:last][Creator] == re[Creator]
       if re.has_key? To
-        if re[To].size == 1 && [WebResource, RDF::URI].member?(re[To][0].class)
+        if re[To].size == 1 && [Webize::URI, RDF::URI].member?(re[To][0].class)
           color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5]
         end
         to = p[To]

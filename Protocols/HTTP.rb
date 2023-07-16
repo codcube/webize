@@ -1,8 +1,7 @@
 %w(async async/barrier async/semaphore brotli cgi digest/sha2 open-uri rack resolv).map{|_| require _}
 
-class WebResource
+class Webize
   module HTTP
-    include URIs
     Args = Webize.configList 'HTTP/arguments'            # permitted query arguments
     Methods = Webize.configList 'HTTP/methods'           # permitted HTTP methods
     Subscriptions = {}                                   # subscription-list storage
@@ -138,9 +137,9 @@ class WebResource
       type, content = if type == :stylesheet || ext == '.css'
                         ['text/css', '']
                       elsif type == :font || %w(.eot .otf .ttf .woff .woff2).member?(ext)
-                        ['font/woff2', WebResource::HTML::SiteFont]
+                        ['font/woff2', HTML::SiteFont]
                       elsif type == :image || %w(.bmp .ico .gif .jpg .png).member?(ext)
-                        ['image/png', WebResource::HTML::SiteIcon]
+                        ['image/png', HTML::SiteIcon]
                       elsif type == :script || ext == '.js'
                         ['application/javascript', "// URI: #{uri.match(Gunk) || host}"]
                       elsif type == :JSON || ext == '.json'
@@ -489,7 +488,7 @@ class WebResource
     def icon
       [200,
        {'Content-Type' => 'image/png',
-        'Expires' => (Time.now + 86400).httpdate}, [WebResource::HTML::SiteIcon]]
+        'Expires' => (Time.now + 86400).httpdate}, [HTML::SiteIcon]]
     end
 
     def inbox # redirect for address to current month's "mailbox" (timeline query) URI

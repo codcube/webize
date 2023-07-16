@@ -1,6 +1,6 @@
 %w(chronic date icalendar).map{|_| require _}
 
-class WebResource
+module Webize
   module HTML
     MarkupPredicate[Date] = -> dates, env {
       dates.map{|date| Markup[Date][date, env]}}
@@ -80,9 +80,6 @@ class WebResource
     end
 
   end
-end
-
-module Webize
 
   def self.date d
     return unless d
@@ -111,7 +108,6 @@ module Webize
 
     class Reader < RDF::Reader
       include Console
-      include WebResource::URIs
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -131,7 +127,7 @@ module Webize
       def each_statement &fn
         calendar_triples{|s,p,o|
           fn.call RDF::Statement.new(@subject, p.R,
-                                     (o.class == WebResource || o.class == RDF::URI) ? o : (l = RDF::Literal o
+                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
                                                                                             l.datatype=RDF.XMLLiteral if p == Content
                                                                                             l),
                                      :graph_name => @subject)}
