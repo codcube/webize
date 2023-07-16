@@ -399,7 +399,6 @@ module Webize
       return icon if p == 'favicon.ico'       # icon
       return unproxy.hostGET if p.index '.'   # remote node at proxy URI w/o scheme
       return dateDir if %w{m d h y}.member? p # current year/month/day/hour's container
-      return inbox if p == 'mailto'           # inbox redirect
       return block parts[1] if p == 'block'   # block site
       fetchLocal                              # local node
     end
@@ -489,13 +488,6 @@ module Webize
       [200,
        {'Content-Type' => 'image/png',
         'Expires' => (Time.now + 86400).httpdate}, [HTML::SiteIcon]]
-    end
-
-    def inbox # redirect for address to current month's "mailbox" (timeline query) URI
-      [302,
-       {'Location' => ['/m/',                                                            # current month (change to day if heavy email user)
-                       (parts[1].split(/[\W_]/) - BasicSlugs).map(&:downcase).join('.'), # address slug
-                       '?view=table&sort=date'].join}, []]
     end
 
     def linkHeader
