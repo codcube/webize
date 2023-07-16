@@ -191,7 +191,7 @@ module Webize
     def fetch nodes=nil, **opts
       return fetchLocal nodes if offline? # return offline cache
       if file?                            # cached node?
-        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return immutable node
+        return fileResponse if fileMIME.match?(MIME::FixedFormat) && !basename.match?(/index/i) # return immutable node
         cache = self                      # cache reference
       elsif directory? && (🐢 = join('index.🐢').R env).exist? # cached directory index?
         cache = 🐢                        # cache reference
@@ -272,7 +272,7 @@ module Webize
             end
           end
           File.open(doc, 'w'){|f| f << body }                           # cache data
-          if env[:notransform] || format.match?(FixedFormat)
+          if env[:notransform] || format.match?(MIME::FixedFormat)
             staticResponse format, body                                 # response in upstream format
           else
             env[:origin_format] = format                                # upstream format
@@ -328,9 +328,9 @@ module Webize
 
     def fetchLocal nodes = nil
       return fileResponse if !nodes && file? && (format = fileMIME) && # file if cached and one of:
-                             (env[:notransform] ||          # (mimeA → mimeB) transform disabled (client preference)
-                              format.match?(FixedFormat) || # (mimeA → mimeB) transform disabled (server preference) or unimplemented
-                              (format == selectFormat(format) && !ReFormat.member?(format))) # (mimeA → mimeA) reformat disabled
+                       (env[:notransform] ||                # (mimeA → mimeB) transform disabled by client
+                        format.match?(MIME::FixedFormat) || # (mimeA → mimeB) transform disabled by server
+        (format == selectFormat(format) && !ReFormat.member?(format))) # (mimeA → mimeA) reformat disabled
       repos = (nodes || fsNodes).map{|x|                    # load specified or default node set
         if x.node.file?                                     # file?
           x.file_triples x.readRDF                          # parse + read file metadata
@@ -386,7 +386,7 @@ module Webize
         format = fileMIME                                 # file format
         h['content-type'] = format
         h['ETag'] = etag
-        h['Expires'] = (Time.now + 3e7).httpdate if format.match? FixedFormat
+        h['Expires'] = (Time.now + 3e7).httpdate if format.match? MIME::FixedFormat
         h['Last-Modified'] ||= mtime.httpdate
         [s, h, b]}
     end
@@ -579,9 +579,9 @@ module Webize
 
       body = case format                   # response body
              when /html/                   # serialize HTML
-               htmlDocument treeFromGraph repositories
+               htmlDocument JSON.fromGraph repositories
              when /atom|rss|xml/           # serialize Atom/RSS
-               feedDocument treeFromGraph repositories
+               feedDocument JSON.fromGraph repositories
              else                          # serialize RDF
                if writer = RDF::Writer.for(content_type: format)
                  out = RDF::Repository.new

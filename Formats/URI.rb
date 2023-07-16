@@ -14,7 +14,7 @@ module Webize
     CDNdoc = Webize.configRegex 'formats/CDN'
     CDNhost = Webize.configRegex 'hosts/CDN'
     GlobChars = /[\*\{\[]/
-    Gunk = configRegex 'blocklist/regex'
+    Gunk = Webize.configRegex 'blocklist/regex'
     ImgExt = Webize.configList 'formats/image/ext'
     KillFile = Webize.configList 'blocklist/sender'
     RegexChars = /[\^\(\)\|\[\]\$]/
