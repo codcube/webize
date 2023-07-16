@@ -6,20 +6,18 @@ module Webize
   # load URI-constant configuration
   configHash('metadata/constants').map{|symbol, uri| const_set symbol, uri }
 
-  Gunk = configRegex 'blocklist/regex'
-
   class URI < RDF::URI
 
-    GlobChars = /[\*\{\[]/
-    RegexChars = /[\^\(\)\|\[\]\$]/
-
-    CDNhost = Webize.configRegex 'hosts/CDN'
-    CDNdoc = Webize.configRegex 'formats/CDN'
-    ImgExt = Webize.configList 'formats/image/ext'
     AllowHosts = Webize.configList 'hosts/allow'
+    BasicSlugs = [nil, '', *Webize.configTokens('blocklist/slug')]
     BlockedSchemes = Webize.configList 'blocklist/scheme'
+    CDNdoc = Webize.configRegex 'formats/CDN'
+    CDNhost = Webize.configRegex 'hosts/CDN'
+    GlobChars = /[\*\{\[]/
+    Gunk = configRegex 'blocklist/regex'
+    ImgExt = Webize.configList 'formats/image/ext'
     KillFile = Webize.configList 'blocklist/sender'
-
+    RegexChars = /[\^\(\)\|\[\]\$]/
     DenyDomains = {}
 
     def self.blocklist
@@ -104,6 +102,14 @@ module Webize
       end
     end
 
+    # Hash → querystring
+    def self.qs h
+      return '?' unless h
+      '?' + h.map{|k,v|
+        CGI.escape(k.to_s) + (v ? ('=' + CGI.escape([*v][0].to_s)) : '')
+      }.join("&")
+    end
+
     def R env_ = nil
       env_ ? env(env_) : self
     end
@@ -118,12 +124,12 @@ module Webize
       end
     end
 
-    # Hash → querystring
-    def self.qs h
-      return '?' unless h
-      '?' + h.map{|k,v|
-        CGI.escape(k.to_s) + (v ? ('=' + CGI.escape([*v][0].to_s)) : '')
-      }.join("&")
+    def slugs
+      re = /[\W_]/
+      [(host&.split re),
+       parts.map{|p| p.split re},
+       (query&.split re),
+       (fragment&.split re)]
     end
 
     # unproxy request/environment URLs

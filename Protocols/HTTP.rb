@@ -504,6 +504,10 @@ module Webize
         "<#{uri}>; rel=#{type}"}.join(', ')
     end
 
+    def self.log data
+      Console.logger.info data
+    end
+
     def normalize_charset c
       c = case c
           when /iso.?8859/i

@@ -114,6 +114,7 @@ module Webize
     include HTML # TODO removable with some rework of method visibility
     include Gemini
     include HTTP
+    include MIME
     include POSIX
 
     # [MIME, data] -> Repository (in-memory, unpersisted)

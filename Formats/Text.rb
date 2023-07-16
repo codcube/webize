@@ -160,24 +160,4 @@ module Webize
       end
     end
   end
-  class URI
-
-    BasicSlugs = [nil, '', *Webize.configTokens('blocklist/slug')]
-
-    # plaintext MIME hint for names without extensions, avoids FILE(1) call
-    TextFiles = %w(changelog copying license readme todo)
-
-    def slugs
-      re = /[\W_]/
-      [(host&.split re),
-       parts.map{|p| p.split re},
-       (query&.split re),
-       (fragment&.split re)]
-    end
-  end
-  module HTTP
-    def self.log data
-      Console.logger.info data
-    end
-  end
 end
