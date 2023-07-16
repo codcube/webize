@@ -3,7 +3,9 @@ require 'linkeddata'
 
 module Webize
 
+  BasicSlugs = [nil, '', *Webize.configTokens('blocklist/slug')]
   GlobChars = /[\*\{\[]/
+  Gunk = Webize.configRegex 'blocklist/regex'
   RegexChars = /[\^\(\)\|\[\]\$]/
 
   # load URI-constant configuration
@@ -12,11 +14,9 @@ module Webize
   class URI < RDF::URI
 
     AllowHosts = Webize.configList 'hosts/allow'
-    BasicSlugs = [nil, '', *Webize.configTokens('blocklist/slug')]
     BlockedSchemes = Webize.configList 'blocklist/scheme'
     CDNdoc = Webize.configRegex 'formats/CDN'
     CDNhost = Webize.configRegex 'hosts/CDN'
-    Gunk = Webize.configRegex 'blocklist/regex'
     ImgExt = Webize.configList 'formats/image/ext'
     KillFile = Webize.configList 'blocklist/sender'
     DenyDomains = {}
