@@ -219,7 +219,7 @@ module Webize
 
     # fetch to request-time repository and update static cache
     def fetchHTTP thru: true                                # thru: return HTTP response to caller?
-      URI.open(uri, headers.merge({redirect: false})) do |response|
+      ::URI.open(uri, headers.merge({redirect: false})) do |response|
         h = headers response.meta                           # response headera
         case env[:origin_status] = response.status[0].to_i  # response status
         when 204                                            # no content

@@ -124,32 +124,29 @@ module Webize
                       flatten.compact
                   end.join('/')
     end
-  end
 
-  # create containing dir(s)
-  def mkdir
-    dir = cursor = dirURI? ? fsPath.sub(/\/$/,'') : File.dirname(fsPath) # strip slash from cursor (blocking filename doesn't have one)
-    until cursor == '.'                # cursor at root?
-      if File.file?(cursor) || File.symlink?(cursor)
-        FileUtils.rm cursor            # unlink file/link blocking location
-        puts '🧹 ' + cursor            # log fs-sweep
+    # create containing dir(s)
+    def mkdir
+      dir = cursor = dirURI? ? fsPath.sub(/\/$/,'') : File.dirname(fsPath) # strip slash from cursor (blocking filename doesn't have one)
+      until cursor == '.'                # cursor at root?
+        if File.file?(cursor) || File.symlink?(cursor)
+          FileUtils.rm cursor            # unlink file/link blocking location
+          puts '🧹 ' + cursor            # log fs-sweep
+        end
+        cursor = File.dirname cursor     # up to parent container
       end
-      cursor = File.dirname cursor     # up to parent container
+      FileUtils.mkdir_p dir              # make container
     end
-    FileUtils.mkdir_p dir              # make container
-  end
 
-  def shellPath
-    Shellwords.escape fsPath
-  end
+    def shellPath
+      Shellwords.escape fsPath
+    end
 
-  def writeFile o
-    FileUtils.mkdir_p node.dirname
-    File.open(fsPath,'w'){|f| f << o }
-    self
-  end
-
-  module POSIX
+    def writeFile o
+      FileUtils.mkdir_p node.dirname
+      File.open(fsPath,'w'){|f| f << o }
+      self
+    end
 
     # HTTP-level navigation
     def dirMeta

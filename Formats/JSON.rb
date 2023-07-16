@@ -84,7 +84,7 @@ module Webize
         if hostTriples = Triplr[@base.host]
           @base.send hostTriples, @json, &f
         else
-          Webize::JSON.scan(@json){|h|
+          JSON.scan(@json){|h|
             if s = h['expanded_url']||h['uri']||h['url']||h['link']||h['canonical_url']||h['src']|| # URL attribute
                    ((id = h['id'] || h['ID'] || h['_id'] || h['id_str']) && ['#', id].join)         # id attribute
               s = @base.join(s).R                                                                   # subject URI. TODO return to caller for triple pointing to inner resource
