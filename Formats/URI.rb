@@ -148,6 +148,16 @@ module Webize
 
   module HTML
 
+    # URI -> lambda
+    Markup = {}          # markup resource type
+    MarkupPredicate = {} # markup objects of predicate
+
+    MarkupPredicate['uri'] = -> us, env {
+      (us.class == Array ? us : [us]).map{|uri|
+        uri = uri.R env
+        {_: :a, href: uri.href, c: :🔗, id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}}
+
+
     # relocate reference for request context
     def href
       if in_doc? && fragment         # in-document ref
