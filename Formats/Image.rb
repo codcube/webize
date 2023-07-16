@@ -12,7 +12,6 @@ module Webize
     end
 
     class Reader < RDF::Reader
-      include Console
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -65,7 +64,6 @@ module Webize
     end
 
     class Reader < RDF::Reader
-      include Console
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -117,7 +115,6 @@ module Webize
     end
 
     class Reader < RDF::Reader
-      include Console
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -152,7 +149,6 @@ module Webize
     end
 
     class Reader < RDF::Reader
-      include Console
       format Format
 
       def initialize(input = $stdin, options = {}, &block)

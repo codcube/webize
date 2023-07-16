@@ -8,7 +8,6 @@ module Webize
     end
 
     class Reader < RDF::Reader
-      include Console
       format Format
 
       Heading = /^#+/

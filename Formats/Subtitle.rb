@@ -7,7 +7,6 @@ module Webize
     end
 
     class Reader < RDF::Reader
-      include Console
       format Format
 
       ENV['BUNDLE_GEMFILE'] = File.expand_path '../Gemfile', File.dirname(__FILE__)

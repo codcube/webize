@@ -28,7 +28,7 @@ module Webize
                   icon = Icons[p.uri] || slug
                   [{_: :th,                   # ☛ sorted columns
                     c: {_: :a, c: icon,
-                        href: HTTP.qs(env[:qs].merge({'sort' => p.uri,
+                        href: URI.qs(env[:qs].merge({'sort' => p.uri,
                                                       'order' => env[:order] == 'asc' ? 'desc' : 'asc'}))}}, "\n"]}}} if show_header),
            {_: :tbody,
             c: graph.map{|resource|           # resource -> row

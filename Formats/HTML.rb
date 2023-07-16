@@ -179,7 +179,6 @@ module Webize
 
     # HTML document -> RDF
     class Reader < RDF::Reader
-      include Console
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
@@ -506,5 +505,5 @@ module Webize
       end
     end
   end
-  include HTML
+
 end

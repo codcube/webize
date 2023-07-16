@@ -48,10 +48,6 @@ module Webize
       File.open(fsPath).read
     end
 
-  end
-
-  module URIs
-
     # create containing dir(s) and return locator for document
     def document
       mkdir
@@ -207,5 +203,5 @@ module Webize
     end
 
   end
-  include POSIX
+
 end

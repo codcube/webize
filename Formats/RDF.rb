@@ -2,9 +2,6 @@
 RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl] # add 🐢 suffix for turtle files
 
 module Webize
-  include HTML # TODO remove
-  include HTTP # TODO remove
-
   MetaMap = {}
   VocabPath = %w(metadata URI)
 
@@ -114,6 +111,11 @@ module Webize
     end
   end
   class URI
+    include HTML # TODO removable with some rework of method visibility
+    include Gemini
+    include HTTP
+    include POSIX
+
     # [MIME, data] -> Repository (in-memory, unpersisted)
     def readRDF format = fileMIME, content = read
       repository = RDF::Repository.new.extend Webize::Graph::Cache

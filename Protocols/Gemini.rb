@@ -3,8 +3,6 @@
 module Webize
   module Gemini
 
-    include URIs
-
     def fetchGemini
       require 'net/gemini'
       response = Net::Gemini.get_response URI uri
@@ -41,5 +39,4 @@ module Webize
     end
   end
 
-  include Gemini
 end

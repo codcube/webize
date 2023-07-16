@@ -606,6 +606,4 @@ module Webize
 
   end
 
-  include HTTP
-
 end

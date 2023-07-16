@@ -23,7 +23,6 @@ module Webize
     end
 
     class Reader < RDF::Reader
-      include Console
       format Format
 
       Atom = 'http://www.w3.org/2005/Atom#'

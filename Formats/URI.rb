@@ -178,7 +178,7 @@ module Webize
 
       {class: :toolbox,
        c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;' * 3},                             # 👉 root node
-           {_: :a, id: :UI, href: host ? env[:base].secureURL : HTTP.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, # 👉 origin UI
+           {_: :a, id: :UI, href: host ? env[:base].secureURL : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, # 👉 origin UI
            {_: :a, id: :cache, href: '/' + fsPath, c: :📦},                                                             # 👉 archive
            ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed, c: :🛑} if host && !deny_domain?),    # block host
            {_: :span, class: :path, c: env[:base].parts.map{|p|
@@ -212,8 +212,6 @@ module Webize
       reader { Reader }
     end
     class Reader < RDF::Reader
-      include Console
-      include Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
