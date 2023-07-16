@@ -3,6 +3,9 @@ require 'linkeddata'
 
 module Webize
 
+  GlobChars = /[\*\{\[]/
+  RegexChars = /[\^\(\)\|\[\]\$]/
+
   # load URI-constant configuration
   configHash('metadata/constants').map{|symbol, uri| const_set symbol, uri }
 
@@ -13,11 +16,9 @@ module Webize
     BlockedSchemes = Webize.configList 'blocklist/scheme'
     CDNdoc = Webize.configRegex 'formats/CDN'
     CDNhost = Webize.configRegex 'hosts/CDN'
-    GlobChars = /[\*\{\[]/
     Gunk = Webize.configRegex 'blocklist/regex'
     ImgExt = Webize.configList 'formats/image/ext'
     KillFile = Webize.configList 'blocklist/sender'
-    RegexChars = /[\^\(\)\|\[\]\$]/
     DenyDomains = {}
 
     def self.blocklist
