@@ -31,7 +31,7 @@
 .post div.abstract {border-radius: .5em .5em 0 0; display: block}
 .post {border-width: .12em; border-style: solid; border-color: #666}
 .post {margin: 1px; max-width: 96ex}
-.post, .post div, p, pre {border-radius: .5em}
+.post, .post div, pre {border-radius: .5em}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
 .quote > .quote > .quote {background-color: #777}
@@ -60,8 +60,8 @@ audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .original, .quote, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em}
 blockquote, ol, p, ul {max-width: 80ex}
 blockquote::before, .quote::before {content: '>'; float: left}
-body {padding-top: 0; margin: 0}
-body, dfn, div[dir="auto"], figcaption, p, pre, .post span, h1, h2, h3, h4, h5, h6 {background-color: #000; color: #fff; font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans}
+body {font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans; padding: 0; margin: 0}
+body, dfn, div[dir="auto"], figcaption, p, pre, .post span, h1, h2, h3, h4, h5, h6 {background-color: #000; color: #fff}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
@@ -73,7 +73,7 @@ iframe.main_player {border: .25em solid red}
 img, video, table, td {max-width: 100%; border-radius: .4em}
 li:nth-child(even), tr:nth-child(even) > td {background-color: #000; color: #fff}
 li:nth-child(odd), tr:nth-child(odd) > td {background-color: #222; color: #fff}
-p {border-color: #222; border-width: 0; border-style: solid; margin: 1px}
+p {border-radius: .4em; margin: 1px}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, img {margin: 0}
 svg, img[src*="svg"] {max-width:2em; max-height: 2em}
