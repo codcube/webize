@@ -1,8 +1,8 @@
 # coding: utf-8
 module Webize
   module MIME
-    # formats we prefer to not (given conneg flexibility) or can not (unimplemented in format library, or
-    # negotiation-oblivious clients accepting * at q=1.0 but very confused if MIME changes) transform
+    # formats we prefer to not (given conneg flexibility) or can not (unimplemented in format library,
+    # or negotiation-unaware clients accepting * but very confused if MIME changes) transform
     FixedFormat = /archive|audio|css|image|octet|package|script|video|xz|zip/
 
     # formats we transform even if MIME stays the same

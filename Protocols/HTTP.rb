@@ -330,7 +330,7 @@ module Webize
       return fileResponse if !nodes && file? && (format = fileMIME) && # file if cached and one of:
                        (env[:notransform] ||                # (mimeA → mimeB) transform disabled by client
                         format.match?(MIME::FixedFormat) || # (mimeA → mimeB) transform disabled by server
-        (format == selectFormat(format) && !ReFormat.member?(format))) # (mimeA → mimeA) reformat disabled
+      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (mimeA → mimeA) reformat disabled
       repos = (nodes || fsNodes).map{|x|                    # load specified or default node set
         if x.node.file?                                     # file?
           x.file_triples x.readRDF                          # parse + read file metadata
