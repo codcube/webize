@@ -1,5 +1,5 @@
-[INSTALL](INSTALL.sh) script
+[INSTALL](INSTALL.sh)
 
-[USAGE](USAGE.md) tips
+[USAGE](USAGE.md)
 
-[NOTES](LINKS.md) on why this exists
+[LINKS](LINKS.md)

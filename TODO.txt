@@ -48,6 +48,7 @@ stop redir to blocked contetnt: http://l/2021/09/27/21/*blogpost*?view=table&sor
 ask all the peer-caches (pi/vps/phone from laptop) ahead of origin servers for static resources - HEAD All then cancel remaining HEADs on first response and GET winner? or cache availability notices recieved via UDP mesh.  - or announce availability at cache-time of stuff not autoimagically syndicated (larger static media stuff etc)
 auto-certgen for Falcon HTTPS
 adrop specific query keys - less destructive than total qs strip - de-utmize and other gunk
+implement ioquatix streaming template stuff for earlier first byte on multi/merge-GET - basically required for 500-blog subscription list or we get gateway/rack/server 60s timeouts
 
 ## Format
 mboxes, gunzipped https://www.redhat.com/archives/dm-devel/2020-November.txt.gz
@@ -68,6 +69,7 @@ next/prev links in HTML not lifted to HTTP metadata and/or collide with proxy-ad
 link gemini posts to timeline - use current timestamp if server doesn't provide
 loops in container structures throw renderer for a loop. data in the wild might contain this, perhaps https://doriantaylor.com/summer-of-protocols/ does. we need to decide on ldp#contains or sioc:container_of as the default to map to also
 ruby-net-text (gemtext) is failing on URI parse errors all the time - it shouldn't even parse the body - write a Gemini parser? do we/you use Gemini still? also TWTXT etc
+chat view
 RDF::URI #query_values hates multiple/leading/trailing &s, submit patch upstream 'https://minnit.chat/DOYOUFAMILY?embed&&nickname='.R.query_values
 re-parsing PDFs when offline http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date - remove @path
 PDF images missing http://localhost:8000/https://www.bc.edu/content/dam/bc1/schools/carroll/Centers/corcoran-center/Gallivan%20Boulevard%20Concept%20Final%20-%20Spreads.pdf
