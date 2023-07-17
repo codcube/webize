@@ -34,12 +34,9 @@ module Webize
   end
   module HTML
 
-    # alternate names for src and srcset attributes
-
+    # load alternate names for src and srcset attributes
     SRCnotSRC = Webize.configList 'formats/image/src'
-
     SRCSET = Webize.configList 'formats/image/srcset'
-
     SrcSetRegex = /\s*(\S+)\s+([^,]+),*/
 
     # resolve @srcset refs
@@ -50,6 +47,41 @@ module Webize
       srcset = base.join node['srcset'] if srcset.empty? # resolve singleton URL in srcset attribute. eithere there's lots of spec violators or this is allowed. we allow it 
       node['srcset'] = srcset
     end
+
+    MarkupPredicate[Schema+'srcSet'] = -> sets, env {
+      sets.map{|set|
+        set.to_s.scan(Webize::HTML::SrcSetRegex).map{|ref, _|
+          Markup[Image][ref, env]}}}
+
+    MarkupPredicate[Image] = -> images, env {
+      images.map{|i|
+        [Markup[Image][i,env], ' ']}}
+
+    Markup[Image] = -> image, env {
+      if image.class == Hash
+        resource = image.dup
+        image = image['https://schema.org/url'] || image[Schema+'url'] || image[Link] || image['uri']
+        (Console.logger.warn "no image URI!"; image = '#image') unless image
+      end
+
+      if image.class == Array
+        Console.logger.warn ['multiple images: ', image].join if image.size > 1
+        image = image[0]
+        (Console.logger.warn "empty image resource"; image = '#image') unless image
+      end
+
+      src = env[:base].join(image).R(env).href
+      img = {_: :a, href: src,
+             c: {_: :img, src: src}}
+
+      if resource&.has_key? Abstract
+        {c: [img, '<br>',
+             {class: :abstract,
+              c: resource[Abstract].map{|a|
+                [(markup a,env),' ']}}]}
+      else
+        img
+      end}
 
   end
   module JPEG
@@ -175,43 +207,5 @@ module Webize
       end
 
     end
-  end
-  module HTML
-
-    MarkupPredicate[Schema+'srcSet'] = -> sets, env {
-      sets.map{|set|
-        set.to_s.scan(Webize::HTML::SrcSetRegex).map{|ref, _|
-          Markup[Image][ref, env]}}}
-
-    MarkupPredicate[Image] = -> images, env {
-      images.map{|i|
-        [Markup[Image][i,env], ' ']}}
-
-    Markup[Image] = -> image, env {
-      if image.class == Hash
-        resource = image.dup
-        image = image['https://schema.org/url'] || image[Schema+'url'] || image[Link] || image['uri']
-        (Console.logger.warn "no image URI!"; image = '#image') unless image
-      end
-
-      if image.class == Array
-        Console.logger.warn ['multiple images: ', image].join if image.size > 1
-        image = image[0]
-        (Console.logger.warn "empty image resource"; image = '#image') unless image
-      end
-
-      src = env[:base].join(image).R(env).href
-      img = {_: :a, href: src,
-             c: {_: :img, src: src}}
-
-      if resource&.has_key? Abstract
-        {c: [img, '<br>',
-             {class: :abstract,
-              c: resource[Abstract].map{|a|
-                [(markup a,env),' ']}}]}
-      else
-        img
-      end}
-
   end
 end
