@@ -51,7 +51,7 @@ module Webize
       uri.send(env['REQUEST_METHOD']).yield_self{|status,head,body| # call request and inspect response
         inFmt = uri.format_icon env[:origin_format]                 # input format
         outFmt = uri.format_icon head['Content-Type']               # output format
-        color = env[:deny] ? '38;5;196' : (FormatColor[outFmt]||0)  # format -> color
+        color = env[:deny] ? '38;5;196' : (MIME::Color[outFmt]||0)  # format -> color
         referer = env['HTTP_REFERER'].R if env['HTTP_REFERER']      # referer
 
         log [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil, # transport security

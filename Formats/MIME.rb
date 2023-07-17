@@ -1,6 +1,7 @@
 # coding: utf-8
 module Webize
   module MIME
+
     # formats we prefer to not (given conneg flexibility) or can not (unimplemented in format library,
     # or negotiation-unaware clients accepting * but very confused if MIME changes) transform
     FixedFormat = /archive|audio|css|image|octet|package|script|video|xz|zip/
@@ -14,6 +15,8 @@ module Webize
     # plaintext MIME hint for names without extensions, avoids FILE(1) call
     TextFiles = %w(changelog copying license readme todo)
 
+    # MIME -> ASCII color
+    Color = Webize.configHash 'style/color/format'
 
     def fileMIME
       (!host && fileMIMEprefix) ||  # name prefix
@@ -43,12 +46,6 @@ module Webize
         format[0].content_type[0]
       end
     end
-
-  end
-  module HTTP
-
-    # char -> ASCII color
-    FormatColor = Webize.configHash 'style/color/format'
 
     # MIME type -> character
     def format_icon mime
@@ -92,6 +89,9 @@ module Webize
       end
     end
 
+  end
+  module HTTP
+
     def selectFormat default = nil                          # default-format argument
       default ||= 'text/html'                               # default when unspecified
       return default unless env.has_key? 'HTTP_ACCEPT'      # no preference specified
@@ -113,5 +113,6 @@ module Webize
              ['application/atom+xml','text/html'].member?(format)}}    # non-RDF writer available
       default                                               # search failure, use default
     end
+
   end
 end

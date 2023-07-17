@@ -54,16 +54,6 @@ module Webize
       documentPath
     end
 
-    # document location
-    def documentPath
-      doc = fsPath
-      if doc[-1] == '/' # directory/
-        doc + 'index'
-      else              # file
-        doc
-      end
-    end
-
     # find filesystem nodes and map to URI space
     # (URI, env) -> [URI, URI, ..]
     def fsNodes
@@ -76,7 +66,7 @@ module Webize
         elsif q['q'] && !q['q'].empty?            # GREP
           grep
         elsif !host && path == '/'
-          (Pathname.glob Webize::ConfigRelPath.join('bookmarks/{home.u,search.🐢}')).map{|_| _.R env}
+          (Pathname.glob Webize::ConfigRelPath.join('bookmarks/{home.u,search.🐢}')).map{|n| n.to_s.R env }
         elsif !dirURI?                            # LS dir
           [self]                                  # minimal (no trailing-slash)
         else                                      # detailed (trailing-slash)
@@ -176,7 +166,7 @@ module Webize
       Digest::SHA2.hexdigest [uri, mtime, node.size].join
     end
 
-    # [path,path..] -> [URI,URI..]
+    # [path, path..] -> [URI, URI..]
     def fromNodes ps
       base = host ? self : '/'.R
       pathbase = host ? host.size : 0
@@ -200,5 +190,4 @@ module Webize
     end
 
   end
-
 end

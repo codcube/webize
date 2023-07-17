@@ -66,9 +66,33 @@ module Webize
       'name'
     end
 
+    # document location
+    def documentPath
+      doc = fsPath
+      if doc[-1] == '/' # directory/
+        doc + 'index'
+      else              # file
+        doc
+      end
+    end
+
     def domains; host.split('.').reverse end
 
     def extname; File.extname path if path end
+
+    def href # relocate reference to current environment/context
+      if in_doc? && fragment         # in-document ref
+        '#' + fragment
+      elsif env[:proxy_href]         # proxy ref
+        if !host || env['SERVER_NAME'] == host # local node
+          uri
+        else                                   # remote node
+          ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join
+        end
+      else                           # URI <-> URL correspondence
+        uri
+      end
+    end
 
     def imgPath?; path && (ImgExt.member? extname.downcase) end
 
@@ -153,64 +177,6 @@ module Webize
     alias_method :uri, :to_s
   end
 
-  module HTML
-
-    # URI -> lambda
-    Markup = {}          # markup resource type
-    MarkupPredicate = {} # markup objects of predicate
-
-    MarkupPredicate['uri'] = -> us, env {
-      (us.class == Array ? us : [us]).map{|uri|
-        uri = uri.R env
-        {_: :a, href: uri.href, c: :🔗, id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}}
-
-
-    # relocate reference for request context
-    def href
-      if in_doc? && fragment         # in-document ref
-        '#' + fragment
-      elsif env[:proxy_href]         # proxy ref
-        if !host || env['SERVER_NAME'] == host # local node
-          uri
-        else                                   # remote node
-          ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join
-        end
-      else                           # URI <-> URL correspondence
-        uri
-      end
-    end
-
-    def toolbar breadcrumbs=nil
-      bc = ''                                                       # breadcrumb path
-
-      {class: :toolbox,
-       c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;' * 3},                             # 👉 root node
-           {_: :a, id: :UI, href: host ? env[:base].secureURL : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, # 👉 origin UI
-           {_: :a, id: :cache, href: '/' + fsPath, c: :📦},                                                             # 👉 archive
-           ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed, c: :🛑} if host && !deny_domain?),    # block host
-           {_: :span, class: :path, c: env[:base].parts.map{|p|
-              bc += '/' + p                                                                                             # 👉 path breadcrumbs
-              ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
-                     href: env[:base].join(bc).R(env).href,
-                     c: CGI.escapeHTML(Rack::Utils.unescape p)}]}},
-           (breadcrumbs.map{|crumb|                                                                                     # 👉 graph breadcrumbs
-              crumb[Link]&.map{|url|
-                u = url.R(env)
-                {_: :a, class: :breadcrumb, href: u.href, c: crumb[Title] ? CGI.escapeHTML(crumb[Title].join(' ').strip) : u.display_name,
-                 id: 'crumb'+Digest::SHA2.hexdigest(rand.to_s)}}} if breadcrumbs),
-           ({_: :form, c: env[:qs].map{|k,v|                                                                            # searchbox
-              {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}} if env[:qs].has_key? 'q'),       # preserve non-visible parameters
-           env[:feeds].map{|feed|                                                                                       # 👉 feed(s)
-             feed = feed.R(env)
-             {_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'feed' + Digest::SHA2.hexdigest(feed.uri)}.
-               update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {})}, # highlight canonical feed
-           (:🔌 if offline?),                                                                                           # denote offline mode
-           {_: :span, class: :stats,
-            c: [({_: :span, c: env[:origin_status], class: :bold} if env[:origin_status] && env[:origin_status] != 200),# origin status
-                (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                      # elapsed time
-                 [{_: :span, c: '%.1f' % elapsed}, :⏱️] if elapsed > 1)]}]}
-    end    
-  end
   module URIlist
     class Format < RDF::Format
       content_type 'text/uri-list',
@@ -258,24 +224,11 @@ module Webize
   end
 end
 
-# cast to Webize::URI shorthand method, with optional environment argument
-# TODO remove this if doesn't make things too verbose (maybe single R -> Webize::URI constant alias)
-class Pathname
-  def R env=nil; env ? Webize::URI.new(to_s).env(env) : Webize::URI.new(to_s) end
-end
-
+# cast to URI with optional environment arg TODO remove?
 class RDF::URI
-  def R env=nil; env ? Webize::URI.new(to_s).env(env) : Webize::URI.new(to_s) end
-end
-
-class RDF::Node
   def R env=nil; env ? Webize::URI.new(to_s).env(env) : Webize::URI.new(to_s) end
 end
 
 class String
   def R env=nil; env ? Webize::URI.new(self).env(env) : Webize::URI.new(self) end
-end
-
-class Symbol
-  def R env=nil; env ? Webize::URI.new(to_s).env(env) : Webize::URI.new(to_s) end
 end

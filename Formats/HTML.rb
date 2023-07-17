@@ -1,14 +1,20 @@
 # coding: utf-8
 module Webize
   module CSS
-
     CodeCSS = Webize.configData 'style/code.css'
     SiteCSS = Webize.configData 'style/site.css'
-
   end
   module HTML
     CSSURL = /url\(['"]*([^\)'"]+)['"]*\)/
     CSSgunk = /font-face|url/
+    FeedIcon = Webize.configData 'style/icons/feed.svg'
+    HostColor = Webize.configHash 'style/color/host'
+    Icons = Webize.configHash 'style/icons/map'
+    SiteFont = Webize.configData 'style/fonts/hack.woff2'
+    SiteIcon = Webize.configData 'style/icons/favicon.ico'
+    StatusColor = Webize.configHash 'style/color/status'
+    StatusColor.keys.map{|s|
+      StatusColor[s.to_i] = StatusColor[s]}
 
     # (String -> String) or (Nokogiri -> Nokogiri)
     def self.format html, base
@@ -154,6 +160,37 @@ module Webize
     end
 
     QuotePrefix = /^\s*&gt;\s*/
+
+    def toolbar breadcrumbs=nil
+      bc = ''                                                       # breadcrumb path
+
+      {class: :toolbox,
+       c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;' * 3},                             # 👉 root node
+           {_: :a, id: :UI, href: host ? env[:base].secureURL : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, # 👉 origin UI
+           {_: :a, id: :cache, href: '/' + fsPath, c: :📦},                                                             # 👉 archive
+           ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed, c: :🛑} if host && !deny_domain?),    # block host
+           {_: :span, class: :path, c: env[:base].parts.map{|p|
+              bc += '/' + p                                                                                             # 👉 path breadcrumbs
+              ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
+                     href: env[:base].join(bc).R(env).href,
+                     c: CGI.escapeHTML(Rack::Utils.unescape p)}]}},
+           (breadcrumbs.map{|crumb|                                                                                     # 👉 graph breadcrumbs
+              crumb[Link]&.map{|url|
+                u = url.R(env)
+                {_: :a, class: :breadcrumb, href: u.href, c: crumb[Title] ? CGI.escapeHTML(crumb[Title].join(' ').strip) : u.display_name,
+                 id: 'crumb'+Digest::SHA2.hexdigest(rand.to_s)}}} if breadcrumbs),
+           ({_: :form, c: env[:qs].map{|k,v|                                                                            # searchbox
+              {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}} if env[:qs].has_key? 'q'),       # preserve non-visible parameters
+           env[:feeds].map{|feed|                                                                                       # 👉 feed(s)
+             feed = feed.R(env)
+             {_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'feed' + Digest::SHA2.hexdigest(feed.uri)}.
+               update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {})}, # highlight canonical feed
+           (:🔌 if offline?),                                                                                           # denote offline mode
+           {_: :span, class: :stats,
+            c: [({_: :span, c: env[:origin_status], class: :bold} if env[:origin_status] && env[:origin_status] != 200),# origin status
+                (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                      # elapsed time
+                 [{_: :span, c: '%.1f' % elapsed}, :⏱️] if elapsed > 1)]}]}
+    end
 
     def self.wrapQuote line
       if m = (line.match QuotePrefix)
@@ -304,27 +341,16 @@ module Webize
 
         # JSON
         @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
-          Webize::JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
+          JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
         # HTML content
         if body = @doc.css('body')[0]
-          yield @base, Content, HTML.format(body, @base).inner_html # yield <body>
+          yield @base, Content, format(body, @base).inner_html # yield <body>
         else
-          yield @base, Content, HTML.format(@doc, @base).to_html    # yield entire document
+          yield @base, Content, format(@doc, @base).to_html    # yield entire document
         end
       end
     end
-  end
-  module HTML
-
-    FeedIcon = Webize.configData 'style/icons/feed.svg'
-    HostColor = Webize.configHash 'style/color/host'
-    Icons = Webize.configHash 'style/icons/map'
-    SiteFont = Webize.configData 'style/fonts/hack.woff2'
-    SiteIcon = Webize.configData 'style/icons/favicon.ico'
-    StatusColor = Webize.configHash 'style/color/status'
-    StatusColor.keys.map{|s|
-      StatusColor[s.to_i] = StatusColor[s]}
 
     # Graph -> HTML
     def htmlDocument graph={}
@@ -371,7 +397,7 @@ module Webize
                          c: [{_: :meta, charset: 'utf-8'},
                             ({_: :title, c: CGI.escapeHTML(graph[uri][Title].join ' ')} if graph.has_key?(uri) && graph[uri].has_key?(Title)),
                             {_: :style,
-                             c: [Webize::CSS::SiteCSS,
+                             c: [CSS::SiteCSS,
                                  "body {background: repeating-linear-gradient(300deg, #{bgcolor}, #{bgcolor} 8em, #000 8em, #000 16em)}"].join("\n")},
                              env[:links].map{|type, resource|
                                {_: :link, rel: type, href: CGI.escapeHTML(resource.R(env).href)}}]},
@@ -388,7 +414,7 @@ module Webize
                              end,
                              graph.values.map{|v| HTML.markup v, env },
                              link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
-                             {_: :script, c: Webize::Code::SiteJS}]}]}]
+                             {_: :script, c: Code::SiteJS}]}]}]
     end
 
     def htmlGrep graph
@@ -447,7 +473,7 @@ module Webize
         {_: :input, type: :checkbox}
       when Hash                         # Hash
         return if o.empty?
-        types = (o[Type]||[]).map{|t|Webize::MetaMap[t.to_s] || t.to_s} # map to rendered type
+        types = (o[Type]||[]).map{|t|MetaMap[t.to_s] || t.to_s} # map to rendered type
         seen = false
         [types.map{|type|               # typetag(s)
           if f = Markup[type]           # renderer defined for type
@@ -460,7 +486,7 @@ module Webize
       when RDF::Literal
         if [RDF.HTML, RDF.XMLLiteral].member? o.datatype
           if env[:proxy_href]           # rewrite hrefs
-            Webize::HTML.resolve_hrefs o.to_s, env
+            resolve_hrefs o.to_s, env
           else
             o.to_s                      # HTML literal
           end
@@ -504,6 +530,15 @@ module Webize
         CGI.escapeHTML x.to_s
       end
     end
-  end
 
+    # {URI -> render lambda}
+    Markup = {}          # markup resource type
+    MarkupPredicate = {} # markup objects of predicate
+
+    MarkupPredicate['uri'] = -> us, env {
+      (us.class == Array ? us : [us]).map{|uri|
+        uri = uri.R env
+        {_: :a, href: uri.href, c: :🔗, id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}}
+
+  end
 end

@@ -1,4 +1,3 @@
-
 module Webize
   module Gemini
     class Format < RDF::Format
