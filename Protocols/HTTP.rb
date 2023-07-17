@@ -46,7 +46,7 @@ module Webize
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
 
-      URIs.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache' # refresh blocklist (eventually other/all declarative config)
+      URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status,head,body| # call request and inspect response
         inFmt = uri.format_icon env[:origin_format]                 # input format
@@ -90,7 +90,7 @@ module Webize
     def block domain
       File.open([Webize::ConfigPath, :blocklist, :domain].join('/'), 'a'){|list|
         list << domain << "\n"} # add to blocklist
-      URIs.blocklist            # read blocklist
+      URI.blocklist             # read blocklist
       [302, {'Location' => ['//', domain].join.R(env).href}, []]
     end
 
