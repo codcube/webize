@@ -1,11 +1,10 @@
-ci:mentions
 Follow
 SHORTCUT
 Shortcut
 ajax_url
 al:web:url
-api_url
 apiUrl
+api_url
 archives
 article:section_url
 assets
@@ -14,6 +13,7 @@ cXenseParse:url
 canonical
 canonical_path
 ci:canonical
+ci:mentions
 completeUrl
 custom_link
 dataHref
@@ -45,6 +45,7 @@ http://www.w3.org/2000/01/rdf-schema#seeAlso
 http://www.w3.org/2005/Atom#link
 http://www.w3.org/2005/Atom#self
 https://ogp.me/ns#url
+https://vocab.methodandstructure.com/content-inventory#mentions
 link
 linkURL
 lnkd:url
@@ -81,9 +82,9 @@ search
 section-url
 secure_url
 self
+shortLink
 shortcut
 shorter
-shortLink
 shortlink
 shortlinkUrl
 shorturl
