@@ -25,11 +25,10 @@
 .links .path a {font-weight: normal}
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .links {border: 1px dotted #777; border-radius: .5em}
-.post .abstract {display: block}
 .post .title {background-color: #fff; color: #000; border-radius: .5em .2em .2em 0; margin: 0; max-width: 80ex}
 .post .to {float: right; margin: 0}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
-.post div.abstract {border-radius: .5em .5em 0 0}
+.post div.abstract {border-radius: .5em .5em 0 0; display: block}
 .post {border-width: .12em; border-style: solid; border-color: #666}
 .post {margin: 1px; max-width: 96ex}
 .post, .post div, p, pre {border-radius: .5em}
