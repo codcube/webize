@@ -345,9 +345,9 @@ module Webize
 
         # HTML content
         if body = @doc.css('body')[0]
-          yield @base, Content, format(body, @base).inner_html # yield <body>
+          yield @base, Content, HTML.format(body, @base).inner_html # yield <body>
         else
-          yield @base, Content, format(@doc, @base).to_html    # yield entire document
+          yield @base, Content, HTML.format(@doc, @base).to_html    # yield entire document
         end
       end
     end
