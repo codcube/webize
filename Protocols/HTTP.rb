@@ -71,18 +71,18 @@ module Webize
              elsif uri.offline?
                '🔌'                                                 # offline response
              end,
-             (ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched]), # upstream type: origin or middlebox
-             referer ? ["\e[#{color}m", referer.display_host, "\e[0m → "] : nil, # referer
-             outFmt, ' ',                                           # output format
+             (ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched]),          # upstream type: origin or proxy/middlebox
+             referer ? ["\e[#{color}m", referer.display_host, "\e[0m → "] : nil,  # referer
+             outFmt, ' ',                                                         # output format
              "\e[#{color}#{';7' if referer && referer.host != env[:base].host}m", # invert off-site referer
              (env[:base].display_host unless referer && referer.host == env[:base].host), env[:base].path, "\e[0m", # host, path
-             ([' ⟵ ', inFmt, ' '] if inFmt && inFmt != outFmt),     # input format, if transcoded
-             (qs.map{|k,v|" \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?), # query
-             head['Location'] ? [" → \e[#{color}m", head['Location'].R.unproxyURI, "\e[0m"] : nil, # redirected location
-             env[:warning] ? [" \e[38;5;226m⚠️ ", env[:warning], "\e[0m"] : nil, # warning
+             ([' ⟵ ', inFmt, ' '] if inFmt && inFmt != outFmt),                   # input format, if transcoded
+             (qs.map{|k,v|" \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?),    # query
+             head['Location'] ? [" → \e[#{color}m", Resource.new(head['Location']).unproxyURI, "\e[0m"] : nil, # redirect target
+             env[:warning] ? [" \e[38;5;226m⚠️ ", env[:warning], "\e[0m"] : nil,   # warning
             ].flatten.compact.map{|t|t.to_s.encode 'UTF-8'}.join
 
-        [status, head, body]}                                       # response
+        [status, head, body]}                                                     # response
     rescue Exception => e
       Console.logger.failure uri, e
       [500, {'Content-Type' => 'text/html; charset=utf-8'},
