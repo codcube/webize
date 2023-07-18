@@ -28,7 +28,7 @@ module Webize
           graph << RDF::Statement.new(c, Title.R, base + '/')
         else
           graph << RDF::Statement.new(c, Title.R, base)
-          graph << RDF::Statement.new(c, Type.R, format_icon(c.R.fileMIME))
+          graph << RDF::Statement.new(c, Type.R, MIME.format_icon(c.R.fileMIME))
         end
         if alpha_binning
           alphas = {}
