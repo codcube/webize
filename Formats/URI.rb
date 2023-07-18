@@ -227,11 +227,11 @@ module Webize
   end
 end
 
-# cast to URI with optional environment arg TODO remove?
+# cast to Resource INPROGRESS slowly removing #R invocations then this. there were about 200 in 3000 lines of code so a shorthand almost deserves to stay, but too much like a monkeypatch
 class RDF::URI
-  def R env=nil; env ? Webize::URI.new(to_s).env(env) : Webize::URI.new(to_s) end
+  def R env=nil; env ? Webize::Resource.new(self).env(env) : Webize::Resource.new(self) end
 end
 
 class String
-  def R env=nil; env ? Webize::URI.new(self).env(env) : Webize::URI.new(self) end
+  def R env=nil; env ? Webize::Resource.new(self).env(env) : Webize::Resource.new(self) end
 end
