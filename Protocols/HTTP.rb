@@ -15,7 +15,6 @@ module Webize
   module HTTP
     Args = Webize.configList 'HTTP/arguments'            # permitted query arguments
     Methods = Webize.configList 'HTTP/methods'           # permitted HTTP methods
-    Subscriptions = {}                                   # subscription-list storage
     FilterHosts = Webize.configList 'hosts/filter'
     URLHosts = Webize.configList 'hosts/url'
     PeerHosts = Hash[*File.open([ENV['PREFIX'],'/etc/hosts'].join).readlines.map(&:chomp).map{|l|
@@ -508,7 +507,7 @@ module Webize
       when /(gen(erate)?|log)_?204$/ # connectivity check
         [204, {}, []]
       when '/feed' # subscription endpoint
-        fetch adapt? ? Subscriptions[host] : nil
+        fetch adapt? ? Feed::Subscriptions[host] : nil
       when /^\/resizer/
         if (ps = path.split /\/\d+x\d+[^.]*\//).size > 1
           [302, {'Location' => 'https://' + ps[-1]}, []]
