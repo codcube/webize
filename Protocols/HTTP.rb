@@ -16,7 +16,6 @@ module Webize
   module HTTP
     Args = Webize.configList 'HTTP/arguments'            # permitted query arguments
     Methods = Webize.configList 'HTTP/methods'           # permitted HTTP methods
-    FilterHosts = Webize.configList 'hosts/filter'
     ActionIcon = Webize.configHash 'style/icons/action'  # HTTP method -> char
     StatusIcon = Webize.configHash 'style/icons/status'  # status code (string) -> char
     StatusIcon.keys.map{|s|                              # status code (int) -> char
@@ -487,7 +486,10 @@ module Webize
       head
     end
 
+    # declarative host categories
+    FilterHosts = Webize.configList 'hosts/filter'
     URLHosts = Webize.configList 'hosts/url'
+
     def hostGET
       return (q = query_values || {} # redirect URL rehost to origin
               dest = q['url'] || q['u'] || q['q']
