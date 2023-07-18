@@ -1,2 +1,4 @@
 #!/usr/bin/env ruby
 # coding: utf-8
+
+# eventually we'll replace our crude lowlevel dnsd with something based on async-dns library, maybe. PRs accepted!
