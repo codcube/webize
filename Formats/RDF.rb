@@ -111,9 +111,6 @@ module Webize
     end
   end
   class URI
-    include HTML
-    include MIME
-    include POSIX
 
     # [MIME, data] -> Repository (in-memory, unpersisted)
     def readRDF format = fileMIME, content = read

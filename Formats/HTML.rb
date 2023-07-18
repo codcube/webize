@@ -161,35 +161,135 @@ module Webize
 
     QuotePrefix = /^\s*&gt;\s*/
 
-    def toolbar breadcrumbs=nil
-      bc = ''                                                       # breadcrumb path
+    class Document < URI
 
-      {class: :toolbox,
-       c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;' * 3},                             # 👉 root node
-           {_: :a, id: :UI, href: host ? env[:base].secureURL : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, # 👉 origin UI
-           {_: :a, id: :cache, href: '/' + fsPath, c: :📦},                                                             # 👉 archive
-           ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed, c: :🛑} if host && !deny_domain?),    # block host
-           {_: :span, class: :path, c: env[:base].parts.map{|p|
-              bc += '/' + p                                                                                             # 👉 path breadcrumbs
-              ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
-                     href: env[:base].join(bc).R(env).href,
-                     c: CGI.escapeHTML(Rack::Utils.unescape p)}]}},
-           (breadcrumbs.map{|crumb|                                                                                     # 👉 graph breadcrumbs
-              crumb[Link]&.map{|url|
-                u = url.R(env)
-                {_: :a, class: :breadcrumb, href: u.href, c: crumb[Title] ? CGI.escapeHTML(crumb[Title].join(' ').strip) : u.display_name,
-                 id: 'crumb'+Digest::SHA2.hexdigest(rand.to_s)}}} if breadcrumbs),
-           ({_: :form, c: env[:qs].map{|k,v|                                                                            # searchbox
-              {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}} if env[:qs].has_key? 'q'),       # preserve non-visible parameters
-           env[:feeds].map{|feed|                                                                                       # 👉 feed(s)
-             feed = feed.R(env)
-             {_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'feed' + Digest::SHA2.hexdigest(feed.uri)}.
-               update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {})}, # highlight canonical feed
-           (:🔌 if offline?),                                                                                           # denote offline mode
-           {_: :span, class: :stats,
-            c: [({_: :span, c: env[:origin_status], class: :bold} if env[:origin_status] && env[:origin_status] != 200),# origin status
-                (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                      # elapsed time
-                 [{_: :span, c: '%.1f' % elapsed}, :⏱️] if elapsed > 1)]}]}
+      def grep graph
+        qs = query_values || {}
+        q = qs['Q'] || qs['q']
+        return unless graph && q
+
+        wordIndex = {}                                             # init word-index
+        args = (q.shellsplit rescue q.split(/\W/)).map{|arg|arg.gsub RegexChars,''}.select{|arg| arg.size > 1}
+        args.each_with_index{|arg,i|                               # populate word-index
+          wordIndex[arg.downcase] = i }
+        pattern = Regexp.new args.join('|'), Regexp::IGNORECASE    # query pattern
+
+        graph.map{|uri, resource|                                  # visit resource
+          if resource.to_s.match? pattern                          # matching resource?
+            if resource.has_key? Content                           # resource has content?
+              resource[Content].map!{|c|                           # visit content
+                if c.class == RDF::Literal && c.datatype==RDF.HTML # HTML content?
+                  html = Nokogiri::HTML.fragment c.to_s            # parse HTML
+                  html.traverse{|n|                                # visit nodes
+                    if n.text? && n.to_s.match?(pattern)           # matching text?
+                      n.add_next_sibling n.to_s.gsub(pattern){|g|  # highlight match
+                        HTML.render({_: :span, class: "w#{wordIndex[g.downcase]}", c: g})}
+                      n.remove
+                    end}
+                  (c = RDF::Literal html.to_html).datatype = RDF.HTML
+                end
+                c}
+            end
+          else
+            graph.delete uri unless host                           # drop local resources not in results
+          end}
+
+        css = RDF::Literal(HTML.render({_: :style,                 # highlighting CSS
+                                        c: wordIndex.map{|word,i|
+                                          ".w#{i} {background-color: #{'#%06x' % (rand 16777216)}; color: white} /* #{word} */\n"}}))
+        css.datatype = RDF.HTML
+        graph['#searchCSS'] = {Content => [css]}
+      end
+
+      def write graph={}
+        status = env[:origin_status]
+        icon = join('/favicon.ico').R env                                                            # well-known icon location
+
+        if env[:links][:icon]                                                                        # icon reference in metadata
+          env[:links][:icon] = env[:links][:icon].R env unless env[:links][:icon].class==Webize::URI # normalize icon class
+          if !env[:links][:icon].dataURI? &&                                                         # icon ref isn't data URI,
+             env[:links][:icon].path != icon.path && env[:links][:icon] != self &&                   # isn't at well-known location, and
+             !env[:links][:icon].node.directory? && !icon.node.exist? && !icon.node.symlink?         # target location is unlinked?
+            icon.mkdir                                                                               # create container if needed
+            FileUtils.ln_s (env[:links][:icon].node.relative_path_from icon.node.dirname), icon.node # link well-known location
+          end
+        end
+
+        env[:links][:icon] ||= icon.node.exist? ? icon : '/favicon.ico'.R(env)                       # default icon
+
+        bgcolor = if env[:deny]                                                                      # background color
+                    if HostColor.has_key? host
+                      HostColor[host]
+                    elsif deny_domain?
+                      '#f00'
+                    else
+                      '#f80'                                                                         # deny -> red
+                    end
+                  elsif StatusColor.has_key? status
+                    StatusColor[status]                                                              # status-code color
+                  else
+                    '#000'
+                  end
+
+        grep graph                                                                                   # grep results to markup
+
+        link = -> key, content {                                                                     # lambda to render Link header
+          if url = env[:links] && env[:links][key]
+            [{_: :a, href: url.R(env).href, id: key, class: :icon, c: content},
+             "\n"]
+          end}
+
+        HTML.render ["<!DOCTYPE html>\n",
+                     {_: :html,
+                      c: [{_: :head,
+                           c: [{_: :meta, charset: 'utf-8'},
+                               ({_: :title, c: CGI.escapeHTML(graph[uri][Title].join ' ')} if graph.has_key?(uri) && graph[uri].has_key?(Title)),
+                               {_: :style,
+                                c: [CSS::SiteCSS,
+                                    "body {background: repeating-linear-gradient(300deg, #{bgcolor}, #{bgcolor} 8em, #000 8em, #000 16em)}"].join("\n")},
+                               env[:links].map{|type, resource|
+                                 {_: :link, rel: type, href: CGI.escapeHTML(resource.R(env).href)}}]},
+                          {_: :body,
+                           c: [{_: :img, class: :favicon, src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href},
+                               toolbar,
+                               (['<br>⚠️', {_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
+                               link[:up,'&#9650;'],
+                               if updates = graph.delete('#updates') # show updates at the top
+                                 HTML.markup updates, env
+                               end,
+                               if datasets = graph.delete('#datasets') # datasets sidebar
+                                 HTML.markup datasets, env
+                               end,
+                               graph.values.map{|v| HTML.markup v, env },
+                               link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
+                               {_: :script, c: Code::SiteJS}]}]}]
+      end
+
+      def toolbar
+        bc = '' # cumulative path breadcrumbs
+
+        {class: :toolbox,
+         c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;' * 3},                             # 👉 root node
+             {_: :a, id: :UI, href: host ? env[:base].secureURL : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, # 👉 origin UI
+             {_: :a, id: :cache, href: '/' + fsPath, c: :📦},                                                             # 👉 archive
+             ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed, c: :🛑} if host && !deny_domain?),    # block host
+             {_: :span, class: :path, c: env[:base].parts.map{|p|
+                bc += '/' + p                                                                                             # 👉 path breadcrumbs
+                ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
+                       href: env[:base].join(bc).R(env).href,
+                       c: CGI.escapeHTML(Rack::Utils.unescape p)}]}},
+             ({_: :form, c: env[:qs].map{|k,v|                                                                            # searchbox
+                 {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}} if env[:qs].has_key? 'q'),       # preserve non-visible parameters
+             env[:feeds].map{|feed|                                                                                       # 👉 feed(s)
+               feed = feed.R(env)
+               {_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'feed' + Digest::SHA2.hexdigest(feed.uri)}.
+                 update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {})}, # highlight canonical feed
+             (:🔌 if offline?),                                                                                           # denote offline mode
+             {_: :span, class: :stats,
+              c: [({_: :span, c: env[:origin_status], class: :bold} if env[:origin_status] && env[:origin_status] != 200),# origin status
+                  (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                      # elapsed time
+                   [{_: :span, c: '%.1f' % elapsed}, :⏱️] if elapsed > 1)]}]}
+      end
     end
 
     def self.wrapQuote line
@@ -350,109 +450,6 @@ module Webize
           yield @base, Content, HTML.format(@doc, @base).to_html    # yield entire document
         end
       end
-    end
-
-    # Graph -> HTML
-    def htmlDocument graph={}
-      status = env[:origin_status]
-      icon = join('/favicon.ico').R env                                                            # well-known icon location
-
-      if env[:links][:icon]                                                                        # icon reference in metadata
-        env[:links][:icon] = env[:links][:icon].R env unless env[:links][:icon].class==Webize::URI # normalize icon class
-        if !env[:links][:icon].dataURI? &&                                                         # icon ref isn't data URI,
-           env[:links][:icon].path != icon.path && env[:links][:icon] != self &&                   # isn't at well-known location, and
-           !env[:links][:icon].node.directory? && !icon.node.exist? && !icon.node.symlink?         # target location is unlinked?
-          icon.mkdir                                                                               # create container if needed
-          FileUtils.ln_s (env[:links][:icon].node.relative_path_from icon.node.dirname), icon.node # link well-known location
-        end
-      end
-
-      env[:links][:icon] ||= icon.node.exist? ? icon : '/favicon.ico'.R(env)                       # default icon
-
-      bgcolor = if env[:deny]                                                                      # background color
-                  if HostColor.has_key? host
-                    HostColor[host]
-                  elsif deny_domain?
-                    '#f00'
-                  else
-                    '#f80'                                                                         # deny -> red
-                  end
-                elsif StatusColor.has_key? status
-                  StatusColor[status]                                                              # status-code color
-                else
-                  '#000'
-                end
-
-      htmlGrep graph                                                                               # grep results to markup
-
-      link = -> key, content {                                                                     # lambda to render Link header
-        if url = env[:links] && env[:links][key]
-          [{_: :a, href: url.R(env).href, id: key, class: :icon, c: content},
-           "\n"]
-        end}
-
-      HTML.render ["<!DOCTYPE html>\n",
-                   {_: :html,
-                    c: [{_: :head,
-                         c: [{_: :meta, charset: 'utf-8'},
-                            ({_: :title, c: CGI.escapeHTML(graph[uri][Title].join ' ')} if graph.has_key?(uri) && graph[uri].has_key?(Title)),
-                            {_: :style,
-                             c: [CSS::SiteCSS,
-                                 "body {background: repeating-linear-gradient(300deg, #{bgcolor}, #{bgcolor} 8em, #000 8em, #000 16em)}"].join("\n")},
-                             env[:links].map{|type, resource|
-                               {_: :link, rel: type, href: CGI.escapeHTML(resource.R(env).href)}}]},
-                        {_: :body,
-                         c: [{_: :img, class: :favicon, src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href},
-                             toolbar,
-                             (['<br>⚠️', {_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
-                             link[:up,'&#9650;'],
-                             if updates = graph.delete('#updates') # show updates at the top
-                               HTML.markup updates, env
-                             end,
-                             if datasets = graph.delete('#datasets') # datasets sidebar
-                               HTML.markup datasets, env
-                             end,
-                             graph.values.map{|v| HTML.markup v, env },
-                             link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
-                             {_: :script, c: Code::SiteJS}]}]}]
-    end
-
-    def htmlGrep graph
-      qs = query_values || {}
-      q = qs['Q'] || qs['q']
-      return unless graph && q
-
-      wordIndex = {}                                             # init word-index
-      args = (q.shellsplit rescue q.split(/\W/)).map{|arg|arg.gsub RegexChars,''}.select{|arg| arg.size > 1}
-      args.each_with_index{|arg,i|                               # populate word-index
-        wordIndex[arg.downcase] = i }
-      pattern = Regexp.new args.join('|'), Regexp::IGNORECASE    # query pattern
-
-      graph.map{|uri, resource|                                  # visit resource
-        if resource.to_s.match? pattern                          # matching resource?
-          if resource.has_key? Content                           # resource has content?
-            resource[Content].map!{|c|                           # visit content
-              if c.class == RDF::Literal && c.datatype==RDF.HTML # HTML content?
-                html = Nokogiri::HTML.fragment c.to_s            # parse HTML
-                html.traverse{|n|                                # visit nodes
-                  if n.text? && n.to_s.match?(pattern)           # matching text?
-                    n.add_next_sibling n.to_s.gsub(pattern){|g|  # highlight match
-                      HTML.render({_: :span, class: "w#{wordIndex[g.downcase]}", c: g})}
-                    n.remove
-                  end}
-                (c = RDF::Literal html.to_html).datatype = RDF.HTML
-              end
-              c}
-          end
-        else
-          graph.delete uri unless host                           # drop local resources not in results
-        end}
-
-      css = RDF::Literal(HTML.render({_: :style,                 # highlighting CSS
-                                      c: wordIndex.map{|word,i|
-                                        ".w#{i} {background-color: #{'#%06x' % (rand 16777216)}; color: white} /* #{word} */\n"}}))
-      css.datatype = RDF.HTML
-      graph['#searchCSS'] = {Content => [css]}
     end
 
     # RDF resource -> Markup

@@ -85,7 +85,7 @@ module Webize
     rescue Exception => e
       Console.logger.failure uri, e
       [500, {'Content-Type' => 'text/html; charset=utf-8'},
-       uri.head? ? [] : ["<html><body class='error'>#{HTML.render [{_: :style, c: Webize::CSS::SiteCSS}, {_: :script, c: Webize::Code::SiteJS}, uri.toolbar]}500</body></html>"]]
+       uri.head? ? [] : ["<html><body class='error'>#{HTML.render({_: :style, c: Webize::CSS::SiteCSS})}500</body></html>"]]
     end
 
     def self.decompress head, body
@@ -190,7 +190,7 @@ module Webize
                       elsif type == :JSON || ext == '.json'
                         ['application/json','{}']
                       else
-                        ['text/html; charset=utf-8', htmlDocument]
+                        ['text/html; charset=utf-8', HTML::Document.new(uri).env(env).write]
                       end
       [status,
        {'Access-Control-Allow-Credentials' => 'true',
@@ -549,9 +549,9 @@ module Webize
 
       body = case format
              when /html/
-               htmlDocument
+               HTML::Document.new(uri).env(env).write
              when /atom|rss|xml/
-               feedDocument
+               Feed::Document.new(uri).env(env).write
              end
 
       [404, {'Content-Type' => format}, head? ? nil : [body ? body : '']]
@@ -602,9 +602,9 @@ module Webize
 
       body = case format                   # response body
              when /html/                   # serialize HTML
-               htmlDocument JSON.fromGraph repositories
+               HTML::Document.new(uri).env(env) JSON.fromGraph repositories
              when /atom|rss|xml/           # serialize Atom/RSS
-               feedDocument JSON.fromGraph repositories
+               Feed::Document.new(uri).env(env) JSON.fromGraph repositories
              else                          # serialize RDF
                if writer = RDF::Writer.for(content_type: format)
                  out = RDF::Repository.new

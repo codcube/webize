@@ -239,26 +239,24 @@ module Webize
           end}
       end
     end
-  end
-  module HTML
-
-    def feedDocument graph={}
-      HTML.render ['<?xml version="1.0" encoding="utf-8"?>',
-                   {_: :feed,xmlns: 'http://www.w3.org/2005/Atom',
-                    c: [{_: :id, c: uri},
-                        {_: :title, c: uri},
-                        {_: :link, rel: :self, href: uri},
-                        {_: :updated, c: Time.now.iso8601},
-                        graph.map{|u,d|
-                          {_: :entry,
-                           c: [{_: :id, c: u}, {_: :link, href: u},
-                               d[Date] ? {_: :updated, c: d[Date][0]} : nil,
-                               d[Title] ? {_: :title, c: d[Title]} : nil,
-                               d[Creator] ? {_: :author, c: d[Creator][0]} : nil,
-                               {_: :content, type: :xhtml,
-                                c: {xmlns:"http://www.w3.org/1999/xhtml",
-                                    c: d[Content]}}]}}]}]
+    class Document < URI
+      def write graph={}
+        HTML.render ['<?xml version="1.0" encoding="utf-8"?>',
+                     {_: :feed,xmlns: 'http://www.w3.org/2005/Atom',
+                      c: [{_: :id, c: uri},
+                          {_: :title, c: uri},
+                          {_: :link, rel: :self, href: uri},
+                          {_: :updated, c: Time.now.iso8601},
+                          graph.map{|u,d|
+                            {_: :entry,
+                             c: [{_: :id, c: u}, {_: :link, href: u},
+                                 d[Date] ? {_: :updated, c: d[Date][0]} : nil,
+                                 d[Title] ? {_: :title, c: d[Title]} : nil,
+                                 d[Creator] ? {_: :author, c: d[Creator][0]} : nil,
+                                 {_: :content, type: :xhtml,
+                                  c: {xmlns:"http://www.w3.org/1999/xhtml",
+                                      c: d[Content]}}]}}]}]
+      end
     end
-
   end
 end

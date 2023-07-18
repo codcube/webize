@@ -89,4 +89,8 @@ module Webize
       end
     end
   end
+
+  class URI
+    include MIME
+  end
 end

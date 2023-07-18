@@ -200,4 +200,8 @@ module Webize
     end
 
   end
+
+  class URI
+    include POSIX
+  end
 end
