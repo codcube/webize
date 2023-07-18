@@ -1,6 +1,17 @@
 %w(async async/barrier async/semaphore brotli cgi digest/sha2 open-uri rack resolv).map{|_| require _}
 
 module Webize
+  class URI
+    # retrieve or bind environment
+    def env e = nil
+      if e
+        @env = e
+        self
+      else
+        @env ||= {}
+      end
+    end
+  end
   module HTTP
     Args = Webize.configList 'HTTP/arguments'            # permitted query arguments
     Methods = Webize.configList 'HTTP/methods'           # permitted HTTP methods
@@ -144,6 +155,30 @@ module Webize
       end
     end
 
+    # shortcut URI -> expanded URI for timeslice
+    def dateDir
+      ps = parts
+      loc = Time.now.utc.strftime(case ps[0].downcase
+                                  when 'y'
+                                    hdepth = 3 ; '/%Y/'
+                                  when 'm'
+                                    hdepth = 2 ; '/%Y/%m/'
+                                  when 'd'
+                                    hdepth = 1 ; '/%Y/%m/%d/'
+                                  when 'h'
+                                    hdepth = 0 ; '/%Y/%m/%d/%H/'
+                                  else
+                                  end)
+      globbed = ps[1]&.match? GlobChars
+      pattern = ['*/' * hdepth,                       # glob less-significant subslices inside slice
+                 globbed ? nil : '*', ps[1],          # globify slug if bare
+                 globbed ? nil : '*'] if ps.size == 2 # .. if slug provided
+
+      qs = ['?', env['QUERY_STRING']] if env['QUERY_STRING'] && !env['QUERY_STRING'].empty?
+
+      [302,{'Location' => [loc, pattern, qs].join},[]] # redirect to date-dir
+    end
+
     def debug?
       ENV['CONSOLE_LEVEL'] == 'debug'
     end
@@ -185,15 +220,6 @@ module Webize
       else                                # redirect to no-query location
         Console.logger.info "dropping query from #{uri}"
         [302, {'Location' => ['//', host, path].join.R(env).href}, []]
-      end
-    end
-
-    def env e = nil
-      if e
-        @env = e
-        self
-      else
-        @env ||= {}
       end
     end
 
@@ -594,6 +620,28 @@ module Webize
       [status, head, [body]]                      # response
     end
 
+    def selectFormat default = nil                          # default-format argument
+      default ||= 'text/html'                               # default when unspecified
+      return default unless env.has_key? 'HTTP_ACCEPT'      # no preference specified
+      category = (default.split('/')[0] || '*') + '/*'      # format-category wildcard symbol
+      all = '*/*'                                           # any-format wildcard symbol
+
+      index = {}                                            # build (q-value → format) index
+      env['HTTP_ACCEPT'].split(/,/).map{|e|                 # header values
+        fmt, q = e.split /;/                                # (MIME, q-value) pair
+        i = q && q.split(/=/)[1].to_f || 1                  # default q-value
+        index[i] ||= []                                     # q-value entry
+        index[i].push fmt.strip}                            # insert format at q-value
+
+      index.sort.reverse.map{|_, accepted|                  # search in descending q-value order
+        return default if accepted.member? all              # anything accepted here
+        return default if accepted.member? category         # category accepted here
+        accepted.map{|format|
+          return format if RDF::Writer.for(:content_type => format) || # RDF writer available for format
+             ['application/atom+xml','text/html'].member?(format)}}    # non-RDF writer available
+      default                                               # search failure, use default
+    end
+
     def staticResponse format, body
       if format == 'text/html' && env[:proxy_href] # resolve proxy-hrefs
         body = Webize::HTML.resolve_hrefs body, env, true
@@ -605,5 +653,49 @@ module Webize
 
       [200, head, [body]]                             # response
     end
+
+    # URI -> HTTP headers
+    def timeMeta
+      n = nil # next-page locator
+      p = nil # prev-page locator
+
+      # path components
+      ps = parts # all parts
+      dp = []    # datetime parts
+      dp.push ps.shift.to_i while ps[0] && ps[0].match(/^[0-9]+$/)
+
+      q = (env['QUERY_STRING'] && !env['QUERY_STRING'].empty?) ? ('?'+env['QUERY_STRING']) : ''
+
+      case dp.length
+      when 1 # Y
+        year = dp[0]
+        n = '/' + (year + 1).to_s
+        p = '/' + (year - 1).to_s
+      when 2 # Y-m
+        year = dp[0]
+        m = dp[1]
+        n = m >= 12 ? "/#{year + 1}/#{01}" : "/#{year}/#{'%02d' % (m + 1)}"
+        p = m <=  1 ? "/#{year - 1}/#{12}" : "/#{year}/#{'%02d' % (m - 1)}"
+      when 3 # Y-m-d
+        day = ::Date.parse "#{dp[0]}-#{dp[1]}-#{dp[2]}" rescue nil
+        if day
+          p = (day-1).strftime('/%Y/%m/%d')
+          n = (day+1).strftime('/%Y/%m/%d')
+        end
+      when 4 # Y-m-d-H
+        day = ::Date.parse "#{dp[0]}-#{dp[1]}-#{dp[2]}" rescue nil
+        if day
+          hour = dp[3]
+          p = hour <=  0 ? (day - 1).strftime('/%Y/%m/%d/23') : (day.strftime('/%Y/%m/%d/')+('%02d' % (hour-1)))
+          n = hour >= 23 ? (day + 1).strftime('/%Y/%m/%d/00') : (day.strftime('/%Y/%m/%d/')+('%02d' % (hour+1)))
+        end
+      end
+
+      # previous, next, parent pointers
+      env[:links][:up] = [nil, dp[0..-2].map{|n| '%02d' % n}, '*', ps].join('/') + q if dp.length > 1 && ps[-1] != '*' && ps[-1]&.match?(GlobChars)
+      env[:links][:prev] = [p, ps].join('/') + q + '#prev' if p
+      env[:links][:next] = [n, ps].join('/') + q + '#next' if n
+    end
+
   end
 end
