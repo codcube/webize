@@ -58,15 +58,32 @@ module Webize
              elsif uri.offline?
                '🔌'                                                 # offline response
              end,
+
              (ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched]),          # upstream type: origin or proxy/middlebox
-             referer ? ["\e[#{color}m", referer.display_host, "\e[0m → "] : nil,  # referer
+
+             referer ? ["\e[#{color}m",
+                        referer.display_host,
+                        "\e[0m → "] : nil,  # referer
+
              outFmt, ' ',                                                         # output format
-             "\e[#{color}#{';7' if referer && referer.host != env[:base].host}m", # invert off-site referer
+
+             "\e[#{color}#{';7' if referer && referer.host != env[:base].host}m", # off-site referer
+
              (env[:base].display_host unless referer && referer.host == env[:base].host), env[:base].path, "\e[0m", # host, path
+
              ([' ⟵ ', inFmt, ' '] if inFmt && inFmt != outFmt),                   # input format, if transcoded
-             (qs.map{|k,v|" \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?),    # query
-             head['Location'] ? [" → \e[#{color}m", Resource.new(head['Location']).unproxyURI, "\e[0m"] : nil, # redirect target
-             env[:warning] ? [" \e[38;5;226m⚠️ ", env[:warning], "\e[0m"] : nil,   # warning
+
+             (qs.map{|k,v|
+                " \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?),              # query arguments
+
+             head['Location'] ? [" → \e[#{color}m",
+                                 Node.new(head['Location']).unproxyURI,
+                                 "\e[0m"] : nil,                                  # redirect target
+
+             env[:warning] ? [" \e[38;5;226m⚠️ ",
+                              env[:warning],
+                              "\e[0m"] : nil,                                     # warning
+
             ].flatten.compact.map{|t|t.to_s.encode 'UTF-8'}.join
 
         [status, head, body]}                                                     # response
@@ -710,7 +727,7 @@ module Webize
     def unproxyURI
       p = parts[0]
       return self unless p&.index /[\.:]/ # scheme or DNS name required
-      Resource [(p && p[-1] == ':') ? path[1..-1] : ['/', path], query ? ['?', query] : nil].join
+      Node [(p && p[-1] == ':') ? path[1..-1] : ['/', path], query ? ['?', query] : nil].join
     end
 
   end
