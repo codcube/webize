@@ -157,23 +157,6 @@ module Webize
        (fragment&.split re)]
     end
 
-    # unproxy request/environment URLs
-    def unproxy
-      r = unproxyURI                                                                             # unproxy URI
-      r.scheme ||= 'https'                                                                       # default scheme
-      r.host = r.host.downcase if r.host.match? /[A-Z]/                                          # normalize hostname
-      env[:base] = r.uri.R env                                                                   # unproxy base URI
-      env['HTTP_REFERER'] = env['HTTP_REFERER'].R.unproxyURI.to_s if env.has_key? 'HTTP_REFERER' # unproxy referer URI
-      r                                                                                          # origin URI
-    end
-
-    # proxy URI -> canonical URI
-    def unproxyURI
-      p = parts[0]
-      return self unless p&.index /[\.:]/ # scheme or DNS name required
-      [(p && p[-1] == ':') ? path[1..-1] : ['/', path], query ? ['?', query] : nil].join.R env
-    end
-
     alias_method :uri, :to_s
   end
 

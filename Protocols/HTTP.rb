@@ -1,6 +1,7 @@
 %w(async async/barrier async/semaphore brotli cgi digest/sha2 open-uri rack resolv).map{|_| require _}
 
 module Webize
+
   class URI
     # retrieve or bind environment
     def env e = nil
@@ -16,13 +17,6 @@ module Webize
     Args = Webize.configList 'HTTP/arguments'            # permitted query arguments
     Methods = Webize.configList 'HTTP/methods'           # permitted HTTP methods
     FilterHosts = Webize.configList 'hosts/filter'
-    URLHosts = Webize.configList 'hosts/url'
-    PeerHosts = Hash[*File.open([ENV['PREFIX'],'/etc/hosts'].join).readlines.map(&:chomp).map{|l|
-                       addr, *names = l.split
-                       names.map{|host|
-                         [host, addr]}}.flatten]         # peer host -> peer addr map
-    PeerAddrs = PeerHosts.invert                         # peer addr -> peer host map
-    LocalAddrs = Socket.ip_address_list.map &:ip_address # local addresses
     ActionIcon = Webize.configHash 'style/icons/action'  # HTTP method -> char
     StatusIcon = Webize.configHash 'style/icons/status'  # status code (string) -> char
     StatusIcon.keys.map{|s|                              # status code (int) -> char
@@ -139,7 +133,7 @@ module Webize
       File.open([Webize::ConfigPath, :blocklist, :domain].join('/'), 'a'){|list|
         list << domain << "\n"} # add to blocklist
       URI.blocklist             # read blocklist
-      [302, {'Location' => ['//', domain].join.R(env).href}, []]
+      [302, {'Location' => Resource(['//', domain].join).href}, []]
     end
 
     def cookieCache
@@ -218,7 +212,7 @@ module Webize
           [s,h,b]}                        # response
       else                                # redirect to no-query location
         Console.logger.info "dropping query from #{uri}"
-        [302, {'Location' => ['//', host, path].join.R(env).href}, []]
+        [302, {'Location' => Resource(['//', host, path].join).href}, []]
       end
     end
 
@@ -321,7 +315,7 @@ module Webize
       case status.to_s
       when /30[12378]/                                      # redirect
         location = e.io.meta['location']
-        dest = join(location).R env
+        dest = Resource join location
         if no_scheme == dest.no_scheme                      # alternate scheme
           if scheme == 'https' && dest.scheme == 'http'     # downgrade
             logger.warn "⚠️  downgrade redirect #{dest}"
@@ -493,10 +487,9 @@ module Webize
       head
     end
 
+    URLHosts = Webize.configList 'hosts/url'
     def hostGET
-
-      # host-specific handling
-      return (q = query_values || {}
+      return (q = query_values || {} # redirect URL rehost to origin
               dest = q['url'] || q['u'] || q['q']
               dest ? [301, {'Location' => dest.R(env).href}, []] : notfound) if URLHosts.member? host
       return [301,{'Location' => ['//www.youtube.com/watch?v=', path[1..-1]].join.R(env).href},[]] if host == 'youtu.be'
@@ -587,6 +580,11 @@ module Webize
       env[:deny] = true
       [202, {'Access-Control-Allow-Credentials' => 'true',
              'Access-Control-Allow-Origin' => origin}, []]
+    end
+
+    # create resource in current environment
+    def Resource uri
+      (HTTP::Resource.new uri).env env
     end
 
     # default response - serialize graph per content-negotiation preference
@@ -694,6 +692,23 @@ module Webize
       env[:links][:up] = [nil, dp[0..-2].map{|n| '%02d' % n}, '*', ps].join('/') + q if dp.length > 1 && ps[-1] != '*' && ps[-1]&.match?(GlobChars)
       env[:links][:prev] = [p, ps].join('/') + q + '#prev' if p
       env[:links][:next] = [n, ps].join('/') + q + '#next' if n
+    end
+
+    # unproxy request/environment URLs
+    def unproxy
+      r = unproxyURI                                                                             # unproxy URI
+      r.scheme ||= 'https'                                                                       # default scheme
+      r.host = r.host.downcase if r.host.match? /[A-Z]/                                          # normalize hostname
+      env[:base] = Resource r.uri                                                                # unproxy base URI
+      env['HTTP_REFERER'] = env['HTTP_REFERER'].R.unproxyURI.to_s if env.has_key? 'HTTP_REFERER' # unproxy referer URI
+      r                                                                                          # origin URI
+    end
+
+    # proxy URI -> canonical URI
+    def unproxyURI
+      p = parts[0]
+      return self unless p&.index /[\.:]/ # scheme or DNS name required
+      Resource [(p && p[-1] == ':') ? path[1..-1] : ['/', path], query ? ['?', query] : nil].join
     end
 
   end
