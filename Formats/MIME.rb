@@ -48,7 +48,7 @@ module Webize
     end
 
     # MIME type -> character
-    def format_icon mime
+    def self.format_icon mime
       case mime
       when /^(application\/)?font/
         '🇦'

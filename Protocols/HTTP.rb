@@ -34,10 +34,10 @@ module Webize
       isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
 
-      u = (isLocal ? '/' : [isPeer ? :http : :https,'://',# scheme if non-local
+      u = (isLocal ? '/' : [isPeer ? :http : :https,'://',  # scheme if non-local
                             env['HTTP_HOST']].join).R.join RDF::URI(env['REQUEST_PATH']).path
 
-      uri = Resource.new(u).env env
+      uri = Resource.new(u).env env                         # requested resource
 
       uri.port = nil if [80,443,8000].member? uri.port      # port if non-default
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query if non-empty
@@ -55,8 +55,8 @@ module Webize
       URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status,head,body| # call request and inspect response
-        inFmt = uri.format_icon env[:origin_format]                 # input format
-        outFmt = uri.format_icon head['Content-Type']               # output format
+        inFmt = MIME.format_icon env[:origin_format]                # input format
+        outFmt = MIME.format_icon head['Content-Type']              # output format
         color = env[:deny] ? '38;5;196' : (MIME::Color[outFmt]||0)  # format -> color
         referer = env['HTTP_REFERER'].R if env['HTTP_REFERER']      # referer
 
@@ -284,9 +284,9 @@ module Webize
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # detect HTML served w/ XML MIME
 
           repository = (readRDF format, body).persist env, self         # read and cache graph data
-          (print format_icon format; return repository) unless thru     # return graph data, or
-                                                                        # return HTTP response with graph or static/upatream data:
-          doc = document                                                # uninterpreted/raw/upstream/static cache. mainly used when updating extractors in offline mode so we discard it unless a full 'thru' response is threaded through
+          (print MIME.format_icon format; return repository) if !thru   # return graph data, or
+                                                                        # HTTP Response with graph or static/unmodified-upstream data
+          doc = document                                                # static cache
           if (formats = RDF::Format.content_types[format]) &&           # content type
              (extensions = formats.map(&:file_extension).flatten) &&    # suffixes for content type
              !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix in mapped set?
