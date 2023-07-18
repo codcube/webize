@@ -73,7 +73,7 @@ module Webize
 
     # find filesystem nodes and map to URI space
     # (URI, env) -> [URI, URI, ..]
-    def fsNodes
+    def nodes
       q = env[:qs]                                # query params
       if directory?
         if q['f'] && !q['f'].empty?               # FIND exact

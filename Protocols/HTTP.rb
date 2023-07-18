@@ -36,7 +36,7 @@ module Webize
         uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) args for follow-on requests in URI
       end
 
-      env[:base] = Resource.new(u).env env                  # base URI. normally same as request URI, though that may be out of scope where we only have an environment, or change as it updates itself for requesting specific variants etc
+      env[:base] = Node.new(u).env env                      # base URI. normally same as request URI, though that may be out of scope where we only have an environment, or change for requesting specific variants etc
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
 
@@ -356,11 +356,11 @@ module Webize
     end
 
     def fetchLocal nodes = nil
-      return fileResponse if !nodes && file? && (format = fileMIME) && # file if cached and one of:
+      return fileResponse if !nodes && storage.file? && (format = fileMIME) && # file if cached and one of:
                        (env[:notransform] ||                # (mimeA → mimeB) transform disabled by client
                         format.match?(MIME::FixedFormat) || # (mimeA → mimeB) transform disabled by server
       (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (mimeA → mimeA) reformat disabled
-      repos = (nodes || fsNodes).map{|x|                    # load specified or default node set
+      repos = (nodes || storage.nodes).map{|x|              # load specified or default node set
         if x.node.file?                                     # file?
           x.file_triples x.readRDF                          # parse + read file metadata
         elsif x.node.directory?                             # directory?
@@ -647,6 +647,10 @@ module Webize
              'Expires' => (Time.now + 3e7).httpdate}
 
       [200, head, [body]]                             # response
+    end
+
+    def storage
+      POSIX::Node(self).env env
     end
 
     # URI -> HTTP headers
