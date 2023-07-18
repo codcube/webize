@@ -1,18 +1,6 @@
 %w(async async/barrier async/semaphore brotli cgi digest/sha2 open-uri rack resolv).map{|_| require _}
 
 module Webize
-
-  class URI
-    # retrieve or bind environment
-    def env e = nil
-      if e
-        @env = e
-        self
-      else
-        @env ||= {}
-      end
-    end
-  end
   module HTTP
     Args = Webize.configList 'HTTP/arguments'            # permitted query arguments
     Methods = Webize.configList 'HTTP/methods'           # permitted HTTP methods
@@ -108,7 +96,7 @@ module Webize
       body
     end
 
-    # add navigation pointers to HTTP header
+    # create navigation pointers in HTTP header
     def dirMeta
       root = !path || path == '/'
       self.path += '.rss' if host == 'www.reddit.com' && path && !%w(favicon.ico gallery wiki video).member?(parts[0]) && !path.index('.rss')
@@ -133,7 +121,7 @@ module Webize
     end
 
   end
-  class HTTP::Resource < URI
+  class HTTP::Resource < Resource
     include MIME
 
     # site adaptation runs on last proxy in chain

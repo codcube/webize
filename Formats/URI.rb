@@ -164,6 +164,17 @@ module Webize
     alias_method :uri, :to_s
   end
 
+  class Resource < URI
+    def env e = nil
+      if e
+        @env = e
+        self
+      else
+        @env ||= {}
+      end
+    end
+  end
+
   module URIlist
     class Format < RDF::Format
       content_type 'text/uri-list',

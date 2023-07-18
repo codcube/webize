@@ -239,7 +239,7 @@ module Webize
           end}
       end
     end
-    class Document < URI
+    class Document < Resource
       def write graph={}
         HTML.render ['<?xml version="1.0" encoding="utf-8"?>',
                      {_: :feed,xmlns: 'http://www.w3.org/2005/Atom',

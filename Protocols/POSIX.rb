@@ -13,7 +13,7 @@ module Webize
   module POSIX
   end
 
-  class POSIX::Resource < URI
+  class POSIX::Resource < Resource
     include MIME
 
     def dir_triples graph

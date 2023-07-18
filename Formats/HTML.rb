@@ -161,7 +161,7 @@ module Webize
 
     QuotePrefix = /^\s*&gt;\s*/
 
-    class Document < URI
+    class Document < Resource
 
       def grep graph
         qs = query_values || {}
