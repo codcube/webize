@@ -3,7 +3,7 @@ module Webize
   module Gemini
   end
 
-  class Gemini::Resource < Resource
+  class Gemini::Node < Resource
 
     def fetch
       require 'net/gemini'

@@ -25,7 +25,7 @@ module Webize
       u = (isLocal ? '/' : [isPeer ? :http : :https,'://',  # scheme if non-local
                             env['HTTP_HOST']].join).R.join RDF::URI(env['REQUEST_PATH']).path
 
-      uri = Resource.new(u).env env                         # requested resource
+      uri = Node.new(u).env env                             # request URI
 
       uri.port = nil if [80,443,8000].member? uri.port      # port if non-default
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query if non-empty
@@ -36,7 +36,7 @@ module Webize
         uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) args for follow-on requests in URI
       end
 
-      env[:base] = Resource.new(u).env env                  # base URI
+      env[:base] = Resource.new(u).env env                  # base URI. normally same as request URI, though that may be out of scope where we only have an environment, or change as it updates itself for requesting specific variants etc
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
 
@@ -375,7 +375,7 @@ module Webize
       env[:fetched] = true                                  # denote network-fetch for logger
       case scheme                                           # request scheme
       when 'gemini'
-        Gemini::Resource.new(uri).env(env).fetch            # fetch w/ Gemini protocol
+        Gemini::Node.new(uri).env(env).fetch                # fetch w/ Gemini protocol
       when /https?/
         if PeerAddrs.has_key?(env[:addr]) && deny_domain?   # blocked&adapted domain redirected to peer for handling
           self.port = 8000                                  # peer port
