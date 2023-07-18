@@ -11,6 +11,10 @@ module Webize
   PeerAddrs = PeerHosts.invert                         # peer addr -> peer host map
 
   module POSIX
+  end
+
+  class POSIX::Resource < URI
+    include MIME
 
     def dir_triples graph
       graph << RDF::Statement.new(self, Type.R, Container.R)
@@ -199,9 +203,5 @@ module Webize
       IO.popen(['grep', '-ril', q, *files]).read.lines.map &:chomp rescue []
     end
 
-  end
-
-  class URI
-    include POSIX
   end
 end

@@ -122,6 +122,7 @@ module Webize
 
   end
   class HTTP::Resource < URI
+    include MIME
 
     # site adaptation runs on last proxy in chain
     def adapt?
