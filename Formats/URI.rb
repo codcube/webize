@@ -80,34 +80,9 @@ module Webize
 
     def extname; File.extname path if path end
 
-    def href # relocate reference to current environment/context
-      if in_doc? && fragment         # in-document ref
-        '#' + fragment
-      elsif env[:proxy_href]         # proxy ref
-        if !host || env['SERVER_NAME'] == host # local node
-          uri
-        else                                   # remote node
-          ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join
-        end
-      else                           # URI <-> URL correspondence
-        uri
-      end
-    end
-
     def imgPath?; path && (ImgExt.member? extname.downcase) end
 
     def imgURI?; imgPath? || (dataURI? && path.index('image') == 0) end
-
-    def insecure
-      return self if scheme == 'http'
-      _ = dup.env env
-      _.scheme = 'http'
-       _.env[:base] = _
-    end
-
-    def in_doc?  # is URI in request graph?
-      on_host? && env[:base].path == path
-    end
 
     def local_id
       if fragment && in_doc?
@@ -118,15 +93,6 @@ module Webize
     end
 
     def no_scheme; uri.split('//',2)[1] end
-
-    def offline?
-      ENV.has_key? 'OFFLINE'
-    end
-
-    def on_host? # is URI on request host?
-      env[:base].host == host
-    end
-
     def parts; @parts ||= path ? (path.split('/') - ['']) : [] end
 
     # Hash → querystring
@@ -164,7 +130,10 @@ module Webize
     alias_method :uri, :to_s
   end
 
+  # a Webize Resource is an RDF Resource and an environment
   class Resource < URI
+
+    # set or get environment
     def env e = nil
       if e
         @env = e
@@ -173,6 +142,42 @@ module Webize
         @env ||= {}
       end
     end
+
+    # relocate URI to current environment
+    def href
+      if in_doc? && fragment         # in-document ref
+        '#' + fragment
+      elsif env[:proxy_href]         # proxy ref
+        if !host || env['SERVER_NAME'] == host # local node
+          uri
+        else                                   # remote node
+          ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join
+        end
+      else                           # URI <-> URL correspondence
+        uri
+      end
+    end
+
+    # set scheme to HTTP for fetch method/library protocol-selection for peer nodes on private or local networks
+    def insecure
+      return self if scheme == 'http'
+      _ = dup.env env
+      _.scheme = 'http'
+       _.env[:base] = _
+    end
+
+    def in_doc?  # is URI in request graph?
+      on_host? && env[:base].path == path
+    end
+
+    def offline?
+      ENV.has_key? 'OFFLINE'
+    end
+
+    def on_host? # is URI on request host?
+      env[:base].host == host
+    end
+
   end
 
   module URIlist

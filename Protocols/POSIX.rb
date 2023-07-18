@@ -11,9 +11,12 @@ module Webize
   PeerAddrs = PeerHosts.invert                         # peer addr -> peer host map
 
   module POSIX
+    def self.Node uri
+      Node.new uri
+    end
   end
 
-  class POSIX::Resource < Resource
+  class POSIX::Node < Resource
     include MIME
 
     def dir_triples graph
