@@ -112,7 +112,6 @@ module Webize
   end
   class URI
     include HTML
-    include JSON
     include MIME
     include POSIX
 

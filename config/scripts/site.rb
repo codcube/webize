@@ -98,6 +98,13 @@ module Webize
           yield self, Content, Base64.decode64(data[0]).encode('UTF-8', undef: :replace, invalid: :replace, replace: ' ')}}
     end
 
+    # read RDF from JSON embedded in Javascript value in HTML
+    def JSONembed doc, pattern, &b
+      doc.css('script').map{|script|
+        script.inner_text.lines.grep(pattern).map{|line|
+          Webize::JSON::Reader.new(line.sub(/^[^{]+/,'').chomp.sub(/};.*/,'}'), base_uri: self).scanContent &b}}
+    end
+
     def YouTube doc, &b
       JSONembed doc, /var ytInitial(Data|PlayerResponse) = /i, &b
     end

@@ -113,14 +113,6 @@ module Webize
       end
     end
 
-    # RDF from JSON embedded in HTML
-    def JSONembed doc, pattern, &b
-      doc.css('script').map{|script|
-        script.inner_text.lines.grep(pattern).map{|line|
-          Webize::JSON::Reader.new(line.sub(/^[^{]+/,'').chomp.sub(/};.*/,'}'), base_uri: self).scanContent &b}}
-    end
-
-
     # [RDF::Repository] -> JSON tree {subject -> predicate -> object}. input data-structure for render methods
     def self.fromGraph repositories
       tree = {}                        # output tree
