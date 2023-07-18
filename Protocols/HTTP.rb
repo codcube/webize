@@ -20,7 +20,7 @@ module Webize
 
     def self.bwPrint kv; kv.map{|k,v| "\e[38;5;7;7m#{k}\e[0m#{v}\n" } end
 
-    # Rack entry-point
+    # Rack entry-point - instantiate callable HTTP resource, call and log results
     def self.call env
       return [403,{},[]] unless Methods.member? env['REQUEST_METHOD']
 
@@ -31,8 +31,11 @@ module Webize
       isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
 
-      uri = (isLocal ? '/' : [isPeer ? :http : :https,'://',# scheme if non-local
-                              env['HTTP_HOST']].join).R.join(RDF::URI(env['REQUEST_PATH']).path).R env
+      u = (isLocal ? '/' : [isPeer ? :http : :https,'://',# scheme if non-local
+                            env['HTTP_HOST']].join).R.join RDF::URI(env['REQUEST_PATH']).path
+
+      uri = Resource.new(u).env env
+
       uri.port = nil if [80,443,8000].member? uri.port      # port if non-default
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query if non-empty
         env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {} # strip excess & and parse
@@ -42,7 +45,7 @@ module Webize
         uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) args for follow-on requests in URI
       end
 
-      env[:base] = uri.to_s.R env                           # base URI
+      env[:base] = Resource.new(u).env env                  # base URI
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
 
@@ -82,6 +85,41 @@ module Webize
        uri.head? ? [] : ["<html><body class='error'>#{HTML.render [{_: :style, c: Webize::CSS::SiteCSS}, {_: :script, c: Webize::Code::SiteJS}, uri.toolbar]}500</body></html>"]]
     end
 
+    def self.decompress head, body
+      encoding = head.delete 'Content-Encoding'
+      return body unless encoding
+      case encoding.to_s
+      when /^br(otli)?$/i
+        Brotli.inflate body
+      when /gzip/i
+        (Zlib::GzipReader.new StringIO.new body).read
+      when /flate|zip/i
+        Zlib::Inflate.inflate body
+      else
+        head['Content-Encoding'] = encoding
+        body
+      end
+      rescue Exception => e
+      Console.logger.failure head, e
+      head['Content-Encoding'] = encoding
+      body
+    end
+
+    # blank environment structure
+    def self.env
+      {client_etags: [],
+       feeds: [],
+       links: {},
+       qs: {}}
+    end
+
+    def self.log data
+      Console.logger.info data
+    end
+
+  end
+  class HTTP::Resource < URI
+
     # site adaptation runs on last proxy in chain
     def adapt?
       !ENV.has_key?('http_proxy')
@@ -108,26 +146,6 @@ module Webize
 
     def debug?
       ENV['CONSOLE_LEVEL'] == 'debug'
-    end
-
-    def HTTP.decompress head, body
-      encoding = head.delete 'Content-Encoding'
-      return body unless encoding
-      case encoding.to_s
-      when /^br(otli)?$/i
-        Brotli.inflate body
-      when /gzip/i
-        (Zlib::GzipReader.new StringIO.new body).read
-      when /flate|zip/i
-        Zlib::Inflate.inflate body
-      else
-        head['Content-Encoding'] = encoding
-        body
-      end
-      rescue Exception => e
-      Console.logger.failure head, e
-      head['Content-Encoding'] = encoding
-      body
     end
 
     def deny status = 200, type = nil
@@ -170,14 +188,6 @@ module Webize
       end
     end
 
-    # initialize environment storage
-    def HTTP.env
-      {client_etags: [],
-       feeds: [],
-       links: {},
-       qs: {}}
-    end
-
     def env e = nil
       if e
         @env = e
@@ -217,8 +227,8 @@ module Webize
       end
     end
 
-    # fetch to request-time repository and update static cache
-    def fetchHTTP thru: true                                # thru: return HTTP response to caller?
+    # fetch resource and cache upstream and derived data
+    def fetchHTTP thru: true                                # return just the data or full HTTP response?
       ::URI.open(uri, headers.merge({redirect: false})) do |response|
         h = headers response.meta                           # response headera
         case env[:origin_status] = response.status[0].to_i  # response status
@@ -496,10 +506,6 @@ module Webize
         "<#{uri}>; rel=#{type}"}.join(', ')
     end
 
-    def self.log data
-      Console.logger.info data
-    end
-
     def normalize_charset c
       c = case c
           when /iso.?8859/i
@@ -599,7 +605,5 @@ module Webize
 
       [200, head, [body]]                             # response
     end
-
   end
-
 end
