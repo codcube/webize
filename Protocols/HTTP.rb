@@ -235,7 +235,7 @@ module Webize
         repos = []
         nodes.map{|n|
           semaphore.async do
-            repos << (n.R(env).fetchRemote **opts)
+            repos << (Resource(n).fetchRemote **opts)
           end}
         barrier.wait
         respond repos
