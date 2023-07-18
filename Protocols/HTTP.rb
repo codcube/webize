@@ -121,7 +121,7 @@ module Webize
     end
 
   end
-  class HTTP::Resource < Resource
+  class HTTP::Node < Resource
     include MIME
 
     # site adaptation runs on last proxy in chain
@@ -133,11 +133,11 @@ module Webize
       File.open([Webize::ConfigPath, :blocklist, :domain].join('/'), 'a'){|list|
         list << domain << "\n"} # add to blocklist
       URI.blocklist             # read blocklist
-      [302, {'Location' => Resource(['//', domain].join).href}, []]
+      [302, {'Location' => Node(['//', domain].join).href}, []]
     end
 
     def cookieCache
-      cookie = join('/cookie').R                      # jar
+      cookie = POSIX::Node join('/cookie')            # jar
       if env[:cookie] && !env[:cookie].empty?         # store cookie to jar
         cookie.writeFile env[:cookie]
         logger.info [:🍯, host, env[:cookie]].join ' '
@@ -212,7 +212,7 @@ module Webize
           [s,h,b]}                        # response
       else                                # redirect to no-query location
         Console.logger.info "dropping query from #{uri}"
-        [302, {'Location' => Resource(['//', host, path].join).href}, []]
+        [302, {'Location' => Node(['//', host, path].join).href}, []]
       end
     end
 
@@ -235,7 +235,7 @@ module Webize
         repos = []
         nodes.map{|n|
           semaphore.async do
-            repos << (Resource(n).fetchRemote **opts)
+            repos << (Node(n).fetchRemote **opts)
           end}
         barrier.wait
         respond repos
@@ -315,7 +315,7 @@ module Webize
       case status.to_s
       when /30[12378]/                                      # redirect
         location = e.io.meta['location']
-        dest = Resource join location
+        dest = Node join location
         if no_scheme == dest.no_scheme                      # alternate scheme
           if scheme == 'https' && dest.scheme == 'http'     # downgrade
             logger.warn "⚠️  downgrade redirect #{dest}"
@@ -527,6 +527,10 @@ module Webize
         "<#{uri}>; rel=#{type}"}.join(', ')
     end
 
+    def Node uri
+      (HTTP::Node.new uri).env env
+    end
+
     def normalize_charset c
       c = case c
           when /iso.?8859/i
@@ -579,11 +583,6 @@ module Webize
       env[:deny] = true
       [202, {'Access-Control-Allow-Credentials' => 'true',
              'Access-Control-Allow-Origin' => origin}, []]
-    end
-
-    # create resource in current environment
-    def Resource uri
-      (HTTP::Resource.new uri).env env
     end
 
     # default response - serialize graph per content-negotiation preference
@@ -698,8 +697,8 @@ module Webize
       r = unproxyURI                                                                             # unproxy URI
       r.scheme ||= 'https'                                                                       # default scheme
       r.host = r.host.downcase if r.host.match? /[A-Z]/                                          # normalize hostname
-      env[:base] = Resource r.uri                                                                # unproxy base URI and
-      env['HTTP_REFERER'] = Resource(env['HTTP_REFERER']).unproxyURI.to_s if env.has_key? 'HTTP_REFERER' # referer URI
+      env[:base] = Node r.uri                                                                    # update base URI and
+      env['HTTP_REFERER'] = Node(env['HTTP_REFERER']).unproxyURI.to_s if env.has_key? 'HTTP_REFERER' # referer URI
       r                                                                                          # origin URI
     end
 
