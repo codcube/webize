@@ -111,8 +111,7 @@ module Webize
     end
   end
   class URI
-    include HTML # TODO removable with some rework of method visibility
-    include Gemini
+    include HTML
     include JSON
     include MIME
     include POSIX

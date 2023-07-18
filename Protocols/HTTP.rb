@@ -374,7 +374,7 @@ module Webize
       env[:fetched] = true                                  # denote network-fetch for logger
       case scheme                                           # request scheme
       when 'gemini'
-        fetchGemini                                         # fetch w/ Gemini
+        Gemini::Resource.new(uri).env(env).fetch            # fetch w/ Gemini protocol
       when /https?/
         if PeerAddrs.has_key?(env[:addr]) && deny_domain?   # blocked&adapted domain redirected to peer for handling
           self.port = 8000                                  # peer port
