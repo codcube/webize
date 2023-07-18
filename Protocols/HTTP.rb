@@ -557,10 +557,6 @@ module Webize
       [404, {'Content-Type' => format}, head? ? nil : [body ? body : '']]
     end
 
-    def offline?
-      ENV.has_key? 'OFFLINE'
-    end
-
     def origin
       if env['HTTP_ORIGIN']
         env['HTTP_ORIGIN']
@@ -602,9 +598,9 @@ module Webize
 
       body = case format                   # response body
              when /html/                   # serialize HTML
-               HTML::Document.new(uri).env(env) JSON.fromGraph repositories
+               HTML::Document.new(uri).env(env).write JSON.fromGraph repositories
              when /atom|rss|xml/           # serialize Atom/RSS
-               Feed::Document.new(uri).env(env) JSON.fromGraph repositories
+               Feed::Document.new(uri).env(env).write JSON.fromGraph repositories
              else                          # serialize RDF
                if writer = RDF::Writer.for(content_type: format)
                  out = RDF::Repository.new

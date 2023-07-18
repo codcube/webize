@@ -105,16 +105,6 @@ module Webize
        _.env[:base] = _
     end
 
-    def no_scheme; uri.split('//',2)[1] end
-
-    def parts; @parts ||= path ? (path.split('/') - ['']) : [] end
-
-    def query_hash; Digest::SHA2.hexdigest(query)[0..15] end
-
-    def on_host? # is URI on request host?
-      env[:base].host == host
-    end
-
     def in_doc?  # is URI in request graph?
       on_host? && env[:base].path == path
     end
@@ -127,6 +117,18 @@ module Webize
       end
     end
 
+    def no_scheme; uri.split('//',2)[1] end
+
+    def offline?
+      ENV.has_key? 'OFFLINE'
+    end
+
+    def on_host? # is URI on request host?
+      env[:base].host == host
+    end
+
+    def parts; @parts ||= path ? (path.split('/') - ['']) : [] end
+
     # Hash → querystring
     def self.qs h
       return '?' unless h
@@ -134,6 +136,8 @@ module Webize
         CGI.escape(k.to_s) + (v ? ('=' + CGI.escape([*v][0].to_s)) : '')
       }.join("&")
     end
+
+    def query_hash; Digest::SHA2.hexdigest(query)[0..15] end
 
     def R env_ = nil
       env_ ? env(env_) : self
