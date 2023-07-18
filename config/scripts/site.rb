@@ -32,6 +32,9 @@ module Webize
       'proxy.c2.com' => :C2,
     }
   end
+
+  POSIX::Node::HomePage = 'bookmarks/{home.u,search.🐢}'
+
   class HTTP::Resource
 
     # site-specific RDF mapping

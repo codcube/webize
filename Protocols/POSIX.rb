@@ -71,6 +71,10 @@ module Webize
       documentPath
     end
 
+    def Node uri
+      (POSIX::Node.new uri).env env
+    end
+
     # find filesystem nodes and map to URI space
     # (URI, env) -> [URI, URI, ..]
     def nodes
@@ -83,7 +87,8 @@ module Webize
         elsif q['q'] && !q['q'].empty?            # GREP
           grep
         elsif !host && path == '/'
-          (Pathname.glob Webize::ConfigRelPath.join('bookmarks/{home.u,search.🐢}')).map{|n| n.to_s.R env }
+          (Pathname.glob Webize::ConfigRelPath.join(HomePage)).map{|n|
+            Node n }
         elsif !dirURI?                            # LS dir
           [self]                                  # minimal (no trailing-slash)
         else                                      # detailed (trailing-slash)

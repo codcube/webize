@@ -49,6 +49,7 @@ module Webize
         referer = env['HTTP_REFERER'].R if env['HTTP_REFERER']      # referer
 
         log [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil, # transport security
+
              if env[:deny]                                          # action taken:
                '🛑'                                                 # blocked
              elsif StatusIcon.has_key? status
@@ -378,9 +379,9 @@ module Webize
                         format.match?(MIME::FixedFormat) || # (mimeA → mimeB) transform disabled by server
       (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (mimeA → mimeA) reformat disabled
       repos = (nodes || storage.nodes).map{|x|              # load specified or default node set
-        if x.node.file?                                     # file?
+        if x.file?                                          # file?
           x.file_triples x.readRDF                          # parse + read file metadata
-        elsif x.node.directory?                             # directory?
+        elsif x.directory?                                  # directory?
           x.dirURI.dir_triples RDF::Repository.new          # read directory metadata
         end}
       dirMeta                                               # 👉 storage-adjacent nodes
