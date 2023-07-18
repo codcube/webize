@@ -477,7 +477,7 @@ module Webize
             seen = true                 # mark as shown
             f[o,env]                    # render as type
           end},
-         (Markup[Resource][o, env] unless seen)] # show at least once
+         (Markup[BasicResource][o, env] unless seen)] # show at least once
       when Integer
         o
       when RDF::Literal

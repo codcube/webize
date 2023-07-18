@@ -252,7 +252,7 @@ module Webize
        c: [{_: :span, class: :type, c: icon},
            {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
 
-    Markup[Resource] = -> re, env {
+    Markup[BasicResource] = -> re, env {
       env[:last] ||= {}
       p = -> a {MarkupPredicate[a][re[a], env] if re.has_key? a} # predicate renderer
       titled = (re.has_key? Title) && env[:last][Title] != re[Title]

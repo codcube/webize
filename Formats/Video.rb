@@ -128,7 +128,7 @@ module Webize
              {_: :video, src: v.uri, controls: :true}.update(dashJS ? {'data-dashjs-player' => 1} : {}), '<br>',
              {_: :a, href: v.uri, c: v.display_name}]
            end,
-           (Markup[Resource][resource, env] if resource)]}}
+           (Markup[BasicResource][resource, env] if resource)]}}
 
   end
 end

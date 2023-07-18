@@ -1,5 +1,6 @@
 Abstract http://purl.org/dc/terms/abstract
 Audio    http://purl.org/dc/terms/Audio
+BasicResource	http://www.w3.org/2000/01/rdf-schema#Resource
 Container http://www.w3.org/ns/ldp#Container
 Contains http://www.w3.org/ns/ldp#contains
 Content  http://rdfs.org/sioc/ns#content
@@ -11,7 +12,6 @@ From     http://rdfs.org/sioc/ns#has_creator
 Image    http://purl.org/dc/terms/Image
 Link     http://purl.org/dc/terms/link
 Post     http://rdfs.org/sioc/ns#Post
-Resource http://www.w3.org/2000/01/rdf-schema#Resource
 SIOC     http://rdfs.org/sioc/ns#
 Schema   http://schema.org/
 Size	 http://www.w3.org/ns/posix/stat#size
