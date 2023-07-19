@@ -213,5 +213,5 @@ module Webize
 end
 
 class String
-  def R env=nil; env ? Webize::Resource.new(self).env(env) : Webize::Resource.new(self) end
+  def R; RDF::URI self end
 end

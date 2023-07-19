@@ -102,6 +102,10 @@ module Webize
           Webize::JSON::Reader.new(line.sub(/^[^{]+/,'').chomp.sub(/};.*/,'}'), base_uri: self).scanContent &b}}
     end
 
+    def Youtu_Be
+      [301, {'Location' => Node(['//www.youtube.com/watch?v=', path[1..-1]].join).href}, []] 
+    end
+
     def YouTube doc, &b
       JSONembed doc, /var ytInitial(Data|PlayerResponse) = /i, &b
     end

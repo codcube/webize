@@ -450,6 +450,7 @@ module Webize
     def GET
       return hostGET if host                  # remote node
       ps = parts ; p = ps[0]                  # path parts
+      return fetchlocal unless p              # local node
       return unproxy.hostGET if p[-1] == ':' && ps.size > 1       # remote node - proxy URI w/ scheme
       return unproxy.hostGET if p.index '.' && p != 'favicon.ico' # remote node - proxy URI sans scheme
       return dateDir if %w{m d h y}.member? p # current year/month/day/hour redirect
@@ -519,8 +520,8 @@ module Webize
     def hostGET
       return (q = query_values || {} # redirect URL rehost to origin
               dest = q['url'] || q['u'] || q['q']
-              dest ? [301, {'Location' => dest.R(env).href}, []] : notfound) if URLHosts.member? host
-      return [301,{'Location' => ['//www.youtube.com/watch?v=', path[1..-1]].join.R(env).href},[]] if host == 'youtu.be'
+              dest ? [301, {'Location' => Node(dest).href}, []] : notfound) if URLHosts.member? host
+      return Youtu_Be if host == 'youtu.be'
 
       dirMeta      # directory metadata
       cookieCache  # save/restore cookies
