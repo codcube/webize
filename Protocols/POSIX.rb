@@ -55,6 +55,8 @@ module Webize
 
     def dirname; node.dirname end
 
+    def extname; File.extname realpath end
+
     def file_triples graph
       graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/posix/stat#File'.R)
       stat = File.stat fsPath

@@ -34,7 +34,7 @@ module Webize
       end
     end
 
-    def fileMIMEsuffix suffix = (File.extname POSIX::Node(self).realpath) # follow symlink and read suffix
+    def fileMIMEsuffix suffix = POSIX::Node(self).extname # read file suffix
       return if suffix.empty?
       Rack::Mime::MIME_TYPES[suffix] || # Rack map
         fileMIMEsuffixRDF(suffix)       # RDF map
