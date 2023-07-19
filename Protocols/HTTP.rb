@@ -36,7 +36,7 @@ module Webize
         uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) args for follow-on requests in URI
       end
 
-      env[:base] = Node.new(u).env env                      # base URI. normally same as request URI, though that may be out of scope where we only have an environment, or change for requesting specific variants etc
+      env[:base] = Node.new(u).env(env).freeze              # immutable base URI aka external request URI - internal (#to_s/#uri) request URI is equivalent unless refined for accessing a specific variant
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
       env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
 

@@ -21,8 +21,8 @@ module Webize
     def fileMIME
       (!host && fileMIMEprefix) ||  # name prefix
         fileMIMEsuffix ||           # name suffix
-        (logger.warn "MIME search failed #{fsPath}"
-         'application/octet-stream') # unknown
+        (logger.warn "MIME search failed for #{uri}" # TODO bring back FILE(1)?
+         'application/octet-stream') # unknown MIME
     end
 
     def fileMIMEprefix
@@ -34,7 +34,7 @@ module Webize
       end
     end
 
-    def fileMIMEsuffix suffix = (File.extname File.realpath fsPath)
+    def fileMIMEsuffix suffix = (File.extname POSIX::Node(self).realpath) # follow symlink and read suffix
       return if suffix.empty?
       Rack::Mime::MIME_TYPES[suffix] || # Rack map
         fileMIMEsuffixRDF(suffix)       # RDF map

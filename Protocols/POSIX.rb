@@ -152,6 +152,10 @@ module Webize
       FileUtils.mkdir_p dir              # make container
     end
 
+    def realpath
+      File.realpath fsPath
+    end
+
     def shellPath
       Shellwords.escape fsPath
     end
