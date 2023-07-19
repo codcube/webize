@@ -212,7 +212,6 @@ module Webize
   end
 end
 
-# cast to Resource INPROGRESS slowly removing #R invocations - about 250 in 3500 lines of code, so a shorthand almost deserves to stay, but too much like a monkeypatch
 class String
   def R env=nil; env ? Webize::Resource.new(self).env(env) : Webize::Resource.new(self) end
 end

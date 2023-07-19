@@ -47,7 +47,7 @@ module Webize
           fn.call RDF::Statement.new(s, Webize::URI.new(p),
                                      p == Content ? ((l = RDF::Literal o).datatype = RDF.HTML
                                                       l) : o,
-                                     graph_name: graph ? graph.R : [s.host ? ['https://', s.host] : nil, s.path].join.R)}
+                                     graph_name: Webize::URI.new(graph || [s.host ? ['https://', s.host] : nil, s.path].join))}
       end
 
       def JSONfeed

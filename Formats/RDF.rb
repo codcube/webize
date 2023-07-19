@@ -59,7 +59,7 @@ module Webize
             else                                                # original graph:
               env[:updates] ||= out << RDF::Statement.new('#updates'.R, Type.R, Container.R) # init updates container
               graph.subjects.map{|subject|                      # 👉 updates
-                if (dest = graph.query(RDF::Query::Pattern.new subject, To.R, :o).first_object) && dest.class == Webize::URI
+                if (dest = graph.query(RDF::Query::Pattern.new subject, To.R, :o).first_object) && dest.class == Webize::Resource
                   env[:dests] ||= {}
                   env[:dests][dest] ||= (
                     dest_bin = RDF::Node.new
