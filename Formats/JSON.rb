@@ -27,7 +27,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
-        @base = options[:base_uri].R
+        @base = options[:base_uri]
         @json = ::JSON.parse(input.respond_to?(:read) ? input.read : input) rescue (logger.debug ['JSON parse failure in: ', input].join; {})
         if block_given?
           case block.arity
@@ -42,9 +42,9 @@ module Webize
 
       def each_statement &fn
         scanContent{|s, p, o, graph=nil|
-          s = s.R
+          s = Webize::URI.new s
           o = Webize.date o if p.to_s == Date # normalize date formats
-          fn.call RDF::Statement.new(s, p.R,
+          fn.call RDF::Statement.new(s, Webize::URI.new(p),
                                      p == Content ? ((l = RDF::Literal o).datatype = RDF.HTML
                                                       l) : o,
                                      graph_name: graph ? graph.R : [s.host ? ['https://', s.host] : nil, s.path].join.R)}
@@ -87,7 +87,7 @@ module Webize
           JSON.scan(@json){|h|
             if s = h['expanded_url']||h['uri']||h['url']||h['link']||h['canonical_url']||h['src']|| # URL attribute
                    ((id = h['id'] || h['ID'] || h['_id'] || h['id_str']) && ['#', id].join)         # id attribute
-              s = @base.join(s).R                                                                   # subject URI. TODO return to caller for triple pointing to inner resource
+              s = Webize::URI.new @base.join s                                                      # subject URI. TODO return to caller for triple pointing to inner resource
               if s.parts[0] == 'users'
                 host = ('https://' + s.host).R
                 yield s, Creator, host.join(s.parts[0..1].join('/'))
