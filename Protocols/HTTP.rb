@@ -432,7 +432,7 @@ module Webize
         return [304, {}, []]
       end
 
-      Rack::Files.new('.').serving(Rack::Request.new(env), fsPath).yield_self{|s,h,b|
+      Rack::Files.new('.').serving(Rack::Request.new(env), storage.fsPath).yield_self{|s,h,b|
         case s                                            # status
         when 200
           s = env[:origin_status] if env[:origin_status]  # upstream status
@@ -443,7 +443,7 @@ module Webize
         h['content-type'] = format
         h['ETag'] = etag
         h['Expires'] = (Time.now + 3e7).httpdate if format.match? MIME::FixedFormat
-        h['Last-Modified'] ||= mtime.httpdate
+        h['Last-Modified'] ||= storage.mtime.httpdate
         [s, h, b]}
     end
  
