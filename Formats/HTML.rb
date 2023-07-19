@@ -201,9 +201,7 @@ module Webize
         graph['#searchCSS'] = {Content => [css]}
       end
 
-      def write graph={}
-        status = env[:origin_status]
-
+      def write graph = {}
         bgcolor = if env[:deny]                                                                      # background color
                     if HostColor.has_key? host
                       HostColor[host]
@@ -212,15 +210,15 @@ module Webize
                     else
                       '#f80'                                                                         # deny -> red
                     end
-                  elsif StatusColor.has_key? status
-                    StatusColor[status]                                                              # status-code color
+                  elsif StatusColor.has_key? env[:origin_status]
+                    StatusColor[env[:origin_status]]                                                 # status-code color
                   else
                     '#000'
                   end
 
-        grep graph                                                                                   # grep results to markup
+        grep graph                                                                                   # markup grep results
 
-        link = -> key, content {                                                                     # lambda to render Link header
+        link = -> key, content {                                                                     # lambda -> Link header markup
           if url = env[:links] && env[:links][key]
             [{_: :a, href: url.R(env).href, id: key, class: :icon, c: content},
              "\n"]
@@ -269,8 +267,8 @@ module Webize
         {class: :toolbox,
          c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;' * 3},                            # 👉 root node
              {_: :a, id: :UI, href: host ? env[:base].secureURL : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, # 👉 origin UI
-             {_: :a, id: :cache, href: '/' + fsPath, c: :📦},                                                            # 👉 archive
-             ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed, c: :🛑} if host && !deny_domain?),    # block host
+             {_: :a, id: :cache, href: '/' + POSIX::Node(self).fsPath, c: :📦},                                          # 👉 archive
+             ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed, c: :🛑} if host && !deny_domain?), # 👉 block domain
              {_: :span, class: :path, c: env[:base].parts.map{|p|
                 bc += '/' + p                                                                                            # 👉 path breadcrumbs
                 ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
@@ -281,11 +279,11 @@ module Webize
              env[:feeds].map{|feed|                                                                                      # 👉 feed(s)
                feed = feed.R(env)
                {_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'feed' + Digest::SHA2.hexdigest(feed.uri)}.
-                 update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {})}, # highlight canonical feed
+                 update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {})}, # 👉 host feed
              (:🔌 if offline?),                                                                                          # denote offline mode
              {_: :span, class: :stats,
-              c: [({_: :span,class: :bold, c: env[:origin_status]} if env[:origin_status] && env[:origin_status] != 200),# origin status
-                  (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                     # elapsed time
+              c: [({_: :span,class: :bold, c: env[:origin_status]} if env[:origin_status] && env[:origin_status] != 200),# upstrerram status-code
+                  (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                     # ⏱️ elapsed time
                    [{_: :span, c: '%.1f' % elapsed}, :⏱️] if elapsed > 1)]}]}
       end
     end
