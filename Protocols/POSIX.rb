@@ -53,6 +53,8 @@ module Webize
       graph
     end
 
+    def dirname; node.dirname end
+
     def file_triples graph
       graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/posix/stat#File'.R)
       stat = File.stat fsPath
@@ -155,7 +157,7 @@ module Webize
     end
 
     def writeFile o
-      FileUtils.mkdir_p node.dirname
+      FileUtils.mkdir_p dirname
       File.open(fsPath,'w'){|f| f << o }
       self
     end

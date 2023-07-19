@@ -236,8 +236,8 @@ module Webize
 
     # fetch node(s) from local or remote host
     def fetch nodes=nil, **opts
-      return fetchLocal nodes if offline? # return offline cache
-      if file?                            # cached node?
+      return fetchLocal nodes if offline? # return cache
+      if storage.file?                    # cached node?
         return fileResponse if fileMIME.match?(MIME::FixedFormat) && !basename.match?(/index/i) # return immutable node
         cache = self                      # cache reference
       elsif directory? && (🐢 = join('index.🐢').R env).exist? # cached directory index?
