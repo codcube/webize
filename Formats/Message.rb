@@ -201,7 +201,7 @@ module Webize
 
     MarkupPredicate[Creator] = MarkupPredicate['http://xmlns.com/foaf/0.1/maker'] = -> creators, env {
       creators.map{|creator|
-        if [Webize::URI, RDF::URI].member? creator.class
+        if [Webize::URI, Webize::Resource, RDF::URI].member? creator.class
           uri = Webize::Resource.new(creator).env env
           name = uri.display_name
           color = Digest::SHA2.hexdigest(name)[0..5]
@@ -212,7 +212,7 @@ module Webize
 
     MarkupPredicate[To] = -> recipients, env {
       recipients.map{|r|
-        if [Webize::URI, RDF::URI].member? r.class
+        if [Webize::URI, Webize::Resource, RDF::URI].member? r.class
           uri = Webize::Resource.new(r).env env
           name = uri.display_name
           color = Digest::SHA2.hexdigest(name)[0..5]
@@ -257,7 +257,7 @@ module Webize
       p = -> a {MarkupPredicate[a][re[a], env] if re.has_key? a} # predicate renderer
       titled = (re.has_key? Title) && env[:last][Title] != re[Title]
       if uri = re['uri']                                         # unless blank node:
-        uri = uri.R env;  id = uri.local_id                      # full URI and fragment identifier
+        uri = Webize::Resource.new(uri).env env; id = uri.local_id                      # full URI and fragment identifier
         origin_ref = {_: :a, class: :pointer, href: uri, c: :🔗} # origin pointer
         cache_ref = {_: :a, href: uri.href, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)} # cache pointer
         color = if HostColor.has_key? uri.host
@@ -268,8 +268,8 @@ module Webize
       end
       from = p[Creator] # unless env[:last][Creator] == re[Creator]
       if re.has_key? To
-        if re[To].size == 1 && [Webize::URI, RDF::URI].member?(re[To][0].class)
-          color = '#' + Digest::SHA2.hexdigest(re[To][0].R.display_name)[0..5]
+        if re[To].size == 1 && [Webize::URI, Webize::Resource, RDF::URI].member?(re[To][0].class)
+          color = '#' + Digest::SHA2.hexdigest(Webize::URI.new(re[To][0]).display_name)[0..5]
         end
         to = p[To]
       end
