@@ -168,7 +168,7 @@ module Webize
       Shellwords.escape fsPath
     end
 
-    def writeFile o
+    def write o
       FileUtils.mkdir_p dirname
       File.open(fsPath,'w'){|f| f << o }
       self

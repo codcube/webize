@@ -145,7 +145,7 @@ module Webize
     def cookieCache
       cookie = POSIX::Node join('/cookie')            # jar
       if env[:cookie] && !env[:cookie].empty?         # store cookie to jar
-        cookie.writeFile env[:cookie]
+        cookie.write env[:cookie]
         logger.info [:🍯, host, env[:cookie]].join ' '
       end
       if cookie.file?                                 # load cookie from jar
@@ -305,7 +305,7 @@ module Webize
           repository = (readRDF format, body).persist env, self         # read and cache graph data
           (print MIME.format_icon format; return repository) if !thru   # return graph data, or
                                                                         # HTTP Response with graph or static/unmodified-upstream data
-          doc = document                                                # static cache
+          doc = storage.document                                        # static cache
           if (formats = RDF::Format.content_types[format]) &&           # content type
              (extensions = formats.map(&:file_extension).flatten) &&    # suffixes for content type
              !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix in mapped set?
@@ -359,7 +359,7 @@ module Webize
         head['Content-Length'] = body.bytesize.to_s
         if path == '/favicon.ico' && status / 100 == 4 # set default icon
           env.delete :origin_status
-          writeFile HTML::SiteIcon
+          storage.write HTML::SiteIcon
           fileResponse
         elsif !thru
           repository
