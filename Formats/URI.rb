@@ -145,20 +145,20 @@ module Webize
 
     # relocate URI to current environment
     def href
-      if in_doc? && fragment         # in-document ref
+      if in_doc? && fragment # local reference
         '#' + fragment
-      elsif env[:proxy_href]         # proxy ref
-        if !host || env['SERVER_NAME'] == host # local node
-          uri
-        else                                   # remote node
+      elsif env[:proxy_href] # proxy reference:
+        if !host || env['SERVER_NAME'] == host
+          uri                #  local node
+        else                 #  remote node
           ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join
         end
-      else                           # URI <-> URL correspondence
+      else                   # direct URI<>URL map
         uri
       end
     end
 
-    # set scheme to HTTP for fetch method/library protocol-selection for peer nodes on private or local networks
+    # set scheme to HTTP for fetch method/library protocol selection for peer nodes on private/local networks
     def insecure
       return self if scheme == 'http'
       _ = dup.env env

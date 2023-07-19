@@ -114,18 +114,6 @@ module Webize
       body
     end
 
-    # create navigation pointers in HTTP header
-    def dirMeta
-      root = !path || path == '/'
-      self.path += '.rss' if host == 'www.reddit.com' && path && !%w(favicon.ico gallery wiki video).member?(parts[0]) && !path.index('.rss')
-      if host && root                                            # up to parent domain
-        env[:links][:up] = '//' + host.split('.')[1..-1].join('.')
-      elsif !root                                                # up to parent path
-        env[:links][:up] = [File.dirname(env['REQUEST_PATH']), '/', (env['QUERY_STRING'] && !env['QUERY_STRING'].empty?) ? ['?',env['QUERY_STRING']] : nil].join
-      end
-      env[:links][:down] = '*' if (!host || offline?) && dirURI? # down to children
-    end
-
     # blank environment structure
     def self.env
       {client_etags: [],
@@ -216,6 +204,18 @@ module Webize
         'Access-Control-Allow-Origin' => origin,
         'Content-Type' => type},
        head? ? [] : [content]]
+    end
+
+    # create navigation pointers in HTTP header
+    def dirMeta
+      root = !path || path == '/'
+      self.path += '.rss' if host == 'www.reddit.com' && path && !%w(favicon.ico gallery wiki video).member?(parts[0]) && !path.index('.rss')
+      if host && root                                            # up to parent domain
+        env[:links][:up] = '//' + host.split('.')[1..-1].join('.')
+      elsif !root                                                # up to parent path
+        env[:links][:up] = [File.dirname(env['REQUEST_PATH']), '/', (env['QUERY_STRING'] && !env['QUERY_STRING'].empty?) ? ['?',env['QUERY_STRING']] : nil].join
+      end
+      env[:links][:down] = '*' if (!host || offline?) && dirURI? # down to children
     end
 
     def dropQS
