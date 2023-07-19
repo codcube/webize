@@ -12,7 +12,7 @@ module Webize
 
   module POSIX
     def self.Node uri, env=nil
-      Node.new uri, env
+      env ? Node.new(uri).env(env) : Node.new(uri)
     end
   end
 
@@ -72,7 +72,7 @@ module Webize
     end
 
     def Node uri
-      POSIX::Node uri, env
+      POSIX::Node.new(uri).env env
     end
 
     # find filesystem nodes and map to URI space
