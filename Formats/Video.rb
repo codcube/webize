@@ -104,7 +104,7 @@ module Webize
         dashJS = 'https://cdn.dashjs.org/latest/dash.all.min.js'.R env
       end
 
-      v = env[:base].join(video).R env # video resource
+      v = Webize::Resource.new(env[:base].join(video)).env env # video resource
       {class: :video,                  # video markup
        c: [if v.uri.match? /youtu/     # youtube?
            env[:tubes] ||= {}          # dedupe videos

@@ -202,7 +202,7 @@ module Webize
     MarkupPredicate[Creator] = MarkupPredicate['http://xmlns.com/foaf/0.1/maker'] = -> creators, env {
       creators.map{|creator|
         if [Webize::URI, RDF::URI].member? creator.class
-          uri = creator.R env
+          uri = Webize::Resource.new(creator).env env
           name = uri.display_name
           color = Digest::SHA2.hexdigest(name)[0..5]
           {_: :a, class: :from, href: uri.href, style: "background-color: ##{color}; color: #000", c: name}
@@ -213,7 +213,7 @@ module Webize
     MarkupPredicate[To] = -> recipients, env {
       recipients.map{|r|
         if [Webize::URI, RDF::URI].member? r.class
-          uri = r.R env
+          uri = Webize::Resource.new(r).env env
           name = uri.display_name
           color = Digest::SHA2.hexdigest(name)[0..5]
           {_: :a, class: :to, href: uri.href, style: "background-color: ##{color}; color: #000", c: ['&rarr;', name].join}
