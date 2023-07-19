@@ -126,6 +126,10 @@ module Webize
       Console.logger.info data
     end
 
+    def self.Node uri, env
+      Node.new(uri).env env
+    end
+
   end
   class HTTP::Node < Resource
     include MIME
@@ -239,8 +243,8 @@ module Webize
       return fetchLocal nodes if offline? # return cache
       if storage.file?                    # cached node?
         return fileResponse if fileMIME.match?(MIME::FixedFormat) && !basename.match?(/index/i) # return immutable node
-        cache = self                      # cache reference
-      elsif storage.directory? && (🐢 = join('index.🐢').R env).exist? # cached directory index?
+        cache = storage                   # cache reference
+      elsif storage.directory? && (🐢 = POSIX::Node join('index.🐢'), env).exist? # cached directory index?
         cache = 🐢                        # cache reference
       end
       env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
@@ -416,6 +420,11 @@ module Webize
       else
         notfound
       end
+    end
+
+    # URI -> ETag
+    def fileETag
+      Digest::SHA2.hexdigest [uri, storage.mtime, storage.size].join
     end
 
     def fileResponse

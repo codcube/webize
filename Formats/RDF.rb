@@ -45,7 +45,7 @@ module Webize
       each_graph.map{|graph|                              # visit graph
         graph.extend Graph::Sort
         if g = graph.name
-          g = g.R                                         # graph URI
+          g = POSIX::Node g                               # graph URI
           f = [g.document, :🐢].join '.'                  # 🐢 location
           log = []
 

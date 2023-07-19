@@ -185,11 +185,6 @@ module Webize
     def glob; fromNodes nodeGlob end
     def grep; fromNodes nodeGrep end
 
-    # URI -> ETag
-    def fileETag
-      Digest::SHA2.hexdigest [uri, mtime, node.size].join
-    end
-
     # [path, path..] -> [URI, URI..]
     def fromNodes ps
       base = host ? self : '/'.R
@@ -212,6 +207,8 @@ module Webize
       return [] if q.empty?
       IO.popen(['grep', '-ril', q, *files]).read.lines.map &:chomp rescue []
     end
+
+    def size; node.size end
 
   end
 end

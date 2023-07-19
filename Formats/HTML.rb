@@ -358,7 +358,7 @@ module Webize
 
         # @href
         @doc.css('[href]').map{|m|
-          v = @base.join m.attr 'href' # @href object
+          v = HTTP::Node @base.join(m.attr 'href'), @base.env # @href object
           if rel = m.attr('rel')       # @rel predicate
             rel.split(/[\s,]+/).map{|k|
               @env[:links][:prev] ||= v if k.match? /prev(ious)?/i
@@ -367,7 +367,7 @@ module Webize
               @env[:feeds].push v if k == 'alternate' && ((m['type']&.match?(/atom|rss/)) || (v.path&.match?(/^\/feed\/?$/))) && !@env[:feeds].member?(v)
               k = MetaMap[k] || k
               logger.warn ["predicate URI unmapped for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
-              yield @base, k, v unless k == :drop || v.R.deny?}
+              yield @base, k, v unless k == :drop || v.deny?}
           elsif !%w(a base).member?(m.name) # @href with no @rel
             yield @base, Link, v
           end}
