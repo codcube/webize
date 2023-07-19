@@ -103,7 +103,7 @@ module Webize
     end
 
     def Youtu_Be
-      [301, {'Location' => Node(['//www.youtube.com/watch?v=', path[1..-1]].join).href}, []] 
+      [301, {'Location' => Node(['//www.youtube.com/watch?v=', path[1..-1]].join).href}, []]
     end
 
     def YouTube doc, &b

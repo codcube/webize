@@ -448,13 +448,13 @@ module Webize
     end
  
     def GET
-      return hostGET if host                  # remote node
-      ps = parts ; p = ps[0]                  # path parts
-      return fetchlocal unless p              # local node
-      return unproxy.hostGET if p[-1] == ':' && ps.size > 1       # remote node - proxy URI w/ scheme
-      return unproxy.hostGET if p.index '.' && p != 'favicon.ico' # remote node - proxy URI sans scheme
-      return dateDir if %w{m d h y}.member? p # current year/month/day/hour redirect
-      return block parts[1] if p == 'block'   # block domain
+      return hostGET if host                  # remote node - canonical URI
+      ps = parts ; p = ps[0]                  # parse path
+      return fetchLocal unless p              # local node - / or no path
+      return unproxy.hostGET if p[-1] == ':' && ps.size > 1        # remote node - proxy URI w/ scheme
+      return unproxy.hostGET if p.index('.') && p != 'favicon.ico' # remote node - proxy URI sans scheme
+      return dateDir if %w{m d h y}.member? p # year/month/day/hour redirect
+      return block parts[1] if p == 'block'   # block domain action
       fetchLocal                              # local node
     end
 
