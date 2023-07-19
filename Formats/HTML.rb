@@ -277,7 +277,7 @@ module Webize
              ({_: :form, c: env[:qs].map{|k,v|                                                                           # searchbox
                  {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}} if env[:qs].has_key? 'q'),     # preserve non-visible parameters
              env[:feeds].map{|feed|                                                                                      # 👉 feed(s)
-               feed = feed.R(env)
+               feed = Webize::Resource.new(feed).env env
                {_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'feed' + Digest::SHA2.hexdigest(feed.uri)}.
                  update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {})}, # 👉 host feed
              (:🔌 if offline?),                                                                                          # denote offline mode
@@ -346,7 +346,7 @@ module Webize
         # resolve base URI
         if base = @doc.css('head base')[0]
           if baseHref = base['href']
-            @base = @base.join(baseHref).R @env
+            @base = HTTP::Node @base.join(baseHref), @env
           end
         end
 
