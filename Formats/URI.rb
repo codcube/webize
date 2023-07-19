@@ -94,10 +94,6 @@ module Webize
 
     def query_hash; Digest::SHA2.hexdigest(query)[0..15] end
 
-    def R env_ = nil
-      env_ ? env(env_) : self
-    end
-
     def secureURL
       if !scheme
         'https:' + uri
@@ -216,11 +212,7 @@ module Webize
   end
 end
 
-# cast to Resource INPROGRESS slowly removing #R invocations then this. there were about 200 in 3000 lines of code so a shorthand almost deserves to stay, but too much like a monkeypatch
-class RDF::URI
-  def R env=nil; env ? Webize::Resource.new(self).env(env) : Webize::Resource.new(self) end
-end
-
+# cast to Resource INPROGRESS slowly removing #R invocations - about 250 in 3500 lines of code, so a shorthand almost deserves to stay, but too much like a monkeypatch
 class String
   def R env=nil; env ? Webize::Resource.new(self).env(env) : Webize::Resource.new(self) end
 end

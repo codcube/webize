@@ -488,7 +488,7 @@ module Webize
 
       head['Accept'] = ['text/turtle', head['Accept']].join ',' unless env[:notransform] || head['Accept']&.match?(/text\/turtle/) # accept 🐢/turtle. add ?notransform to base URI to disable this (to fetch upstream data-browser UI rather than graph data, and not reformat any upstream HTML or JS)
 
-      head['Content-Type'] = 'application/json' if %w(api.mixcloud.com proxy.c2.com).member? host
+      head['Content-Type'] = 'application/json' if %w(api.mixcloud.com).member? host
 
       head['Last-Modified']&.sub! /((ne|r)?s|ur)?day/, '' # abbr day name to 3-letter variant
 

@@ -29,7 +29,6 @@ module Webize
     Triplr = {
       'api.imgur.com' => :Imgur,
       'api.mixcloud.com' => :Mixcloud,
-      'proxy.c2.com' => :C2,
     }
   end
 
@@ -38,11 +37,6 @@ module Webize
   class HTTP::Node
 
     # site-specific RDF mapping
-
-    def C2 tree, &b
-      yield self, Date, tree['date']
-      yield self, Content, (Webize::HTML.format tree['text'].hrefs, self)
-    end
 
     def GoogleHTML doc
       doc.css('div.g').map{|g|
