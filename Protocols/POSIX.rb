@@ -20,6 +20,7 @@ module Webize
     include MIME
 
     def dir_triples graph
+      return Node(join basename + '/').dir_triples graph unless dirURI?
       graph << RDF::Statement.new(self, Type.R, Container.R)
       graph << RDF::Statement.new(self, Date.R, node.stat.mtime.iso8601)
       children = node.children
@@ -28,14 +29,14 @@ module Webize
       graph << RDF::Statement.new(self, Title.R, basename)
       children.select{|n|n.basename.to_s[0] != '.'}.map{|child| # 👉 contained nodes
         base = child.basename.to_s
-        c = join base.gsub(' ','%20').gsub('#','%23')
+        c = Node join base.gsub(' ','%20').gsub('#','%23')
         if child.directory?
           c += '/'
           graph << RDF::Statement.new(c, Type.R, Container.R)
           graph << RDF::Statement.new(c, Title.R, base + '/')
         else
           graph << RDF::Statement.new(c, Title.R, base)
-          graph << RDF::Statement.new(c, Type.R, MIME.format_icon(c.R.fileMIME))
+          graph << RDF::Statement.new(c, Type.R, MIME.format_icon(c.fileMIME))
         end
         if alpha_binning
           alphas = {}

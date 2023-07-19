@@ -49,7 +49,6 @@ module Webize
         d.empty? }                                           # is name leaf in tree?
     end
 
-    def dirURI; dirURI? ? self : join((basename || '') + '/').R(env) end
     def dirURI?; !path || path[-1] == '/' end
 
     def display_host
@@ -93,7 +92,7 @@ module Webize
     end
 
     def no_scheme; uri.split('//',2)[1] end
-    def parts; @parts ||= path ? (path.split('/') - ['']) : [] end
+    def parts; path ? (path.split('/') - ['']) : [] end
 
     # Hash → querystring
     def self.qs h

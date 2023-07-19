@@ -380,9 +380,9 @@ module Webize
       (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (mimeA → mimeA) reformat disabled
       repos = (nodes || storage.nodes).map{|x|              # load node(s)
         if x.file?                                          # file?
-          x.file_triples x.readRDF                          # parse file + add filesystem metadata
+          x.file_triples x.readRDF                          # read file + filesystem metadata
         elsif x.directory?                                  # directory?
-          x.dirURI.dir_triples RDF::Repository.new          # read directory metadata
+          x.dir_triples RDF::Repository.new                 # read directory metadata
         end}
       dirMeta                                               # 👉 storage-adjacent nodes
       timeMeta unless host                                  # 👉 timeline-adjacent nodes
