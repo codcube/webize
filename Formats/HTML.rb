@@ -333,10 +333,11 @@ module Webize
       def each_statement &fn
         scanContent{|s,p,o,g=nil|
           o = Webize.date o if p.to_s == Date # normalize date formats
-          fn.call RDF::Statement.new(s.R, p.R,
+          fn.call RDF::Statement.new(Webize::URI.new(s),
+                                     Webize::URI.new(p),
                                      p == Content ? ((l = RDF::Literal o).datatype = RDF.HTML
                                                      l) : o,
-                                     graph_name: g ? g.R : @base) if s && p && o}
+                                     graph_name: g ? Webize::URI.new(g) : @base) if s && p && o}
       end
 
       def scanContent &f
