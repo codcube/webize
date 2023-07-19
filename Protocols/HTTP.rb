@@ -188,7 +188,7 @@ module Webize
 
     def deny status = 200, type = nil
       env[:deny] = true 
-      return [301,{'Location' => ['//', host, path].join.R(env).href},[]] if query&.match? Gunk # drop query
+      return [301, {'Location' => Node(['//', host, path].join).href}, []] if query&.match? Gunk # drop query
       ext = File.extname basename if path
       type, content = if type == :stylesheet || ext == '.css'
                         ['text/css', '']
