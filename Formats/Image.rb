@@ -70,7 +70,7 @@ module Webize
         (Console.logger.warn "empty image resource"; image = '#image') unless image
       end
 
-      src = env[:base].join(image).R(env).href
+      src = Webize::Resource.new(env[:base].join(image)).env(env).href
       img = {_: :a, href: src,
              c: {_: :img, src: src}}
 

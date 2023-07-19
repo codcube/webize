@@ -44,10 +44,10 @@ module Webize
 
       def each_statement &fn
         scanContent(:mapPredicates, :rawTriples){|s,p,o| # triples flow (left ← right) in stack
-          fn.call RDF::Statement.new(s.R, p.R,
+          fn.call RDF::Statement.new((s = Webize::URI.new(s)), Webize::URI.new(p),
                                      p == Content ? ((l = RDF::Literal(Webize::HTML.format o.to_s, @base)).datatype = RDF.HTML
                                                      l) : o,
-                                     graph_name: s.R)}
+                                     graph_name: s)}
       end
 
       def scanContent *f
@@ -155,7 +155,7 @@ module Webize
                   ).yield_self{|capture|
                capture && capture[1]}
 
-            subject = @base.join(id).R
+            subject = Webize::URI.new @base.join id
             subject.query = nil if subject.query&.match?(/utm[^a-z]/)
             subject.fragment = nil if subject.fragment&.match?(/utm[^a-z]/)
             reddit = subject.host&.match /reddit.com$/
@@ -178,7 +178,8 @@ module Webize
               if url = e[1].match(reSrc)
                 rel = e[1].match reRel
                 rel = rel ? rel[1] : 'link'
-                o = @base.join(url[2]).R; o.path ||= '/'
+                o = Webize::URI.new(@base.join url[2])
+                o.path ||= '/'
                 p = case File.extname o.path
                     when /jpg|png|webp/i
                       Image

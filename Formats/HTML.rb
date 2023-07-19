@@ -58,7 +58,7 @@ module Webize
                       (attr == 'class' && !%w(greentext original q quote QuotedText).member?(a.value))} # drop attributes
 
         if e['src']
-          src = (base.join e['src']).R                            # resolve @src
+          src = URI.new base.join e['src']                        # resolve @src
           if src.deny?
             #Console.logger.debug "🚩 \e[31;1m#{src}\e[0m"
             e.remove
@@ -70,7 +70,7 @@ module Webize
         srcset e, base if e['srcset']                             # resolve @srcset
 
         if e['href']                                              # href attribute
-          ref = (base.join e['href']).R                           # resolve @href
+          ref = URI.new base.join e['href']                       # resolve @href
           ref.query = nil if ref.query&.match?(/utm[^a-z]/)       # deutmize query (tracker gunk)
           ref.fragment = nil if ref.fragment&.match?(/utm[^a-z]/) # deutmize fragment
 
@@ -144,7 +144,7 @@ module Webize
       html = Nokogiri::HTML.send (full ? :parse : :fragment), (html.class==Array ? html.join : html)
 
       html.css('[src]').map{|i|                                   # @src
-        i['src'] = env[:base].join(i['src']).R(env).href}
+        i['src'] = Webize::Resource.new(env[:base].join(i['src'])).env(env).href}
 
       html.css('[srcset]').map{|i|                                # @srcset
         srcset = i['srcset'].scan(SrcSetRegex).map{|ref, size|
@@ -154,7 +154,7 @@ module Webize
         i['srcset'] = srcset}
 
       html.css('[href]').map{|a|
-        a['href'] = env[:base].join(a['href']).R(env).href} # @href
+        a['href'] = Webize::Resource.new(env[:base].join(a['href'])).env(env).href} # @href
 
       html.to_html                                                # serialize
     end
@@ -265,14 +265,14 @@ module Webize
         bc = '' # path breadcrumbs
 
         {class: :toolbox,
-         c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;' * 3},                            # 👉 root node
+         c: [{_: :a, id: :rootpath, href: Resource.new(env[:base].join('/')).env(env).href, c: '&nbsp;' * 3},            # 👉 root node
              {_: :a, id: :UI, href: host ? env[:base].secureURL : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, # 👉 origin UI
              {_: :a, id: :cache, href: '/' + POSIX::Node(self).fsPath, c: :📦},                                          # 👉 archive
              ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed, c: :🛑} if host && !deny_domain?), # 👉 block domain
              {_: :span, class: :path, c: env[:base].parts.map{|p|
                 bc += '/' + p                                                                                            # 👉 path breadcrumbs
                 ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
-                       href: env[:base].join(bc).R(env).href,
+                       href: Resource.new(env[:base].join(bc)).env(env).href,
                        c: CGI.escapeHTML(Rack::Utils.unescape p)}]}},
              ({_: :form, c: env[:qs].map{|k,v|                                                                           # searchbox
                  {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}} if env[:qs].has_key? 'q'),     # preserve non-visible parameters
@@ -488,7 +488,7 @@ module Webize
           CGI.escapeHTML o.to_s
         end
       when RDF::URI                     # RDF::URI
-        o = o.R env
+        o = Webize::Resource.new(o).env env
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       when String                       # String
         CGI.escapeHTML o
