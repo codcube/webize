@@ -378,9 +378,9 @@ module Webize
                        (env[:notransform] ||                # (mimeA → mimeB) transform disabled by client
                         format.match?(MIME::FixedFormat) || # (mimeA → mimeB) transform disabled by server
       (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (mimeA → mimeA) reformat disabled
-      repos = (nodes || storage.nodes).map{|x|              # load specified or default node set
+      repos = (nodes || storage.nodes).map{|x|              # load node(s)
         if x.file?                                          # file?
-          x.file_triples x.readRDF                          # parse + read file metadata
+          x.file_triples x.readRDF                          # parse file + add filesystem metadata
         elsif x.directory?                                  # directory?
           x.dirURI.dir_triples RDF::Repository.new          # read directory metadata
         end}
@@ -437,16 +437,13 @@ module Webize
         h['Last-Modified'] ||= mtime.httpdate
         [s, h, b]}
     end
-
+ 
     def GET
-      return hostGET if host                  # remote node at canonical URI
-      p = parts[0]                            # path selector
-      return fetchLocal unless p              # root local node
-      return unproxy.hostGET if p[-1] == ':'  # remote node at proxy URI w/ scheme
-      return icon if p == 'favicon.ico'       # icon
-      return unproxy.hostGET if p.index '.'   # remote node at proxy URI w/o scheme
-      return dateDir if %w{m d h y}.member? p # current year/month/day/hour's container
-      return block parts[1] if p == 'block'   # block site
+      return hostGET if host                  # remote node
+      ps = parts ; p = ps[0]                  # path parts
+      return unproxy.hostGET if ps.size > 1 && (p[-1] == ':' || p.index('.')) # remote node (proxy URI with or without scheme)
+      return dateDir if %w{m d h y}.member? p # current year/month/day/hour redirect
+      return block parts[1] if p == 'block'   # block domain
       fetchLocal                              # local node
     end
 
@@ -532,17 +529,23 @@ module Webize
         (deny? && !FilterHosts.member?(host)) ? deny : fetch
       end
     end
-    
-    def icon
-      [200,
-       {'Content-Type' => 'image/png',
-        'Expires' => (Time.now + 86400).httpdate}, [HTML::SiteIcon]]
-    end
 
     def linkHeader
       return unless env.has_key? :links
       env[:links].map{|type,uri|
         "<#{uri}>; rel=#{type}"}.join(', ')
+    end
+
+    def link_icon
+      return unless env[:links].has_key? :icon
+      fav = POSIX::Node join '/favicon.ico'                                               # default location
+      env[:links][:icon] = POSIX::Node env[:links][:icon], env                            # icon
+      if !env[:links][:icon].dataURI? &&                                                  # if icon isn't data URI and
+         env[:links][:icon].path != fav.path && env[:links][:icon] != self &&             # isn't in default location and
+         !env[:links][:icon].directory? && !fav.exist? && !fav.symlink?                   # default location is available:
+        fav.mkdir                                                                         # create container
+        FileUtils.ln_s (env[:links][:icon].node.relative_path_from fav.dirname), fav.node # link icon
+      end
     end
 
     def Node uri
@@ -616,6 +619,7 @@ module Webize
 
       body = case format                   # response body
              when /html/                   # serialize HTML
+               link_icon
                HTML::Document.new(uri).env(env).write JSON.fromGraph repositories
              when /atom|rss|xml/           # serialize Atom/RSS
                Feed::Document.new(uri).env(env).write JSON.fromGraph repositories
@@ -668,7 +672,7 @@ module Webize
     end
 
     def storage
-      POSIX::Node(self).env env
+      POSIX::Node self, env
     end
 
     # URI -> HTTP headers

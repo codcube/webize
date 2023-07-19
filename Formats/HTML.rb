@@ -203,19 +203,6 @@ module Webize
 
       def write graph={}
         status = env[:origin_status]
-        icon = join('/favicon.ico').R env                                                            # well-known icon location
-
-        if env[:links][:icon]                                                                        # icon reference in metadata
-          env[:links][:icon] = env[:links][:icon].R env unless env[:links][:icon].class==Webize::URI # normalize icon class
-          if !env[:links][:icon].dataURI? &&                                                         # icon ref isn't data URI,
-             env[:links][:icon].path != icon.path && env[:links][:icon] != self &&                   # isn't at well-known location, and
-             !env[:links][:icon].node.directory? && !icon.node.exist? && !icon.node.symlink?         # target location is unlinked?
-            icon.mkdir                                                                               # create container if needed
-            FileUtils.ln_s (env[:links][:icon].node.relative_path_from icon.node.dirname), icon.node # link well-known location
-          end
-        end
-
-        env[:links][:icon] ||= icon.node.exist? ? icon : '/favicon.ico'.R(env)                       # default icon
 
         bgcolor = if env[:deny]                                                                      # background color
                     if HostColor.has_key? host
@@ -250,44 +237,55 @@ module Webize
                                env[:links].map{|type, resource|
                                  {_: :link, rel: type, href: CGI.escapeHTML(resource.R(env).href)}}]},
                           {_: :body,
-                           c: [{_: :img, class: :favicon, src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href},
+                           c: [({_: :img, class: :favicon,
+                                 src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href} if env[:links].has_key? :icon),
+
                                toolbar,
-                               (['<br>⚠️', {_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},'<br>'] if env.has_key? :warning), # warnings
+
+                               (['<br>⚠️',
+                                 {_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},
+                                 '<br>'] if env.has_key? :warning), # warnings
+
                                link[:up,'&#9650;'],
-                               if updates = graph.delete('#updates') # show updates at the top
+
+                               if updates = graph.delete('#updates') # updates at the top
                                  HTML.markup updates, env
                                end,
+
                                if datasets = graph.delete('#datasets') # datasets sidebar
                                  HTML.markup datasets, env
                                end,
-                               graph.values.map{|v| HTML.markup v, env },
+
+                               graph.values.map{|v| HTML.markup v, env }, # graph data
+
                                link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
+
                                {_: :script, c: Code::SiteJS}]}]}]
       end
 
       def toolbar
-        bc = '' # cumulative path breadcrumbs
+        bc = '' # path breadcrumbs
 
         {class: :toolbox,
-         c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;' * 3},                             # 👉 root node
+         c: [{_: :a, id: :rootpath, href: env[:base].join('/').R(env).href, c: '&nbsp;' * 3},                            # 👉 root node
              {_: :a, id: :UI, href: host ? env[:base].secureURL : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, # 👉 origin UI
-             {_: :a, id: :cache, href: '/' + fsPath, c: :📦},                                                             # 👉 archive
+             {_: :a, id: :cache, href: '/' + fsPath, c: :📦},                                                            # 👉 archive
              ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed, c: :🛑} if host && !deny_domain?),    # block host
              {_: :span, class: :path, c: env[:base].parts.map{|p|
-                bc += '/' + p                                                                                             # 👉 path breadcrumbs
+                bc += '/' + p                                                                                            # 👉 path breadcrumbs
                 ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
                        href: env[:base].join(bc).R(env).href,
                        c: CGI.escapeHTML(Rack::Utils.unescape p)}]}},
-             ({_: :form, c: env[:qs].map{|k,v|                                                                            # searchbox
-                 {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}} if env[:qs].has_key? 'q'),       # preserve non-visible parameters
-             env[:feeds].map{|feed|                                                                                       # 👉 feed(s)
+             ({_: :form, c: env[:qs].map{|k,v|                                                                           # searchbox
+                 {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}} if env[:qs].has_key? 'q'),     # preserve non-visible parameters
+             env[:feeds].map{|feed|                                                                                      # 👉 feed(s)
                feed = feed.R(env)
                {_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'feed' + Digest::SHA2.hexdigest(feed.uri)}.
                  update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {})}, # highlight canonical feed
-             (:🔌 if offline?),                                                                                           # denote offline mode
+             (:🔌 if offline?),                                                                                          # denote offline mode
              {_: :span, class: :stats,
-              c: [({_: :span, c: env[:origin_status], class: :bold} if env[:origin_status] && env[:origin_status] != 200),# origin status
-                  (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                      # elapsed time
+              c: [({_: :span,class: :bold, c: env[:origin_status]} if env[:origin_status] && env[:origin_status] != 200),# origin status
+                  (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                     # elapsed time
                    [{_: :span, c: '%.1f' % elapsed}, :⏱️] if elapsed > 1)]}]}
       end
     end

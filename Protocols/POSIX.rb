@@ -11,8 +11,8 @@ module Webize
   PeerAddrs = PeerHosts.invert                         # peer addr -> peer host map
 
   module POSIX
-    def self.Node uri
-      Node.new uri
+    def self.Node uri, env=nil
+      Node.new uri, env
     end
   end
 
@@ -72,7 +72,7 @@ module Webize
     end
 
     def Node uri
-      (POSIX::Node.new uri).env env
+      POSIX::Node uri, env
     end
 
     # find filesystem nodes and map to URI space
