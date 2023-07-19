@@ -70,10 +70,15 @@ module Webize
       File.open(fsPath).read
     end
 
-    # create containing dir(s) and return locator for document
+    # create containing dir(s) and return locator
     def document
       mkdir
-      documentPath
+      doc = fsPath
+      if doc[-1] == '/' # dir/ -> dir/index
+        doc + 'index'
+      else              # file -> file
+        doc
+      end
     end
 
     def Node uri

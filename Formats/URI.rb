@@ -65,16 +65,6 @@ module Webize
       'name'
     end
 
-    # document location
-    def documentPath
-      doc = fsPath
-      if doc[-1] == '/' # directory/
-        doc + 'index'
-      else              # file
-        doc
-      end
-    end
-
     def domains; host.split('.').reverse end
 
     def extname; File.extname path if path end

@@ -240,7 +240,7 @@ module Webize
       if storage.file?                    # cached node?
         return fileResponse if fileMIME.match?(MIME::FixedFormat) && !basename.match?(/index/i) # return immutable node
         cache = self                      # cache reference
-      elsif directory? && (🐢 = join('index.🐢').R env).exist? # cached directory index?
+      elsif storage.directory? && (🐢 = join('index.🐢').R env).exist? # cached directory index?
         cache = 🐢                        # cache reference
       end
       env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
