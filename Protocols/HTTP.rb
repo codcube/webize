@@ -538,13 +538,13 @@ module Webize
 
     def link_icon
       return unless env[:links].has_key? :icon
-      fav = POSIX::Node join '/favicon.ico'                                               # default location
-      env[:links][:icon] = POSIX::Node env[:links][:icon], env                            # icon
-      if !env[:links][:icon].dataURI? &&                                                  # if icon isn't data URI and
-         env[:links][:icon].path != fav.path && env[:links][:icon] != self &&             # isn't in default location and
-         !env[:links][:icon].directory? && !fav.exist? && !fav.symlink?                   # default location is available:
-        fav.mkdir                                                                         # create container
-        FileUtils.ln_s (env[:links][:icon].node.relative_path_from fav.dirname), fav.node # link icon
+      fav = POSIX::Node join '/favicon.ico'                                 # default location
+      icon = env[:links][:icon] = POSIX::Node env[:links][:icon], env       # icon location
+      if !icon.dataURI? &&                                                  # if icon isn't data URI and
+         icon.path != fav.path && icon != self &&                           # is in non-default location and
+         !icon.directory? && !fav.exist? && !fav.symlink?                   # default location is available:
+        fav.mkdir                                                           # create container
+        FileUtils.ln_s (icon.node.relative_path_from fav.dirname), fav.node # link icon to default location
       end
     end
 
