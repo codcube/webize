@@ -450,7 +450,8 @@ module Webize
     def GET
       return hostGET if host                  # remote node
       ps = parts ; p = ps[0]                  # path parts
-      return unproxy.hostGET if ps.size > 1 && (p[-1] == ':' || p.index('.')) # remote node (proxy URI with or without scheme)
+      return unproxy.hostGET if p[-1] == ':' && ps.size > 1       # remote node - proxy URI w/ scheme
+      return unproxy.hostGET if p.index '.' && p != 'favicon.ico' # remote node - proxy URI sans scheme
       return dateDir if %w{m d h y}.member? p # current year/month/day/hour redirect
       return block parts[1] if p == 'block'   # block domain
       fetchLocal                              # local node

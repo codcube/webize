@@ -144,7 +144,7 @@ module Webize
       html = Nokogiri::HTML.send (full ? :parse : :fragment), (html.class==Array ? html.join : html)
 
       html.css('[src]').map{|i|                                   # @src
-        i['src'] = Webize::Resource.new(env[:base].join(i['src'])).env(env).href}
+        i['src'] = Resource.new(env[:base].join(i['src'])).env(env).href}
 
       html.css('[srcset]').map{|i|                                # @srcset
         srcset = i['srcset'].scan(SrcSetRegex).map{|ref, size|
@@ -154,7 +154,7 @@ module Webize
         i['srcset'] = srcset}
 
       html.css('[href]').map{|a|
-        a['href'] = Webize::Resource.new(env[:base].join(a['href'])).env(env).href} # @href
+        a['href'] = Resource.new(env[:base].join(a['href'])).env(env).href} # @href
 
       html.to_html                                                # serialize
     end
@@ -220,7 +220,7 @@ module Webize
 
         link = -> key, content {                                                                     # lambda -> Link header markup
           if url = env[:links] && env[:links][key]
-            [{_: :a, href: url.R(env).href, id: key, class: :icon, c: content},
+            [{_: :a, href: Resource.new(url).env(env).href, id: key, class: :icon, c: content},
              "\n"]
           end}
 
@@ -277,7 +277,7 @@ module Webize
              ({_: :form, c: env[:qs].map{|k,v|                                                                           # searchbox
                  {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}} if env[:qs].has_key? 'q'),     # preserve non-visible parameters
              env[:feeds].map{|feed|                                                                                      # 👉 feed(s)
-               feed = Webize::Resource.new(feed).env env
+               feed = Resource.new(feed).env env
                {_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'feed' + Digest::SHA2.hexdigest(feed.uri)}.
                  update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {})}, # 👉 host feed
              (:🔌 if offline?),                                                                                          # denote offline mode
@@ -488,7 +488,7 @@ module Webize
           CGI.escapeHTML o.to_s
         end
       when RDF::URI                     # RDF::URI
-        o = Webize::Resource.new(o).env env
+        o = Resource.new(o).env env
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       when String                       # String
         CGI.escapeHTML o
@@ -496,7 +496,11 @@ module Webize
         Markup[Date][o, env]
       when TrueClass                    # booleam
         {_: :input, type: :checkbox, checked: true}
+      when Webize::Resource             # Resource
+puts "rendering #{o}"
+        {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       when Webize::URI                  # URI
+        o = Resource.new(o).env env
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       else                              # renderer undefined
         {_: :span, c: CGI.escapeHTML(o.to_s)}
