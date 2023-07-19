@@ -172,7 +172,8 @@ module Webize
   end
   module HTML
     MarkupPredicate[Link] = -> links, env {
-      links.select{|l|l.respond_to? :R}.map(&:R).select{|l| !l.deny?}.group_by{|l|
+      links.select{|l|[Webize::URI, Webize::Resource, RDF::URI].member? l.class}.
+        map{|l| Webize::URI.new l }.select{|l| !l.deny?}.group_by{|l|
         links.size > 8 && l.host && l.host.split('.')[-1] || nil}.map{|tld, links|
         [{class: :container,
           c: [({class: :head, _: :span, c: tld} if tld),
@@ -186,7 +187,7 @@ module Webize
                          {_: :tr,
                           c: [{_: :td, class: :host,
                                c: host ? {_: :a, href: h.href,
-                                          c: {_: :img, alt: h.display_host, src: h.join('/favicon.ico').R(env).href},
+                                          c: {_: :img, alt: h.display_host, src: Webize::Resource.new(h.join('/favicon.ico')).env(env).href},
                                           style: "background-color: #{HostColor[host] || '#000'}; color: #fff"} : []},
                               {_: :td, class: :path,
                                c: paths.map{|p|
