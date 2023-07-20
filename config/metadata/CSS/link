@@ -1,10 +1,11 @@
 .CommentPoster > a
 .age > a
-.postNum a
 .timestamp > a
 .u-url
+[class*="post"] a
 [class*="title"] a
 [id*="permalink"]
+[id*="post"] a
 a.chat-item__time
 a.post_no
 a[class*="link"]
