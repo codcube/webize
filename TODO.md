@@ -38,11 +38,14 @@
 - ipfs/ipns protocol handler https://archive.fosdem.org/2021/schedule/event/open_research_filecoin_ipfs/
 - NNTP server/client
 - http, (web)socket, DNS in one process (toplevel Async reactor?) for RAM efficiency on oldphone/pi3
+
 ## DNS
 - replace dnsd-mini4 with rubydns/async-dns
+
 ## Gemini
 - gack (gemini) server
 - serve gemini from cache when gone missing gemini://rfmpie.smol.pub/reviving-macbook-with-linux
+
 ## HTTP(S)
 - stop redir to blocked contetnt: http://l/2021/09/27/21/*blogpost*?view=table&sort=date →  //link.mail.bloombergbusiness.com/favicon.ico  → https://cdn.sailthru.com/assets/images/favicon.ico
 - ask all the peer-caches (pi/vps/phone from laptop) ahead of origin servers for static resources - HEAD All then cancel remaining HEADs on first response and GET winner? or cache availability notices recieved via UDP mesh.  - or announce availability at cache-time of stuff not autoimagically syndicated (larger static media stuff etc)
