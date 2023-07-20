@@ -535,8 +535,7 @@ puts "rendering #{o}"
 
     MarkupPredicate['uri'] = -> us, env {
       (us.class == Array ? us : [us]).map{|uri|
-        uri = uri.R env
-        {_: :a, href: uri.href, c: :🔗, id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}}
+        {_: :a, href: Resource(uri, env).href, c: :🔗, id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}}
 
   end
 end

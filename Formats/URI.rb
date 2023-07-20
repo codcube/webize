@@ -115,8 +115,6 @@ module Webize
     alias_method :uri, :to_s
   end
 
-  def self.URI u; URI.new u end
-
   # a Webize Resource is an RDF Resource and an environment
   class Resource < URI
 
@@ -166,6 +164,14 @@ module Webize
     end
 
   end
+
+  def self.Resource u, e
+    Resource.new(u).env e
+  end
+
+  def self.URI u
+    URI.new u
+  end  
 
   module URIlist
     class Format < RDF::Format
