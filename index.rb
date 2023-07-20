@@ -1,4 +1,4 @@
-{Formats: %w(Config URI HTML Archive Audio Calendar Code CSV Feed Form Gemini Image JSON Mail Markdown Message MIME Org PDF POSIX RDF Subtitle Text Video),
+{Formats: %w(Config URI HTML MIME POSIX RDF Archive Audio Calendar Code CSV Feed Form Gemini Image JSON Mail Markdown Message Org PDF Subtitle Text Video),
  Protocols: %w(POSIX Gemini HTTP),
  config: %w(scripts/site)}.
   map{|category, components|
