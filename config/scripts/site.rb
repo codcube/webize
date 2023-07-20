@@ -1,5 +1,8 @@
 # coding: utf-8
 module Webize
+
+  MIME::ReFormat.clear # disable rewriting of HTML
+
   module Feed
 
     # subscriptions
