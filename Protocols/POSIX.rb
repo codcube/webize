@@ -190,7 +190,7 @@ module Webize
       base = host ? self : '/'.R
       pathbase = host ? host.size : 0
       ps.map{|p|
-        base.join(p.to_s[pathbase..-1].gsub(':','%3A').gsub(' ','%20').gsub('#','%23')).R env}
+        Node base.join p.to_s[pathbase..-1].gsub(':','%3A').gsub(' ','%20').gsub('#','%23')}
     end
 
     def mtime; node.mtime end

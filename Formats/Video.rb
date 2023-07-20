@@ -101,7 +101,7 @@ module Webize
 
       if video.to_s.match? /v.redd.it/ # reddit?
         video += '/DASHPlaylist.mpd'   # append playlist suffix to URI
-        dashJS = 'https://cdn.dashjs.org/latest/dash.all.min.js'.R env
+        dashJS = Webize::Resource 'https://cdn.dashjs.org/latest/dash.all.min.js', env
       end
 
       v = Webize::Resource.new(env[:base].join(video)).env env # video resource
@@ -120,7 +120,8 @@ module Webize
              else                      # other videos, tap to load
                player = 'embed' + Digest::SHA2.hexdigest(rand.to_s)
                [{class: :preembed, onclick: "inlineplayer(\"##{player}\",\"#{id}\"); this.remove()",
-                 c: [{_: :img, src: "https://i.ytimg.com/vi_webp/#{id}/sddefault.webp".R(env).href},{class: :icon, c: '&#9654;'}]}, {id: player}]
+                 c: [{_: :img, src: Webize::Resource("https://i.ytimg.com/vi_webp/#{id}/sddefault.webp", env).href},
+                     {class: :icon, c: '&#9654;'}]}, {id: player}]
              end
            end
           else                         # generic video markup

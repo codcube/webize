@@ -224,21 +224,6 @@ module Webize
     MarkupPredicate[Abstract] = -> as, env {
       {class: :abstract, c: as.map{|a|[(markup a, env), ' ']}}}
 
-    MarkupPredicate[Schema + 'authToken'] = -> tokens, env {tokens.map{|t| '🪙 '}}
-
-    MarkupPredicate[Schema + 'value'] = -> vs, env {
-      vs.map{|v|
-        if v.class == RDF::Literal && v.to_s.match?(/^(http|\/)\S+$/)
-          v = v.to_s.R env                                             # cast literal to URI (erroneous upstream data)
-          if v.uri.match? /\bmp3/
-            Markup[Audio][v, env]
-          else
-            markup v, env
-          end
-        else
-          markup v, env
-        end}}
-
     MarkupPredicate[Title] = -> ts, env {
       ts.map(&:to_s).map(&:strip).uniq.map{|t|
         [CGI.escapeHTML(t), ' ']}}

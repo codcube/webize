@@ -147,10 +147,14 @@ module Webize
         i['src'] = Resource.new(env[:base].join(i['src'])).env(env).href}
 
       html.css('[srcset]').map{|i|                                # @srcset
+
         srcset = i['srcset'].scan(SrcSetRegex).map{|ref, size|
-          [ref.R(env).href, size].join ' '
+          [Webize::Resource(ref, env).href,
+           size].join ' '
         }.join(', ')
-        srcset = i['srcset'].R(env).href if srcset.empty?
+
+        srcset = Webize::Resource(i['srcset'], env).href if srcset.empty?
+
         i['srcset'] = srcset}
 
       html.css('[href]').map{|a|
