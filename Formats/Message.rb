@@ -183,7 +183,7 @@ module Webize
                   {_: :td, class: :body,
                    c: {_: :table, class: :links,
                        c: links.group_by(&:host).map{|host, paths|
-                         h = ('//' + (host || 'localhost')).R env
+                         h = Webize::Resource '//' + (host || 'localhost'), env
                          {_: :tr,
                           c: [{_: :td, class: :host,
                                c: host ? {_: :a, href: h.href,
