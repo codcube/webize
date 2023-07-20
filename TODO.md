@@ -1,4 +1,4 @@
-## Config/Setup
+# Config/Setup
 - use ~/.config/webize instead of git dir for config
 - reload all the conf files on ctrl-shift-R (currently just blocklist
 - turtle documenting of our declarative config files - maybe w3 CSV schema since it's mostly tabular?
@@ -7,7 +7,7 @@
 - gems
 - tests
 
-## UI
+# UI
 - down link on google for all results inlined
 - JS: 'n' key jumps to first in view
 - title missing if source is RDF, not HTML
@@ -19,7 +19,7 @@
 - shift-right/left pagination shortcuts conflict with text-selection adjustment - preventdefault//stop-buubbling in searchbox via JS , if that's where this issue was
 - if first news page is all new updates, bounded recursive fetch of next pages to catch up
 
-## Model
+# Model
 - populate geographic index from encountered RDF https://www.jphs.org/20th-century/2017/11/13/boston-remembers-kurt-cobain
 - now that bnode/contained/referred subresource rendering is handled better, move DC:Image triples that are actually avatars to first-class avatar triple
 - grep inside list http://l/src/webize/config/feeds?q=gitter
@@ -31,26 +31,26 @@
 - backlink indexing and more indexing in general - frequently linked posts 'daily heat'
 - cache redirects. instantly syndicate these (t.co dereferences, tokens and icons) to peers) 🐕➡️  http://l/2021/09/29/11/*blogpost* →  //federalhillprov.com/favicon.ico  → https://federalhillprov.com/wp-content/uploads/2021/08/cropped-fed-hill-favicon-178px-32x32.png
 
-## Protocol
-# misc
+# Protocol
+## misc
 - finger URIs gemini://freeshell.de/gemlog/2022-01-11.gmi
 - notification/update mesh - pick a protocol or create one like NNTPish atop Solid
 - ipfs/ipns protocol handler https://archive.fosdem.org/2021/schedule/event/open_research_filecoin_ipfs/
 - NNTP server/client
 - http, (web)socket, DNS in one process (toplevel Async reactor?) for RAM efficiency on oldphone/pi3
-# DNS
+## DNS
 - replace dnsd-mini4 with rubydns/async-dns
-# Gemini
+## Gemini
 - gack (gemini) server
 - serve gemini from cache when gone missing gemini://rfmpie.smol.pub/reviving-macbook-with-linux
-# HTTP(S)
+## HTTP(S)
 - stop redir to blocked contetnt: http://l/2021/09/27/21/*blogpost*?view=table&sort=date →  //link.mail.bloombergbusiness.com/favicon.ico  → https://cdn.sailthru.com/assets/images/favicon.ico
 - ask all the peer-caches (pi/vps/phone from laptop) ahead of origin servers for static resources - HEAD All then cancel remaining HEADs on first response and GET winner? or cache availability notices recieved via UDP mesh.  - or announce availability at cache-time of stuff not autoimagically syndicated (larger static media stuff etc)
 - auto-certgen for Falcon HTTPS
 - adrop specific query keys - less destructive than total qs strip - de-utmize and other gunk
 - implement ioquatix streaming template stuff for earlier first byte on multi/merge-GET - basically required for 500-blog subscription list or we get gateway/rack/server 60s timeouts
 
-## Format
+# Format
 - mboxes, gunzipped https://www.redhat.com/archives/dm-devel/2020-November.txt.gz
 - path visualization (how did i get here? referer logging / backlink history)
 - git RDFize
@@ -75,5 +75,3 @@
 - PDF images missing http://localhost:8000/https://www.bc.edu/content/dam/bc1/schools/carroll/Centers/corcoran-center/Gallivan%20Boulevard%20Concept%20Final%20-%20Spreads.pdf
 - if our HTML-metadata extractor overlaps with RDFa library causing WARN predicate URI unmappped for sioc:container_of https://doriantaylor.com/summer-of-protocols/implementation-guide, remove the overlapping extracts or implement prefix expansion. a lot of non-dorian content fails to expand though anyways so we probably want a default-prefix expander no matter what
 
-## More
-see also https://rdf-sak.ibis.makethingsmakesense.com for issues of a rather similar project
