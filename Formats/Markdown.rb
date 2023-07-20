@@ -20,8 +20,7 @@ module Webize
 
       def initialize(input = $stdin, options = {}, &block)
         @doc = input.respond_to?(:read) ? input.read : input
-        @base = options[:base_uri].R
-        @subject = (options[:base_uri] || '#textfile').R
+        @base = options[:base_uri]
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -35,15 +34,12 @@ module Webize
 
       def each_statement &fn
         markdown_triples{|s,p,o|
-          fn.call RDF::Statement.new(@subject, p.R,
-                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
-                                                                                            l.datatype=RDF.XMLLiteral if p == Content
-                                                                                            l),
+          fn.call RDF::Statement.new(s, p, ((o = RDF::Literal o).datatype = RDF.HTML; o),
                                      :graph_name => @subject)}
       end
 
       def markdown_triples
-        yield @subject, Content, (Webize::HTML.format ::Redcarpet::Markdown.new(Renderer, fenced_code_blocks: true).render(@doc), @base)
+        yield @base, Content.R, (Webize::HTML.format ::Redcarpet::Markdown.new(Renderer, fenced_code_blocks: true).render(@doc), @base)
       end
     end
   end

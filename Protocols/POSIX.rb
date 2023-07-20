@@ -66,16 +66,16 @@ module Webize
         [self]
       elsif fsPath.match? GlobChars               # GLOB
         if q['q'] && !q['q'].empty?               # GREP inside GLOB
-          if (g = nodeGlob).empty?
+          if (g = pathGlob).empty?
             []
           else
-            fromNodes nodeGrep g[0..999]
+            from_names pathGrep g[0..999]
           end
         else                                      # parametric GLOB
           glob
         end
       else                                        # default set
-        fromNodes Pathname.glob fsPath + '.*'
+        from_names Pathname.glob fsPath + '.*'
       end
     end
 
@@ -121,10 +121,6 @@ module Webize
       File.realpath fsPath
     end
 
-    def shellPath
-      Shellwords.escape fsPath
-    end
-
     def write o
       FileUtils.mkdir_p dirname
       File.open(fsPath,'w'){|f| f << o }
@@ -138,12 +134,12 @@ module Webize
     def symlink?; node.symlink? end
 
     # URI -> [URI,URI..]
-    def find q; fromNodes nodeFind q end
-    def glob; fromNodes nodeGlob end
-    def grep; fromNodes nodeGrep end
+    def find q; from_names pathFind q end
+    def glob; from_names pathGlob end
+    def grep; from_names pathGrep end
 
     # [path, path..] -> [URI, URI..]
-    def fromNodes ps
+    def from_names ps
       base = host ? self : '/'.R
       pathbase = host ? host.size : 0
       ps.map{|p|
@@ -156,9 +152,9 @@ module Webize
     def node; Pathname.new fsPath end
 
     # URI -> [path,path..]
-    def nodeFind q; IO.popen(['find', fsPath, '-iname', q]).read.lines.map &:chomp rescue [] end
-    def nodeGlob; Pathname.glob fsPath end
-    def nodeGrep files = nil
+    def pathFind q; IO.popen(['find', fsPath, '-iname', q]).read.lines.map &:chomp rescue [] end
+    def pathGlob; Pathname.glob fsPath end
+    def pathGrep files = nil
       files = [fsPath] if !files || files.empty?
       q = env[:qs]['q'].to_s
       return [] if q.empty?
