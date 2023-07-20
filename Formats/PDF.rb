@@ -8,7 +8,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
-        @base = options[:base_uri].R
+        @base = options[:base_uri]
         @body = input.respond_to?(:read) ? input.read : input
         if block_given?
           case block.arity
@@ -27,7 +27,7 @@ module Webize
       end
 
       def pdf_tuples
-        IO.popen(['pdftohtml', '-s', '-stdout', '-', @base.fsPath.sub(/\.pdf$/,'')], 'r+'){|io|
+        IO.popen(['pdftohtml', '-s', '-stdout', '-', POSIX::Node(@base).fsPath.sub(/\.pdf$/,'')], 'r+'){|io|
           io.puts @body
           io.close_write
           html = RDF::Literal Webize::HTML.format io.read, @base
