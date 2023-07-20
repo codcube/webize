@@ -521,7 +521,7 @@ module Webize
       return (q = query_values || {} # redirect URL rehost to origin
               dest = q['url'] || q['u'] || q['q']
               dest ? [301, {'Location' => Node(dest).href}, []] : notfound) if URLHosts.member? host
-      return Youtu_Be if host == 'youtu.be'
+      return YoutuBe if host == 'youtu.be'
 
       dirMeta      # directory metadata
       cookieCache  # save/restore cookies

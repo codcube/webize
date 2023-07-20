@@ -171,7 +171,7 @@ module Webize
 
   def self.URI u
     URI.new u
-  end  
+  end
 
   module URIlist
     class Format < RDF::Format
