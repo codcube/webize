@@ -22,16 +22,16 @@ module Webize
       isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
 
-      u = (isLocal ? '/' : [isPeer ? :http : :https,'://',  # scheme if non-local
-                            env['HTTP_HOST']].join).R.join RDF::URI(env['REQUEST_PATH']).path
+      u = (isLocal ? '/' : [isPeer ? :http : :https, '://', # scheme, host, path
+          env['HTTP_HOST']].join).R.join RDF::URI(env['REQUEST_PATH']).path
 
       env[:base] = (Node u, env).freeze                     # external request URI - immutable
              uri =  Node u, env                             # internal request URI - mutable for accessing specific concrete representations/variants
 
       uri.port = nil if [80,443,8000].member? uri.port      # strip default ports
 
-      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # querystring if non-empty
-        env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {} # strip excess & and parse querystring
+      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query string?
+        env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {} # strip excess & and parse
         qs = env[:qs].dup                                   # external query
         Args.map{|k|                                        # (💻 <> 🖥) internal args
          env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) internal args to request environment
