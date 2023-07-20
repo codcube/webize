@@ -196,8 +196,7 @@ module Webize
 
     MarkupPredicate[Type] = -> types, env {
       types.map{|t|
-        t = t.to_s unless t.class == Webize::URI
-        t = t.R env
+        t = Webize::Resource t, env
         {_: :a, href: t.href, c: Icons[t.uri] || t.display_name}.update(Icons[t.uri] ? {class: :icon} : {})}}
 
     MarkupPredicate[Creator] = MarkupPredicate['http://xmlns.com/foaf/0.1/maker'] = -> creators, env {
