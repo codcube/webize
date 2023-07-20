@@ -135,7 +135,7 @@ module Webize
   class HTTP::Node < Resource
     include MIME
 
-    # site adaptation runs on last proxy in chain
+    # host adaptation runs on last proxy in chain
     def adapt?
       !ENV.has_key?('http_proxy')
     end
@@ -551,7 +551,7 @@ module Webize
     def link_icon
       return unless env[:links].has_key? :icon
       fav = POSIX::Node join '/favicon.ico'                                 # default location
-      icon = POSIX::Node env[:links][:icon], env                            # icon location
+      icon = env[:links][:icon] = POSIX::Node env[:links][:icon], env       # icon location
       if !icon.dataURI? && icon.path != fav.path && icon != self &&         # if icon is in non-default location and
          !icon.directory? && !fav.exist? && !fav.symlink?                   # default location is available:
         fav.mkdir                                                           # create container
