@@ -79,7 +79,7 @@ module Webize
                 " \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?),              # query arguments
 
              head['Location'] ? [" → \e[#{color}m",
-                                 Node(head['Location']).unproxyURI,
+                                 (Node head['Location'], env).unproxyURI,
                                  "\e[0m"] : nil,                                  # redirect target
 
              env[:warning] ? [" \e[38;5;226m⚠️ ",
