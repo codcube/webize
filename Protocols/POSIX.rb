@@ -103,7 +103,7 @@ module Webize
           [self]                                  # minimal (no trailing-slash)
         else                                      # detailed (trailing-slash)
           [self,
-           *join('{index,readme,README}*').R(env).glob] # directory index
+           *Node(join '{index,readme,README}*').glob] # directory index
         end
       elsif file?                                 # LS file
         [self]
