@@ -25,20 +25,21 @@ module Webize
       u = (isLocal ? '/' : [isPeer ? :http : :https,'://',  # scheme if non-local
                             env['HTTP_HOST']].join).R.join RDF::URI(env['REQUEST_PATH']).path
 
-      uri = Node.new(u).env env                             # request URI
+      env[:base] = (Node u, env).freeze                     # external request URI - immutable
+             uri =  Node u, env                             # internal request URI - mutable for accessing specific concrete representations/variants
 
-      uri.port = nil if [80,443,8000].member? uri.port      # port if non-default
+      uri.port = nil if [80,443,8000].member? uri.port      # strip default ports
+
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query if non-empty
         env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {} # strip excess & and parse
-        qs = env[:qs].dup                                   # parsed query from caller
-        Args.map{|k|                                        # (💻 <> 🖥) local argument names
-         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) args for request in environment
-        uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) args for follow-on requests in URI
+        qs = env[:qs].dup                                   # external query
+        Args.map{|k|                                        # (💻 <> 🖥) internal args
+         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) internal args to request environment
+        uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) external args to request URI
       end
 
-      env[:base] = Node.new(u).env(env).freeze              # immutable base URI aka external request URI - internal (#to_s/#uri) request URI is equivalent unless refined for accessing a specific variant
-      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etags
-      env[:proxy_href] = isPeer || isLocal                  # relocate hrefs?
+      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etag(s)
+      env[:proxy_href] = isPeer || isLocal                  # relocate hrefs if proxying through local or peer host
 
       URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist
 
@@ -242,7 +243,7 @@ module Webize
     def fetch nodes=nil, **opts
       return fetchLocal nodes if offline? # return cache
       if storage.file?                    # cached node?
-        return fileResponse if fileMIME.match?(MIME::FixedFormat) && !basename.match?(/index/i) # return immutable node
+        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return immutable node
         cache = storage                   # cache reference
       elsif storage.directory? && (🐢 = POSIX::Node join('index.🐢'), env).exist? # cached directory index?
         cache = 🐢                        # cache reference
@@ -323,7 +324,7 @@ module Webize
             end
           end
           File.open(doc, 'w'){|f| f << body }                           # cache data
-          if env[:notransform] || format.match?(MIME::FixedFormat)
+          if env[:notransform] || format.match?(FixedFormat)
             staticResponse format, body                                 # response in upstream format
           else
             env[:origin_format] = format                                # upstream format
@@ -442,7 +443,7 @@ module Webize
         format = fileMIME                                 # file format
         h['content-type'] = format
         h['ETag'] = etag
-        h['Expires'] = (Time.now + 3e7).httpdate if format.match? MIME::FixedFormat
+        h['Expires'] = (Time.now + 3e7).httpdate if format.match? FixedFormat
         h['Last-Modified'] ||= storage.mtime.httpdate
         [s, h, b]}
     end
