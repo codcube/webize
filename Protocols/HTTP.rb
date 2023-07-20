@@ -30,8 +30,8 @@ module Webize
 
       uri.port = nil if [80,443,8000].member? uri.port      # strip default ports
 
-      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query if non-empty
-        env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {} # strip excess & and parse
+      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # querystring if non-empty
+        env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {} # strip excess & and parse querystring
         qs = env[:qs].dup                                   # external query
         Args.map{|k|                                        # (💻 <> 🖥) internal args
          env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) internal args to request environment
@@ -79,7 +79,7 @@ module Webize
                 " \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?),              # query arguments
 
              head['Location'] ? [" → \e[#{color}m",
-                                 Node.new(head['Location']).unproxyURI,
+                                 Node(head['Location']).unproxyURI,
                                  "\e[0m"] : nil,                                  # redirect target
 
              env[:warning] ? [" \e[38;5;226m⚠️ ",
