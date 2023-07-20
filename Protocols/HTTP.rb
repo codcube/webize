@@ -489,7 +489,7 @@ module Webize
           head[key] = (v.class == Array && v.size == 1 && v[0] || v) unless SingleHopHeaders.member? key.downcase # set header
         end}
 
-      head['Accept'] = ['text/turtle', head['Accept']].join ',' unless env[:notransform] || head['Accept']&.match?(/text\/turtle/) # accept 🐢/turtle. add ?notransform to base URI to disable this (to fetch upstream data-browser UI rather than graph data, and not reformat any upstream HTML or JS)
+      head['Accept'] = ['text/turtle', head['Accept']].join ',' unless env[:notransform] || head['Accept']&.match?(/text\/turtle/) # accept graph-data - ?notransform disables this and HTML reformatting to fetch upstream data-browser/UI-code rather than graph data
 
       head['Content-Type'] = 'application/json' if %w(api.mixcloud.com).member? host
 

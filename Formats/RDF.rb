@@ -110,7 +110,7 @@ module Webize
       out # output graph
     end
   end
-  class URI
+  module MIME
 
     # [MIME, data] -> Repository (in-memory, unpersisted)
     def readRDF format = fileMIME, content = read
@@ -138,7 +138,7 @@ module Webize
                   statement.predicate = predicate.R
                 end
                 repository << statement
-              }} rescue (logger.debug "⚠️ RDFa::Reader failed on #{uri}")
+              }} # rescue (logger.debug "⚠️ RDFa::Reader failed on #{uri}")
           end
         else
           logger.warn ["⚠️ no RDF reader for " , format].join # reader not found
