@@ -31,6 +31,7 @@
 - backlink indexing and more indexing in general - frequently linked posts 'daily heat'
 - cache redirects. instantly syndicate these (t.co dereferences, tokens and icons) to peers) 🐕➡️  http://l/2021/09/29/11/*blogpost* →  //federalhillprov.com/favicon.ico  → https://federalhillprov.com/wp-content/uploads/2021/08/cropped-fed-hill-favicon-178px-32x32.png
 - more cache/restore of base URIs. bring back resolution-only rewrites so http://l/com/universalhub/www/index.html links work etc 
+- du on directories
 
 # Protocol
 ## misc

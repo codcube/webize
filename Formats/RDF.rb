@@ -64,7 +64,7 @@ module Webize
                   env[:dests][dest] ||= (
                     dest_bin = RDF::Node.new
                     out << RDF::Statement.new(dest_bin, Type.R, Container.R)
-                    out << RDF::Statement.new(dest_bin, Title.R, dest.class == RDF::Literal ? dest : dest.display_name)
+                    out << RDF::Statement.new(dest_bin, Title.R, dest.class == RDF::Literal ? dest : Resource(dest).display_name)
                     out << RDF::Statement.new('#updates'.R, Contains.R, dest_bin)
                     dest_bin)
                   out << RDF::Statement.new(env[:dests][dest], Contains.R, subject)
@@ -131,14 +131,18 @@ module Webize
           reader.new(content, base_uri: self){|_|repository << _} # read RDF
 
           if format == 'text/html' && reader != RDF::RDFa::Reader # read RDFa
-            RDF::RDFa::Reader.new(content, base_uri: self){|g|
-              g.each_statement{|statement|
-                if predicate = Webize::MetaMap[statement.predicate.to_s]
-                  next if predicate == :drop
-                  statement.predicate = predicate.R
-                end
-                repository << statement
-              }} # rescue (logger.debug "⚠️ RDFa::Reader failed on #{uri}")
+            begin
+              RDF::RDFa::Reader.new(content, base_uri: self){|g|
+                g.each_statement{|statement|
+                  if predicate = Webize::MetaMap[statement.predicate.to_s]
+                    next if predicate == :drop
+                    statement.predicate = predicate.R
+                  end
+                  repository << statement
+                }}
+            rescue
+              (logger.debug "⚠️ RDFa::Reader failed on #{uri}")
+            end
           end
         else
           logger.warn ["⚠️ no RDF reader for " , format].join # reader not found
