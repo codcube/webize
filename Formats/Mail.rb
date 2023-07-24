@@ -30,8 +30,8 @@ module Webize
 
       def each_statement &fn
         mail_triples(@doc){|subject, predicate, o, graph|
-          fn.call RDF::Statement.new(subject.R, predicate.R,
-                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
+          fn.call RDF::Statement.new(Webize::URI(subject), Webize::URI(predicate),
+                                     (o.class == Webize::URI || o.class == RDF::URI || o.class == Webize::Resource) ? o : (l = RDF::Literal o
                                                                                             l.datatype=RDF.XMLLiteral if predicate == Content
                                                                                             l),
                                      :graph_name => graph)}
@@ -51,7 +51,7 @@ module Webize
         htmlFiles, parts = m.all_parts.push(m).partition{|p| p.mime_type == 'text/html' }
         htmlCount = 0
         htmlFiles.map{|p|
-          html = POSIX::Node '/'.R.join(graph.fsPath + ".#{htmlCount}.html") # HTMLfile URI
+          html = POSIX::Node '/'.R.join(POSIX::Node(graph).fsPath + ".#{htmlCount}.html") # HTMLfile URI
           yield mail, DC + 'hasFormat', html, graph   # reference
           html.write p.decoded unless html.exist? # store
           htmlCount += 1 }

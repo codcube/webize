@@ -81,27 +81,27 @@ module Webize
 
     # URI -> pathname
     def fsPath
-      @fsPath ||= if !host                                ## local URI
-                    if parts.empty?
-                      %w(.)
-                    elsif parts[0] == 'msg'                # Message-ID -> sharded containers
-                      id = Digest::SHA2.hexdigest Rack::Utils.unescape_path parts[1]
-                      ['mail', id[0..1], id[2..-1]]
-                    else                                   # path map
-                      parts.map{|part| Rack::Utils.unescape_path part}
-                    end
-                  else                                    ## global URI
-                    [host.split('.').reverse,              # domain-name containers
-                     if (path && path.size > 496) || parts.find{|p|p.size > 127}
-                       hash = Digest::SHA2.hexdigest uri   # huge name, hash and shard
-                       [hash[0..1], hash[2..-1]]
-                     else                                  # query hash to basename in sibling file or directory child
-                       (query ? Node(join dirURI? ? query_hash : [basename, query_hash, extname].join('.')) : self).parts.map{|part|
-                         Rack::Utils.unescape_path part}   # path map
-                     end,
-                     (dirURI? && !query) ? '' : nil].      # preserve trailing slash on directory name
-                      flatten.compact
-                  end.join('/')
+      if !host                                ## local URI
+        if parts.empty?
+          %w(.)
+        elsif parts[0] == 'msg'                # Message-ID -> sharded containers
+          id = Digest::SHA2.hexdigest Rack::Utils.unescape_path parts[1]
+          ['mail', id[0..1], id[2..-1]]
+        else                                   # path map
+          parts.map{|part| Rack::Utils.unescape_path part}
+        end
+      else                                    ## global URI
+        [host.split('.').reverse,              # domain-name containers
+         if (path && path.size > 496) || parts.find{|p|p.size > 127}
+           hash = Digest::SHA2.hexdigest uri   # huge name, hash and shard
+           [hash[0..1], hash[2..-1]]
+         else                                  # query hash to basename in sibling file or directory child
+           (query ? Node(join dirURI? ? query_hash : [basename, query_hash, extname].join('.')) : self).parts.map{|part|
+             Rack::Utils.unescape_path part}   # path map
+         end,
+         (dirURI? && !query) ? '' : nil].      # preserve trailing slash on directory name
+          flatten.compact
+      end.join('/')
     end
 
     # create containing dir(s)
