@@ -217,8 +217,7 @@ module Webize
         (Console.logger.warn "no audio reference!"; audio = '#audio') unless audio
       end
 
-      src = env[:base].join(audio).R env
-      {_: :audio, src: src.uri, controls: :true}}
+      {_: :audio, src: env[:base].join(audio), controls: :true}}
   end
 
 end
