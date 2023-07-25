@@ -28,7 +28,7 @@ module Webize
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
-        @json = ::JSON.parse(input.respond_to?(:read) ? input.read : input) rescue (logger.debug ['JSON parse failure in: ', input].join; {})
+        @json = ::JSON.parse(input.respond_to?(:read) ? input.read : input) rescue (logger.debug ['JSON parse failure in: ', @base].join; {})
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
