@@ -141,7 +141,7 @@ module Webize
           ::Mail::Encodings.defined?(p.body.encoding)}.map{|p|     # decodability check
           name = p.filename && !p.filename.empty? && p.filename || # attachment name
                  (Digest::SHA2.hexdigest(rand.to_s) + (Rack::Mime::MIME_TYPES.invert[p.mime_type&.downcase] || '.bin').to_s) # generate name
-          file = POSIX::Node '/'.R.join(graph.fsPath + '.' + name) # file URI
+          file = POSIX::Node '/'.R.join(POSIX::Node(graph).fsPath + '.' + name) # file URI
           unless file.exist?              # store file
             file.write p.body.decoded.force_encoding 'UTF-8'
           end

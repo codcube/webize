@@ -315,7 +315,7 @@ module Webize
              (extensions = formats.map(&:file_extension).flatten) &&    # suffixes for content type
              !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix in mapped set?
             doc = [(link = doc), '.', extensions[0]].join               # append valid suffix
-            FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) # link origin and storage names
+            FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) || File.symlink?(link) # link canonical name to storage name
           end
           if timestamp = h['Last-Modified']                             # HTTP timestamp?
             if t = Time.httpdate(timestamp) rescue nil                  # parse timestamp
