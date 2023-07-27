@@ -178,7 +178,7 @@ module Webize
               if url = e[1].match(reSrc)
                 rel = e[1].match reRel
                 rel = rel ? rel[1] : 'link'
-                o = Webize::URI.new(@base.join url[2])
+                o = Webize::URI.new(@base.join CGI.unescapeHTML(url[2]))
                 o.path ||= '/'
                 p = case File.extname o.path
                     when /jpg|png|webp/i
