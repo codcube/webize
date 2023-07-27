@@ -252,7 +252,7 @@ module Webize
 
       if nodes # fetch node(s)
         env[:updates_only] = true # limit response to updates
-        opts[:thru] = false       # crafting our own merged response
+        opts[:thru] = false       # craft our own HTTP response
         barrier = Async::Barrier.new
 	semaphore = Async::Semaphore.new(16, parent: barrier)
         repos = []

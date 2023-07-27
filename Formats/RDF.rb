@@ -77,7 +77,7 @@ module Webize
             log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join]
           end
 
-          # link graph to timeline .. if not already there and we have valid timestamp
+          # link to timeline if not already there and we have a timestamp
           if !g.to_s.match?(/^\/\d\d\d\d\/\d\d\/\d\d\/\d\d/) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
             t = ts.split /\D/                                 # split timestamp
             🕒 = [t[0..3], t.size < 4 ? '0' : nil, [t[4..-1], # timeline containers
