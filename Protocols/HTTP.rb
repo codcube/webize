@@ -750,8 +750,7 @@ module Webize
     # URIs from uri-list
     def uris
       return [] unless extname == '.u'
-      puts JSON.fromGraph [readRDF]
-      []
+      readRDF.query(RDF::Query::Pattern.new :s, Contains.R, :o).objects
     end
 
   end
