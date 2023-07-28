@@ -23,10 +23,6 @@ module Webize
 
     def extension; File.extname realpath end
 
-    def read
-      File.open(fsPath).read
-    end
-
     # create containing dir(s) and return locator
     def document
       mkdir

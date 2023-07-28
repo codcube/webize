@@ -747,5 +747,12 @@ module Webize
       Node [(p && p[-1] == ':') ? path[1..-1] : ['/', path], query ? ['?', query] : nil].join
     end
 
+    # URIs from uri-list
+    def uris
+      return [] unless extname == '.u'
+      puts JSON.fromGraph [readRDF]
+      []
+    end
+
   end
 end
