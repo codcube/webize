@@ -84,7 +84,7 @@ module Webize
               if src = i.attr('src')
                 src = @base.join src
                 if src.host && src.host.match(/youtu/)
-                  id = src.R.parts[-1]
+                  id = Webize::URI(src).parts[-1]
                   yield subject, Video, ('https://www.youtube.com/watch?v=' + id).R
                 end
               end}
