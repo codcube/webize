@@ -456,6 +456,7 @@ module Webize
       return unproxy.hostGET if p.index('.') && p != 'favicon.ico' # remote node - proxy URI sans scheme
       return dateDir if %w{m d h y}.member? p # year/month/day/hour redirect
       return block parts[1] if p == 'block'   # block domain action
+      return fetch uris if extname == '.u' && query == 'fetch'
       fetchLocal                              # local node
     end
 
@@ -505,7 +506,7 @@ module Webize
 
       head['Referer'] = 'http://drudgereport.com/' if host&.match? /wsj\.com$/ # referer tweaks so stuff loads
       head['Referer'] = 'https://' + (host || env['HTTP_HOST']) + '/' if (path && %w(.gif .jpeg .jpg .png .svg .webp).member?(File.extname(path).downcase)) || parts.member?('embed')
-      head.delete 'Referer' if host == 'www.reddit.com' # fix empty RSS-feed issue
+      head.delete 'Referer' if host == 'www.reddit.com' # existence of referer causes empty RSS feed
 
       head['User-Agent'] = 'curl/7.82.0' if %w(po.st t.co).member? host # to prefer HTTP HEAD redirections e over procedural Javascript, advertise a basic user-agent
 
