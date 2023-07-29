@@ -417,7 +417,7 @@ module Webize
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
       env[:warning] = [e.class, e.message].join ' '         # warn on error/fallback condition
       if scheme == 'https'                                  # HTTPS failure?
-        insecure.fetchHTTP rescue notfound                  # fallback to HTTP
+        insecure.fetchHTTP **opts rescue notfound           # fallback to HTTP
       else
         notfound
       end
