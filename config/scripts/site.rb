@@ -1,4 +1,3 @@
-# coding: utf-8
 module Webize
 
   MIME::ReFormat.clear # disable rewriting of HTML
@@ -21,8 +20,6 @@ module Webize
   module HTML
     class Reader
       Triplr = {
-        'www.google.com' => :GoogleHTML,
-        'www.qrz.com' => :QRZ,
         'www.youtube.com' => :YouTube,
       }
 
@@ -30,7 +27,6 @@ module Webize
   end
   module JSON
     Triplr = {
-      'api.imgur.com' => :Imgur,
       'api.mixcloud.com' => :Mixcloud,
     }
   end
@@ -40,31 +36,6 @@ module Webize
   class HTTP::Node
 
     # site-specific RDF mapping
-
-    def GoogleHTML doc
-      doc.css('div.g').map{|g|
-        if r = g.css('a[href]')[0]
-          subject = r['href'].R
-          if subject.host
-            if title = r.css('h3')[0]
-              yield subject, Type, (Schema+'SearchResult').R
-              yield subject, Title, title.inner_text
-              yield subject, Content, Webize::HTML.format(g.inner_html, self)
-            end
-          end
-        end
-        g.remove}
-      if pagenext = doc.css('#pnnext')[0]
-        env[:links][:next] ||= join pagenext['href']
-      end
-      doc.css('#botstuff, #bottomads, #footcnt, #rhs, #searchform, svg, #tads, #taw, [role="navigation"]').map &:remove
-    end
-
-    def Imgur tree, &b
-      tree['media'].map{|i|
-        url = i['url'].R
-        yield self, File.extname(url.path) == '.mp4' ? Video : Image, url}
-    end
 
     def Mixcloud tree, &b
       if data = tree['data']
@@ -90,12 +61,6 @@ module Webize
         env[:links][:next] = pages['next'] if pages['next']
         env[:links][:prev] = pages['previous'] if pages['previous']
       end
-    end
-
-    def QRZ doc, &b
-      doc.css('script').map{|script|
-        script.inner_text.scan(%r(biodata'\).html\(\s*Base64.decode\("([^"]+))xi){|data|
-          yield self, Content, Base64.decode64(data[0]).encode('UTF-8', undef: :replace, invalid: :replace, replace: ' ')}}
     end
 
     # read RDF from JSON embedded in Javascript value in HTML

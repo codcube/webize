@@ -88,12 +88,13 @@ module Webize
         mime
       end
     end
-    
+
+    # local/cache node/file URI -> data
     def read
       (File.open POSIX::Node(self).fsPath).read
     end
 
-    # [MIME, data] -> Repository (in-memory, unpersisted)
+    # (MIME, data) -> RDF::Repository
     def readRDF format = fileMIME, content = read
       repository = RDF::Repository.new.extend Webize::Graph::Cache
 
