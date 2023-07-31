@@ -270,6 +270,8 @@ module Webize
 
         {class: :toolbox,
          c: [{_: :a, id: :rootpath, href: Resource.new(env[:base].join('/')).env(env).href, c: '&nbsp;' * 3}, "\n",            # 👉 root node
+             ({_: :a, id: :rehost, href: Webize::Resource(['//', ReHost[host], env[:base].path].join, env).href,
+               c: {_: :img, src: ['//', ReHost[host], '/favicon.ico'].join}} if ReHost.has_key? host),
              {_: :a, id: :UI, href: host ? env[:base].secureURL : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, "\n", # 👉 origin UI
              {_: :a, id: :cache, href: '/' + POSIX::Node(self).fsPath, c: :📦}, "\n",                                          # 👉 archive
              ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed, c: :🛑} if host && !deny_domain?), "\n", # 👉 block domain

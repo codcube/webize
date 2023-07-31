@@ -25,7 +25,7 @@
 .links .path a {font-weight: normal}
 .links .path a::first-letter {font-weight: bold; background-color:#aaa; color:#000; border-radius: .18em}
 .links {border: 1px dotted #777; border-radius: .5em}
-.post .title {background-color: #fff; color: #000; border-radius: .5em .2em .2em 0; margin: 0; max-width: 80ex}
+.post .title {background-color: #fff; color: #000; border-radius: .5em .2em .2em 0; margin: 0; max-width: 80ex; float: left}
 .post .to {float: right; margin: 0}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
 .post div.abstract {border-radius: .5em .5em .2em .2em; display: block}
@@ -47,7 +47,6 @@
 .toolbox, td, li {vertical-align: top}
 .warning {background-color: #ff0; color: #000; font-size: 1.1em}
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}
-a img, .post .title {float: left}
 a span {color: #bbb; font-weight: normal; font-size: 0.82em}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px; max-width: 40em; overflow: hidden; vertical-align: top}
 a.date {white-space: nowrap; float: right; color: #ccc; background-color: #000; font-size: .88em; font-weight: normal}
