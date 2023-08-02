@@ -3,6 +3,7 @@ module Webize
   MIME::ReFormat.clear # disable rewriting of HTML
 
   ReHost = {
+    'm.soundcloud.com' => 'soundcloud.com',
     'nitter.net' => 'twitter.com',
     'old.reddit.com' => 'www.reddit.com',
     'twitter.com' => 'nitter.net',
