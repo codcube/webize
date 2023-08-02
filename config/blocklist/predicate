@@ -69,8 +69,10 @@ csp-nonce
 csrf-param
 csrf-token
 current-catalog-service-hash
+currentUserCanPush
 debug
 default-theme
+defaultBranch
 default_profile
 default_profile_image
 derivedScore
@@ -139,12 +141,15 @@ isActive
 isAnimationEnabled
 isCookieBannerEnabled
 isEmailVerified
+isEmpty
 isExternal
+isFork
 isFront
 isInitialsProfileEnabled
 isInternal
 isJuniorTeam
 isLogoVisible
+isOrgOwned
 isPlaceholder
 isRedBullMusic
 isRedBullPowertrains
@@ -209,6 +214,7 @@ pinned_tweet_ids
 pinned_tweet_ids_str
 possibly_sensitive
 possibly_sensitive_editable
+private
 profile_background_color
 profile_background_tile
 profile_link_color
