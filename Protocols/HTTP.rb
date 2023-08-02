@@ -28,8 +28,8 @@ module Webize
       u = (isLocal ? '/' : [isPeer ? :http : :https, '://', # scheme, host, path
           env['HTTP_HOST']].join).R.join RDF::URI(env['REQUEST_PATH']).path
 
-      env[:base] = (Node u, env).freeze                     # external request URI - immutable
-             uri =  Node u, env                             # internal request URI - mutable for accessing specific concrete representations/variants
+      env[:base] = (Node u, env).freeze                     # external URI - immutable
+             uri =  Node u, env                             # internal URI - mutable for follow-on requests of specific concrete-representations / variants
 
       uri.port = nil if [80,443,8000].member? uri.port      # strip default ports
 
@@ -41,8 +41,8 @@ module Webize
         uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) external args to request URI
       end
 
-      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse etag(s)
-      env[:proxy_href] = isPeer || isLocal                  # relocate hrefs if proxying through local or peer host
+      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse eTag(s)
+      env[:proxy_href] = isPeer || isLocal                  # relocate hrefs when proxying through local or peer hosts
 
       URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist
 
