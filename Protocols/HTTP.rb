@@ -339,18 +339,20 @@ module Webize
       when /30[12378]/                                      # redirect
         location = e.io.meta['location']
         dest = Node join location
-        if no_scheme == dest.no_scheme                      # alternate scheme
-          if scheme == 'https' && dest.scheme == 'http'     # downgrade
+        if !thru
+          logger.warn "⚠️ redirected #{uri} → #{location} but configured to not follow - update source reference"
+        elsif no_scheme == dest.no_scheme                   # alternate scheme
+          if scheme == 'https' && dest.scheme == 'http'     # downgrade warning
             logger.warn "⚠️  downgrade redirect #{dest}"
             dest.fetchHTTP
-          elsif scheme == 'http' && dest.scheme == 'https'  # upgrade
+          elsif scheme == 'http' && dest.scheme == 'https'  # upgrade notice
             logger.debug "🔒 upgrade redirect #{dest}"
             dest.fetchHTTP
           else                                              # redirect loop
-            logger.warn "🛑 redirect loop → #{location}"
+            logger.warn "🛑 redirect loop #{uri} → #{location}"
             fetchLocal
           end
-        else
+        else                                                # redirect
           [status, {'Location' => dest.href}, []]
         end
       when /304/                                            # origin unmodified
@@ -417,6 +419,7 @@ module Webize
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
       env[:warning] = [e.class, e.message].join ' '         # warn on error/fallback condition
       if scheme == 'https'                                  # HTTPS failure?
+        puts [:HTTPS, env[:warning]].join ' '
         insecure.fetchHTTP **opts rescue notfound           # fallback to HTTP
       else
         notfound

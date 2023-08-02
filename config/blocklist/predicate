@@ -51,6 +51,7 @@ authorization_endpoint
 baidu-site-verification
 baidu_union_verify
 bingbot
+blurhash
 bot
 botify-site-verification
 brightspot.cached
@@ -311,6 +312,7 @@ uuid
 verified
 verify-v1
 viewport
+visibility
 visitor-hmac
 visitor-payload
 webgains-site-verification

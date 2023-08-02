@@ -117,7 +117,7 @@ module Webize
     def self.fromGraph repositories
       tree = {}                        # output tree
       inlined = []                     # inlined nodes
-      repositories.map{|repository|
+      repositories.compact.map{|repository|
         repository.each_triple{|subj,pred,obj|
           s = subj.to_s                # subject URI
           p = pred.to_s                # predicate URI
