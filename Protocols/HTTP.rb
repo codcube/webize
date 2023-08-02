@@ -52,7 +52,7 @@ module Webize
         color = env[:deny] ? '38;5;196' : (MIME::Color[outFmt]||0)  # format -> color
         referer = env['HTTP_REFERER'].R if env['HTTP_REFERER']      # referer
 
-        log [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil, # transport security
+        Console.logger.info [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil, # transport security
 
              if env[:deny]                                          # action taken:
                '🛑'                                                 # blocked
@@ -124,10 +124,6 @@ module Webize
        feeds: [],
        links: {},
        qs: {}}
-    end
-
-    def self.log data
-      Console.logger.info data
     end
 
     def self.Node uri, env
@@ -274,6 +270,7 @@ module Webize
 
     # fetch resource and cache upstream and derived data
     def fetchHTTP thru: true                                # return just the data or full HTTP response?
+      #puts "FETCH #{uri}"
       ::URI.open(uri, headers.merge({redirect: false})) do |response|
         h = headers response.meta                           # response headera
         case env[:origin_status] = response.status[0].to_i  # response status

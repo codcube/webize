@@ -18,6 +18,8 @@ module Webize
 
     # (String -> String) or (Nokogiri -> Nokogiri)
     def self.format html, base
+      #print "FORMAT #{base} "
+
       # parse string to nokogiri
       if html.class == String
         html = Nokogiri::HTML.fragment html.gsub(/<\/?(noscript|wbr)[^>]*>/i, '')
@@ -324,6 +326,7 @@ module Webize
         @base = options[:base_uri]
         @env = @base.respond_to?(:env) ? @base.env : HTTP.env
         @doc = Nokogiri::HTML.parse input.respond_to?(:read) ? input.read : input.to_s
+        #puts "PARSE #{@base}"
 
         if block_given?
           case block.arity
@@ -504,7 +507,6 @@ module Webize
       when TrueClass                    # booleam
         {_: :input, type: :checkbox, checked: true}
       when Webize::Resource             # Resource
-puts "rendering #{o}"
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       when Webize::URI                  # URI
         o = Resource.new(o).env env
