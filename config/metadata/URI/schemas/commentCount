@@ -3,6 +3,8 @@ comment_count
 http://purl.org/rss/1.0/modules/slash/comments
 http://rdfs.org/sioc/ns#num_replies
 http://schema.org/commentCount
+replies_count
+reblogs_count
 replyCount
 reply_count
 soundcloud:comments_count

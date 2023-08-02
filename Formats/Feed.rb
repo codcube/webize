@@ -11,6 +11,7 @@ module Webize
                    application/atom+xml;q=0.8
                    application/x-rss+xml;q=0.2
                    application/xml;q=0.2
+                   text/atom;q=0.2
                    text/xml;q=0.2)
 
       content_encoding 'utf-8'

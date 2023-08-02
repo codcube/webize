@@ -271,7 +271,7 @@ module Webize
     # fetch resource and cache upstream and derived data
     def fetchHTTP thru: true                                # return just the data or full HTTP response?
       #puts "FETCH #{uri}"
-      ::URI.open(uri, headers.merge({redirect: false})) do |response|
+      ::URI.open(uri, headers.merge({open_timeout: 8, read_timeout: 8, redirect: false})) do |response|
         h = headers response.meta                           # response headera
         case env[:origin_status] = response.status[0].to_i  # response status
         when 204                                            # no content
