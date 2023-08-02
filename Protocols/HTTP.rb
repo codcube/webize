@@ -9,9 +9,12 @@ module Webize
     StatusIcon.keys.map{|s|                              # status code (int) -> char
       StatusIcon[s.to_i] = StatusIcon[s]}
 
-    def self.bwPrint kv; kv.map{|k,v| "\e[38;5;7;7m#{k}\e[0m#{v}\n" } end
+    def self.bwPrint kv
+      kv.map{|k,v|
+        "\e[38;5;7;7m#{k}\e[0m#{v}\n" }
+    end
 
-    # Rack entry-point - instantiate callable HTTP resource, call and log results
+    # instantiate HTTP resource, call HTTP method and log request/response
     def self.call env
       return [403,{},[]] unless Methods.member? env['REQUEST_METHOD']
 
