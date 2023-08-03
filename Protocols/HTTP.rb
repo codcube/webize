@@ -417,13 +417,9 @@ module Webize
         notfound
       end
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
-      env[:warning] = [e.class, e.message].join ' '         # warn on error/fallback condition
-      if scheme == 'https'                                  # HTTPS failure?
-        puts [:⚠️, uri, :HTTPS, env[:warning]].join ' '
-        insecure.fetchHTTP **opts rescue notfound           # fallback to HTTP
-      else
-        notfound
-      end
+      env[:warning] = [e.class, e.message].join ' '         # warn on error
+      puts [:⚠️, uri, env[:warning]].join ' '
+      notfound
     end
 
     # URI -> ETag

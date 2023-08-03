@@ -94,16 +94,6 @@ module Webize
 
     def query_hash; Digest::SHA2.hexdigest(query)[0..15] end
 
-    def secureURL
-      if !scheme
-        'https:' + uri
-      elsif scheme == 'http'
-        uri.sub ':', 's:'
-      else
-        uri
-      end
-    end
-
     def slugs
       re = /[\W_]/
       [(host&.split re),
