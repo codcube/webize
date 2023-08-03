@@ -55,6 +55,7 @@ dateGmt
 dateLastPubbed
 dateModified
 dateModifiedString
+datePosted
 datePublished
 datePublishedString
 date_created
@@ -149,6 +150,7 @@ publicationTimestamp
 publish-date
 publishDate
 publish_date
+publish_from
 published
 publishedAt
 publishedDate

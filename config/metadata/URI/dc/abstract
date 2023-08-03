@@ -1,14 +1,9 @@
-image_alt
-ogDescription
-tagNames
 DC.Subject
 DC.keywords
 DC.subject
 DCSext.ChannelList
 KEYWORDS
 KeyWords
-imageCaption
-audienceDek
 Keywords
 Marketing_Bullets
 Section
@@ -28,6 +23,7 @@ article:tag
 article_backend_channel_list
 article_keywords
 article_n2_codes
+audienceDek
 bc:primarycategory
 bc:tags
 beat
@@ -75,6 +71,8 @@ http://www.w3.org/2005/Atom#summary
 https://schema.org/keywords
 image:alt
 imageAlt
+imageCaption
+image_alt
 image_caption
 instapp:hashtags
 itunes:subtitle
@@ -99,6 +97,7 @@ og:keywords
 og:section
 og:tags
 og:video:tag
+ogDescription
 oneLine
 page:primary_channel
 page:topic
@@ -126,6 +125,7 @@ spoiler_text
 standfirst
 subHeading
 subText
+subheading
 subheadline
 subject
 subsection
@@ -136,6 +136,7 @@ tab
 tag
 tagIds
 tagList
+tagNames
 tag_list
 tagline
 tags
