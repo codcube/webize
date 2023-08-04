@@ -350,13 +350,13 @@ module Webize
             dest.fetchHTTP
           else                                              # redirect loop
             logger.warn "🛑 redirect loop #{uri} → #{location}"
-            fetchLocal
+            fetchLocal if thru
           end
         else                                                # redirect
           [status, {'Location' => dest.href}, []]
         end
       when /304/                                            # origin unmodified
-        fetchLocal
+        fetchLocal if thru
       when /300|[45]\d\d/                                   # not allowed/available/found
         env[:origin_status] = status
         head = headers e.io.meta
@@ -414,12 +414,12 @@ module Webize
         fetchSpartan
       else
         logger.warn "⚠️ unsupported scheme #{uri}"           # unsupported scheme
-        notfound
+        opts[:thru] == false ? nil : notfound
       end
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
-      env[:warning] = [e.class, e.message].join ' '         # warn on error
-      puts [:⚠️, uri, env[:warning]].join ' '
-      notfound
+      env[:warning] = [e.class, e.message].join ' '
+      puts [:⚠️, uri, env[:warning]].join ' '                # warn on error
+      opts[:thru] == false ? nil : notfound
     end
 
     # URI -> ETag
