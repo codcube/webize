@@ -118,18 +118,22 @@ module Webize
       tree = {}                        # output tree
       inlined = []                     # inlined nodes
       repositories.compact.map{|repository|
-        repository.each_triple{|subj,pred,obj|
-          s = subj.to_s                # subject URI
-          p = pred.to_s                # predicate URI
-          blank = obj.class==RDF::Node # bnode?
-          if blank || p == Contains    # bnode or child-node?
-            o = obj.to_s               # object URI
-            inlined.push o             # inline object
-            obj = tree[o] ||= blank ? {} : {'uri' => o}
-          end
-          tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
-          tree[s][p] ||= []                                       # predicate
-          tree[s][p].push obj}}                                   # object
+        if repository.respond_to? :each_triple
+          repository.each_triple{|subj,pred,obj|
+            s = subj.to_s                # subject URI
+            p = pred.to_s                # predicate URI
+            blank = obj.class==RDF::Node # bnode?
+            if blank || p == Contains    # bnode or child-node?
+              o = obj.to_s               # object URI
+              inlined.push o             # inline object
+              obj = tree[o] ||= blank ? {} : {'uri' => o}
+            end
+            tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
+            tree[s][p] ||= []                                       # predicate
+            tree[s][p].push obj}                                    # object
+        else
+          puts 'graph->tree input not a repository? ', repository
+        end}
       inlined.map{|n| tree.delete n} # sweep inlined nodes from toplevel index
       tree                           # treeized graph
     end
