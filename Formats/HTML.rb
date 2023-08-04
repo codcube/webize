@@ -246,9 +246,7 @@ module Webize
 
                                toolbar,
 
-                               (['<br>⚠️',
-                                 {_: :span,class: :warning,c: CGI.escapeHTML(env[:warning])},
-                                 '<br>'] if env.has_key? :warning), # warnings
+                               ({class: :warning, c: env[:warning]} if env.has_key? :warning), # warning(s)
 
                                link[:up,'&#9650;'],
 

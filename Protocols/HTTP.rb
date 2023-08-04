@@ -85,10 +85,6 @@ module Webize
                                  (Node head['Location'], env).unproxyURI,
                                  "\e[0m"] : nil,                                  # redirect target
 
-             env[:warning] ? [" \e[38;5;226m⚠️ ",
-                              env[:warning],
-                              "\e[0m"] : nil,                                     # warning
-
             ].flatten.compact.map{|t|t.to_s.encode 'UTF-8'}.join
 
         [status, head, body]}                                                     # response
@@ -292,10 +288,8 @@ module Webize
                      end
                      ct[0]
                    elsif path && content_type = (fileMIMEsuffix File.extname path)
-                     env[:warning] = "MIME unspecified, using #{content_type} from suffix map"
                      content_type
                    else
-                     env[:warning] = "MIME unspecified"
                      'application/octet-stream'
                    end
           format.downcase!                                              # normalize format identifier
@@ -417,8 +411,10 @@ module Webize
         opts[:thru] == false ? nil : notfound
       end
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
-      env[:warning] = [e.class, e.message].join ' '
-      puts [:⚠️, uri, env[:warning]].join ' '                # warn on error
+      msg = [e.class, e.message].join ' '
+      env[:warning] ||= []
+      env[:warning].push [{_: :a, href: href, c: uri}, CGI.escapeHTML(msg), '<br>']
+      puts [:⚠️, uri, msg].join ' '                          # warn on error
       opts[:thru] == false ? nil : notfound
     end
 
