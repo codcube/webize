@@ -413,7 +413,8 @@ module Webize
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
       msg = [e.class, e.message].join ' '
       env[:warning] ||= []
-      env[:warning].push [{_: :a, href: href, c: uri}, CGI.escapeHTML(msg), '<br>']
+      env[:warning].push [{_: :a, href: href, c: uri},
+                          {_: :span, c: CGI.escapeHTML(msg)}, '<br>']
       puts [:⚠️, uri, msg].join ' '                          # warn on error
       opts[:thru] == false ? nil : notfound
     end
