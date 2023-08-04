@@ -132,7 +132,7 @@ module Webize
             tree[s][p] ||= []                                       # predicate
             tree[s][p].push obj}                                    # object
         else
-          puts 'graph->tree input not a repository? ', repository
+          puts "graph->tree triples unavailable for #{repository.class}", repository
         end}
       inlined.map{|n| tree.delete n} # sweep inlined nodes from toplevel index
       tree                           # treeized graph
