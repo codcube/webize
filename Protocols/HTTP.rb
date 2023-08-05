@@ -411,10 +411,12 @@ module Webize
         opts[:thru] == false ? nil : notfound
       end
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
-      env[:warning] ||= []
-      env[:warning].push [{_: :a, href: href, c: uri},
-                          {_: :span, c: e.class}, CGI.escapeHTML(e.message), {_: :b, c: [:⏱️, Time.now - start_time, :s]}, '<br>']
-      puts [:⚠️, uri, e.class, e.message].join ' ' # warn on error
+      env[:warning] ||= [] # warn on error
+      env[:warning].push [{_: :span, c: e.class},
+                          {_: :a, href: href, c: uri},
+                          CGI.escapeHTML(e.message),
+                          {_: :b, c: [:⏱️, Time.now - start_time, :s]}, '<br>']
+      puts [:⚠️, uri, e.class, e.message].join ' '
       opts[:thru] == false ? nil : notfound
     end
 
