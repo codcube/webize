@@ -265,9 +265,8 @@ module Webize
     end
 
     # fetch resource and cache upstream and derived data
-    def fetchHTTP thru: true                                # return just the data or full HTTP response?
-      #puts "FETCH #{uri}"
-      ::URI.open(uri, headers.merge({open_timeout: 8, read_timeout: 8, redirect: false})) do |response|
+    def fetchHTTP thru: true                                # graph data only or full upstream HTTP response through to caller?
+      ::URI.open(uri, headers.merge({open_timeout: 8, read_timeout: 16, redirect: false})) do |response|
         h = headers response.meta                           # response headera
         case env[:origin_status] = response.status[0].to_i  # response status
         when 204                                            # no content
@@ -391,6 +390,7 @@ module Webize
     end
 
     def fetchRemote **opts
+      start_time = Time.now
       env[:fetched] = true                                  # denote network-fetch for logger
       case scheme                                           # request scheme
       when 'gemini'
@@ -411,11 +411,10 @@ module Webize
         opts[:thru] == false ? nil : notfound
       end
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
-      msg = [e.class, e.message].join ' '
       env[:warning] ||= []
       env[:warning].push [{_: :a, href: href, c: uri},
-                          {_: :span, c: CGI.escapeHTML(msg)}, '<br>']
-      puts [:⚠️, uri, msg].join ' '                          # warn on error
+                          {_: :span, c: e.class}, CGI.escapeHTML(e.message), {_: :b, c: [:⏱️, Time.now - start_time, :s]}, '<br>']
+      puts [:⚠️, uri, e.class, e.message].join ' ' # warn on error
       opts[:thru] == false ? nil : notfound
     end
 

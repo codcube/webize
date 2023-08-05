@@ -18,6 +18,7 @@ https://donnywinston.com/feed.xml
 https://dotat.at/:/feed.atom
 https://drewdevault.com/blog/index.xml
 https://f5n.org/blog/atom.xml
+https://federated.fun/users/jeff/feed.atom
 https://feeds.feedburner.com/c4lj
 https://feeds.feedburner.com/martinkl
 https://feeds.feedburner.com/positiveTechnologiesResearchLab
@@ -26,7 +27,6 @@ https://floss.social/@jgoerzen
 https://forum.solidproject.org/latest.rss
 https://forum.solidproject.org/posts.rss
 https://fosstodon.org/api/v1/timelines/public?local=true&only_media=false
-https://gal-dem.com/feed/
 https://garbados.github.io/my-blog/rss.xml
 https://gerikson.com/m/feed.atom
 https://gnucode.me/feed.xml
@@ -37,8 +37,6 @@ https://hackerpublicradio.org/comments.rss
 https://hackerpublicradio.org/hpr_mp3_rss.php
 https://hackerpublicradio.org/hpr_ogg_rss.php
 https://hackerpublicradio.org/hpr_spx_rss.php
-https://i2p.rocks/blog/feeds/all.atom.xml
-https://i2p.rocks/blog/rss.xml
 https://ipscell.com/comments/feed/
 https://ipscell.com/feed/
 https://jon.sprig.gs/blog/feed
