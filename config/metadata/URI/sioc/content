@@ -21,6 +21,7 @@ dcterms.description
 desc
 description
 embedHTML
+facebook:description
 full_text
 html
 http://ogp.me/ns#description
