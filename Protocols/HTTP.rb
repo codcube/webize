@@ -334,15 +334,15 @@ module Webize
         dest = Node join location
         if !thru
           logger.warn "⚠️ redirected #{uri} → #{location} but configured to not follow - update source reference"
-        elsif no_scheme == dest.no_scheme                   # alternate scheme
-          if scheme == 'https' && dest.scheme == 'http'     # downgrade warning
-            logger.warn "⚠️  downgrade redirect #{dest}"
-            dest.fetchHTTP
-          elsif scheme == 'http' && dest.scheme == 'https'  # upgrade notice
+        elsif no_scheme == dest.no_scheme
+          if scheme == 'https' && dest.scheme == 'http'     # 🔒downgrade
+            logger.warn "🛑 downgrade redirect #{dest}"
+            fetchLocal if thru
+          elsif scheme == 'http' && dest.scheme == 'https'  # 🔒upgrade
             logger.debug "🔒 upgrade redirect #{dest}"
             dest.fetchHTTP
-          else                                              # redirect loop
-            logger.warn "🛑 redirect loop #{uri} → #{location}"
+          else                                              # redirect loop or non-HTTP protocol
+            logger.warn "🛑 not following #{uri} → #{dest} redirect"
             fetchLocal if thru
           end
         else                                                # redirect
