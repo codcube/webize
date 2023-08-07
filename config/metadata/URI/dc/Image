@@ -40,6 +40,7 @@ http://opengraphprotocol.org/schema/image
 http://opengraphprotocol.org/schema/image:secure_url
 http://schema.org/ImageObject
 http://schema.org/image
+http://schema.org/imageUrl
 http://schema.org/image_url
 http://schema.org/logo
 http://schema.org/primaryImageOfPage

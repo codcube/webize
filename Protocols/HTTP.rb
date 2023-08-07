@@ -154,7 +154,7 @@ module Webize
       end
     end
 
-    # shortcut URI -> expanded URI for timeslice
+    # current (y)ear (m)onth (d)ay (h)our -> URI for timeslice
     def dateDir
       ps = parts
       loc = Time.now.utc.strftime(case ps[0].downcase
