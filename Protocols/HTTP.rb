@@ -266,7 +266,7 @@ module Webize
 
     # fetch resource and cache upstream and derived data
     def fetchHTTP thru: true                                # graph data only or full upstream HTTP response through to caller?
-      ::URI.open(uri, headers.merge({open_timeout: 8, read_timeout: 16, redirect: false})) do |response|
+      ::URI.open(uri, headers.merge({redirect: false})) do |response|
         h = headers response.meta                           # response headera
         case env[:origin_status] = response.status[0].to_i  # response status
         when 204                                            # no content
@@ -310,13 +310,13 @@ module Webize
             doc = [(link = doc), '.', extensions[0]].join               # append valid suffix
             FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) || File.symlink?(link) # link canonical name to storage name
           end
+          File.open(doc, 'w'){|f| f << body }                           # cache data
           if timestamp = h['Last-Modified']                             # HTTP timestamp?
             if t = Time.httpdate(timestamp) rescue nil                  # parse timestamp
-              FileUtils.touch doc, mtime: t                             # set cache timestamp
-              repository << RDF::Statement.new(self, Date.R, t.iso8601) # timestamp RDF data
+              FileUtils.touch doc, mtime: t                             # set timestamp on filesystem
+              repository << RDF::Statement.new(self, Date.R, t.iso8601) # set timestamp in RDF
             end
           end
-          File.open(doc, 'w'){|f| f << body }                           # cache data
           if env[:notransform] || format.match?(FixedFormat)
             staticResponse format, body                                 # response in upstream format
           else
