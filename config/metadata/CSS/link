@@ -10,4 +10,5 @@ a.chat-item__time
 a.post_no
 a[class*="link"]
 a[class*="title"]
+a[ping]
 h3 > a

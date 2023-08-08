@@ -10,4 +10,5 @@
 [class*="row"]
 [id^='post']
 article
+div.g
 section
