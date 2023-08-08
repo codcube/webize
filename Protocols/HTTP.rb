@@ -396,7 +396,7 @@ module Webize
       when /https?/
         if deny? && env[:proxy_href]                        # blocked and rewritten by peer proxy
           self.port = 8000                                  # peer port
-          insecure.fetchHTTP **opts                         # fetch w/ HTTP (implicit/transparent proxy)
+          insecure.fetchHTTP **opts                         # fetch w/ HTTP (implicit proxy)
         elsif ENV.has_key?('http_proxy')
           insecure.fetchHTTP **opts                         # fetch w/ HTTP (explicit proxy)
         else
