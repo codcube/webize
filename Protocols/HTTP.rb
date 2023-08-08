@@ -245,7 +245,7 @@ module Webize
       end
       env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
 
-      if nodes # fetch node(s)
+      if nodes # async fetch node(s)
         env[:updates_only] = true # limit response to updates
         opts[:thru] = false       # craft our own HTTP response
         barrier = Async::Barrier.new
@@ -258,9 +258,7 @@ module Webize
         barrier.wait
         respond repos
       else # fetch node
-        # name may resolve to localhost. define hostname in HOSTS to get a path-only URI in #call and not reach this lookup
-        env[:addr] = Resolv.getaddress host rescue '127.0.0.1'
-        (LocalAddrs.member? env[:addr]) ? fetchLocal : fetchRemote
+        fetchRemote
       end
     end
 
@@ -396,11 +394,11 @@ module Webize
       when 'gemini'
         Gemini::Node.new(uri).env(env).fetch                # fetch w/ Gemini protocol
       when /https?/
-        if PeerAddrs.has_key?(env[:addr]) && deny_domain?   # blocked&adapted domain redirected to peer for handling
-          self.port = 8000                                  # peer port
-          insecure.fetchHTTP **opts                         # fetch w/ HTTP via peer-proxy
+        if deny?                                            # blocked/rewritten by peer?
+          self.port = 8000                                  # update port
+          insecure.fetchHTTP **opts                         # fetch via peer w/ HTTP (transparent proxy / DNS redirection)
         elsif ENV.has_key?('http_proxy')
-          insecure.fetchHTTP **opts                         # fetch w/ HTTP via peer-proxy
+          insecure.fetchHTTP **opts                         # fetch via peer w/ HTTP (explicit proxy)
         else
           fetchHTTP **opts                                  # fetch w/ HTTP(S)
         end
