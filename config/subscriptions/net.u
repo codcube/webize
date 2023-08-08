@@ -21,6 +21,7 @@ https://feeds.feedburner.com/zerohedge/feed
 https://floss.social/@jgoerzen.rss
 https://forum.solidproject.org/latest.rss
 https://forum.solidproject.org/posts.rss
+https://fosstodon.org/@whynothugo.rss
 https://fosstodon.org/api/v1/timelines/public?local=true&only_media=false
 https://garbados.github.io/my-blog/rss.xml
 https://gerikson.com/m/feed.atom
@@ -46,6 +47,9 @@ https://mathstodon.xyz/@bblfish.rss
 https://matrix.org/blog/feed
 https://mjg59.dreamwidth.org/data/atom
 https://mjg59.dreamwidth.org/data/rss
+https://mlml.io/events/index.xml
+https://mlml.io/index.xml
+https://mlml.io/projects/index.xml
 https://news.ycombinator.com/
 https://news.ycombinator.com/newest
 https://news.ycombinator.com/threads?id=superkuh
@@ -70,6 +74,5 @@ https://w3c.social/@w3c.rss
 https://writtendescription.blogspot.com/feeds/posts/default
 https://www.brainonfire.net/blog/posts.atom
 https://www.phoronix.com/rss.php
-https://fosstodon.org/@whynothugo.rss
 https://www.pine64.org/feed/
 https://www.spaceghetto.space/feed/
