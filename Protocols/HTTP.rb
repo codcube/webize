@@ -394,11 +394,11 @@ module Webize
       when 'gemini'
         Gemini::Node.new(uri).env(env).fetch                # fetch w/ Gemini protocol
       when /https?/
-        if deny? && env[:proxy_href]                        # blocked and rewritten by peer proxy
-          self.port = 8000                                  # peer port
-          insecure.fetchHTTP **opts                         # fetch w/ HTTP (implicit proxy)
+        if deny? && env[:proxy_href]                        # blocked domain rewritten by proxy
+          self.port = 8000                                  # add proxy port
+          insecure.fetchHTTP **opts                         # fetch w/ HTTP - implicit proxy (via DNS or routing config)
         elsif ENV.has_key?('http_proxy')
-          insecure.fetchHTTP **opts                         # fetch w/ HTTP (explicit proxy)
+          insecure.fetchHTTP **opts                         # fetch w/ HTTP - explicit proxy (via envvar setting)
         else
           fetchHTTP **opts                                  # fetch w/ HTTP(S)
         end
