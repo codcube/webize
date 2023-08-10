@@ -408,8 +408,8 @@ module Webize
         logger.warn "⚠️ unsupported scheme #{uri}"           # unsupported scheme
         opts[:thru] == false ? nil : notfound
       end
-    rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Net::OpenTimeout, Net::ReadTimeout, OpenURI::HTTPError, OpenSSL::SSL::SSLError, RuntimeError, SocketError => e
-      env[:warning] ||= [] # warn on error
+    rescue Exception => e                                   # warn on error
+      env[:warning] ||= []
       env[:warning].push [{_: :span, c: e.class},
                           {_: :a, href: href, c: uri},
                           CGI.escapeHTML(e.message),

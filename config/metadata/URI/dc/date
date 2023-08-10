@@ -64,6 +64,7 @@ date_published
 datemodified
 datepublished
 datetime
+dc.created
 dc.date
 dct:created
 dct:modified
