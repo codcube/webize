@@ -35,18 +35,18 @@ module Webize
     def dataURI?; scheme == 'data' end
 
     def deny?
-      return true if BlockedSchemes.member? scheme           # block scheme
-      return if !host || (AllowHosts.member? host)           # allow host
-      return true if uri.match? Gunk                         # block gunk URI
-      return if host.match?(CDNhost) && path&.match?(CDNdoc) # allow CDN URI
-      deny_domain?                                           # block domain
+      return true if BlockedSchemes.member? scheme                  # block scheme
+      return true if uri.match? Gunk                                # block URI patterns
+      return false if host&.match?(CDNhost) && path&.match?(CDNdoc) # allow URI patterns on host
+      return deny_domain?                                           # allow or block domain
     end
 
     def deny_domain?
-      d = DenyDomains                                        # cursor to root
-      domains.find{|name|                                    # parse name
-        return unless d = d[name]                            # advance cursor
-        d.empty? }                                           # is name leaf in tree?
+      return false if !host || AllowHosts.member?(host)             # allow host
+      d = DenyDomains                                               # cursor to base of tree
+      domains.find{|name|                                           # parse domain name
+        return unless d = d[name]                                   # advance cursor
+        d.empty? }                                                  # named leaf exists in tree?
     end
 
     def dirURI?; !path || path[-1] == '/' end

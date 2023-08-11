@@ -511,7 +511,6 @@ module Webize
     end
 
     # declarative host categories
-    FilterHosts = Webize.configList 'hosts/filter'
     URLHosts = Webize.configList 'hosts/url'
 
     def hostGET
@@ -525,16 +524,10 @@ module Webize
       case path
       when /(gen(erate)?|log)_?204$/ # connectivity check
         [204, {}, []]
-      when '/feed' # subscription endpoint
+      when '/feed' # subscription aggregation node
         fetch adapt? ? Feed::Subscriptions[host] : nil
-      when /^\/resizer/
-        if (ps = path.split /\/\d+x\d+[^.]*\//).size > 1
-          [302, {'Location' => 'https://' + ps[-1]}, []]
-        else
-          fetch
-        end
       else         # generic remote node
-        (deny? && !FilterHosts.member?(host)) ? deny : fetch
+        deny? ? deny : fetch
       end
     end
 
