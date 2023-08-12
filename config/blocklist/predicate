@@ -15,6 +15,7 @@ STYLESHEET
 X-UA-Compatible
 _token
 action-cable-url
+ad_targeting_id
 advertiser_account_service_levels
 advertising
 ahrefs-site-verification
