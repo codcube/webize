@@ -64,12 +64,14 @@
 - histogram on datedir per slice-resolution
 - hash fetched entities to prevent redundant parsing/summarization work when origin caching is broken - essentially generate our own ETags
 - rewrite URLs on output to cut out local redirects (nitter 301s etc)
+- for pages still completely blank - https://laiyiohlsen.com/projects/while-x.html - multifetch triplr on the Link field (the text is inside included JS files in this case)
 - dedupe images, link to shown image from placeholder icons
 - assemble dash/hls manifest for youtube data we have from the json , so we can stop using their borked player with the unskippable adloop bug
 - leakage of <body> tag into emitted HTML. http://localhost:8000/https://www.cbsnews.com/news/rush-limbaugh-arrested-on-drug-charges/
 - multiple videos, using first:https://www.youtube.com/opensearch?locale=en_US, https://www.youtube.com/watch?v=k2sIDDco5xg, http://www.youtube.com/watch?v=k2sIDDco5xg&feature=applinks, @youtube
 - 12h: ⚠️ no RDF reader for application/opensearchdescription+xml
 - link from parent to child resources in generic JSON triplr
+- emit blank nodes in JSON triplr (requires above for reachability) https://radio.montezpress.com/api/archive/
 - next/prev links in HTML not lifted to HTTP metadata and/or collide with proxy-added #next/#prev http://techrights.org/2021/11/30/freedom-respecting-internet/ http://www.w3.org/1999/xhtml/vocab#role
 - link gemini posts to timeline - use current timestamp if server doesn't provide
 - loops in container structures throw renderer for a loop. data in the wild might contain this, perhaps https://doriantaylor.com/summer-of-protocols/ does. we need to decide on ldp#contains or sioc:container_of as the default to map to also
