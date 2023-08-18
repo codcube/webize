@@ -28,8 +28,7 @@
 .post .to {float: right; margin: 0}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
 .post div.abstract {border-radius: .5em .5em .2em .2em; display: block}
-.post {border-width: .12em; border-style: solid; border-color: #666}
-.post {margin: 1px; max-width: 96ex}
+.post {border: .12em solid #666; margin: 1px; max-width: 96ex}
 .post, .post div, pre {border-radius: .5em}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
