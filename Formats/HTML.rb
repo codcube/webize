@@ -82,16 +82,17 @@ module Webize
           blocked = ref.deny?
           offsite = ref.host != base.host
           css = []
-          css.push :blocked if blocked                            # blocked resource
 
-          if color = if HTML::HostColor.has_key? ref.host         # host-specific reference style
+          if color = if HTML::HostColor.has_key? ref.host         # host-specific ref style
                        HTML::HostColor[ref.host]
                      elsif ref.scheme == 'mailto'
                        '#48f'
                      end
-            e['style'] = "border: 1px solid #{color}; border-radius: .4em; display: inline-block; " + (blocked ? "background: repeating-linear-gradient(#{rand(8) * 45}deg, #{color}, #{color} 1em, #000 1em, #000 2em); color: white" : "background-color: #000; color: #{color}")
+            e['style'] = "border: 1px solid #{color}; color: #{color}"
+            css.push :host
           else
-            css.push offsite ? :global : :local                   # local or global reference style
+            css.push offsite ? :global : :local                   # local or global ref style
+            css.push :blocked if blocked                          # blocked reference
           end
 
           e.inner_html = [
