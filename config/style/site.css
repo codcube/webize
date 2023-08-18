@@ -15,7 +15,6 @@
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
-.id {color: #aaa; font-size: .72em; float: right; max-width: 40ex; overflow: hidden}
 .interactionCount .count {font-weight: bold; border-radius: 0 .38em .38em 0}
 .interactionCount .type {border-radius: .38em 0 0 .38em}
 .interactionCount span {background-color: #fff; color: #000; padding: .1em}
@@ -49,13 +48,12 @@
 .warning {border: 2px solid #ff0}
 .warning span {background-color: #ff0; color: #000}
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}
-a span {color: #bbb; font-weight: normal; font-size: 0.82em}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px; max-width: 40em; overflow: hidden; vertical-align: top}
 a.date {white-space: nowrap; float: right; color: #ccc; background-color: #000; font-size: .88em; font-weight: normal}
-a.global {background-color: #005}
+a.global, a.global > span.id {background-color: #005}
 a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
-a.local {background-color: #003}
+a.local, a.local > span.id {background-color: #003}
 audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .original, .quote, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em}
 blockquote, ol, p, ul {max-width: 80ex}
@@ -76,6 +74,7 @@ li:nth-child(odd), tr:nth-child(odd) > td {background-color: #222; color: #fff}
 p {border-radius: .4em; margin: 1px}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, img {margin: 0}
+span.id {color: #ccc; font-weight: normal; font-size: 0.83em; float: right}
 svg, img[src*="svg"] {max-width:2em; max-height: 2em}
 table {border-spacing: 0}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0 .1em 0 .1em}
