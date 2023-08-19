@@ -81,18 +81,18 @@ module Webize
 
           blocked = ref.deny?
           offsite = ref.host != base.host
-          css = []
 
-          if color = if HTML::HostColor.has_key? ref.host         # host-specific ref style
+          if color = if HTML::HostColor.has_key? ref.host         # host-specific reference style
                        HTML::HostColor[ref.host]
                      elsif ref.scheme == 'mailto'
                        '#48f'
                      end
             e['style'] = "border: 1px solid #{color}; color: #{color}"
-            css.push :host
+            e['class'] = 'host'
+          elsif blocked
+            e['class'] = 'blocked host'
           else
-            css.push offsite ? :global : :local                   # local or global ref style
-            css.push :blocked if blocked                          # blocked reference
+            e['class'] = offsite ? 'global' : 'local'             # local or global reference style
           end
 
           e.inner_html = [
@@ -132,9 +132,6 @@ module Webize
                                end)[0..127]),
                '</span>', ' ']
             end].join
-
-          e['class'] = css.join ' '                               # add CSS classes
-
         elsif e['id']                                             # identified node?
           e.add_child " <span class='id'>##{e['id']}</span> "     # show identifier
         end}
