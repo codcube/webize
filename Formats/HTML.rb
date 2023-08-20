@@ -201,7 +201,7 @@ module Webize
 
         css = RDF::Literal(HTML.render({_: :style,                 # highlighting CSS
                                         c: wordIndex.map{|word,i|
-                                          ".w#{i} {background-color: #{'#%06x' % (rand 16777216)}; color: white} /* #{word} */\n"}}))
+                                          ".post span.w#{i} {background-color: #{'#%06x' % (rand 16777216)}; color: white} /* #{word} */\n"}}))
         css.datatype = RDF.HTML
         graph['#searchCSS'] = {Content => [css]}
       end
