@@ -205,7 +205,7 @@ module Webize
           uri = Webize::Resource.new(creator).env env
           name = uri.display_name
           color = Digest::SHA2.hexdigest(name)[0..5]
-          {_: :a, class: :from, href: uri.href, style: "background-color: ##{color}; color: #000", c: name}
+          {_: :a, class: :from, href: uri.href, style: "background-color: ##{color}", c: name}
         else
           markup creator, env
         end}}
@@ -216,7 +216,7 @@ module Webize
           uri = Webize::Resource.new(r).env env
           name = uri.display_name
           color = Digest::SHA2.hexdigest(name)[0..5]
-          {_: :a, class: :to, href: uri.href, style: "background-color: ##{color}; color: #000", c: ['&rarr;', name].join}
+          {_: :a, class: :to, href: uri.href, style: "background-color: ##{color}", c: ['&rarr;', name].join}
         else
           markup r, env
         end}}

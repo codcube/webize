@@ -7,7 +7,7 @@
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
 #updates {background: repeating-linear-gradient(300deg, #888, #888 1em, #000 1em, #000 2em); border: 1px solid #888; border-radius: 1em; display: block}
 .abstract, .abstract span {background-color: #bbb; color: #000}
-.blocked, .blocked span.id {background: repeating-linear-gradient(300deg, #f00, #f00 4em, #fff 4em, #fff 8em); color: #000; border: 1px solid red}
+.blocked {background: repeating-linear-gradient(300deg, #f00, #f00 4em, #000 4em, #000 8em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
 .container > .contents {border: 1px solid #888; border-radius: 0 .4em .4em .4em}
 .container > .title {border-color: #888; border-style: solid; border-width: 1px 1px 0 1px; border-radius: .5em .5em 0 0; font-weight: bold; margin: 0; padding: 0 .15em 0 .15em}
@@ -50,11 +50,13 @@
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px; max-width: 40em; overflow: hidden; vertical-align: top}
 a.date {white-space: nowrap; float: right; color: #ccc; background-color: #000; font-size: .88em; font-weight: normal}
-a.global, a.global > span.id {background-color: #004}
+a.from, a.to {color: #000}
+a.from:visited, a.to:visited {color: #fff}
+a.global {background-color: #004}
 a.global, a.local {border: 1px solid #008}
 a.global, a.local, a.host {border-radius: .42em; display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
-a.local, a.local > span.id {background-color: #002}
+a.local {background-color: #002}
 audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .original, .quote, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em}
 blockquote, ol, p, ul {max-width: 80ex}
@@ -78,7 +80,7 @@ pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, img {margin: 0}
 span.id {font-weight: normal; font-size: 0.83em; float: right}
 svg, img[src*="svg"] {max-width:2em; max-height: 2em}
 table {border-spacing: 0}
-td.k a, th[scope="row"] a, th[scope="row"] a span.id {color: #000; background-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0 .1em 0 .1em}
+td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0 .1em 0 .1em}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
 td[property="http://rdfs.org/sioc/ns#addressed_to"] > a {white-space: nowrap}
 video {min-width: 40ex}
