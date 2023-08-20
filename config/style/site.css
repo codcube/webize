@@ -27,8 +27,8 @@
 .post .title {background-color: #fff; color: #000; border-radius: .5em .2em .2em 0; margin: 0; max-width: 80ex; float: left}
 .post .to {float: right; margin: 0}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
+.post article div, .post article span, .post section div, .post section span, .post div > span, .post > span {background-color: #000}
 .post div.abstract {border-radius: .5em .5em .2em .2em; display: block}
-.post span {background-color: #000}
 .post {border: .12em solid #666; margin: 1px; max-width: 96ex}
 .post, .post div, pre {border-radius: .5em}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
@@ -52,6 +52,7 @@ a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; p
 a.date {white-space: nowrap; float: right; color: #ccc; background-color: #000; font-size: .88em; font-weight: normal}
 a.from, a.to {color: #000}
 a.from:visited, a.to:visited {color: #fff}
+a.global > span.id, a.local > span.id {color: #ddd}
 a.global {background-color: #004}
 a.global, a.local {border: 1px solid #008}
 a.global, a.local, a.host {border-radius: .42em; display: inline-block}
@@ -62,7 +63,7 @@ blockquote, blockquote > p, .greentext, .original, .quote, .q, .QuotedText {back
 blockquote, ol, p, ul {max-width: 80ex}
 blockquote::before, .quote::before {content: '>'; float: left}
 body {font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans; padding: 0; margin: 0}
-body, dfn, div[dir="auto"], figcaption, p, pre, h1, h2, h3, h4, h5, h6 {background-color: #000; color: #fff}
+body, cite, dfn, figcaption, h1, h2, h3, h4, h5, h6, p, pre {background-color: #000; color: #fff}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
