@@ -248,6 +248,7 @@ module Webize
         color = if HostColor.has_key? uri.host
                   HostColor[uri.host]
                 elsif uri.deny?
+                  env[:gradientR], env[:gradientA], env[:gradientB] = [300, 4, 8]
                   :red
                 end
       end
