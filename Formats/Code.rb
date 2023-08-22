@@ -52,6 +52,7 @@ module Webize
         if lexer = Rouge::Lexer.guess_by_filename(@base.basename) rescue nil
           html = Rouge::Formatters::HTMLPygments.new(Rouge::Formatters::HTML.new).format(lexer.lex(@doc))
         else
+          puts caller, @doc
            logger.warn "can't determine lexer for #{@base}"
         end
 
