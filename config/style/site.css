@@ -27,7 +27,7 @@
 .post .title {background-color: #fff; color: #000; border-radius: .5em .2em .2em 0; margin: 0; max-width: 80ex; float: left}
 .post .to {float: right; margin: 0}
 .post a.pointer {font-weight: normal; margin: 0; float: right}
-.post article div, .post article span, .post section div, .post section span, .post div > span, .post > span {background-color: #000}
+.post article div, .post section div, .post div > span, .post > span {background-color: #000}
 .post div.abstract {border-radius: .5em .5em .2em .2em; display: block}
 .post {border: .12em solid #666; margin: 1px; max-width: 96ex}
 .post, .post div, pre {border-radius: .5em}

@@ -3,8 +3,6 @@ abcnews.go.com
 abs.twimg.com
 ajax.aspnetcdn.com
 ajax.googleapis.com
-api-v2.soundcloud.com
-api.soundcloud.com
 api.weather.com
 api0.weather.com
 api1.weather.com
@@ -33,7 +31,6 @@ ems-cust-content.s3.eu-central-1.amazonaws.com
 entitlement.auth.adobe.com
 external-content.duckduckgo.com
 feeds.bizjournals.com
-feeds.soundcloud.com
 file.notion.so
 finance.yahoo.com
 flex.acast.com
@@ -64,7 +61,6 @@ reader.elsevier.com
 s3.amazonaws.com
 science.mozilla.org
 signin.ebay.com
-soundcloud.com
 sp.auth.adobe.com
 static.cargo.site
 static01.nyt.com
@@ -113,7 +109,6 @@ www.nytimes.com
 www.oreilly.com
 www.reddit.com
 www.reuters.com
-www.soundcloud.com
 www.the-sun.com
 www.theguardian.com
 www.tripadvisor.com
