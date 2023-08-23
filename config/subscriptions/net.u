@@ -1,8 +1,8 @@
-http://localhost:8000/https://educopia.org/feed/
 https://0x00sec.org/latest.rss
 https://alexschroeder.ch/wiki/feed/full/
 https://ar.al/index.xml
 https://battlepenguin.com/feed.xml
+https://blog.datadryad.org/feed/
 https://blog.saeloun.com/feed.xml
 https://blog.soykaf.com/index.xml
 https://changelog.complete.org/comments/feed
@@ -15,6 +15,7 @@ https://datacurationnetwork.org/feed/
 https://donnywinston.com/feed.xml
 https://dotat.at/@/blog.atom
 https://drewdevault.com/blog/index.xml
+https://educopia.org/feed/
 https://f5n.org/blog/atom.xml
 https://federated.fun/users/jeff/feed.atom
 https://feeds.feedburner.com/c4lj
@@ -78,6 +79,7 @@ https://writtendescription.blogspot.com/feeds/posts/default
 https://www.arl.org/feed/
 https://www.brainonfire.net/blog/posts.atom
 https://www.cni.org/feed
+https://www.coar-repositories.org/feed/
 https://www.cos.io/blog/rss.xml
 https://www.crl.edu/news/feed
 https://www.go-fair.org/feed/
