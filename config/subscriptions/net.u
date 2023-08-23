@@ -1,3 +1,4 @@
+http://localhost:8000/https://educopia.org/feed/
 https://0x00sec.org/latest.rss
 https://alexschroeder.ch/wiki/feed/full/
 https://ar.al/index.xml
@@ -10,6 +11,7 @@ https://chromeunboxed.com/feed/
 https://crystal-lang.org/feed.xml
 https://danluu.com/atom.xml
 https://dataculture.northeastern.edu/feed.xml
+https://datacurationnetwork.org/feed/
 https://donnywinston.com/feed.xml
 https://dotat.at/@/blog.atom
 https://drewdevault.com/blog/index.xml
@@ -32,11 +34,14 @@ https://hackerpublicradio.org/comments.rss
 https://hackerpublicradio.org/hpr_mp3_rss.php
 https://hackerpublicradio.org/hpr_ogg_rss.php
 https://hackerpublicradio.org/hpr_spx_rss.php
+https://iarla.org/feed/
+https://investinopen.org/rss/
 https://ipscell.com/comments/feed/
 https://ipscell.com/feed/
 https://jon.sprig.gs/blog/feed
 https://jvns.ca/atom.xml
 https://leftychan.net/leftypol/
+https://leftypol.org/leftypol/
 https://lemmy.ml/feeds/c/libre_culture.xml
 https://lobste.rs/comments.rss
 https://lobste.rs/rss
@@ -49,6 +54,7 @@ https://mjg59.dreamwidth.org/data/rss
 https://mlml.io/events/index.xml
 https://mlml.io/index.xml
 https://mlml.io/projects/index.xml
+https://nebigdatahub.org/feed/
 https://news.ycombinator.com/threads?id=superkuh
 https://news.ycombinator.com/threads?id=zzo38computer
 https://octodon.social/@cwebber.rss
@@ -69,9 +75,13 @@ https://utcc.utoronto.ca/~cks/space/blog/?atom
 https://vitalyparnas.com/feeds/all.rss.xml
 https://w3c.social/@w3c.rss
 https://writtendescription.blogspot.com/feeds/posts/default
+https://www.arl.org/feed/
 https://www.brainonfire.net/blog/posts.atom
+https://www.cni.org/feed
+https://www.cos.io/blog/rss.xml
+https://www.crl.edu/news/feed
+https://www.go-fair.org/feed/
+https://www.librarycopyrightalliance.org/feed/
 https://www.phoronix.com/rss.php
 https://www.pine64.org/feed/
 https://www.spaceghetto.space/feed/
-https://leftypol.org/leftypol/
-https://investinopen.org/rss/
