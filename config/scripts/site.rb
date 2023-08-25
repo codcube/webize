@@ -1,13 +1,4 @@
 module Webize
-
-  ReHost = {
-    'm.soundcloud.com' => 'soundcloud.com',
-    'nitter.net' => 'twitter.com',
-    'old.reddit.com' => 'www.reddit.com',
-    'twitter.com' => 'nitter.net',
-    'www.reddit.com' => 'old.reddit.com',
-  }
-
   module Feed
 
     # subscriptions
