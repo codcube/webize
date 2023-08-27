@@ -20,8 +20,6 @@ module Webize
     }
   end
 
-  POSIX::Node::HomePage = 'bookmarks/{home.u,search.🐢}'
-
   class HTTP::Node
 
     # site-specific RDF mapping

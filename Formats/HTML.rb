@@ -360,9 +360,6 @@ module Webize
           end
         end
 
-        # site-reader
-        @base.send Triplr[@base.host], @doc, &f if Triplr[@base.host]
-
         # @src
         @doc.css('[src]').map{|e|
           yield @base, Link, @base.join(e.attr('src')) unless %w(img style video).member? e.name}

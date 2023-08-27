@@ -18,6 +18,7 @@ module Webize
 
   class POSIX::Node
     include MIME
+    HomePage = 'bookmarks/{home.u,search.🐢}'
 
     def dirname; node.dirname end
 
