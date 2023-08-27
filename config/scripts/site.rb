@@ -14,14 +14,6 @@ module Webize
       'https://www.youtube.com/feeds/videos.xml?channel_id=' + c}
 
   end
-  module HTML
-    class Reader
-      Triplr = {
-        'www.youtube.com' => :YouTube,
-      }
-
-    end
-  end
   module JSON
     Triplr = {
       'api.mixcloud.com' => :Mixcloud,
@@ -60,19 +52,8 @@ module Webize
       end
     end
 
-    # read RDF from JSON embedded in Javascript value in HTML
-    def JSONembed doc, pattern, &b
-      doc.css('script').map{|script|
-        script.inner_text.lines.grep(pattern).map{|line|
-          Webize::JSON::Reader.new(line.sub(/^[^{]+/,'').chomp.sub(/};.*/,'}'), base_uri: self).scanContent &b}}
-    end
-
     def YoutuBe
       [301, {'Location' => Node(['//www.youtube.com/watch?v=', path[1..-1]].join).href}, []]
-    end
-
-    def YouTube doc, &b
-      JSONembed doc, /var ytInitial(Data|PlayerResponse) = /i, &b
     end
   end
 end
