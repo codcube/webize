@@ -50,8 +50,5 @@ module Webize
       end
     end
 
-    def YoutuBe
-      [301, {'Location' => Node(['//www.youtube.com/watch?v=', path[1..-1]].join).href}, []]
-    end
   end
 end
