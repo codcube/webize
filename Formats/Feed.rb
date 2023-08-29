@@ -2,6 +2,12 @@
 module Webize
   module Feed
 
+    Names = %w(
+atom atom.xml
+feed feed.xml
+index.xml
+rss rss.xml
+)
     Subscriptions = {} # hostname -> [feedURL,..]
 
     class Format < RDF::Format

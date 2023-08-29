@@ -367,7 +367,7 @@ module Webize
         # @href
         @doc.css('[href]').map{|m|
           v = HTTP::Node @base.join(m.attr 'href'), @base.env # @href object
-          @env[:feeds].push v if v.basename&.match? /^rss(\.|$)/
+          @env[:feeds].push v if Feed::Names.member? v.basename
           if rel = m.attr('rel')       # @rel predicate
             rel.split(/[\s,]+/).map{|k|
               @env[:links][:prev] ||= v if k.match? /prev(ious)?/i

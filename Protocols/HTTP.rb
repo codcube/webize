@@ -560,6 +560,8 @@ module Webize
             'Shift_JIS'
           when /utf.?8/i
             'UTF-8'
+          when /win.*1252/i
+            'Windows-1252'
           else
             c
           end
