@@ -20,10 +20,10 @@ module Webize
     def self.cachestamp html, base
       doc = Nokogiri::HTML.parse html
       head = doc.css 'head base'
-      basedef = head.css('base')[0]
-      puts "@base defined by origin:", basedef if basedef
-      return html if basedef
-      puts "@base defined:", base if basedef
+      bdef = head.css('base')[0]
+      puts "origin @base:", bdef if bdef
+      return html if bdef
+      puts "cache @base:", base
       head.add_child "<base href='#{base}'>"
       doc.to_html
     end
