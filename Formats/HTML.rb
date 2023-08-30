@@ -19,7 +19,7 @@ module Webize
 
     def self.cachestamp html, base
       doc = Nokogiri::HTML.parse html
-      head = doc.css 'head base'
+      head = doc.css('head')[0]
       bdef = head.css('base')[0]
       puts "origin @base:", bdef if bdef
       return html if bdef

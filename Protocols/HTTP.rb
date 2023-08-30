@@ -308,7 +308,7 @@ module Webize
             FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) || File.symlink?(link) # link canonical name to storage name
           end
 
-          File.open(doc, 'w'){|f| f << format == 'text/html' ? HTML.cachestamp(body, self) : body } # update cache
+          File.open(doc, 'w'){|f| f << (format == 'text/html' ? (HTML.cachestamp body, self) : body) } # update cache
 
           if timestamp = h['Last-Modified']                             # HTTP timestamp?
             if t = Time.httpdate(timestamp) rescue nil                  # parse timestamp
