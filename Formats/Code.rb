@@ -28,6 +28,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
+puts options
         @base = options[:base_uri]
         @doc = (input.respond_to?(:read) ? input.read : input).encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
 
@@ -52,7 +53,6 @@ module Webize
         if lexer = Rouge::Lexer.guess_by_filename(@base.basename) rescue nil
           html = Rouge::Formatters::HTMLPygments.new(Rouge::Formatters::HTML.new).format(lexer.lex(@doc))
         else
-          puts caller, @doc
            logger.warn "can't determine lexer for #{@base}"
         end
 

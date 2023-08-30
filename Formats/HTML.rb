@@ -17,6 +17,17 @@ module Webize
     StatusColor.keys.map{|s|
       StatusColor[s.to_i] = StatusColor[s]}
 
+    def self.cachestamp html, base
+      doc = Nokogiri::HTML.parse html
+      head = doc.css 'head base'
+      basedef = head.css('base')[0]
+      puts "@base defined by origin:", basedef if basedef
+      return html if basedef
+      puts "@base defined:", base if basedef
+      head.add_child "<base href='#{base}'>"
+      doc.to_html
+    end
+
     # (String -> String) or (Nokogiri -> Nokogiri)
     def self.format html, base
       #print "FORMAT #{base} "

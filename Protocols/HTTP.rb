@@ -297,7 +297,6 @@ module Webize
           charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset identifier
           body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # detect HTML served w/ XML MIME
-
           repository = (readRDF format, body).persist env, self         # read and cache graph data
           (print MIME.format_icon format; return repository) if !thru   # return graph data, or
                                                                         # HTTP Response with graph or static/unmodified-upstream data
@@ -308,7 +307,9 @@ module Webize
             doc = [(link = doc), '.', extensions[0]].join               # append valid suffix
             FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) || File.symlink?(link) # link canonical name to storage name
           end
-          File.open(doc, 'w'){|f| f << body }                           # cache data
+
+          File.open(doc, 'w'){|f| f << format == 'text/html' ? HTML.cachestamp(body, self) : body } # update cache
+
           if timestamp = h['Last-Modified']                             # HTTP timestamp?
             if t = Time.httpdate(timestamp) rescue nil                  # parse timestamp
               FileUtils.touch doc, mtime: t                             # set timestamp on filesystem
