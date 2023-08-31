@@ -41,12 +41,12 @@ module Webize
         uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) external args to request URI
       end
 
-      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse eTag(s)
-      env[:proxy_href] = isPeer || isLocal                  # relocate hrefs when proxying through local or peer hosts
+      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse eTags
+      env[:proxy_href] = isPeer || isLocal                  # relocate hrefs when proxying over local or peer host
 
       URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist
 
-      uri.send(env['REQUEST_METHOD']).yield_self{|status,head,body| # call request and inspect response
+      uri.send(env['REQUEST_METHOD']).yield_self{|status,head,body| # call request and log response
         inFmt = MIME.format_icon env[:origin_format]                # input format
         outFmt = MIME.format_icon head['Content-Type']              # output format
         color = env[:deny] ? '38;5;196' : (MIME::Color[outFmt]||0)  # format -> color
