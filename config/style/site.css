@@ -26,11 +26,12 @@
 .links {border: 1px dotted #777; border-radius: .5em}
 .post .title {background-color: #fff; color: #000; border-radius: .5em 0 .2em 0; margin: 0; max-width: 80ex; float: left}
 .post .to {float: right; margin: 0}
-.post a.pointer {font-weight: normal; margin: 0; float: right}
+.post a.pointer {margin: 0; padding: 0; border: 1px solid #333; font-weight: normal; margin: 0; float: right}
+.post a.pointer:visited {border: 1px solid #888}
 .post article div, .post section div, .post div > span, .post > span {background-color: #000}
 .post div.abstract {border-radius: .5em .5em .2em .2em; display: block}
 .post {border: .12em solid #666; margin: 1px; max-width: 96ex}
-.post, .post div, pre {border-radius: .5em}
+.post, .post div, pre, .post a.pointer {border-radius: .5em}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
 .quote > .quote > .quote {background-color: #777}

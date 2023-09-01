@@ -266,7 +266,7 @@ module Webize
       sz = rand(10) / 3.0
       rest = {}
       re.map{|k,v|
-        rest[k] = re[k] unless [Abstract, Content, Creator, Date, From, Image, Link, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
+        rest[k] = re[k] unless [Abstract, Content, Creator, Date, From, Link, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
       {class: :post,                                    # resource
        c: [link,                                        # title
            origin_ref,                                  # pointer
@@ -274,7 +274,6 @@ module Webize
            date,                                        # timestamp
            from,                                        # source
            to,                                          # destination
-           p[Image],                                    # image(s)
            [Content, SIOC+'richContent'].map{|p|
              (re[p]||[]).map{|o|markup o,env}},         # body
            p[Link],                                     # untyped links
