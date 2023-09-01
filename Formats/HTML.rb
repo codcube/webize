@@ -17,15 +17,21 @@ module Webize
     StatusColor.keys.map{|s|
       StatusColor[s.to_i] = StatusColor[s]}
 
-    def self.cachestamp html, base
-      doc = Nokogiri::HTML.parse html
-      head = doc.css('head')[0]
-      bdef = head.css('base')[0]
-      puts "origin @base:", bdef if bdef
-      return html if bdef
-      puts "cache @base:", base
-      head.add_child "<base href='#{base}'>"
-      doc.to_html
+    def self.cachestamp html, baseURI              # input doc, base-URI
+      doc = Nokogiri::HTML.parse html              # parse doc
+      if head = doc.css('head')[0]                 # has head node
+        base = head.css('base[href]')[0]           # base node
+        puts "@base #{base['href']}" if base
+        return html if base                        # nothing to do
+      else                                         # headless
+        Console.logger.warn "⚠️ !head #{baseURI}"  # warn
+        head = Nokogiri::XML::Node.new 'head', doc # create head node
+        doc.css('body')[0].before head             # attach head node
+      end
+      base = Nokogiri::XML::Node.new 'base', doc   # create base node
+      base['href'] = baseURI                       # set base-URI
+      head.add_child base                          # attach base node
+      doc.to_html                                  # output doc
     end
 
     # (String -> String) or (Nokogiri -> Nokogiri)
@@ -437,14 +443,14 @@ module Webize
           yield @base, Title, title.inner_text unless title.inner_text.empty?}
 
         # <img>
-        @doc.css('img[title], img[alt]').map{|img|
-          if image = img['src']
-            yield image, Type, Image.R
-            %w(alt title).map{|attr|
-              if val = img[attr]
-                yield image, Abstract, val
-              end}
-          end}
+        @doc.css('img[src]').map{|img|
+          image = @base.join img['src']
+          yield @base, Contains, image
+          yield image, Type, Image.R
+          %w(alt title).map{|attr|
+            if val = img[attr]
+              yield image, Abstract, val
+            end}}
 
         # <video>
         ['video[src]', 'video > source[src]'].map{|vsel|

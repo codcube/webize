@@ -415,7 +415,10 @@ module Webize
                           {_: :a, href: href, c: uri},
                           CGI.escapeHTML(e.message),
                           {_: :b, c: [:⏱️, Time.now - start_time, :s]}, '<br>']
-      puts [:⚠️, uri, e.class, e.message].join ' '
+      puts [:⚠️, uri,
+            e.class, e.message,
+            e.backtrace.join("\n")
+           ].join ' '
       opts[:thru] == false ? nil : notfound
     end
 
