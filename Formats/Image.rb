@@ -48,34 +48,14 @@ module Webize
       node['srcset'] = srcset
     end
 
-    MarkupPredicate[Schema+'srcSet'] = -> sets, env {
-      sets.map{|set|
-        set.to_s.scan(Webize::HTML::SrcSetRegex).map{|ref, _|
-          Markup[Image][ref, env]}}}
-
-    MarkupPredicate[Image] = -> images, env {
-      images.map{|i|
-        [Markup[Image][i,env], ' ']}}
-
     Markup[Image] = -> image, env {
-      if image.class == Hash
-        resource = image.dup
-        image = image['https://schema.org/url'] || image[Schema+'url'] || image[Link] || image['uri']
-        (Console.logger.warn "no image URI!"; image = '#image') unless image
-      end
-
-      if image.class == Array
-        Console.logger.warn ['multiple images: ', image].join if image.size > 1
-        image = image[0]
-        (Console.logger.warn "empty image resource"; image = '#image') unless image
-      end
-
-      src = Webize::Resource.new(env[:base].join(image)).env(env).href
+      src = Webize::Resource.new(env[:base].join(image['uri'])).env(env).href
       img = {_: :a, href: src,
              c: {_: :img, src: src}}
 
-      if resource&.has_key? Abstract
-        {c: [img, '<br>',
+      if image.has_key? Abstract
+        {class: :image,
+         c: [img, '<br>',
              {class: :abstract,
               c: resource[Abstract].map{|a|
                 [(markup a,env),' ']}}]}
