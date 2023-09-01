@@ -6,6 +6,7 @@
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
 #updates {background: repeating-linear-gradient(300deg, #888, #888 1em, #000 1em, #000 2em); border: 1px solid #888; border-radius: 1em; display: block}
+.abstract {border-radius: .5em .5em .2em .2em; display: block}
 .abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked {background: repeating-linear-gradient(300deg, #f00, #f00 6em, #000 6em, #000 8em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
@@ -15,6 +16,8 @@
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
+.image .abstract {border-width: 1px 0 0 0; border-radius: 0 0 .4em .4em; border-style: dotted; border-color: #aaa; background-color: #000; color: #ccc; font-size: .9em}
+.image {border: 1px dotted #aaa; border-radius: .3em; margin: .2em}
 .interactionCount .count {font-weight: bold; border-radius: 0 .38em .38em 0}
 .interactionCount .type {border-radius: .38em 0 0 .38em}
 .interactionCount span {background-color: #fff; color: #000; padding: .1em}
@@ -29,7 +32,6 @@
 .post a.pointer {margin: 0; padding: 0; border: 1px solid #888; font-weight: normal; margin: 0; float: right}
 .post a.pointer:visited {border: 1px solid #eee}
 .post article div, .post section div, .post div > span, .post > span {background-color: #000}
-.post div.abstract {border-radius: .5em .5em .2em .2em; display: block}
 .post {border: .12em solid #666; margin: 1px; max-width: 96ex}
 .post, .post div, pre, .post a.pointer {border-radius: .5em}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}

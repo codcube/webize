@@ -49,7 +49,7 @@ module Webize
     end
 
     Markup[Image] = -> image, env {
-      src = Webize::Resource.new(env[:base].join(image['uri'])).env(env).href
+      src = Webize::Resource((env[:base].join image['uri']), env).href
       img = {_: :a, href: src,
              c: {_: :img, src: src}}
 
@@ -57,7 +57,7 @@ module Webize
         {class: :image,
          c: [img, '<br>',
              {class: :abstract,
-              c: resource[Abstract].map{|a|
+              c: image[Abstract].map{|a|
                 [(markup a,env),' ']}}]}
       else
         img
