@@ -79,32 +79,19 @@ module Webize
   end
   module HTML
 
-    MarkupPredicate[Video] = -> videos, env {videos.map{|v| Markup[Video][v, env]}}
+    MarkupPredicate[Video] = -> videos, env {
+      videos.map{|v|
+        puts :VIDEO, v.class, v if [Hash, String].member? v.class
+        Markup[Video][{'uri' => v.to_s}, env]}}
 
-    Markup[Video] = Markup['WEB_PAGE_TYPE_WATCH'] = -> video, env {
+    Markup[Video] = -> video, env {
+      v = Webize::Resource env[:base].join(video['uri']), env # video resource
 
-      if video.class == Hash
-        resource = video.dup
-        ['http://www.youtube.com/xml/schemas/2015#channelId',
-         'http://www.youtube.com/xml/schemas/2015#videoId',
-         Video].map{|p|
-          resource.delete p}
-        video = video['https://schema.org/url'] || video[Schema+'contentURL'] || video[Schema+'url'] || video[Link] || video['uri']
-        (Console.logger.warn 'no video URI!'; video = '#video') unless video
-      end
-
-      if video.class == Array
-        Console.logger.warn ['multiple videos: ', video].join if video.size > 1
-        video = video[0]
-        (Console.logger.warn 'empty video resource'; video = '#video') unless video
-      end
-
-      if video.to_s.match? /v.redd.it/ # reddit?
-        video += '/DASHPlaylist.mpd'   # append playlist suffix to URI
+      if v.uri.match? /v.redd.it/
+        v += '/DASHPlaylist.mpd' # append playlist suffix
         dashJS = Webize::Resource 'https://cdn.dashjs.org/latest/dash.all.min.js', env
       end
 
-      v = Webize::Resource.new(env[:base].join(video)).env env # video resource
       {class: :video,                  # video markup
        c: [if v.uri.match? /youtu/     # youtube?
            env[:tubes] ||= {}          # dedupe videos

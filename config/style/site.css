@@ -29,8 +29,8 @@
 .links {border: 1px dotted #777; border-radius: .5em}
 .post .title {background-color: #fff; color: #000; border-radius: .5em 0 .2em 0; margin: 0; max-width: 80ex; float: left}
 .post .to {float: right; margin: 0}
-.post a.pointer {margin: 0; padding: 0; border: 1px solid #888; font-weight: normal; margin: 0; float: right}
-.post a.pointer:visited {border: 1px solid #eee}
+.post a.pointer {margin: 0; padding: 0; border: 1px solid #777; font-weight: normal; margin: 0; float: right}
+.post a.pointer:visited {border: 1px solid #bbb}
 .post article div, .post section div, .post div > span, .post > span {background-color: #000}
 .post {border: .12em solid #777; margin: 1px; max-width: 96ex}
 .post, .post div, pre, .post a.pointer {border-radius: .5em}

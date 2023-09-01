@@ -50,7 +50,9 @@ module Webize
 
     MarkupPredicate[Image] = -> images, env {
       images.map{|i|
-        Markup[Image][{'uri' => Webize::Resource(i,env)}, env]}}
+        puts :IMAGE, i.class, i if [Hash, String].member? i.class
+        #Webize::Resource(i,env)
+        Markup[Image][{'uri' => i.to_s}, env]}}
 
     Markup[Image] = -> image, env {
       src = Webize::Resource((env[:base].join image['uri']), env).href
