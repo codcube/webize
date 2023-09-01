@@ -18,7 +18,7 @@ module Webize
           c += '/'
           graph << RDF::Statement.new(c, Type.R, Container.R)
           graph << RDF::Statement.new(c, Title.R, base + '/')
-        else
+        elsif child.file?
           graph << RDF::Statement.new(c, Title.R, base)
           graph << RDF::Statement.new(c, Type.R, MIME.format_icon(c.fileMIME))
         end
