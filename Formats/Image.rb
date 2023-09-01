@@ -48,6 +48,10 @@ module Webize
       node['srcset'] = srcset
     end
 
+    MarkupPredicate[Image] = -> images, env {
+      images.map{|i|
+        Markup[Image][{'uri' => Webize::Resource(i,env)}, env]}}
+
     Markup[Image] = -> image, env {
       src = Webize::Resource((env[:base].join image['uri']), env).href
       img = {_: :a, href: src,
@@ -60,7 +64,7 @@ module Webize
               c: image[Abstract].map{|a|
                 [(markup a,env),' ']}}]}
       else
-        img
+        [img, ' ']
       end}
 
   end
