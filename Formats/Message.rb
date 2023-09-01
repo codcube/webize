@@ -57,7 +57,6 @@ module Webize
               yield subject, Title, title, graph if title && !title.empty? # title
               subj.remove }
 
-            post.css('img').map{|i| yield subject, Image, @base.join(i['src']), graph}           # image @src
             post.css(MsgCSS[:image]).map{|a| yield subject, Image, @base.join(a['href']), graph} # image @href
             post.css(MsgCSS[:imageP]).map{|img|                                                  # image @href on parent node
               yield subject, Image, @base.join(img.parent['href']), graph }
