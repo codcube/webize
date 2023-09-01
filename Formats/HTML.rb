@@ -19,14 +19,14 @@ module Webize
 
     def self.cachestamp html, baseURI              # input doc, base-URI
       doc = Nokogiri::HTML.parse html              # parse doc
-      if head = doc.css('head')[0]                 # has head node
-        base = head.css('base[href]')[0]           # base node
+      if head = doc.css('head')[0]                 # has head?
+        base = head.css('base[href]')[0]           # find base node
         puts "@base #{base['href']}" if base
         return html if base                        # nothing to do
-      else                                         # headless
+      else                                         # headless?
         Console.logger.warn "⚠️ !head #{baseURI}"  # warn
-        head = Nokogiri::XML::Node.new 'head', doc # create head node
-        doc.css('body')[0].before head             # attach head node
+        head = Nokogiri::XML::Node.new 'head', doc # create head
+        doc.css('body')[0].before head             # attach head
       end
       base = Nokogiri::XML::Node.new 'base', doc   # create base node
       base['href'] = baseURI                       # set base-URI

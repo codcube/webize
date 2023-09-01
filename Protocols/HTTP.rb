@@ -417,7 +417,7 @@ module Webize
                           {_: :b, c: [:⏱️, Time.now - start_time, :s]}, '<br>']
       puts [:⚠️, uri,
             e.class, e.message,
-            e.backtrace.join("\n")
+            #e.backtrace.join("\n")
            ].join ' '
       opts[:thru] == false ? nil : notfound
     end
