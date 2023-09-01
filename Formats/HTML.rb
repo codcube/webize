@@ -21,7 +21,6 @@ module Webize
       doc = Nokogiri::HTML.parse html              # parse doc
       if head = doc.css('head')[0]                 # has head?
         base = head.css('base[href]')[0]           # find base node
-        puts "@base #{base['href']}" if base
         return html if base                        # nothing to do
       else                                         # headless?
         Console.logger.warn "⚠️ !head #{baseURI}"  # warn
@@ -443,7 +442,7 @@ module Webize
           yield @base, Title, title.inner_text unless title.inner_text.empty?}
 
         # <img>
-        @doc.css('img[src]').map{|img|
+        @doc.css('img[src][alt], img[src][title]').map{|img|
           image = @base.join img['src']
           yield @base, Contains, image
           yield image, Type, Image.R
