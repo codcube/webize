@@ -81,8 +81,7 @@ module Webize
 
     MarkupPredicate[Video] = -> videos, env {
       videos.map{|v|
-        puts :VIDEO, v.class, v if [Hash, String].member? v.class
-        Markup[Video][{'uri' => v.to_s}, env]}}
+        Markup[Video][ v.class == Hash ? v : {'uri' => v.to_s}, env ]}}
 
     Markup[Video] = -> video, env {
       v = Webize::Resource env[:base].join(video['uri']), env # video resource
@@ -116,7 +115,7 @@ module Webize
              {_: :video, src: v.uri, controls: :true}.update(dashJS ? {'data-dashjs-player' => 1} : {}), '<br>',
              {_: :a, href: v.uri, c: v.display_name}]
            end,
-           (Markup[BasicResource][resource, env] if resource)]}}
+           HTML.keyval(video, env)]}}
 
   end
 end

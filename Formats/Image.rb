@@ -50,24 +50,19 @@ module Webize
 
     MarkupPredicate[Image] = -> images, env {
       images.map{|i|
-        puts :IMAGE, i.class, i if [Hash, String].member? i.class
-        #Webize::Resource(i,env)
-        Markup[Image][{'uri' => i.to_s}, env]}}
+        Markup[Image][ i.class == Hash ? i : {'uri' => i.to_s}, env ]}}
 
     Markup[Image] = -> image, env {
       src = Webize::Resource((env[:base].join image['uri']), env).href
       img = {_: :a, href: src,
              c: {_: :img, src: src}}
 
-      if image.has_key? Abstract
-        {class: :image,
-         c: [img, '<br>',
-             {class: :abstract,
+      [{class: :image,
+        c: [img, '<br>',
+            ({class: :caption,
               c: image[Abstract].map{|a|
-                [(markup a,env),' ']}}]}
-      else
-        [img, ' ']
-      end}
+                [(markup a,env),' ']}} if image.has_key? Abstract),
+           ]}, ' ']}
 
   end
   module JPEG
