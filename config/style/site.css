@@ -29,8 +29,8 @@
 .links {border: 1px dotted #777; border-radius: .5em}
 .post .title {background-color: #fff; color: #000; border-radius: .5em 0 .2em 0; margin: 0; max-width: 80ex; float: left}
 .post .to {float: right; margin: 0}
-.post a.pointer {margin: 0; padding: 0; border: 1px solid #777; font-weight: normal; margin: 0; float: right}
-.post a.pointer:visited {border: 1px solid #bbb}
+.post a.pointer {margin: 0; padding: 0; background-color: #000; font-weight: normal; float: right}
+.post a.pointer:visited {background-color: #555}
 .post article div, .post section div, .post div > span, .post > span {background-color: #000}
 .post {border: .12em solid #777; margin: 1px; max-width: 96ex}
 .post, .post div, pre, .post a.pointer {border-radius: .5em}
@@ -74,7 +74,7 @@ body.error {background: #f00; font-weight: bold}
 code {color: #000; background-color: #eee; padding: .1em}
 div, form, table {display: inline-block}
 h1, h2, h3, h4, h5, h6 {border-radius: .4em}
-iframe, .preembed {border: .2em solid #fff}
+iframe, .preembed {border: 1px solid #888}
 iframe.main_player {border: .25em solid red}
 img, video, table, td {max-width: 100%; border-radius: .4em}
 li:nth-child(even), tr:nth-child(even) > td {background-color: #000; color: #fff}
@@ -88,4 +88,4 @@ table {border-spacing: 0}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0 .1em 0 .1em}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
 td[property="http://rdfs.org/sioc/ns#addressed_to"] > a {white-space: nowrap}
-video {border; 2px solid #888; border-radius: 1em}
+.video {border: 2px solid #888; border-radius: 1em; background-color: #333}

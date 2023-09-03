@@ -50,40 +50,14 @@ rss rss.xml
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        scanContent(:mapPredicates, :rawTriples){|s,p,o| # triples flow (left ← right) in stack
+        map_predicates(:raw_triples){|s,p,o|
           fn.call RDF::Statement.new((s = Webize::URI.new(s)), Webize::URI.new(p),
                                      p == Content ? ((l = RDF::Literal(Webize::HTML.format o.to_s, @base)).datatype = RDF.HTML
                                                      l) : o,
                                      graph_name: s)}
       end
 
-      def scanContent *f
-        send(*f){|subject, p, o|
-          if p==Content && o.class==String
-            content = Nokogiri::HTML.fragment o
-
-            # resolve @href
-#            content.css('[href]').map{|a|a.set_attribute 'href', @base.join(a.attr('href')).to_s}
-
-            # resolve @src
-##            content.css('[src]').map{|i|i.set_attribute 'src', @base.join(i.attr('src')).to_s}
-
-            # <iframe>
-            content.css('iframe').map{|i|
-              if src = i.attr('src')
-                if src.host&.match(/youtu/)
-                  id = Webize::URI(src).parts[-1]
-                  yield subject, Video, ('https://www.youtube.com/watch?v=' + id).R
-                end
-              end}
-
-            yield subject, p, content.to_xhtml
-          else
-            yield subject, p, o
-          end }
-      end
-
-      def mapPredicates *f
+      def map_predicates *f
         send(*f){|s,p,o|
           p = MetaMap[p] if MetaMap.has_key? p # map to predicate URI
           o = Webize.date o if p.to_s == Date  # normalize date format
@@ -93,7 +67,7 @@ rss rss.xml
           end}
       end
 
-      def rawTriples
+      def raw_triples
         # identifier patterns
         reRDFabout = /about=["']?([^'">\s]+)/         # RDF @about
         reLink = /<link>([^<]+)/                      # <link> element

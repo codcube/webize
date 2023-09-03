@@ -92,7 +92,8 @@ module Webize
       end
 
       {class: :video,                  # video markup
-       c: [if v.uri.match? /youtu/     # youtube?
+       c: [Markup[BasicResource][video,env], '<br>',
+           if v.uri.match? /youtu/     # youtube?
            env[:tubes] ||= {}          # dedupe videos
            q = v.query_values || {}
            id = q['v'] || v.parts[-1]
@@ -114,8 +115,7 @@ module Webize
             [dashJS ? "<script src='#{dashJS.href}'></script>" : nil,
              {_: :video, src: v.uri, controls: :true}.update(dashJS ? {'data-dashjs-player' => 1} : {}), '<br>',
              {_: :a, href: v.uri, c: v.display_name}]
-           end,
-           HTML.keyval(video, env)]}}
+           end]}}
 
   end
 end
