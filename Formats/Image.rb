@@ -62,7 +62,8 @@ module Webize
             ({class: :caption,
               c: image[Abstract].map{|a|
                 [(markup a,env),' ']}} if image.has_key? Abstract),
-           ]}, ' ']}
+            ([Abstract,Type,'uri'].map{|p| image.delete p }
+             HTML.keyval(image, env) unless image.empty?)]}, ' ']}
 
   end
   module JPEG
