@@ -61,40 +61,22 @@ rss rss.xml
         send(*f){|subject, p, o|
           if p==Content && o.class==String
             content = Nokogiri::HTML.fragment o
-            # <a>
-            content.css('a').map{|a|
-              if href = a.attr('href')
-                # resolve URIs
-                link = @base.join href
-                a.set_attribute 'href', link.to_s
-                ext = (File.extname link.path).downcase if link.path
-                # emit hyperlinks as RDF
-                if %w{.gif .jpeg .jpg .png .webp}.member? ext
-                  yield subject, Image, link
-                elsif %w{.mp4 .webm}.member?(ext) || link.host&.match(/v.redd.it|vimeo|youtu/)
-                  yield subject, Video, link
-#                elsif link != subject
-#                  yield subject, DC+'link', link
-                end
-              end}
 
-            # <img>
-            content.css('img').map{|i|
-              if src = i.attr('src')
-                src = @base.join src
-                i.set_attribute 'src', src.to_s
-                yield subject, Image, src
-              end}
+            # resolve @href
+#            content.css('[href]').map{|a|a.set_attribute 'href', @base.join(a.attr('href')).to_s}
+
+            # resolve @src
+##            content.css('[src]').map{|i|i.set_attribute 'src', @base.join(i.attr('src')).to_s}
 
             # <iframe>
             content.css('iframe').map{|i|
               if src = i.attr('src')
-                src = @base.join src
-                if src.host && src.host.match(/youtu/)
+                if src.host&.match(/youtu/)
                   id = Webize::URI(src).parts[-1]
                   yield subject, Video, ('https://www.youtube.com/watch?v=' + id).R
                 end
               end}
+
             yield subject, p, content.to_xhtml
           else
             yield subject, p, o
