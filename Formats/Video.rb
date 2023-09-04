@@ -90,15 +90,13 @@ module Webize
        c: [{_: :span, style: 'font-size: 4.2em', c: :🎞},
            (MarkupPredicate[Title][video.delete(Title), env] if video.has_key? Title),
            HTML.keyval(video, env), '<br>',
-           if v.uri.match? /youtu/     # YouTube
-             q = v.query_values || {}
-             id = q['v'] || v.parts[-1]
-             t = q['start'] || q['t']
-             player = 'embed' + Digest::SHA2.hexdigest(rand.to_s)
+           if v.uri.match? /youtu/ # YouTube
+             id = (v.query_values || {})['v'] || v.parts[-1]
+             player = 'yt' + Digest::SHA2.hexdigest(rand.to_s)
              [{class: :preembed, onclick: "inlineplayer(\"##{player}\",\"#{id}\"); this.remove()",
                c: [{_: :img, src: Webize::Resource("https://i.ytimg.com/vi_webp/#{id}/sddefault.webp", env).href},
                    {class: :icon, c: '&#9654;'}]}, {id: player}]
-          else                         # video tag
+          else                     # video tag
             [{_: :video, src: v.uri, controls: :true}, '<br>',
              {_: :a, href: v.uri, c: v.display_name}]
            end]}}
