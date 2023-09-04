@@ -30,11 +30,11 @@
 .links {border: 1px dotted #777; border-radius: .5em}
 .post .title {background-color: #fff; color: #000; border-radius: .5em 0 .2em 0; margin: 0; max-width: 80ex; float: left}
 .post .to {float: right; margin: 0}
-.post a.pointer {margin: 0; padding: 0; background-color: #000; font-weight: normal; float: right}
+.post a.pointer {margin: 0; padding: 0; background-color: #000; border-radius: 0 .5em .5em 0; font-weight: normal; float: right}
 .post a.pointer:visited {background-color: #555}
 .post article div, .post section div, .post div > span, .post > span {background-color: #000}
 .post {border: .12em solid #777; margin: 1px; max-width: 96ex}
-.post, .post div, pre, .post a.pointer {border-radius: .5em}
+.post, .post div, pre {border-radius: .5em}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
 .quote > .quote > .quote {background-color: #777}
@@ -76,8 +76,8 @@ code {color: #000; background-color: #eee; padding: .1em}
 div, form, table {display: inline-block}
 h1, h2, h3, h4, h5, h6 {border-radius: .4em}
 img, video, table, td {max-width: 100%; border-radius: .4em}
-li:nth-child(even), tr:nth-child(even) > td {background-color: #000; color: #fff}
-li:nth-child(odd), tr:nth-child(odd) > td {background-color: #222; color: #fff}
+li:nth-child(even) {background-color: #000; color: #fff}
+li:nth-child(odd) {background-color: #222; color: #fff}
 p {border-radius: .4em; margin: 1px}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, img {margin: 0}
