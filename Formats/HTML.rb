@@ -444,7 +444,7 @@ module Webize
         # <img>
         @doc.css('img[src][alt], img[src][title]').map{|img|
           image = @base.join img['src']
-          yield @base, Contains, image
+          yield @base, Image, image
           yield image, Type, Image.R
           %w(alt title).map{|attr|
             if val = img[attr]
