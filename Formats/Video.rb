@@ -84,36 +84,22 @@ module Webize
         Markup[Video][ v.class == Hash ? v : {'uri' => v.to_s}, env ]}}
 
     Markup[Video] = -> video, env {
-      v = Webize::Resource env[:base].join(video['uri']), env # video resource
+      v = Webize::Resource env[:base].join(video['uri']), env # video URI
 
-      if v.uri.match? /v.redd.it/
-        v += '/DASHPlaylist.mpd' # append playlist suffix
-        dashJS = Webize::Resource 'https://cdn.dashjs.org/latest/dash.all.min.js', env
-      end
-
-      {class: :video,                  # video markup
-       c: [Markup[BasicResource][video,env], '<br>',
-           if v.uri.match? /youtu/     # youtube?
-           env[:tubes] ||= {}          # dedupe videos
-           q = v.query_values || {}
-           id = q['v'] || v.parts[-1]
-           t = q['start'] || q['t']
-           unless env[:tubes].has_key?(id)
-             env[:tubes][id] = id
-             if id == env[:qs]['v']    # 'navigated to' video loaded by default
-               [{_: :a, id: :mainVideo},
-                {_: :iframe, class: :main_player, width: 640, height: 480, src: "https://www.youtube.com/embed/#{id}#{t ? '?start='+t : nil}",
-                 frameborder: 0, allow: 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture', allowfullscreen: :true}]
-             else                      # other videos, tap to load
-               player = 'embed' + Digest::SHA2.hexdigest(rand.to_s)
-               [{class: :preembed, onclick: "inlineplayer(\"##{player}\",\"#{id}\"); this.remove()",
-                 c: [{_: :img, src: Webize::Resource("https://i.ytimg.com/vi_webp/#{id}/sddefault.webp", env).href},
-                     {class: :icon, c: '&#9654;'}]}, {id: player}]
-             end
-           end
-          else                         # generic video markup
-            [dashJS ? "<script src='#{dashJS.href}'></script>" : nil,
-             {_: :video, src: v.uri, controls: :true}.update(dashJS ? {'data-dashjs-player' => 1} : {}), '<br>',
+      {class: :video,
+       c: [{_: :span, style: 'font-size: 4.2em', c: :🎞},
+           (MarkupPredicate[Title][video.delete(Title), env] if video.has_key? Title),
+           HTML.keyval(video, env), '<br>',
+           if v.uri.match? /youtu/     # YouTube
+             q = v.query_values || {}
+             id = q['v'] || v.parts[-1]
+             t = q['start'] || q['t']
+             player = 'embed' + Digest::SHA2.hexdigest(rand.to_s)
+             [{class: :preembed, onclick: "inlineplayer(\"##{player}\",\"#{id}\"); this.remove()",
+               c: [{_: :img, src: Webize::Resource("https://i.ytimg.com/vi_webp/#{id}/sddefault.webp", env).href},
+                   {class: :icon, c: '&#9654;'}]}, {id: player}]
+          else                         # video tag
+            [{_: :video, src: v.uri, controls: :true}, '<br>',
              {_: :a, href: v.uri, c: v.display_name}]
            end]}}
 

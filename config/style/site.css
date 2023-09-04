@@ -74,8 +74,6 @@ body.error {background: #f00; font-weight: bold}
 code {color: #000; background-color: #eee; padding: .1em}
 div, form, table {display: inline-block}
 h1, h2, h3, h4, h5, h6 {border-radius: .4em}
-iframe, .preembed {border: 1px solid #888}
-iframe.main_player {border: .25em solid red}
 img, video, table, td {max-width: 100%; border-radius: .4em}
 li:nth-child(even), tr:nth-child(even) > td {background-color: #000; color: #fff}
 li:nth-child(odd), tr:nth-child(odd) > td {background-color: #222; color: #fff}
@@ -88,4 +86,4 @@ table {border-spacing: 0}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0 .1em 0 .1em}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
 td[property="http://rdfs.org/sioc/ns#addressed_to"] > a {white-space: nowrap}
-.video {border: 2px solid #888; border-radius: 1em; background-color: #333}
+.video {border: 2px solid #666; border-radius: 1em; background-color: #333; max-width: 100ex}
