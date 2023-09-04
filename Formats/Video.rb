@@ -85,6 +85,7 @@ module Webize
 
     Markup[Video] = -> video, env {
       v = Webize::Resource env[:base].join(video['uri']), env # video URI
+      video.delete Video
 
       {class: :video,
        c: [{_: :span, style: 'font-size: 4.2em', c: :🎞},

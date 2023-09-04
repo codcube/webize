@@ -57,11 +57,11 @@ module Webize
 
       [{class: :image,
         c: [{_: :a, href: src,
-             c: {_: :img, src: src}}, '<br>',
-            ({class: :caption,
-              c: image[Abstract].map{|a|
-                [(markup a,env),' ']}} if image.has_key? Abstract),
-            ([Abstract,Type,'uri'].map{|p| image.delete p }
+             c: {_: :img, src: src}},
+            (['<br>', {class: :caption,
+               c: image[Abstract].map{|a|
+                 [(markup a,env),' ']}}] if image.has_key? Abstract),
+            ([Abstract,Image,Type,'uri'].map{|p| image.delete p }
              HTML.keyval(image, env) unless image.empty?)]}, ' ']}
 
   end
