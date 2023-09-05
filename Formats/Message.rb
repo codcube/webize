@@ -171,27 +171,14 @@ module Webize
   end
   module HTML
     MarkupPredicate[Link] = -> links, env {
-      links.select{|l|[Webize::URI, Webize::Resource, RDF::URI].member? l.class}.
-        map{|l| Webize::URI.new l }.select{|l| !l.deny?}.group_by{|l|
-        links.size > 8 && l.host && l.host.split('.')[-1] || nil}.map{|tld, links|
-        [{class: :container,
-          c: [({class: :head, _: :span, c: tld} if tld),
-              {class: :body, c: links.group_by{|l|links.size > 25 ? ((l.host||'localhost').split('.')[-2]||' ')[0] : nil}.map{|alpha, links|
-                 ['<table><tr>',
-                  ({_: :td, class: :head, c: alpha} if alpha),
-                  {_: :td, class: :body,
-                   c: {_: :table, class: :links,
-                       c: links.group_by(&:host).map{|host, paths|
-                         h = Webize::Resource '//' + (host || 'localhost'), env
-                         {_: :tr,
-                          c: [{_: :td, class: :host,
-                               c: host ? {_: :a, href: h.href,
-                                          c: {_: :img, alt: h.display_host, src: Webize::Resource.new(h.join('/favicon.ico')).env(env).href},
-                                          style: "background-color: #{HostColor[host] || '#000'}; color: #fff"} : []},
-                              {_: :td, class: :path,
-                               c: paths.map{|p|
-                                 [{_: :a, href: p.uri, c: p.display_name}, ' ']}}]}}}}, # links
-                  '</tr></table>']}}]}, '&nbsp;']}}
+      tabular links.map{|link|
+        link = Webize::URI link
+        {'uri' => link.uri,
+         'host' => [link.host],
+         Type => [MIME.format_icon(MIME.fromSuffix link.extname)],
+         Title => [link.basename]
+        }}, env
+    }
 
     MarkupPredicate[Type] = -> types, env {
       types.map{|t|

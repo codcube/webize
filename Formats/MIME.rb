@@ -35,8 +35,7 @@ module Webize
 
     def fileMIMEsuffix suffix = POSIX::Node(self).extension # ultimate file suffix after symlink(s)
       return if suffix.empty?
-      Rack::Mime::MIME_TYPES[suffix] || # Rack map
-        fileMIMEsuffixRDF(suffix)       # RDF map
+      MIME.fromSuffix suffix
     end
 
     def fileMIMEsuffixRDF suffix
@@ -86,6 +85,11 @@ module Webize
       else
         mime
       end
+    end
+
+    def self.fromSuffix suffix
+      Rack::Mime::MIME_TYPES[suffix] || # Rack map
+        fileMIMEsuffixRDF(suffix)       # RDF map
     end
 
     # local/cache node/file URI -> data
