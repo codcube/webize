@@ -35,9 +35,25 @@ module Webize
 
     # fs-state dependent (suffix -> MIME) map
     def fileMIMEsuffix
-      suffix = POSIX::Node(self).extension # suffix on file in filesystem
+      MIME.fromSuffix POSIX::Node(self).extension
+    end
+
+    # name-mapped/pure (suffix -> MIME) map
+    def self.fromSuffix suffix
       return if suffix.empty?
-      MIME.fromSuffix suffix
+      fromSuffixRack(suffix) || # Rack index
+        fromSuffixRDF(suffix)   # RDF index
+    end
+
+    def self.fromSuffixRack suffix
+      Rack::Mime::MIME_TYPES[suffix]
+    end
+
+    def self.fromSuffixRDF suffix
+      if format = RDF::Format.file_extensions[suffix[1..-1].to_sym]
+        logger.warn ['multiple formats match extension', suffix, format, ', using', format[0]].join ' ' if format.size > 1
+        format[0].content_type[0]
+      end
     end
 
     # MIME type -> character
@@ -79,23 +95,6 @@ module Webize
         '🐢'
       else
         mime
-      end
-    end
-
-    # (pure) name-dependent (suffix -> MIME) map
-    def self.fromSuffix suffix
-      fromSuffixRack(suffix) || # Rack map
-        fromSuffixRDF(suffix)   # RDF map
-    end
-
-    def self.fromSuffixRack suffix
-      Rack::Mime::MIME_TYPES[suffix]
-    end
-
-    def self.fromSuffixRDF suffix
-      if format = RDF::Format.file_extensions[suffix[1..-1].to_sym]
-        logger.warn ['multiple formats match extension', suffix, format, ', using', format[0]].join ' ' if format.size > 1
-        format[0].content_type[0]
       end
     end
 
