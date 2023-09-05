@@ -16,6 +16,7 @@ module Webize
     StatusColor = Webize.configHash 'style/color/status'
     StatusColor.keys.map{|s|
       StatusColor[s.to_i] = StatusColor[s]}
+    StripTags = /<\/?(noscript|wbr)[^>]*>/i
 
     def self.cachestamp html, baseURI              # input doc, base-URI
       doc = Nokogiri::HTML.parse html              # parse doc
@@ -35,11 +36,10 @@ module Webize
 
     # (String -> String) or (Nokogiri -> Nokogiri)
     def self.format html, base
-      #print "FORMAT #{base} "
 
-      # parse string to nokogiri
+      # parse to Nokogiri document-fragment
       if html.class == String
-        html = Nokogiri::HTML.fragment html.gsub(/<\/?(noscript|wbr)[^>]*>/i, '')
+        html = Nokogiri::HTML.fragment html.gsub(StripTags, '')
         serialize = true
       end
 
@@ -342,8 +342,7 @@ module Webize
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
         @env = @base.respond_to?(:env) ? @base.env : HTTP.env
-        @doc = Nokogiri::HTML.parse input.respond_to?(:read) ? input.read : input.to_s
-        #puts "PARSE #{@base}"
+        @doc = Nokogiri::HTML.parse (input.respond_to?(:read) ? input.read : input.to_s).gsub(StripTags, '')
 
         if block_given?
           case block.arity
