@@ -40,7 +40,7 @@ module Webize
 
     # name-mapped/pure (suffix -> MIME) map
     def self.fromSuffix suffix
-      return if suffix.empty?
+      return if !suffix || suffix.empty?
       fromSuffixRack(suffix) || # Rack index
         fromSuffixRDF(suffix)   # RDF index
     end
