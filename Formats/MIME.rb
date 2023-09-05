@@ -33,16 +33,11 @@ module Webize
       end
     end
 
-    def fileMIMEsuffix suffix = POSIX::Node(self).extension # ultimate file suffix after symlink(s)
+    # fs-state dependent (suffix -> MIME) map
+    def fileMIMEsuffix
+      suffix = POSIX::Node(self).extension # suffix on file in filesystem
       return if suffix.empty?
       MIME.fromSuffix suffix
-    end
-
-    def fileMIMEsuffixRDF suffix
-      if format = RDF::Format.file_extensions[suffix[1..-1].to_sym]
-        logger.warn ['multiple formats match extension', suffix, format, ', using', format[0]].join ' ' if format.size > 1
-        format[0].content_type[0]
-      end
     end
 
     # MIME type -> character
@@ -87,12 +82,24 @@ module Webize
       end
     end
 
+    # (pure) name-dependent (suffix -> MIME) map
     def self.fromSuffix suffix
-      Rack::Mime::MIME_TYPES[suffix] || # Rack map
-        fileMIMEsuffixRDF(suffix)       # RDF map
+      fromSuffixRack(suffix) || # Rack map
+        fromSuffixRDF(suffix)   # RDF map
     end
 
-    # local/cache node/file URI -> data
+    def self.fromSuffixRack suffix
+      Rack::Mime::MIME_TYPES[suffix]
+    end
+
+    def self.fromSuffixRDF suffix
+      if format = RDF::Format.file_extensions[suffix[1..-1].to_sym]
+        logger.warn ['multiple formats match extension', suffix, format, ', using', format[0]].join ' ' if format.size > 1
+        format[0].content_type[0]
+      end
+    end
+
+    # local cache node URI -> data
     def read
       (File.open POSIX::Node(self).fsPath).read
     end

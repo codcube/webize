@@ -284,8 +284,8 @@ module Webize
                        charset = nil if charset.empty? || charset == 'empty'
                      end
                      ct[0]
-                   elsif path && content_type = (fileMIMEsuffix File.extname path)
-                     content_type
+                   elsif path && content_type = (MIME.fromSuffix File.extname path)
+                     content_type                           # format defined on basename
                    else
                      'application/octet-stream'
                    end
