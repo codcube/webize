@@ -209,7 +209,7 @@ module Webize
     # navigation pointers in HTTP metadata
     def dirMeta
       root = !path || path == '/'
-      self.path += '.rss' if host == 'www.reddit.com' && parts[0] == 'r' && !path.index('.rss')
+      self.path += '.rss' if host == 'www.reddit.com' && %w(r u user).member?(parts[0]) && !path.index('.rss')
       if host && root                                            # up to parent domain
         env[:links][:up] = '//' + host.split('.')[1..-1].join('.')
       elsif !root                                                # up to parent path
