@@ -516,12 +516,13 @@ module Webize
 
     # declarative host categories
     URLHosts = Webize.configList 'hosts/url'
+    YT_hosts = Webize.configList 'hosts/youtube'
 
     def hostGET
       return (q = query_values || {} # redirect URL rehost to origin
               dest = q['url'] || q['u'] || q['q']
               dest ? [301, {'Location' => Node(dest).href}, []] : notfound) if URLHosts.member? host
-      return [301, {'Location' => Node(['//www.youtube.com/watch?v=', path[1..-1]].join).href}, []] if host == 'youtu.be'
+      return [301, {'Location' => Node(['//www.youtube.com/watch?v=', path[1..-1]].join).href}, []] if YT_hosts.member? host
 
       dirMeta      # directory metadata
       cookieCache  # save/restore cookies
