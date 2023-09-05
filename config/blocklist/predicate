@@ -136,6 +136,7 @@ hideCredit
 hostname
 hovercard-subject-tag
 html-safe-nonce
+http://schema.org/regionsAllowed
 imageEssenceContainsCaption
 indexable
 indices
@@ -206,6 +207,7 @@ openNewTab
 openid.delegate
 openid.server
 optimizely-datafile
+ordering
 p:domain_verify
 pageId
 pagePosition
@@ -253,6 +255,7 @@ shenma-site-verification
 shopify-checkout-api-token
 shopify-digital-wallet
 shopify-storefront-access-token
+show
 showRepeatVisitorSignupCta
 siteid
 skype_toolbar
@@ -310,6 +313,7 @@ urn
 useFooterSignup
 useSignupLink
 user-login
+user_sorting
 uuid
 verified
 verify-v1
@@ -325,4 +329,3 @@ x-ua-compatible
 y_key
 yandex-verification
 yelp-biz-id
-http://schema.org/regionsAllowed

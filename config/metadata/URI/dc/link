@@ -15,6 +15,7 @@ canonical_path
 ci:canonical
 ci:mentions
 completeUrl
+cover_link
 custom_link
 dataHref
 dct:references
