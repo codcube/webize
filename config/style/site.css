@@ -6,8 +6,6 @@
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
 #updates {background: repeating-linear-gradient(300deg, #888, #888 1em, #000 1em, #000 2em); border: 1px solid #888; border-radius: 1em; display: block}
-.abstract {border-radius: .5em .5em .2em .2em; display: block}
-.abstract, .abstract span {background-color: #bbb; color: #000}
 .blocked {background: repeating-linear-gradient(300deg, #f00, #f00 6em, #000 6em, #000 8em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
 .container > .contents {border: 1px solid #888; border-radius: 0 .4em .4em .4em}
@@ -16,8 +14,8 @@
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
-.image a {margin: 0; padding: 0}
 .image .caption {border-width: 1px 0 0 0; border-radius: 0 0 .4em .4em; border-style: solid; border-color: #444; background-color: #000; color: #ccc; font-size: .9em}
+.image a {margin: 0; padding: 0}
 .image {border: 1px solid #333; border-radius: .3em; margin: .125em}
 .interactionCount .count {font-weight: bold; border-radius: 0 .38em .38em 0}
 .interactionCount .type {border-radius: .38em 0 0 .38em}
@@ -25,9 +23,10 @@
 .interactionCount {white-space: nowrap; margin: .06em}
 .post .title {background-color: #fff; color: #000; border-radius: .5em 0 .2em 0; margin: 0; max-width: 80ex; float: left}
 .post .to {float: right; margin: 0}
-.post a.pointer {margin: 0; padding: 0; background-color: #000; border-radius: 0 .5em .5em 0; font-weight: normal; float: right}
+.post a.pointer {margin: 0; padding: 0; background-color: #000; border-radius: .5em; font-weight: normal; float: right}
 .post a.pointer:visited {background-color: #555}
 .post article div, .post section div, .post div > span, .post > span {background-color: #000}
+.post div.abstract {border-radius: .5em .5em 0 0; display: block; background-color: #bbb; color: #000}
 .post {border: .12em solid #777; margin: 1px; max-width: 96ex}
 .post, .post div, pre {border-radius: .5em}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
@@ -44,6 +43,7 @@
 .toolbox svg {height: 1em; width: 1em}
 .toolbox {border-width: 0 1px 1px 1px; border-style: solid; border-color: #555; border-radius: 0 0 .7em .7em; padding-right: .125em}
 .toolbox, td, li {vertical-align: top}
+.video {border: 2px solid #444; border-radius: 1em; background-color: #282828; max-width: 100ex; margin: .2em}
 .warning span {background-color: #ff0; color: #000}
 .warning {border: 2px solid #ff0}
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}
@@ -79,8 +79,7 @@ pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, img {margin: 0}
 span.id {font-weight: normal; font-size: 0.83em; float: right}
 svg, img[src*="svg"] {max-width:2em; max-height: 2em}
 table {border-spacing: 0}
+table.tabular {border-width: 1px 0 1px 0; border-color: #555; border-radius: 0; border-style: solid}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0 .1em 0 .1em}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
 td[property="http://rdfs.org/sioc/ns#addressed_to"] > a {white-space: nowrap}
-.video {border: 2px solid #444; border-radius: 1em; background-color: #282828; max-width: 100ex; margin: .2em}
-table.tabular {border-width: 1px 0 1px 0; border-color: #555; border-radius: 0; border-style: solid}
