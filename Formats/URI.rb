@@ -62,7 +62,7 @@ module Webize
       return query_values['id'] if query_values&.has_key? 'id' rescue nil # query
       return basename if path && basename && !['','/'].member?(basename)  # basename
       return display_host if host                                         # hostname
-      'name'
+      uri
     end
 
     def domains; host.split('.').reverse end

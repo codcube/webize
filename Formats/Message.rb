@@ -170,15 +170,12 @@ module Webize
     end
   end
   module HTML
+
     MarkupPredicate[Link] = -> links, env {
       tabular links.map{|link|
         link = Webize::URI link
         {'uri' => link.uri,
-         'host' => [link.host],
-         Type => [MIME.format_icon(MIME.fromSuffix link.extname)],
-         Title => [link.basename]
-        }}, env
-    }
+         Title => [MIME.format_icon(MIME.fromSuffix link.extname), link.host, link.basename]}}, env }
 
     MarkupPredicate[Type] = -> types, env {
       types.map{|t|
