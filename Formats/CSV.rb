@@ -3,7 +3,7 @@ module Webize
   module HTML
 
     # [resource, ..] -> HTML <table>
-    def self.tabular graph, env, show_header=true
+    def self.tabular graph, env=nil, show_header=true
       graph = graph.values if graph.class == Hash
 
       keys = graph.select{|r|r.respond_to? :keys}.map(&:keys).flatten.uniq
@@ -29,7 +29,7 @@ module Webize
                   [{_: :th,                   # ☛ sorted columns
                     c: {_: :a, c: icon,
                         href: URI.qs(env[:qs].merge({'sort' => p.uri,
-                                                      'order' => env[:order] == 'asc' ? 'desc' : 'asc'}))}}, "\n"]}}} if show_header),
+                                                      'order' => env[:order] == 'asc' ? 'desc' : 'asc'}))}}, "\n"]}}} if env && show_header),
            {_: :tbody,
             c: graph.map{|resource|           # resource -> row
               predicate = -> a {MarkupPredicate[a][resource[a],env] if resource.has_key? a}

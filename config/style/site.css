@@ -83,3 +83,4 @@ td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-radius
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
 td[property="http://rdfs.org/sioc/ns#addressed_to"] > a {white-space: nowrap}
 .video {border: 2px solid #444; border-radius: 1em; background-color: #282828; max-width: 100ex; margin: .2em}
+table.tabular {border-width: 1px 0 1px 0; border-color: #555; border-radius: 0; border-style: solid}

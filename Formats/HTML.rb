@@ -555,9 +555,11 @@ module Webize
     Markup = {}          # markup resource type
     MarkupPredicate = {} # markup objects of predicate
 
-    MarkupPredicate['uri'] = -> us, env {
+    MarkupPredicate['uri'] = -> us, env=nil {
       (us.class == Array ? us : [us]).map{|uri|
-        {_: :a, href: Webize::Resource(uri, env).href, c: :🔗, id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}}
+        {_: :a, c: :🔗,
+         href: env ? Webize::Resource(uri, env).href : uri,
+         id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}}
 
   end
 end
