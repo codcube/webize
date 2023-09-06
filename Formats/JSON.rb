@@ -1,7 +1,14 @@
 require 'json'
 module Webize
-  module JSON
 
+  module ActivityStream
+    class Format < ::JSON::LD::Format
+      content_type 'application/activity+json', extension: :ajson
+      reader { ::JSON::LD::Reader }
+    end
+  end
+
+  module JSON
     def self.scan v, &y
       case v.class.to_s
       when 'Hash'
