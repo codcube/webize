@@ -142,7 +142,7 @@ module Webize
                end)
   end
 
-    # relocate URI to current environment
+    # resolve URI for current environment/context
     def href
       if in_doc? && fragment # local reference
         '#' + fragment

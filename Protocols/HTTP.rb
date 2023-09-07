@@ -142,18 +142,6 @@ module Webize
       [302, {'Location' => Node(['//', domain].join).href}, []]
     end
 
-    def cookieCache
-      cookie = POSIX::Node join('/cookie')            # jar
-      if env[:cookie] && !env[:cookie].empty?         # store cookie to jar
-        cookie.write env[:cookie]
-        logger.info [:🍯, host, env[:cookie]].join ' '
-      end
-      if cookie.file?                                 # load cookie from jar
-        env['HTTP_COOKIE'] = cookie.node.read
-        logger.debug [:🍪, host, env['HTTP_COOKIE']].join ' '
-      end
-    end
-
     # current (y)ear (m)onth (d)ay (h)our -> URI for timeslice
     def dateDir
       ps = parts
@@ -516,16 +504,10 @@ module Webize
 
     def hostGET
       return [301, {'Location' => relocate.href}, []] if relocate? # relocated node
-      dirMeta      # directory metadata
-      cookieCache  # save/restore cookies
-      case path
-      when /(gen(erate)?|log)_?204$/ # connectivity check
-        [204, {}, []]
-      when '/feed' # subscription aggregation node
-        fetch adapt? ? Feed::Subscriptions[host] : nil
-      else         # generic remote node
-        deny? ? deny : fetch
-      end
+      return fetch Feed::Subscriptions[host] if path=='/feed' && adapt? && Feed::Subscriptions[host] # aggregated feed node
+      return deny if deny? # blocked node
+      dirMeta # navigation metadata
+      fetch   # basic remote node
     end
 
     def linkHeader
