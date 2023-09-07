@@ -2,14 +2,14 @@
 
 class String
 
-  # text -> HTML, yielding found (rel, href) tuples to block
+  # text -> HTML, yielding inlined-resource (rel,href) tuples to block
   def hrefs &blk
-    # URIs are sometimes wrapped in (). an opening/closing pair is required for capture of (), '"<> never captured. , and . can appear in URL but not at the end
+    # URIs are sometimes wrapped in (). an opening/closing pair is required for capture of (), '"<> never captured. , and . can be used anywhere but end of URL
     pre, link, post = self.partition(/((g(emini|opher)|https?):\/\/(\([^)>\s]*\)|[,.]\S|[^\s),.”\'\"<>\]])+)/)
     pre.gsub('&','&amp;').gsub('<','&lt;').gsub('>','&gt;').gsub("\n",'<br>') + # pre-match
       (link.empty? && '' ||
        '<a href="' + link.gsub('&','&amp;').gsub('<','&lt;').gsub('>','&gt;') + '">' +
-       (resource = link.R
+       (resource = Webize::Resource.new(link).relocate
         img = nil
         if blk
           type = case link
@@ -18,15 +18,13 @@ class String
                    Webize::Image
                  when /(youtu.?be|(mkv|mp4|webm)(\?|$))/i
                    Webize::Video
-#                 else
-#                   Webize::Link
                  end
           yield type, resource if type
         end
         [img,
          CGI.escapeHTML(resource.uri.sub(/^http:../,'')[0..79])].join) +
        '</a>') +
-      (post.empty? && '' || post.hrefs(&blk)) # prob not tail-recursive, getting overflow on logfiles, may need to rework
+      (post.empty? && '' || post.hrefs(&blk)) # possibly not tail-recursive, getting stack-overflow on long logs, TODO investigate
   rescue
     logger.warn "failed to scan string for hrefs"
     logger.debug self

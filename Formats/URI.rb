@@ -118,14 +118,14 @@ module Webize
       end
     end
 
-    def forward?
+    def relocate?
       [FWD_hosts,
        URL_hosts,
        YT_hosts].find{|group|
         group.member? host}
     end
 
-    def forward
+    def relocate
       Resource.new(if FWD_hosts.member? host
                    ['//', FWD_hosts[host], path].join
                   elsif URL_hosts.member? host

@@ -515,7 +515,7 @@ module Webize
     end
 
     def hostGET
-      return [301, {'Location' => forward.href}, []] if forward? # relocated node
+      return [301, {'Location' => relocate.href}, []] if relocate? # relocated node
       dirMeta      # directory metadata
       cookieCache  # save/restore cookies
       case path
