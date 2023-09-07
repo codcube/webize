@@ -5,6 +5,7 @@ module Webize
     class Format < ::JSON::LD::Format
       content_type 'application/activity+json', extension: :ajson
       reader { ::JSON::LD::Reader }
+      writer { ::JSON::LD::Writer }
     end
   end
 
