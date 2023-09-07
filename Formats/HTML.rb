@@ -89,7 +89,7 @@ module Webize
         srcset e, base if e['srcset']                             # resolve @srcset
 
         if e['href']                                              # href attribute
-          ref = URI.new(base.join e['href']).forward              # resolve and possibly relocate @href
+          ref = (Resource.new base.join e['href']).forward        # resolve and optionally relocate
           ref.query = nil if ref.query&.match?(/utm[^a-z]/)       # deutmize query (tracker gunk)
           ref.fragment = nil if ref.fragment&.match?(/utm[^a-z]/) # deutmize fragment
 

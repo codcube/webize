@@ -515,12 +515,7 @@ module Webize
     end
 
     def hostGET
-      q = query_values || {}
-      return [301, {'Location' => Node(['//', FWD_hosts[host], path].join).href}, []] if FWD_hosts.member? host
-      return (dest = q['url'] || q['u'] || q['q'] # URL rehost node
-              dest ? [301, {'Location' => Node(dest).href}, []] : notfound) if URL_hosts.member? host
-      return [301, {'Location' => Node(['//www.youtube.com/watch?v=', q['v'] || path[1..-1]].join).href}, []] if YT_hosts.member? host
-
+      return [301, {'Location' => forward.href}, []] if forward? # relocated node
       dirMeta      # directory metadata
       cookieCache  # save/restore cookies
       case path

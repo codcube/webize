@@ -121,22 +121,22 @@ module Webize
     def forward?
       [FWD_hosts,
        URL_hosts,
-       YT_hosts].find{|list|
-        list.member? host}
+       YT_hosts].find{|group|
+        group.member? host}
     end
 
     def forward
-      if FWD_hosts.member? host
-        ['//', FWD_hosts[host], path].join
-      elsif URL_hosts.member? host
-        q = ref.query_values || {}
-        q['url'] || q['u'] || q['q'] || to_s
-      elsif YT_hosts.member? host
-        ['//www.youtube.com/watch?v=', (query_values||{})['v'] || path[1..-1]].join
-      else
-        self
-      end
-    end
+      Resource.new(if FWD_hosts.member? host
+                   ['//', FWD_hosts[host], path].join
+                  elsif URL_hosts.member? host
+                    q = query_values || {}
+                    q['url'] || q['u'] || q['q'] || self
+                  elsif YT_hosts.member? host
+                    ['//www.youtube.com/watch?v=', (query_values || {})['v'] || path[1..-1]].join
+                  else
+                    self
+                   end, env)
+  end
 
     # relocate URI to current environment
     def href
