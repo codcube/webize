@@ -108,6 +108,10 @@ module Webize
   # a Webize Resource is an RDF Resource and an environment
   class Resource < URI
 
+    def Resource uri
+      Resource.new(uri).env env
+    end
+
     # set or get environment
     def env e = nil
       if e
@@ -126,16 +130,16 @@ module Webize
     end
 
     def relocate
-      Resource.new(if FWD_hosts.member? host
-                   ['//', FWD_hosts[host], path].join
-                  elsif URL_hosts.member? host
-                    q = query_values || {}
-                    q['url'] || q['u'] || q['q'] || self
-                  elsif YT_hosts.member? host
-                    ['//www.youtube.com/watch?v=', (query_values || {})['v'] || path[1..-1]].join
-                  else
-                    self
-                   end, env)
+      Resource(if FWD_hosts.member? host
+               ['//', FWD_hosts[host], path].join
+              elsif URL_hosts.member? host
+                q = query_values || {}
+                q['url'] || q['u'] || q['q'] || self
+              elsif YT_hosts.member? host
+                ['//www.youtube.com/watch?v=', (query_values || {})['v'] || path[1..-1]].join
+              else
+                self
+               end)
   end
 
     # relocate URI to current environment
@@ -175,12 +179,12 @@ module Webize
 
   end
 
-  def self.Resource u, e
-    Resource.new(u).env e
+  def self.URI uri
+    URI.new uri
   end
 
-  def self.URI u
-    URI.new u
+  def self.Resource uri, env
+    Resource.new(uri).env env
   end
 
   module URIlist
