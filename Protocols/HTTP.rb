@@ -515,13 +515,15 @@ module Webize
     end
 
     # declarative host categories
-    URLHosts = Webize.configList 'hosts/url'
-    YT_hosts = Webize.configList 'hosts/youtube'
+    FWD_hosts = Webize.configHash 'hosts/forward'
+    URL_hosts = Webize.configList 'hosts/url'
+     YT_hosts = Webize.configList 'hosts/youtube'
 
     def hostGET
       q = query_values || {}
+      return [301, {'Location' => Node(['//', FWD_hosts[host], path].join).href}, []] if FWD_hosts.member? host
       return (dest = q['url'] || q['u'] || q['q'] # URL rehost node
-              dest ? [301, {'Location' => Node(dest).href}, []] : notfound) if URLHosts.member? host
+              dest ? [301, {'Location' => Node(dest).href}, []] : notfound) if URL_hosts.member? host
       return [301, {'Location' => Node(['//www.youtube.com/watch?v=', q['v'] || path[1..-1]].join).href}, []] if YT_hosts.member? host
 
       dirMeta      # directory metadata

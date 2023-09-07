@@ -93,7 +93,16 @@ module Webize
           ref.query = nil if ref.query&.match?(/utm[^a-z]/)       # deutmize query (tracker gunk)
           ref.fragment = nil if ref.fragment&.match?(/utm[^a-z]/) # deutmize fragment
 
-          e['href'] = ref.to_s                                    # resolved href
+          e['href'] = if FWD_hosts.member? ref.host
+                        ['//', FWD_hosts[ref.host], ref.path].join
+                      elsif URL_hosts.member? ref.host
+                        q = ref.query_values || {}
+                        q['url'] || q['u'] || q['q'] || ref.to_s
+                      elsif YT_hosts.member? ref.host
+                        ['//www.youtube.com/watch?v=', (ref.query_values||{})['v'] || ref.path[1..-1]].join
+                      else
+                        ref.to_s                                  # resolved href
+                      end
           e['id'] = 'g' + Digest::SHA2.hexdigest(rand.to_s) if base.scheme == 'gemini'
 
           blocked = ref.deny?
