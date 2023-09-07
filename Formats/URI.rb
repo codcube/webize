@@ -118,6 +118,26 @@ module Webize
       end
     end
 
+    def forward?
+      [FWD_hosts,
+       URL_hosts,
+       YT_hosts].find{|list|
+        list.member? host}
+    end
+
+    def forward
+      if FWD_hosts.member? host
+        ['//', FWD_hosts[host], path].join
+      elsif URL_hosts.member? host
+        q = ref.query_values || {}
+        q['url'] || q['u'] || q['q'] || to_s
+      elsif YT_hosts.member? host
+        ['//www.youtube.com/watch?v=', (query_values||{})['v'] || path[1..-1]].join
+      else
+        self
+      end
+    end
+
     # relocate URI to current environment
     def href
       if in_doc? && fragment # local reference

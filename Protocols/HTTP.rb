@@ -514,11 +514,6 @@ module Webize
       head
     end
 
-    # declarative host categories
-    FWD_hosts = Webize.configHash 'hosts/forward'
-    URL_hosts = Webize.configList 'hosts/url'
-     YT_hosts = Webize.configList 'hosts/youtube'
-
     def hostGET
       q = query_values || {}
       return [301, {'Location' => Node(['//', FWD_hosts[host], path].join).href}, []] if FWD_hosts.member? host

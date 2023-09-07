@@ -34,4 +34,9 @@ module Webize
     configData(path).split
   end
 
+  # declarative host categories
+  FWD_hosts = Webize.configHash 'hosts/forward'
+  URL_hosts = Webize.configList 'hosts/url'
+  YT_hosts = Webize.configList 'hosts/youtube'
+
 end
