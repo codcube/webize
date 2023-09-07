@@ -30,7 +30,6 @@
 - history -  store versions/variants eg full blogpost and preview from feed may be from same "version" of resource
 - backlink indexing and more indexing in general - frequently linked posts 'daily heat'
 - cache redirects. instantly syndicate these (t.co dereferences, tokens and icons) to peers) 🐕➡️  http://l/2021/09/29/11/*blogpost* →  //federalhillprov.com/favicon.ico  → https://federalhillprov.com/wp-content/uploads/2021/08/cropped-fed-hill-favicon-178px-32x32.png
-- more cache/restore of base URIs. bring back resolution-only rewrites so http://l/com/universalhub/www/index.html links work etc 
 - du on directories
 
 # Protocol
@@ -63,7 +62,6 @@
 - RDFa output - investigate HAML template-solution in RDF library or just add it to native views. not many to edit
 - histogram on datedir per slice-resolution
 - hash fetched entities to prevent redundant parsing/summarization work when origin caching is broken - essentially generate our own ETags
-- rewrite URLs on output to cut out local redirects (nitter 301s etc)
 - for pages still completely blank - https://laiyiohlsen.com/projects/while-x.html - multifetch triplr on the Link field (the text is inside included JS files in this case)
 - dedupe images, link to shown image from placeholder icons
 - assemble dash/hls manifest for youtube data we have from the json , so we can stop using their borked player with the unskippable adloop bug
