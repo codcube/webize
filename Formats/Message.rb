@@ -32,7 +32,10 @@ module Webize
 
           if subject                                                       # identifier found?
             post.css(MsgCSS[:post]).map{|childPost|                        # child posts are emitted separately
-              childPost.remove if !childPost.css(MsgCSS[:link]).empty? || childPost['id']
+              if !childPost.css(MsgCSS[:link]).empty? || childPost['id'] || childPost['itemid']
+                puts :link, childPost.css(MsgCSS[:link]), :id, childPost['id'], :post, childPost, :___
+                childPost.remove
+              end
             }
 
             subject = @base.join subject                                   # subject URI
@@ -87,8 +90,6 @@ module Webize
               yield subject, Content, Webize::HTML.format(c.to_s, @base), graph
             }
             post.remove
-#          else
-#            puts "no subject URI found for message: ", post
           end}
         @doc.css(MsgCSS[:gunk]).map &:remove                               # sweep gunk nodes
 

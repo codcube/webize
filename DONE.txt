@@ -1,0 +1,17 @@
+it seems like im never referencing the TODO since there's always obvious pressing bugs on the front of my mind and evident on open tabs , so instead of a TODO im gonna try logging what was DONE instead for a bit. eventually this should go in GIT lots but we need the GIT RDFizer first to get the data out so plaintext will work for now
+
+july20-23 to sep9-23
+
+make env optional on tabular render
+make env optional on URI renderer
+add linebreaks to tabular renderer
+declarative host categories - add forward and UI rehost categories ( extant URL rehost YT rehost categories)
+add #relocate method
+use relocate method on HREF during format to prevent 301 redirects
+declarative feed names for when @rel isn't defined
+simplify RSS renderer
+add StripTags constant, use in more places input happens so <noscript> doesnt hide content we want to see
+add #cachestamp method to store base URI inline in HTML header for offline/cache resolution
+stop keyboard navigation into upstream-provided input boxes by stripping IDs and autofocus attrs
+add toolbar UI rehost links
+remove the last site-specific HTML triplr, by merging some google-searchresult CSS hints into the subpost matcher
