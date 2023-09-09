@@ -9,7 +9,7 @@ declarative host categories - add forward and UI rehost categories ( extant URL 
 add #relocate method
 use relocate method on HREF during format to prevent 301 redirects
 declarative feed names for when @rel isn't defined
-simplify RSS renderer
+simplify RSS reader
 add StripTags constant, use in more places input happens so <noscript> doesnt hide content we want to see
 add #cachestamp method to store base URI inline in HTML header for offline/cache resolution
 stop keyboard navigation into upstream-provided input boxes by stripping IDs and autofocus attrs
