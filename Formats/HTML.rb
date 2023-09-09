@@ -89,7 +89,8 @@ module Webize
         srcset e, base if e['srcset']                             # resolve @srcset
 
         if e['href']                                              # href attribute
-          ref = (Resource.new base.join e['href']).relocate       # resolve and optionally relocate
+          origRef = Resource.new base.join e['href']              # resolve reference
+          ref = origRef.relocate                                  # optionally relocate reference
           ref.query = nil if ref.query&.match?(/utm[^a-z]/)       # deutmize query (tracker gunk)
           ref.fragment = nil if ref.fragment&.match?(/utm[^a-z]/) # deutmize fragment
 
@@ -129,7 +130,8 @@ module Webize
                 end
               end
             end,
-            e.inner_html == ref.uri ? nil : e.inner_html,
+            [origRef.to_s, # strip inner HTML if it's just the URL which we'll be displaying our way
+             origRef.to_s.sub(/^https?:\/\//,'')].member?(e.inner_html) ? nil : e.inner_html,
             if ref.dataURI?                                       # inline data?
               ['<pre>',
                if ref.path.index('text/plain,') == 0              # show text content
