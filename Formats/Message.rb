@@ -22,6 +22,8 @@ module Webize
 
       def scanMessages
         @doc.css(MsgCSS[:post]).map{|post|                                 # visit post(s)
+          puts :POST, post.css(MsgCSS[:link]), :id, post['id'], :post, post, :___
+
           links = post.css(MsgCSS[:link])
 
           subject = if !links.empty?
@@ -33,7 +35,6 @@ module Webize
           if subject                                                       # identifier found?
             post.css(MsgCSS[:post]).map{|childPost|                        # child posts are emitted separately
               if !childPost.css(MsgCSS[:link]).empty? || childPost['id'] || childPost['itemid']
-                puts :link, childPost.css(MsgCSS[:link]), :id, childPost['id'], :post, childPost, :___
                 childPost.remove
               end
             }
