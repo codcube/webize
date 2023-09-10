@@ -22,8 +22,6 @@ module Webize
 
       def scanMessages
         @doc.css(MsgCSS[:post]).map{|post|                                 # visit post(s)
-          puts :POST, post.css(MsgCSS[:link]), :id, post['id'], :post, post, :___
-
           links = post.css(MsgCSS[:link])
 
           subject = if !links.empty?
@@ -91,6 +89,8 @@ module Webize
               yield subject, Content, Webize::HTML.format(c.to_s, @base), graph
             }
             post.remove
+          else
+            Console.logger.debug "unidentified post: #{post}"
           end}
         @doc.css(MsgCSS[:gunk]).map &:remove                               # sweep gunk nodes
 
