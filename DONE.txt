@@ -29,5 +29,5 @@ add timeouts to the fetcher to try to make the 'huge feed list with now MIA or t
 remove ever expanding list of errors to catch on the fetcher - catch em all and add a logger for HTML and console output
 add a new path into multi-fetcher based on existence of local uri-list files
 simplify #hostGET using changes above like the pure URI-relocation methods and elimination of no-longer-used endpoints
-ann normalization for windows-1252 name variants
+normalization of windows-1252 name variants
 usual slew of blocklist and metadata-map additions and subscription-list maintenance (all but the huge one blocked on nonasyncwtf issue)
