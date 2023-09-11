@@ -1,4 +1,4 @@
-i never look at [TODO](TODO.md) since there's always obvious pressing bugs on the front of my mind and evident on open tabs, so instead of TODO i'm logging what was DONE instead. eventually this will go in git logs, but first we need a git webizer to get the data out, so markdown will do for now
+i never look at [TODO](TODO.md) since there's always obvious pressing bugs on the front of my mind and evident on open tabs, so instead of TODO most feature removals/additions show up here instead. eventually this will go in git logs, but first we need a git webizer to get the data out, so markdown will do for now
 
 Jul 20 16:22:11 2023 -> Sep 10 01:07:53 2023 (ad57a727491c5b28f8ed5bff1bd25c71bb61214a -> adb0306d790901d5b38f9d6966b1de39a3c378f7)
 
