@@ -85,6 +85,7 @@ http://data-vocabulary.org/startDate
 http://ogp.me/ns#article:modified_time
 http://ogp.me/ns#article:published_time
 http://ogp.me/ns#pubdate
+http://ogp.me/ns#published_time
 http://ogp.me/ns#updated_time
 http://ogp.me/ns/article#modified_time
 http://ogp.me/ns/article#published_time
