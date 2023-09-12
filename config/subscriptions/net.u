@@ -5,6 +5,7 @@ https://battlepenguin.com/feed.xml
 https://blog.cryptographyengineering.com/feed/
 https://blog.datadryad.org/feed/
 https://blog.nationalarchives.gov.uk/feed/
+https://blog.okfn.org/feed/
 https://blog.saeloun.com/feed.xml
 https://blog.scholarled.org/rss/
 https://blog.soykaf.com/index.xml
@@ -36,6 +37,7 @@ https://fightwithtools.dev/feed/
 https://floss.social/@jgoerzen.rss
 https://forum.solidproject.org/latest.rss
 https://forum.solidproject.org/posts.rss
+https://fosstodon.org/@OKFN.rss
 https://fosstodon.org/@whynothugo.rss
 https://fosstodon.org/api/v1/timelines/public?local=true&only_media=false
 https://garbados.github.io/my-blog/rss.xml
@@ -85,6 +87,7 @@ https://openbiblio.social/tags/linkeddata.rss
 https://openbiblio.social/tags/rdf.rss
 https://openfuture.eu/blog/feed/
 https://openlibraryfoundation.org/feed/
+https://ospolicyobservatory.uvic.ca/feed/
 https://psychedelicalpha.com/feed
 https://puri.sm/feed/
 https://reb00ted.org/index.xml
