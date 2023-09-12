@@ -255,7 +255,6 @@ module Webize
         rest[k] = re[k] unless [Abstract, Content, Creator, Date, From, Link, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
       {class: :post,                                    # resource
        c: [link,                                        # title
-           origin_ref,                                  # pointer
            p[Abstract],                                 # abstract
            date,                                        # timestamp
            from,                                        # source
@@ -263,7 +262,8 @@ module Webize
            [Content, SIOC+'richContent'].map{|p|
              (re[p]||[]).map{|o|markup o,env}},         # body
            p[Link],                                     # untyped links
-           (HTML.keyval(rest, env) unless rest.empty?)  # key/val render of remaining data
+           (HTML.keyval(rest, env) unless rest.empty?), # key/val render of remaining data
+           origin_ref,                                  # origin pointer
           ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(#{env[:gradientR] ||= rand(360)}deg, #{color}, #{color} #{env[:gradientA] ||= rand(16) / 16.0}em, #000 #{env[:gradientA]}em, #000 #{env[:gradientB] ||= env[:gradientA] + rand(16) / 16.0}em); border-color: #{color}"} : {})}
 
   end
