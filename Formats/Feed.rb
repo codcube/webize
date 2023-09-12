@@ -2,6 +2,11 @@
 module Webize
   module Feed
 
+    Extensions = %w(
+.atom
+.rss
+.xml
+)
     Names = %w(
 atom atom.xml
 feed feed.xml

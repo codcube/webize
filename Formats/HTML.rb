@@ -383,13 +383,13 @@ module Webize
         # @href
         @doc.css('[href]').map{|m|
           v = HTTP::Node @base.join(m.attr 'href'), @base.env # @href object
-          @env[:feeds].push v if Feed::Names.member? v.basename
+          @env[:feeds].push v if Feed::Names.member?(v.basename) || Feed::Extensions.member?(v.extname)
           if rel = m.attr('rel')       # @rel predicate
             rel.split(/[\s,]+/).map{|k|
               @env[:links][:prev] ||= v if k.match? /prev(ious)?/i
               @env[:links][:next] ||= v if k.downcase == 'next'
               @env[:links][:icon] ||= v if k.match? /^(fav)?icon?$/i
-              @env[:feeds].push v if k == 'alternate' && ((m['type']&.match?(/atom|rss/)) || (v.path&.match?(/^\/feed\/?$/))) && !@env[:feeds].member?(v)
+              @env[:feeds].push v if k == 'alternate' && ((m['type']&.match?(/atom|rss/)) || (v.path&.match?(/^\/feed\/?$/)))
               k = MetaMap[k] || k
               logger.warn ["predicate URI unmapped for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
               yield @base, k, v unless k == :drop || v.deny?}
