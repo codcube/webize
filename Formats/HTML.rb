@@ -557,11 +557,31 @@ module Webize
     Markup = {}          # markup resource type
     MarkupPredicate = {} # markup objects of predicate
 
+    # markup for some really basic 'Dublin Core'-like attributes
+
     MarkupPredicate['uri'] = -> us, env=nil {
       (us.class == Array ? us : [us]).map{|uri|
         {_: :a, c: :🔗,
          href: env ? Webize::Resource(uri, env).href : uri,
          id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}}
+
+    MarkupPredicate[Link] = -> links, env {
+      tabular links.map{|link|
+        link = Webize::URI link
+        {'uri' => link.uri,
+         Title => [MIME.format_icon(MIME.fromSuffix link.extname), link.host, link.basename]}}}
+
+    MarkupPredicate[Type] = -> types, env {
+      types.map{|t|
+        t = Webize::Resource t, env
+        {_: :a, href: t.href, c: Icons[t.uri] || t.display_name}.update(Icons[t.uri] ? {class: :icon} : {})}}
+
+    MarkupPredicate[Abstract] = -> as, env {
+      {class: :abstract, c: as.map{|a|[(markup a, env), ' ']}}}
+
+    MarkupPredicate[Title] = -> ts, env {
+      ts.map(&:to_s).map(&:strip).uniq.map{|t|
+        [CGI.escapeHTML(t), ' ']}}
 
   end
 end

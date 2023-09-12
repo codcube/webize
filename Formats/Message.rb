@@ -174,17 +174,7 @@ module Webize
   end
   module HTML
 
-    MarkupPredicate[Link] = -> links, env {
-      tabular links.map{|link|
-        link = Webize::URI link
-        {'uri' => link.uri,
-         Title => [MIME.format_icon(MIME.fromSuffix link.extname), link.host, link.basename]}}}
-
-    MarkupPredicate[Type] = -> types, env {
-      types.map{|t|
-        t = Webize::Resource t, env
-        {_: :a, href: t.href, c: Icons[t.uri] || t.display_name}.update(Icons[t.uri] ? {class: :icon} : {})}}
-
+    # message sender
     MarkupPredicate[Creator] = MarkupPredicate['http://xmlns.com/foaf/0.1/maker'] = -> creators, env {
       creators.map{|creator|
         if [Webize::URI, Webize::Resource, RDF::URI].member? creator.class
@@ -196,6 +186,7 @@ module Webize
           markup creator, env
         end}}
 
+    # message receiver
     MarkupPredicate[To] = -> recipients, env {
       recipients.map{|r|
         if [Webize::URI, Webize::Resource, RDF::URI].member? r.class
@@ -206,13 +197,6 @@ module Webize
         else
           markup r, env
         end}}
-
-    MarkupPredicate[Abstract] = -> as, env {
-      {class: :abstract, c: as.map{|a|[(markup a, env), ' ']}}}
-
-    MarkupPredicate[Title] = -> ts, env {
-      ts.map(&:to_s).map(&:strip).uniq.map{|t|
-        [CGI.escapeHTML(t), ' ']}}
 
     Markup[Schema + 'InteractionCounter'] = -> counter, env {
       if type = counter[Schema+'interactionType']
