@@ -440,31 +440,15 @@ module Webize
         @doc.css('title').map{|title|
           yield @base, Title, title.inner_text unless title.inner_text.empty?}
 
-        # <img>
-        @doc.css('img[src][alt], img[src][title]').map{|img|
-          image = @base.join img['src']
-          yield @base, Image, image
-          yield image, Type, Image.R
-          %w(alt title).map{|attr|
-            if val = img[attr]
-              yield image, Abstract, val
-            end}}
-
-        # <video>
-        ['video[src]', 'video > source[src]'].map{|vsel|
-          @doc.css(vsel).map{|v|
-            yield @base, Video, @base.join(v.attr('src')) }}
-
         # JSON
         @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
           JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
-        # HTML content
-
-        # called to bind subject URI whenever a node identifier is found
+        # bind subject URI, traverse tree and emit triples describing content
         emitContent = -> subject, fragment {
 
-          walk = -> node {
+          # traverse tree - recursive within fragment boundary
+          walkFragment = -> node {
             node.children.map{|n|
               unless n.text?
                 if id = n['id']
@@ -474,17 +458,32 @@ module Webize
                   emitContent[id, n]
                   n.remove
                 else
-                  walk[n]
+                  walkFragment[n]
                 end
-              end
-            }
-          }
+              end}}
 
-          walk[fragment]
+          walkFragment[fragment]
 
+          # HTML content
           yield subject, Content, HTML.format(fragment, @base).to_html
+
+          # <img>
+          fragment.css('img[src][alt], img[src][title]').map{|img|
+            image = @base.join img['src']
+            yield subject, Contains, image
+            yield image, Type, Image.R
+            %w(alt title).map{|attr|
+              if val = img[attr]
+                yield image, Abstract, val
+              end}}
+
+          # <video>
+          ['video[src]', 'video > source[src]'].map{|vsel|
+            fragment.css(vsel).map{|v|
+              yield subject, Video, @base.join(v.attr('src')) }}
         }
 
+        # <html>
         emitContent[@base, @doc.css('body')[0]]
 
       end
