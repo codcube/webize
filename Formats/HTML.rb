@@ -151,8 +151,6 @@ module Webize
                                end)[0..127]),
                '</span>', ' ']
             end].join
-        elsif e['id']                                             # identified node?
-          e.add_child " <span class='id'>##{e['id']}</span> "     # show identifier
         end}
 
       serialize ? html.to_html : html                             # serialize (string -> string) invocations
@@ -434,7 +432,7 @@ module Webize
         @doc.css('script').map{|s| # nonstandard src attrs used by lazy-loaders
           s.attribute_nodes.map{|a|
             unless %w(src type).member?(a.name) || !a.value.match?(/^(\/|http)/)
-              logger.debug "<script> @#{a.name} #{a.value}"
+               logger.debug "<script> @#{a.name} #{a.value}"
               yield @base, Link, @base.join(a.value)
             end}}
 
@@ -457,19 +455,39 @@ module Webize
           @doc.css(vsel).map{|v|
             yield @base, Video, @base.join(v.attr('src')) }}
 
-        # inlined messages
-        scanMessages &f
-
         # JSON
         @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
           JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
         # HTML content
-        if body = @doc.css('body')[0]
-          yield @base, Content, HTML.format(body, @base).inner_html # yield <body>
-        else
-          yield @base, Content, HTML.format(@doc, @base).to_html    # yield entire document
-        end
+
+        # called to bind subject URI whenever a node identifier is found
+        emitContent = -> subject, fragment {
+
+          walk = -> node {
+            node.children.map{|n|
+              unless n.text?
+                if id = n['id']
+                  id = '#' + id
+                  yield subject, Contains, URI(id)
+                  yield URI(id), Title, id
+                  emitContent[id, n]
+                  n.add_next_sibling "<a href='#{id}'>#{id}</a>"
+                  n.remove
+                else
+                  walk[n]
+                end
+              end
+            }
+          }
+
+          walk[fragment]
+
+          yield subject, Content, HTML.format(fragment, @base).to_html
+        }
+
+        emitContent[@base, @doc.css('body')[0]]
+
       end
     end
 
