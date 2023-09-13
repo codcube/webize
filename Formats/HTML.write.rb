@@ -389,7 +389,11 @@ module Webize
 
     end
 
-    # markup generators for common attributes
+
+    Markup = {}          # {URI -> lambda which emits markup for resource of type}
+    MarkupPredicate = {} # {URI -> lambda which emits markup for objects of predicate}
+
+    # markup generators for base attributes
 
     MarkupPredicate['uri'] = -> us, env=nil {
       (us.class == Array ? us : [us]).map{|uri|

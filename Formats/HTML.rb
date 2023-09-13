@@ -21,8 +21,5 @@ module Webize
       StatusColor[s.to_i] = StatusColor[s]}
     StripTags = /<\/?(noscript|wbr)[^>]*>/i
     QuotePrefix = /^\s*&gt;\s*/
-    Markup = {}          # {URI -> lambda which emits markup for resource of type}
-    MarkupPredicate = {} # {URI -> lambda which emits markup for objects of predicate}
-
   end
 end
