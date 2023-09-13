@@ -502,7 +502,7 @@ module Webize
           # title
           fragment.css(MsgCSS[:title]).map{|subj|
             if (title = subj.inner_text) && !title.empty?
-              yield subject, Title, title, graph
+              yield subject, Title, title
               subj.remove if title == subj.inner_html
             end}
 
@@ -515,15 +515,16 @@ module Webize
             a.map{|c|
               c.remove }}
 
+          # reply-of reference
           #c.css(MsgCSS[:reply]).map{|reply_of|
-          #yield subject, To, @base.join(reply_of['href']), graph    # reply-of reference
+          #yield subject, To, @base.join(reply_of['href'])
           #reply_of.remove}
 
-          #post.css('.comment-comments').map{|c|                          # comment count
+          # comment count
+          #post.css('.comment-comments').map{|c|
           #if count = c.inner_text.strip.match(/^(\d+) comments$/)
-          #yield subject, 'https://schema.org/commentCount', count[1], graph
+          #yield subject, 'https://schema.org/commentCount', count[1]
                                             #end}
-
 
         }
 
