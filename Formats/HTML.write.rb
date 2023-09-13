@@ -33,17 +33,17 @@ module Webize
 
       # <img> mapping
       html.css('[style*="background-image"]').map{|node|
-        node['style'].match(CSSURL).yield_self{|url|              # CSS background-image -> img
+        node['style'].match(CSS::URL).yield_self{|url|            # CSS background-image
           node.add_child "<img src=\"#{url[1]}\">" if url}}
-      html.css('amp-img').map{|amp|                               # amp-img -> img
+      html.css('amp-img').map{|amp|                               # amp-img
         amp.add_child "<img src=\"#{amp['src']}\">"}
-      html.css("div[class*='image'][data-src]").map{|div|         # div -> img
+      html.css("div[class*='image'][data-src]").map{|div|         # div[data-src]
         div.add_child "<img src=\"#{div['data-src']}\">"}
-      html.css("figure[itemid]").map{|fig|                        # figure -> img
+      html.css("figure[itemid]").map{|fig|                        # figure[itemid]
         fig.add_child "<img src=\"#{fig['itemid']}\">"}
-      html.css("figure > a[href]").map{|a|                        # figure -> img
+      html.css("figure > a[href]").map{|a|                        # figure > a[href]
         a.add_child "<img src=\"#{a['href']}\">"}
-      html.css("slide").map{|s|                                   # slide -> img
+      html.css("slide").map{|s|                                   # slide
         s.add_child "<img src=\"#{s['original']}\" alt=\"#{s['caption']}\">"}
 
       # <pre> formatting

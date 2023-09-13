@@ -35,7 +35,7 @@
 .quote > .quote {background-color: #aaa}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
-.title > .identifier {color: #000; background-color: #888}
+.title > .identifier {color: #000; background-color: #999}
 .title:visited {background-color: #ccc; color: #000}
 .toolbox .path a {color: #ddd; font-weight: normal; font-size: .88em}
 .toolbox .path {color: #666}
