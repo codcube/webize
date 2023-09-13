@@ -472,7 +472,6 @@ module Webize
                   yield subject, Contains, URI(id)
                   yield URI(id), Title, id
                   emitContent[id, n]
-                  n.add_next_sibling "<a href='#{id}'>#{id}</a>"
                   n.remove
                 else
                   walk[n]

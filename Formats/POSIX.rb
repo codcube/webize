@@ -74,7 +74,7 @@ module Webize
                 end,
                 (['<hr>', keyval(dir, env)] unless dir.keys.empty? || dir.keys == %w(uri))]}. # key/val render of remaining triples
              update(id ? {id: id} : {}).
-             update(color ? {style: "border-color: #{color}; column-width: 76ex; column-gap: 0"} : {})]}}
+             update(color ? {style: "border-color: #{color}"} : {})]}}
 
     Markup['http://www.w3.org/ns/posix/stat#File'] = -> file, env {
       file.delete Type
