@@ -4,8 +4,8 @@
 
 module Webize
   module CSS
-    CodeCSS = Webize.configData 'style/code.css'
-    SiteCSS = Webize.configData 'style/site.css'
+    Code = Webize.configData 'style/code.css'
+    Site = Webize.configData 'style/site.css'
   end
   module HTML
     CSSURL = /url\(['"]*([^\)'"]+)['"]*\)/

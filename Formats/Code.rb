@@ -56,7 +56,7 @@ module Webize
         end
 
         html = RDF::Literal [html,
-                             '<style>', CSS::CodeCSS, '</style>'
+                             '<style>', CSS::Code, '</style>'
                             ].join.encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
         html.datatype = RDF.XMLLiteral
         yield Content.R, html

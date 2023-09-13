@@ -327,7 +327,7 @@ module Webize
                            c: [{_: :meta, charset: 'utf-8'},
                                ({_: :title, c: CGI.escapeHTML(graph[uri][Title].join ' ')} if graph.has_key?(uri) && graph[uri].has_key?(Title)),
                                {_: :style,
-                                c: [CSS::SiteCSS,
+                                c: [CSS::Site,
                                     "body {background: repeating-linear-gradient(300deg, #{bgcolor}, #{bgcolor} 8em, #000 8em, #000 16em)}"].join("\n")},
                                env[:links].map{|type, resource|
                                  {_: :link, rel: type, href: CGI.escapeHTML(Resource.new(resource).env(env).href)}}]},
