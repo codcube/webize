@@ -1,5 +1,3 @@
-urlToAuthorPage
-authorNames
 AUTHOR
 Author
 DC.Creator
@@ -25,6 +23,7 @@ attribution
 author
 author.name
 authorName
+authorNames
 authorUrl
 author_name
 author_url
@@ -69,6 +68,7 @@ http://www.itunes.com/dtds/podcast-1.0.dtd#author
 http://www.livejournal.org/rss/lj/1.0/poster
 https://schema.org/author
 itunes:author
+lastModifiedBy
 lastName
 ledeCredit
 me
@@ -103,6 +103,7 @@ twitterHandle
 twitterId
 twitterName
 twitterUrl
+urlToAuthorPage
 user_id
 user_id_str
 username

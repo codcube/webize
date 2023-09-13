@@ -27,7 +27,7 @@
 .post a.pointer:visited {background-color: #555}
 .post article div, .post section div, .post div > span, .post > span {background-color: #000}
 .post div.abstract {border-radius: .5em .5em 0 0; display: block; background-color: #bbb; color: #000}
-.post {border: .12em solid #777; margin: 1px; max-width: 96ex}
+.post {border: .12em solid #777; margin: 1px}
 .post, .post div, pre {border-radius: .5em}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}

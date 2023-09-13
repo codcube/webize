@@ -79,6 +79,7 @@ profile
 purchase_url
 referrer
 rel
+relativePath
 remote_url
 search
 section-url
