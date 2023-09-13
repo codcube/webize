@@ -3,7 +3,10 @@ module Webize
   module HTML
     class Reader
 
-      MsgCSS = {} # {CSS selector -> RDF attribute}
+      # initialize {CSS selector -> RDF attribute} map
+      MsgCSS = {}
+
+      # load user-defined maps
       %w(
  content
  creator
@@ -15,87 +18,10 @@ module Webize
  post
  reply
  title
- video).map{|a| # load user-defined maps
+ video
+).map{|a|
         MsgCSS[a.to_sym] = Webize.configList('metadata/CSS/' + a).join ', '}
 
-      DateAttr = %w(data-time data-timestamp data-utc date datetime time timestamp unixtime data-content title)
-
-      def scanMessages
-        @doc.css(MsgCSS[:post]).map{|post|                                 # visit post(s)
-
-          links = post.css(MsgCSS[:link])
-
-          subject = if !links.empty?
-                      links[0]['href']                                     # identifier in self-referential link
-                    else
-                      post['data-post-no'] || post['id'] || post['itemid'] # identifier attribute
-                    end
-
-          if subject                                                       # identifier found?
-            post.css(MsgCSS[:post]).map{|childPost|                        # child posts are emitted separately
-              if !childPost.css(MsgCSS[:link]).empty? || childPost['id'] || childPost['itemid']
-                childPost.remove
-              end
-            }
-
-            subject = @base.join subject                                   # subject URI
-            graph = ['//', subject.host, subject.path].join.R              # graph URI
-
-            yield subject, Type, (SIOC + 'BoardPost').R, graph             # RDF type
-
-            post.css(MsgCSS[:date]).map{|d|                                # ISO8601 and UNIX timestamp
-              yield subject, Date, d[DateAttr.find{|a| d.has_attribute? a }] || d.inner_text, graph
-              d.remove}
-
-            (authorText = post.css(MsgCSS[:creator])).map{|c|              # author
-              yield subject, Creator, c.inner_text, graph }
-            (authorURI = post.css(MsgCSS[:creatorHref])).map{|c|
-              yield subject, Creator, @base.join(c['href']), graph }
-            [authorURI, authorText].map{|a|
-              a.map{|c|
-                c.remove }}
-
-            post.css(MsgCSS[:title]).map{|subj|
-              title = subj.inner_text
-              yield subject, Title, title, graph if title && !title.empty? # title
-              subj.remove }
-
-            post.css(MsgCSS[:image]).map{|a| yield subject, Image, @base.join(a['href']), graph} # image @href
-            post.css(MsgCSS[:imageP]).map{|img|                                                  # image @href on parent node
-              yield subject, Image, @base.join(img.parent['href']), graph }
-            post.css(MsgCSS[:imagePP]).map{|img|                                                 # image @href on parent-parent node
-              yield subject, Image, @base.join(img.parent.parent['href']), graph }
-
-            post.css(MsgCSS[:video]).map{|a| yield subject, Video, @base.join(a['href']), graph} # video
-
-            post.css('.comment-comments').map{|c|                          # comment count
-              if count = c.inner_text.strip.match(/^(\d+) comments$/)
-                yield subject, 'https://schema.org/commentCount', count[1], graph
-              end}
-
-            cs = post.css MsgCSS[:content]                                 # content nodes
-            cs.push post if cs.empty?
-
-            cs.map{|c|                                                     # content
-              c.css(MsgCSS[:reply]).map{|reply_of|
-                yield subject, To, @base.join(reply_of['href']), graph    # reply-of reference
-                reply_of.remove}
-
-              c.traverse{|n|                                               # hrefize text nodes
-                if n.text? && n.to_s.match?(/https?:\/\//) && n.parent.name != 'a'
-                  n.add_next_sibling (CGI.unescapeHTML n.to_s).hrefs{|p,o| yield subject, p, o}
-                  n.remove
-                end}
-
-              yield subject, Content, Webize::HTML.format(c.to_s, @base), graph
-            }
-            post.remove
-          else
-            #Console.logger.debug "unidentified document-fragment: #{post}"
-          end}
-        @doc.css(MsgCSS[:gunk]).map &:remove                               # sweep gunk nodes
-
-      end
     end
   end
   module Plaintext

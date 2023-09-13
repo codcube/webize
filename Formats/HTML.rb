@@ -444,13 +444,24 @@ module Webize
         @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
           JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
+        #         @doc.css(MsgCSS[:post]).map{|post|  # visit post(s) and add ID from :link or non-id addr if missing
+        #           links = post.css(MsgCSS[:link])
+        #                       post['data-post-no'] || post['id'] || post['itemid'] # identifier attribute
+
         # bind subject URI, traverse tree and emit triples describing content
         emitContent = -> subject, fragment {
 
-          # traverse tree - recursive within fragment boundary
+          # traverse tree inside fragment boundary
           walkFragment = -> node {
             node.children.map{|n|
-              unless n.text?
+              if n.text?
+                #n.remove if n.to_s.strip.empty?
+
+                #if n.to_s.match?(/https?:\/\//) && n.parent.name != 'a'
+                #n.add_next_sibling (CGI.unescapeHTML n.to_s).hrefs{|p,o| yield subject, p, o}
+                #n.remove
+                #end
+              else
                 if id = n['id']
                   id = '#' + id
                   yield subject, Contains, URI(id)
@@ -462,6 +473,7 @@ module Webize
                 end
               end}}
 
+          # traverse fragment
           walkFragment[fragment]
 
           # HTML content
@@ -480,7 +492,39 @@ module Webize
           # <video>
           ['video[src]', 'video > source[src]'].map{|vsel|
             fragment.css(vsel).map{|v|
-              yield subject, Video, @base.join(v.attr('src')) }}
+              yield subject, Video, @base.join(v.attr('src'))}}
+
+          # <datetime>
+          fragment.css(MsgCSS[:date]).map{|d| # search on ISO8601 and UNIX timestamp selectors
+            yield subject, Date, d[DateAttr.find{|a| d.has_attribute? a }] || d.inner_text
+            d.remove}
+
+          # title
+          fragment.css(MsgCSS[:title]).map{|subj|
+            if (title = subj.inner_text) && !title.empty?
+              yield subject, Title, title, graph
+              subj.remove if title == subj.inner_html
+            end}
+
+          # creator
+          (authorText = fragment.css(MsgCSS[:creator])).map{|c|
+            yield subject, Creator, c.inner_text }
+          (authorURI = fragment.css(MsgCSS[:creatorHref])).map{|c|
+            yield subject, Creator, @base.join(c['href']) }
+          [authorURI, authorText].map{|a|
+            a.map{|c|
+              c.remove }}
+
+          #c.css(MsgCSS[:reply]).map{|reply_of|
+          #yield subject, To, @base.join(reply_of['href']), graph    # reply-of reference
+          #reply_of.remove}
+
+          #post.css('.comment-comments').map{|c|                          # comment count
+          #if count = c.inner_text.strip.match(/^(\d+) comments$/)
+          #yield subject, 'https://schema.org/commentCount', count[1], graph
+                                            #end}
+
+
         }
 
         # <html>

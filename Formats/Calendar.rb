@@ -8,6 +8,22 @@ module Webize
     Markup[Date] = -> date, env {
       date = date.to_s
       {_: :a, class: :date, c: date, href: '/' + date[0..13].gsub(/[-T:]/,'/') + '*'}}
+
+    class Reader
+
+      DateAttr = %w(
+data-time
+data-timestamp
+data-utc
+date
+datetime
+time
+timestamp
+unixtime
+data-content
+title)
+
+    end
   end
 
   def self.date d
