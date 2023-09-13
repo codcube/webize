@@ -134,7 +134,7 @@ rss rss.xml
                   elsif subject.imgPath?
                     Image
                   else
-                    SIOC + (reddit ? 'Board' : 'Blog') + 'Post'
+                    Post
                   end.R
 
             # addressee/recipient/destination group

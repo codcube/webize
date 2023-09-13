@@ -417,7 +417,11 @@ module Webize
 
     MarkupPredicate[Title] = -> ts, env {
       ts.map(&:to_s).map(&:strip).uniq.map{|t|
-        [CGI.escapeHTML(t), ' ']}}
+        [if t[0] == '#'
+         {_: :span, class: :identifier, c: CGI.escapeHTML(t)}
+        else
+          CGI.escapeHTML t
+         end, ' ']}}
 
     # generic resource renderer
 
