@@ -407,23 +407,29 @@ module Webize
          end, ' ']}}
 
     Markup[BasicResource] = -> re, env {
-      env[:last] ||= {}
+      env[:last] ||= {}                                 # previous resource
 
-      classes = %w(resource)
-      types = (re[Type]||[]).map{|t|MetaMap[t.to_s] || t.to_s}  # RDF type(s)
-      classes.push :post if types.member? Post                  # CSS class(es)
+      types = (re[Type]||[]).map{|t|                    # RDF type(s)
+        MetaMap[t.to_s] || t.to_s}
 
-      p = -> a {MarkupPredicate[a][re[a],env] if re.has_key? a} # predicate renderer
+      classes = %w(resource)                            # CSS class(es)
+      classes.push :post if types.member? Post
 
-      titled = re.has_key?(Title)&&env[:last][Title]!=re[Title] # has title + changed from previous message?
+      p = -> a {                                        # predicate renderer
+        MarkupPredicate[a][re[a],env] if re.has_key? a}
 
-      if uri = re['uri']                                        # unless blank node:
-        uri = Webize::Resource.new(uri).env env                 # full URI
-        id = uri.local_id                                       # fragment identifier
-        origin_ref = {_: :a, class: :pointer,href: uri, c: :🔗} # origin pointer
-        cache_ref = {_: :a, href: uri.href,
-                     id: 'p'+Digest::SHA2.hexdigest(rand.to_s)} # cache pointer
-        color = if HostColor.has_key? uri.host
+      titled = re.has_key?(Title) &&                    # has updated title?
+               env[:last][Title]!=re[Title]
+
+      if uri = re['uri']                                # unless blank node:
+        uri = Webize::Resource.new(uri).env env         # full URI
+        id = uri.local_id                               # fragment identifier
+        origin_ref = {_: :a, class: :pointer,           # origin pointer
+                      href: uri, c: :🔗}
+        cache_ref = {_: :a, href: uri.href,             # cache pointer
+                     id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}
+
+        color = if HostColor.has_key? uri.host          # color
                   HostColor[uri.host]
                 elsif uri.deny?
                   env[:gradientR], env[:gradientA], env[:gradientB] = [300, 4, 8]
@@ -443,12 +449,14 @@ module Webize
       date = p[Date]                                    # date
       link = {class: :title, c: p[Title]}.              # title
                update(cache_ref || {}) if titled
-      env[:last] = re                                   # update pointer to previous for next-render diff
-      sz = rand(10) / 3.0                               # stripe size CSS
+
+      sz = rand(10) / 3.0                               # stripe width
 
       rest = {}                                         # remaining data
       re.map{|k,v|                                      # populate remaining attrs for key/val renderer
         rest[k] = re[k] unless [Abstract, Content, Creator, Date, From, Link, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
+
+      env[:last] = re                                   # update previous-resource pointer
 
       {class: classes.join(' '),                        # resource
        c: [link,                                        # title
@@ -459,7 +467,7 @@ module Webize
            [Content, SIOC+'richContent'].map{|p|
              (re[p]||[]).map{|o|markup o,env}},         # body
            p[Link],                                     # untyped links
-           (HTML.keyval(rest, env) unless rest.empty?), # key/val render of remaining data
+           (HTML.keyval(rest, env) unless rest.empty?), # key/val view of remaining data
            origin_ref,                                  # origin pointer
           ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(#{env[:gradientR] ||= rand(360)}deg, #{color}, #{color} #{env[:gradientA] ||= rand(16) / 16.0}em, #000 #{env[:gradientA]}em, #000 #{env[:gradientB] ||= env[:gradientA] + rand(16) / 16.0}em); border-color: #{color}"} : {})}
 
