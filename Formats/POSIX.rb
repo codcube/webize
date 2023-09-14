@@ -52,6 +52,16 @@ module Webize
     TabularLayout = [Directory,
                      'http://rdfs.org/sioc/ns#ChatLog']
 
+    MarkupPredicate[Contains] = -> contents, env {
+      env[:contained] ||= {} # TODO make loop-detection less crude somehow? perhaps scoped to parent containe(r) rather than entire request
+      contents.map{|v|
+        unless env[:contained].has_key? v['uri']
+          env[:contained][v['uri']] = true
+          markup v, env
+        end
+      }
+    }
+
     Markup[Container] = -> dir, env {
       uri = dir['uri']
       id = uri.R.fragment if uri
@@ -74,7 +84,7 @@ module Webize
                 end,
                 (['<hr>', keyval(dir, env)] unless dir.keys.empty? || dir.keys == %w(uri))]}. # key/val render of remaining triples
              update(id ? {id: id} : {}).
-             update(color ? {style: "border-color: #{color}"} : {})]}}
+             update(color ? {style: "background: repeating-linear-gradient(300deg, #{color}, #{color} 1em, #000 1em, #000 2em); border-color: #{color}; "} : {})]}}
 
     Markup['http://www.w3.org/ns/posix/stat#File'] = -> file, env {
       file.delete Type
