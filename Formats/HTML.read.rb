@@ -173,9 +173,6 @@ module Webize
           # traverse fragment
           walkFragment[fragment]
 
-          # HTML content
-          yield subject, Content, HTML.format(fragment, @base).to_html
-
           # <img>
           fragment.css('img[src][alt], img[src][title]').map{|img|
             image = @base.join img['src']
@@ -224,6 +221,8 @@ module Webize
           #yield subject, 'https://schema.org/commentCount', count[1]
                                             #end}
 
+          # HTML content
+          yield subject, Content, HTML.format(fragment, @base).to_html
         }
 
         # <html>
