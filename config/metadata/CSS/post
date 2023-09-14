@@ -1,5 +1,3 @@
-.athing
-.note
 [class*="comment"]
 [class*="entry"]
 [class*="event"]
@@ -8,7 +6,6 @@
 [class*="msg"]
 [class*="post"]
 [class*="row"]
-[id^='post']
 article
 div.g
 section

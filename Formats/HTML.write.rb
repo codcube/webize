@@ -427,11 +427,14 @@ module Webize
 
     Markup[BasicResource] = -> re, env {
       env[:last] ||= {}
-      p = -> a {MarkupPredicate[a][re[a], env] if re.has_key? a} # predicate renderer
-      titled = (re.has_key? Title) && env[:last][Title] != re[Title]
-      if uri = re['uri']                                         # unless blank node:
-        uri = Webize::Resource.new(uri).env env; id = uri.local_id                      # full URI and fragment identifier
-        origin_ref = {_: :a, class: :pointer, href: uri, c: :🔗} # origin pointer
+
+      p = -> a {MarkupPredicate[a][re[a], env] if re.has_key? a}   # predicate renderer
+
+      titled = (re.has_key? Title) && env[:last][Title]!=re[Title] # has title, changed from previous message?
+
+      if uri = re['uri']                                           # unless blank node:
+        uri = Webize::Resource.new(uri).env env; id = uri.local_id # full URI, fragment identifier
+        origin_ref = {_: :a, class: :pointer, href: uri, c: :🔗}   # origin pointer
         cache_ref = {_: :a, href: uri.href, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)} # cache pointer
         color = if HostColor.has_key? uri.host
                   HostColor[uri.host]
@@ -440,21 +443,26 @@ module Webize
                   :red
                 end
       end
-      from = p[Creator] # unless env[:last][Creator] == re[Creator]
-      if re.has_key? To
+
+      from = p[Creator]                                 # sender
+
+      if re.has_key? To                                 # receiver
         if re[To].size == 1 && [Webize::URI, Webize::Resource, RDF::URI].member?(re[To][0].class)
           color = '#' + Digest::SHA2.hexdigest(Webize::URI.new(re[To][0]).display_name)[0..5]
         end
         to = p[To]
       end
-      date = p[Date]
+
+      date = p[Date]                                    # date
       link = {class: :title, c: p[Title]}.              # title
                update(cache_ref || {}) if titled
-      env[:last] = re
-      sz = rand(10) / 3.0
-      rest = {}
-      re.map{|k,v|
+      env[:last] = re                                   # update pointer to previous for next-render diff
+      sz = rand(10) / 3.0                               # stripe size CSS
+
+      rest = {}                                         # remaining data
+      re.map{|k,v|                                      # populate remaining attrs for key/val renderer
         rest[k] = re[k] unless [Abstract, Content, Creator, Date, From, Link, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
+
       {class: :post,                                    # resource
        c: [link,                                        # title
            p[Abstract],                                 # abstract
