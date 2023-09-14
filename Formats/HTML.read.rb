@@ -141,14 +141,13 @@ module Webize
         @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
           JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
-        #         @doc.css(MsgCSS[:post]).map{|post|  # visit post(s) and add ID from :link or non-id addr if missing
-        #           links = post.css(MsgCSS[:link])
-        #                       post['data-post-no'] || post['id'] || post['itemid'] # identifier attribute
+        @doc.css(MsgCSS[:post]).map{|post| # generate post identifier if missing
+          post['id'] = 'p' + Digest::SHA2.hexdigest(rand.to_s)[0..12] unless post['id']}
 
-        # bind subject URI, traverse tree and emit triples describing content
+        # lambda :: bind subject URI, traverse tree and emit triples describing content
         emitContent = -> subject, fragment {
 
-          # traverse tree inside fragment boundary
+          # lambda :: traverse tree inside fragment boundary
           walkFragment = -> node {
             node.children.map{|n|
               if n.text?
@@ -195,13 +194,12 @@ module Webize
 
           # title
           fragment.css(MsgCSS[:title]).map{|subj|
-            puts subj
             if (title = subj.inner_text) && !title.empty?
               yield subject, Title, title
               subj.remove if title == subj.inner_html
             end}
 
-          # creator
+          # sender
           (authorText = fragment.css(MsgCSS[:creator])).map{|c|
             yield subject, Creator, c.inner_text }
           (authorURI = fragment.css(MsgCSS[:creatorHref])).map{|c|
@@ -210,10 +208,10 @@ module Webize
             a.map{|c|
               c.remove }}
 
-          # reply-of reference
-          #c.css(MsgCSS[:reply]).map{|reply_of|
-          #yield subject, To, @base.join(reply_of['href'])
-          #reply_of.remove}
+          # receiver
+          fragment.css(MsgCSS[:reply]).map{|reply_of|
+            yield subject, To, @base.join(reply_of['href'])
+            reply_of.remove}
 
           # comment count
           #post.css('.comment-comments').map{|c|

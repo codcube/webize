@@ -5,7 +5,6 @@
 [class*="message"]
 [class*="msg"]
 [class*="post"]
-[class*="row"]
 article
 div.g
 section

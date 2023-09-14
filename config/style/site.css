@@ -61,7 +61,7 @@ a.global, a.local, a.host {border-radius: .42em; display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
 a.local {background-color: #002}
 audio {width: 80ex; float: right}
-blockquote, blockquote > p, .greentext, .original, .quote, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em}
+blockquote, blockquote > p, .greentext, .original, .quote, .quote-text, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em}
 blockquote, ol, p, ul {max-width: 80ex}
 blockquote::before, .quote::before {content: '>'; float: left}
 body {font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans; padding: 0; margin: 0}
