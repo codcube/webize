@@ -432,7 +432,7 @@ module Webize
         color = if HostColor.has_key? uri.host          # color
                   HostColor[uri.host]
                 elsif uri.deny?
-                  env[:gradientR], env[:gradientA], env[:gradientB] = [300, 4, 8]
+                  env[:gradientA], env[:gradientB] = [4, 8]
                   :red
                 end
       end
@@ -469,7 +469,7 @@ module Webize
            p[Link],                                     # untyped links
            (HTML.keyval(rest, env) unless rest.empty?), # key/val view of remaining data
            origin_ref,                                  # origin pointer
-          ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(#{env[:gradientR] ||= rand(360)}deg, #{color}, #{color} #{env[:gradientA] ||= rand(16) / 16.0}em, #000 #{env[:gradientA]}em, #000 #{env[:gradientB] ||= env[:gradientA] + rand(16) / 16.0}em); border-color: #{color}"} : {})}
+          ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(300deg, #{color}, #{color} #{env[:gradientA] ||= rand(16) / 16.0}em, #000 #{env[:gradientA]}em, #000 #{env[:gradientB] ||= env[:gradientA] + rand(16) / 16.0}em); border-color: #{color}"} : {})}
 
   end
 end
