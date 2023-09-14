@@ -428,6 +428,10 @@ module Webize
     Markup[BasicResource] = -> re, env {
       env[:last] ||= {}
 
+      classes = %w(resource)
+      types = (re[Type]||[]).map{|t|MetaMap[t.to_s] || t.to_s} # map to rendered type
+      classes.push :post if types.member? Post
+
       p = -> a {MarkupPredicate[a][re[a], env] if re.has_key? a}   # predicate renderer
 
       titled = (re.has_key? Title) && env[:last][Title]!=re[Title] # has title, changed from previous message?
@@ -463,7 +467,7 @@ module Webize
       re.map{|k,v|                                      # populate remaining attrs for key/val renderer
         rest[k] = re[k] unless [Abstract, Content, Creator, Date, From, Link, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
 
-      {class: :post,                                    # resource
+      {class: classes.join(' '),                        # resource
        c: [link,                                        # title
            p[Abstract],                                 # abstract
            date,                                        # timestamp
