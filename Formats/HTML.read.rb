@@ -142,7 +142,7 @@ module Webize
           JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
         @doc.css(MsgCSS[:post]).map{|post| # generate post identifier if missing
-          post['id'] = 'p' + Digest::SHA2.hexdigest(rand.to_s)[0..12] unless post['id']}
+          post['id'] = 'p' + Digest::SHA2.hexdigest(rand.to_s)[0..8] unless post['id']}
 
         # lambda :: bind subject URI, traverse tree and emit triples describing content
         emitContent = -> subject, fragment {

@@ -390,8 +390,17 @@ module Webize
         {'uri' => link.uri,
          Title => [MIME.format_icon(MIME.fromSuffix link.extname), link.host, link.basename]}}}
 
-#    MarkupPredicate[Contains] = -> contents, env {
-#    }
+    MarkupPredicate[Contains] = -> contents, env {
+      env[:contained] ||= {}
+      contents.map{|v|
+        if env[:contained][v['uri']]
+          puts "contained #{v['uri']}"
+        else
+          env[:contained][v['uri']] = true
+          markup v, env
+        end
+      }
+    }
 
     MarkupPredicate[Type] = -> types, env {
       types.map{|t|
