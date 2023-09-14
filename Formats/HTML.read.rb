@@ -1,4 +1,5 @@
 module Webize
+
   module CSS
 
     Code = Webize.configData 'style/code.css'
@@ -6,6 +7,7 @@ module Webize
     URL = /url\(['"]*([^\)'"]+)['"]*\)/
 
   end
+
   module HTML
 
     FeedIcon = Webize.configData 'style/icons/feed.svg'
@@ -21,14 +23,17 @@ module Webize
     QuotePrefix = /^\s*&gt;\s*/
 
     class Format < RDF::Format
+
       content_type 'text/html',
                    aliases: %w(application/xhtml+xml),
                    extensions: [:htm, :html, :xhtml]
       content_encoding 'utf-8'
       reader { Reader }
+
     end
-    # HTML document -> RDF
+
     class Reader < RDF::Reader
+
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
