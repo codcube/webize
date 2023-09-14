@@ -203,7 +203,7 @@ module Webize
       end
     end
 
-    # resolve hrefs to current location
+    # resolve hrefs for current context
     def self.resolve_hrefs html, env, full=false
       return '' if !html || html.empty?                           # parse
       html = Nokogiri::HTML.send (full ? :parse : :fragment), (html.class==Array ? html.join : html)
@@ -373,11 +373,10 @@ module Webize
 
     end
 
-
     Markup = {}          # {URI -> lambda which emits markup for resource of type}
     MarkupPredicate = {} # {URI -> lambda which emits markup for objects of predicate}
 
-    # markup generators for base attributes
+    # markup generators for base attribute and resource types
 
     MarkupPredicate['uri'] = -> us, env=nil {
       (us.class == Array ? us : [us]).map{|uri|
@@ -407,23 +406,23 @@ module Webize
           CGI.escapeHTML t
          end, ' ']}}
 
-    # generic resource renderer
-
     Markup[BasicResource] = -> re, env {
       env[:last] ||= {}
 
       classes = %w(resource)
-      types = (re[Type]||[]).map{|t|MetaMap[t.to_s] || t.to_s} # map to rendered type
-      classes.push :post if types.member? Post
+      types = (re[Type]||[]).map{|t|MetaMap[t.to_s] || t.to_s}  # RDF type(s)
+      classes.push :post if types.member? Post                  # CSS class(es)
 
-      p = -> a {MarkupPredicate[a][re[a], env] if re.has_key? a}   # predicate renderer
+      p = -> a {MarkupPredicate[a][re[a],env] if re.has_key? a} # predicate renderer
 
-      titled = (re.has_key? Title) && env[:last][Title]!=re[Title] # has title, changed from previous message?
+      titled = re.has_key?(Title)&&env[:last][Title]!=re[Title] # has title + changed from previous message?
 
-      if uri = re['uri']                                           # unless blank node:
-        uri = Webize::Resource.new(uri).env env; id = uri.local_id # full URI, fragment identifier
-        origin_ref = {_: :a, class: :pointer, href: uri, c: :🔗}   # origin pointer
-        cache_ref = {_: :a, href: uri.href, id: 'p'+Digest::SHA2.hexdigest(rand.to_s)} # cache pointer
+      if uri = re['uri']                                        # unless blank node:
+        uri = Webize::Resource.new(uri).env env                 # full URI
+        id = uri.local_id                                       # fragment identifier
+        origin_ref = {_: :a, class: :pointer,href: uri, c: :🔗} # origin pointer
+        cache_ref = {_: :a, href: uri.href,
+                     id: 'p'+Digest::SHA2.hexdigest(rand.to_s)} # cache pointer
         color = if HostColor.has_key? uri.host
                   HostColor[uri.host]
                 elsif uri.deny?
