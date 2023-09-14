@@ -160,7 +160,7 @@ module Webize
               else
                 if id = n['id']
                   id = '#' + id
-                  yield subject, Contains, URI(id)
+                  yield subject, Contains, URI(id) unless subject.to_s == id
                   yield URI(id), Title, id
                   emitContent[id, n]
                   n.remove

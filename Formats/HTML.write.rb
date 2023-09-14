@@ -390,6 +390,9 @@ module Webize
         {'uri' => link.uri,
          Title => [MIME.format_icon(MIME.fromSuffix link.extname), link.host, link.basename]}}}
 
+#    MarkupPredicate[Contains] = -> contents, env {
+#    }
+
     MarkupPredicate[Type] = -> types, env {
       types.map{|t|
         t = Webize::Resource t, env
