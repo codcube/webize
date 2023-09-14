@@ -26,7 +26,7 @@
 .preembed {position: relative; vertical-align: top}
 .quote > .quote > .quote {background-color: #777}
 .quote > .quote {background-color: #aaa}
-.resource .title {border-radius: .5em 0 .2em 0; margin: 0; max-width: 80ex; float: left}
+.resource .title {background-color: #fff; color: #000; border-radius: .5em 0 .2em 0; margin: 0; max-width: 80ex; float: left}
 .resource .to {float: right; margin: 0}
 .resource a.pointer {margin: 0; padding: 0; background-color: #000; border-radius: .5em; font-weight: normal; float: right}
 .resource a.pointer:visited {background-color: #555}
@@ -36,7 +36,7 @@
 .resource, .resource div, pre {border-radius: .5em}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
-.title > .identifier {color: #000; background-color: #929292; font-size: .96em; border-radius: .3em}
+.title > .identifier {color: #000; background-color: #929292; border-radius: .3em}
 .title:visited {background-color: #ccc; color: #000}
 .toolbox .path a {color: #ddd; font-weight: normal; font-size: .88em}
 .toolbox .path {color: #666}

@@ -394,7 +394,7 @@ module Webize
       env[:contained] ||= {}
       contents.map{|v|
         if env[:contained][v['uri']]
-          puts "contained #{v['uri']}"
+          #puts "contained #{v['uri']}"
         else
           env[:contained][v['uri']] = true
           markup v, env

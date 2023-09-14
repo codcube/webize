@@ -73,7 +73,6 @@
 - next/prev links in HTML not lifted to HTTP metadata and/or collide with proxy-added #next/#prev http://techrights.org/2021/11/30/freedom-respecting-internet/ http://www.w3.org/1999/xhtml/vocab#role
 - link gemini posts to timeline - use current timestamp if server doesn't provide
 - make HTML/RSS renderers genuine RSS:Writer instances
-- loops in container structures throw renderer for a loop. data in the wild might contain this, perhaps https://doriantaylor.com/summer-of-protocols/ does. we need to decide on ldp#contains or sioc:container_of as the default to map to also - or maybe our own predicate nobody else uses so we can be guaranteed it's loop-free without having to check during treeization and/or rendering?
 - ruby-net-text (gemtext) is failing on URI parse errors all the time - it shouldn't even parse the body - write a Gemini parser? do we/you use Gemini still? also TWTXT etc
 - chat view
 - RDF::URI #query_values hates multiple/leading/trailing &s, submit patch upstream 'https://minnit.chat/DOYOUFAMILY?embed&&nickname='.R.query_values
