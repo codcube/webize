@@ -8,6 +8,7 @@
 #updates {background: repeating-linear-gradient(300deg, #888, #888 1em, #000 1em, #000 2em); border: 1px solid #888; border-radius: 1em; display: block}
 .blocked {background: repeating-linear-gradient(300deg, #f00, #f00 6em, #000 6em, #000 8em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
+.columns {column-width: 80ex; column-gap: 0}
 .container > .contents {border: 1px solid #888; border-radius: 0 .4em .4em .4em}
 .container > .title {border-color: #888; border-style: solid; border-width: 1px 1px 0 1px; border-radius: .5em .5em 0 0; font-weight: bold; margin: 0; padding: 0 .15em 0 .15em}
 .container {margin: .125em}
@@ -72,6 +73,7 @@ body.error {background: #f00; font-weight: bold}
 code {color: #000; background-color: #eee; padding: .1em}
 div, form, table {display: inline-block}
 h1, h2, h3, h4, h5, h6 {border-radius: .4em}
+hr {margin: 1px 0 1px 0}
 img, video, table, td {max-width: 100%; border-radius: .4em}
 li:nth-child(even) {background-color: #000; color: #fff}
 li:nth-child(odd) {background-color: #222; color: #fff}
