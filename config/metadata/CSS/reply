@@ -3,5 +3,6 @@
 .quote_link
 .quotelink
 .reply a
+.subreddit
 a[class^="ref"]
 a[onclick*="Reply"]
