@@ -101,7 +101,7 @@ http://www.w3.org/2000/01/rdf-schema#label 🏷
 http://www.w3.org/2000/01/rdf-schema#subClassOf ⊂
 http://www.w3.org/2004/02/skos/core#Concept 🧠
 http://www.w3.org/ns/ldp#Container 📁
-http://www.w3.org/ns/ldp#contains &nbsp;
+http://www.w3.org/ns/ldp#contains 📁
 http://www.w3.org/ns/ldp#next ▶
 http://www.w3.org/ns/ldp#prev ◀
 http://www.w3.org/ns/ldp#up ▲

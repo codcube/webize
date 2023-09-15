@@ -393,7 +393,14 @@ module Webize
     MarkupPredicate[Type] = -> types, env {
       types.map{|t|
         t = Webize::Resource t, env
-        {_: :a, href: t.href, c: Icons[t.uri] || t.display_name}.update(Icons[t.uri] ? {class: :icon} : {})}}
+        {_: :a, href: t.href,
+         c: if t.uri == Contains
+          nil
+        elsif Icons.has_key? t.uri
+          Icons[t.uri]
+        else
+          t.display_name
+         end}}}
 
     MarkupPredicate[Abstract] = -> as, env {
       {class: :abstract, c: as.map{|a|[(markup a, env), ' ']}}}

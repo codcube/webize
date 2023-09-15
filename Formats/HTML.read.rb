@@ -223,8 +223,8 @@ module Webize
           yield subject, Content, HTML.format(fragment, @base).to_html
         }
 
-        # <html>
-        emitContent[@base, @doc.css('body')[0]]
+        # <body>, or entire doc if <body> isn't found
+        emitContent[@base, @doc.css('body')[0] || @doc]
 
       end
     end
