@@ -65,7 +65,6 @@
 - for pages still completely blank - https://laiyiohlsen.com/projects/while-x.html - multifetch triplr on the Link field (the text is inside included JS files in this case)
 - dedupe images, link to shown image from placeholder icons
 - assemble dash/hls manifest for youtube data we have from the json , so we can stop using their borked player with the unskippable adloop bug
-- leakage of <body> tag into emitted HTML. http://localhost:8000/https://www.cbsnews.com/news/rush-limbaugh-arrested-on-drug-charges/
 - multiple videos, using first:https://www.youtube.com/opensearch?locale=en_US, https://www.youtube.com/watch?v=k2sIDDco5xg, http://www.youtube.com/watch?v=k2sIDDco5xg&feature=applinks, @youtube
 - 12h: ⚠️ no RDF reader for application/opensearchdescription+xml
 - link from parent to child resources in generic JSON triplr

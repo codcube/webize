@@ -1,3 +1,3 @@
 # webize
 
-there's no release, you just load index.rb from wherever you want and off you go. if for some reason you want a release, i take bribes or you can fork it. [INSTALL](INSTALL.sh) dependencies. [USAGE](USAGE.md) tips. [Motivation & Rationale](LINKS.md)
+unfortunately there's no release yet. if for some reason you want a release, i'm open to sponsorship or feel free to fork the code and stretch it to your needs. [INSTALL](INSTALL.sh) dependencies. [USAGE](USAGE.md) tips. [background reading](LINKS.md)
