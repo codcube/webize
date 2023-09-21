@@ -157,3 +157,6 @@ module Webize
     end
   end
 end
+
+# TODO HTTP mailto: handler <https://www.w3.org/DesignIssues/UI.html>
+# A mailto address is a misnomer (my fault I feel as I didn't think when we created it) as it is not supposed to be a verb "start a mail message to this person", it is supposed to be a reference to a web object, a mailbox. So clicking on a link to it should bring up a representation of the mailbox. This for example might include (subject to my preferences) an address book entry and a list of the messages sent to/from [Cc] the person recently to my knowledge. Then I could mail something to someone by linking (dragging) the mailbox icon to or from the document icon. 
