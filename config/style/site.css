@@ -5,8 +5,8 @@
 #prev, #next, #up, #down {font-size: 2em; border-style: solid; border-color: #777; color: #bbb; padding: .2em .8em .2em .8em; position: fixed}
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
-#updates {background: repeating-linear-gradient(300deg, #888, #888 1em, #000 1em, #000 2em); border: 1px solid #888; border-radius: 1em; display: block}
-.blocked {background: repeating-linear-gradient(300deg, #f00, #f00 6em, #000 6em, #000 8em); color: #fff; border: 1px solid red}
+#updates {background: repeating-linear-gradient(300deg, #888, #888 1em, transparent 1em, transparent 2em); border: 1px solid #888; border-radius: 1em; display: block}
+.blocked {background: repeating-linear-gradient(300deg, #f00, #f00 6em, transparent 6em, transparent 8em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
 .columns {column-width: 83ex; column-gap: 0}
 .container > .contents {border: 1px solid #888; border-radius: 0 .4em .4em .4em}
