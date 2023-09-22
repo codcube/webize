@@ -476,7 +476,7 @@ module Webize
            p[Link],                                     # untyped links
            (HTML.keyval(rest, env) unless rest.empty?), # key/val view of remaining data
            origin_ref,                                  # origin pointer
-          ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(300deg, #{color}, #{color} #{env[:gradientA] ||= rand(16) / 16.0}em, #000 #{env[:gradientA]}em, #000 #{env[:gradientB] ||= env[:gradientA] + rand(16) / 16.0}em); border-color: #{color}"} : {})}
+          ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(300deg, #{color}, #{color} #{env[:gradientA] ||= rand(16) / 16.0}em, transparent #{env[:gradientA]}em, transparent #{env[:gradientB] ||= env[:gradientA] + rand(16) / 16.0}em); border-color: #{color}"} : {})}
 
   end
 end
