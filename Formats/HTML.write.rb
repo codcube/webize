@@ -468,9 +468,9 @@ module Webize
       {class: classes.join(' '),                        # resource
        c: [link,                                        # title
            p[Abstract],                                 # abstract
-           date,                                        # timestamp
-           from,                                        # source
            to,                                          # destination
+           from,                                        # source
+           date,                                        # timestamp
            [Content, SIOC+'richContent'].map{|p|
              (re[p]||[]).map{|o|markup o,env}},         # body
            p[Link],                                     # untyped links
