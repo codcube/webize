@@ -315,7 +315,7 @@ module Webize
                                {_: :style,
                                 c: [CSS::Site,
                                     "body {background: repeating-linear-gradient(300deg, #{bgcolor}, #{bgcolor} 8em, #000 8em, #000 16em)}",
-                                    "#updates {background: repeating-linear-gradient(#{rand(8) * 45}deg, #777, #777 1px, transparent 1px, transparent 16px)"].join("\n")},
+                                    "#updates {background: repeating-linear-gradient(#{rand(8) * 45}deg, #555, #666 1px, transparent 1px, transparent 16px)"].join("\n")},
 
                                env[:links].map{|type, resource|
                                  {_: :link, rel: type, href: CGI.escapeHTML(Resource.new(resource).env(env).href)}}]},
