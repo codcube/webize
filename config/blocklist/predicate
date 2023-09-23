@@ -67,6 +67,7 @@ color-scheme
 commentable
 contains_music
 contributors_enabled
+cookieDomain
 csp-nonce
 csrf-param
 csrf-token
@@ -91,6 +92,8 @@ donationsActive
 downloadable
 edituri
 embeddable_by
+enableNewTagCreationWarning
+enableSocialMediaInSharePopup
 enabled
 enabled-features
 estimatedReadingTime
@@ -140,6 +143,7 @@ http://schema.org/regionsAllowed
 imageEssenceContainsCaption
 indexable
 indices
+insertSpaceAfterNameTabCompletion
 instapp:owner_user_id
 isActive
 isAnimationEnabled
@@ -153,6 +157,7 @@ isInitialsProfileEnabled
 isInternal
 isJuniorTeam
 isLogoVisible
+isNoticesTabEnabled
 isOrgOwned
 isPlaceholder
 isRedBullMusic
