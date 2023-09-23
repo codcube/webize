@@ -245,6 +245,7 @@ revisit
 revisit-after
 robots
 rootVe
+sailthru.type
 schema.DC
 scriptUrl
 sensitive
@@ -278,6 +279,7 @@ style-nonce
 super_follow_eligible
 super_followed_by
 super_following
+taboola_lead
 tec-api-origin
 tec-api-version
 theme-color
