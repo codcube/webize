@@ -435,11 +435,9 @@ module Webize
                       href: uri, c: :🔗}
         cache_ref = {_: :a, href: uri.href,             # cache pointer
                      id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}
-
         color = if HostColor.has_key? uri.host          # color
                   HostColor[uri.host]
                 elsif uri.deny?
-                  env[:gradientA], env[:gradientB] = [4, 8]
                   :red
                 end
       end
@@ -456,14 +454,11 @@ module Webize
       date = p[Date]                                    # date
       link = {class: :title, c: p[Title]}.              # title
                update(cache_ref || {}) if titled
-
-      sz = rand(10) / 3.0                               # stripe width
-
       rest = {}                                         # remaining data
       re.map{|k,v|                                      # populate remaining attrs for key/val renderer
         rest[k] = re[k] unless [Abstract, Content, Creator, Date, From, Link, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
 
-      env[:last] = re                                   # update previous-resource pointer
+      env[:last] = re                                   # update previous-resource pointer TODO group by title and remove this?
 
       {class: classes.join(' '),                        # resource
        c: [link,                                        # title
@@ -476,7 +471,7 @@ module Webize
            p[Link],                                     # untyped links
            (HTML.keyval(rest, env) unless rest.empty?), # key/val view of remaining data
            origin_ref,                                  # origin pointer
-          ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(300deg, #{color}, #{color} #{env[:gradientA] ||= rand(16) / 16.0}em, transparent #{env[:gradientA]}em, transparent #{env[:gradientB] ||= env[:gradientA] + rand(16) / 16.0}em); border-color: #{color}"} : {})}
+          ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(30deg, #{color}, #{color} 1px, transparent 1px, transparent 8px); border-color: #{color}"} : {})}
 
   end
 end
