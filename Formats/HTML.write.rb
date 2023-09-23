@@ -471,7 +471,7 @@ module Webize
            p[Link],                                     # untyped links
            (HTML.keyval(rest, env) unless rest.empty?), # key/val view of remaining data
            origin_ref,                                  # origin pointer
-          ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(30deg, #{color}, #{color} 1px, transparent 1px, transparent 8px); border-color: #{color}"} : {})}
+          ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(45deg, #{color}, #{color} 1px, transparent 1px, transparent 8px); border-color: #{color}"} : {})}
 
   end
 end
