@@ -263,7 +263,7 @@ module Webize
         else                                                # massage metadata, cache and return data
           body = HTTP.decompress h, response.read           # decompress body
 
-          format = if path == '/feed' && adapt?             # format override on upstream /feed due to ubiquitous text/html and text/plain headers
+          format = if (parts[0] == 'feed' || (Feed::Names.member? basename)) && adapt? # format on adapted feed URI
                      'application/atom+xml'
                    elsif content_type = h['Content-Type']   # format defined in HTTP header
                      ct = content_type.split(/;/)
