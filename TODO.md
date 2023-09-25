@@ -8,7 +8,7 @@ css leak (multiple <body nodes) http://localhost:8000/https://theleap.org/ #ff34
 subj URI collision http://localhost:8000/coop/agaric/blog/feed
 new JSON Extractor . http://l/com/blastradio/ronnieloko
 video tags http://localhost:8000/https://prodamdlim.akamaized.net/#p96ed80bee1d4989e50d902a0d11b0f05fc8b40868d4fedb18aefc601d52c0076
-image hosts  (and the other two host types we added)
+image hosts  (and the other two host types we added) http://l/2023/09/25/17/*idm.irc#prev
 
 
 # Config/Setup
