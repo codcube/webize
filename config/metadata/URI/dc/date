@@ -75,6 +75,7 @@ dcterms.date
 dcterms.modified
 displayDate
 display_date
+displayedDate
 editedAt
 edited_at
 firstPublished
