@@ -220,7 +220,7 @@ module Webize
                                             #end}
 
           # HTML content
-          yield subject, Content, HTML.format(fragment, @base).to_html
+          yield subject, Content, HTML.format(fragment, @base).send(%w(html head body).member?(fragment.name) ? :inner_html : :to_html)
         }
 
         # <body>, or entire doc if <body> isn't found
