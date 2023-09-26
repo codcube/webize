@@ -45,7 +45,7 @@ module Webize
 
       def highlight
         # Rouge setup
-        if lexer = Rouge::Lexer.find_fancy(@base.extname) rescue nil
+        if lexer = Rouge::Lexer.find_fancy(@base.extname[1..-1]) rescue nil
           Rouge::Formatters::HTMLPygments.new(Rouge::Formatters::HTML.new).format(lexer.lex(@doc))
         else
           logger.warn "can't determine lexer for #{@base}"
