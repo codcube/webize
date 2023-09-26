@@ -66,19 +66,20 @@ module Webize
 
     class Format < Code::Format
       content_type 'application/javascript',
-                   aliases: %w(
-                   application/x-javascript;q=0.2
-                   text/javascript;q=0.8
-                   ),
+                   aliases: %w(application/x-javascript;q=0.2
+                               text/javascript;q=0.2),
                    extensions: [:js]
       content_encoding 'utf-8'
-
       reader { Reader }
     end
 
     class Reader < Code::Reader
 
       def highlight
+
+        # FIX infinite loop at /usr/lib/ruby/gems/3.2.0/gems/rouge-4.1.3/lib/rouge/regex_lexer.rb:361
+        return if %w(www.youtube.com).member? @base.host
+
         lexer = Rouge::Lexers::Javascript.new
         Rouge::Formatters::HTMLPygments.new(Rouge::Formatters::HTML.new).format(lexer.lex(@doc))
       end
