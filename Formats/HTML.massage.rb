@@ -1,6 +1,9 @@
 module Webize
   module HTML
 
+    QuotePrefix = /^\s*&gt;\s*/
+    StripTags = /<\/?(noscript|wbr)[^>]*>/i
+
     # (String -> String) or (Nokogiri -> Nokogiri)
     def self.format html, base
 

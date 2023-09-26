@@ -9,6 +9,7 @@ Archive
 Audio
 Calendar
 Code
+CSS
 CSV
 Feed
 Form
