@@ -144,15 +144,14 @@ module Webize
         @doc.css(MsgCSS[:post]).map{|post| # generate post identifier if missing
           post['id'] = 'post' + Digest::SHA2.hexdigest(rand.to_s) unless post['id']}
 
-        # lambda :: bind subject URI, traverse tree and emit triples describing content
-        emitContent = -> subject, fragment {
+        # bind subject URI, traverse fragment and emit triples describing it
+        emitFragment = -> subject, fragment {
 
-          # lambda :: traverse tree inside fragment boundary
-          walkFragment = -> node {
+          # traverse within fragment boundary, recurse outside
+          walk = -> node {
             node.children.map{|n|
               if n.text?
                 #n.remove if n.to_s.strip.empty?
-
                 #if n.to_s.match?(/https?:\/\//) && n.parent.name != 'a'
                 #n.add_next_sibling (CGI.unescapeHTML n.to_s).hrefs{|p,o| yield subject, p, o}
                 #n.remove
@@ -162,15 +161,15 @@ module Webize
                   id = '#' + CGI.escape(id)
                   yield subject, Contains, URI(id)
                   yield URI(id), Title, id unless id.index('#post') == 0
-                  emitContent[id, n]
+                  emitFragment[id, n]
                   n.remove
                 else
-                  walkFragment[n]
+                  walk[n]
                 end
               end}}
 
           # traverse fragment
-          walkFragment[fragment]
+          walk[fragment]
 
           # <img>
           fragment.css('img[src][alt], img[src][title]').map{|img|
@@ -224,7 +223,7 @@ module Webize
         }
 
         # <body>, or entire doc if <body> isn't found
-        emitContent[@base, @doc.css('body')[0] || @doc]
+        emitFragment[@base, @doc.css('body')[0] || @doc]
 
       end
     end

@@ -1,7 +1,7 @@
 {Formats: %w(
 Config
 URI
-HTML.read HTML.write
+HTML.read HTML.massage HTML.write
 MIME
 POSIX
 RDF
