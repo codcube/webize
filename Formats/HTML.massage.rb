@@ -4,6 +4,22 @@ module Webize
     QuotePrefix = /^\s*&gt;\s*/
     StripTags = /<\/?(noscript|wbr)[^>]*>/i
 
+    def self.cachestamp html, baseURI              # input doc, base-URI
+      doc = Nokogiri::HTML.parse html              # parse doc
+      if head = doc.css('head')[0]                 # has head?
+        base = head.css('base[href]')[0]           # find base node
+        return html if base                        # nothing to do
+      else                                         # headless?
+        Console.logger.warn "⚠️ !head #{baseURI}"  # warn
+        head = Nokogiri::XML::Node.new 'head', doc # create head
+        doc.css('body')[0].before head             # attach head
+      end
+      base = Nokogiri::XML::Node.new 'base', doc   # create base node
+      base['href'] = baseURI                       # set base-URI
+      head.add_child base                          # attach base node
+      doc.to_html                                  # output doc
+    end
+
     # (String -> String) or (Nokogiri -> Nokogiri)
     def self.format html, base
 
