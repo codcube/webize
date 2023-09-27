@@ -12,7 +12,11 @@ module Webize
       else                                         # headless?
         Console.logger.warn "⚠️ !head #{baseURI}"  # warn
         head = Nokogiri::XML::Node.new 'head', doc # create head
-        doc.css('body')[0].before head             # attach head
+        if body = doc.css('body')[0]
+          body.before head                         # attach head
+        else
+          doc.add_child head
+        end
       end
       base = Nokogiri::XML::Node.new 'base', doc   # create base node
       base['href'] = baseURI                       # set base-URI
