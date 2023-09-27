@@ -11,6 +11,7 @@ assets
 bookmark
 cXenseParse:url
 canonical
+canonicalUrl
 canonical_path
 ci:canonical
 ci:mentions
@@ -65,6 +66,7 @@ noreferr
 noreferrer
 og:see_also
 og:url
+originalUrl
 parsely-link
 path
 permalink
@@ -86,6 +88,7 @@ search
 section-url
 secure_url
 self
+seoCanonicalUrl
 shortLink
 shortcut
 shorter
