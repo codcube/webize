@@ -9,7 +9,7 @@ subj URI collision http://localhost:8000/coop/agaric/blog/feed
 new JSON Extractor . http://l/com/blastradio/ronnieloko
 video tags http://localhost:8000/https://prodamdlim.akamaized.net/#p96ed80bee1d4989e50d902a0d11b0f05fc8b40868d4fedb18aefc601d52c0076
 image hosts  (and the other two host types we added) http://l/2023/09/25/17/*idm.irc#prev
-
+http://localhost:8000/https://developer.mozilla.org/en-US/blog/introducing-the-mdn-playground/
 
 # Config/Setup
 - use ~/.config/webize instead of git dir for config
