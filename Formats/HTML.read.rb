@@ -133,11 +133,7 @@ module Webize
                   id = '#' + CGI.escape(id)
                   yield subject, Contains, URI(id)
                   yield URI(id), Title, id unless id.index('#post') == 0
-                  if DropNodes.member? n.name
-                    print n.name, ' '
-                  else
-                    emitFragment[id, n]
-                  end
+                  emitFragment[id, n] unless DropNodes.member? n.name
                   n.remove
                 else
                   walk[n]
