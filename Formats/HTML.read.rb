@@ -66,7 +66,7 @@ module Webize
               k = MetaMap[k] || k
               logger.warn ["predicate URI unmapped for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
               yield @base, k, v unless k == :drop || v.deny?}
-          elsif !%w(a base).member?(m.name) # @href with no @rel
+          elsif !%w(a base).member?(m.name) # @href without @rel
             yield @base, Link, v
           end}
 
