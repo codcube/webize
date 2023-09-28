@@ -125,21 +125,19 @@ module Webize
         # bind subject URI, traverse fragment and emit triples describing it
         emitFragment = -> subject, fragment {
 
-          # traverse within fragment boundary, recurse outside
+          # recursive within fragment boundary
           walk = -> node {
             node.children.map{|n|
-              if n.text?
-                #n.remove if n.to_s.strip.empty?
-                #if n.to_s.match?(/https?:\/\//) && n.parent.name != 'a'
-                #n.add_next_sibling (CGI.unescapeHTML n.to_s).hrefs{|p,o| yield subject, p, o}
-                #n.remove
-                #end
-              else
+              unless n.text?
                 if id = n['id']
                   id = '#' + CGI.escape(id)
                   yield subject, Contains, URI(id)
                   yield URI(id), Title, id unless id.index('#post') == 0
-                  emitFragment[id, n]
+                  if DropNodes.member? n.name
+                    print n.name, ' '
+                  else
+                    emitFragment[id, n]
+                  end
                   n.remove
                 else
                   walk[n]
