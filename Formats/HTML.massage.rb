@@ -33,7 +33,7 @@ module Webize
         html = Nokogiri::HTML.fragment html.gsub(StripTags, '')
         serialize = true
       end
-
+      #puts :FORMAT_________________________________,html.to_html if html.to_html.match? /<iframe/
       html.css(DropNodes.join ', ').remove
 
       # <img> mapping
