@@ -122,24 +122,26 @@ module Webize
     end
 
     def relocate?
-      [FWD_hosts,
-       URL_hosts,
-       YT_hosts].find{|group|
-        group.member? host}
+      url_host? ||
+        [FWD_hosts, YT_hosts].find{|group| group.member? host}
     end
 
     def relocate
-      q = query_values || {}
       Resource(if FWD_hosts.member? host
                ['//', FWD_hosts[host], path].join
-              elsif URL_hosts.member?(host) || (host&.match?(CDN_hosts) && q.has_key?('url'))
+              elsif url_host?
+                q = query_values || {}
                 q['url'] || q['u'] || q['q'] || self
               elsif YT_hosts.member? host
                 ['//www.youtube.com/watch?v=', (query_values || {})['v'] || path[1..-1]].join
               else
                 self
                end)
-  end
+    end
+
+    def url_host?
+      URL_hosts.member?(host) || (host&.match?(CDN_hosts) && (query_values||{}).has_key?('url'))
+    end
 
     # resolve URI for current environment/context
     def href
