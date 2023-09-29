@@ -1,9 +1,7 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 # previously Simple DNS server by Peter Cooper w/ MIT license
-
 require_relative '../../index'
-
 require 'resolv'
 require 'resolv-replace'
 require 'socket'
@@ -44,7 +42,7 @@ class DNSRequest
     response += "\xc0\x0c".force_encoding('ASCII-8BIT')
     response += cname ? "\x00\x05".force_encoding('ASCII-8BIT') : "\x00\x01".force_encoding('ASCII-8BIT')
     response += "\x00\x01".force_encoding('ASCII-8BIT')
-    response += [server.ttl].pack("N")
+    response += [120].pack("N")
     if cname
       rdata = val.split('.').collect { |a| a.length.chr + a }.join + "\x00".force_encoding('ASCII-8BIT')
     else
@@ -60,17 +58,12 @@ class DNSRequest
   end
 end
 class DNSServer
-  attr_reader :port, :ttl
-  DefaultAddr = ENV['ADDR'] || '127.0.0.1'
+  DefaultAddr = ENV['ADDR'] || '10.10.10.1'
   Cache = {}
 
-  def initialize(options = {})
-    options = {port: 1053, ttl: 600}.merge(options)
-    @port, @ttl = options[:port], options[:ttl]
-  end
-
   def run
-    Socket.udp_server_loop(@port) do |data, src|
+    # change this port, run ../low_ports or sudo setcap 'cap_net_bind_service=+ep' /usr/bin/ruby
+    Socket.udp_server_loop(53) do |data, src|
       r = DNSRequest.new(self, data)
       domain = r.domain
       hostname = domain.sub /\.$/,''
