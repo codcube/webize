@@ -1,3 +1,4 @@
+most of these should fix themselves once the HTML/JSON-triplr reworks are done. test corpus:
 missing content http://localhost:8000/com/danielbachhuber/working-at-automattic/#f18efa4a785aeb87dabda0954ae72685914b72905a644498043ef39f1dc762aa8 http://l/gov/nsf/new/funding/opportunities/cyberinfrastructure-sustained-scientific
 comments/posts http://localhost:8000/org/bryanalexander/technology/digg-is-going-to-kill-digg-reader-what-should-we-do-now/index.html http://l/com/reddit/old/user/squeakywipers.e84e319f01a80ba2. http://l/https://www.codeforsociety.org/news http://localhost:8000/https://www.worldwidedx.com/forums/#amateur-radio-related.64
 loop http://l/pub/mostr/users/de7ecd1e2976a6adb2ffa5f4db81a7d812c8bb6698aa00dcf1e76adb55efd645/following
@@ -10,6 +11,7 @@ new JSON Extractor . http://l/com/blastradio/ronnieloko
 video tags http://localhost:8000/https://prodamdlim.akamaized.net/#p96ed80bee1d4989e50d902a0d11b0f05fc8b40868d4fedb18aefc601d52c0076
 image hosts  (and the other two host types we added) http://l/2023/09/25/17/*idm.irc#prev
 http://localhost:8000/https://developer.mozilla.org/en-US/blog/introducing-the-mdn-playground/
+dangling realpaths http://l/news/prt/i/
 
 # Config/Setup
 - use ~/.config/webize instead of git dir for config

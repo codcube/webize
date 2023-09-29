@@ -16,7 +16,6 @@ module Webize
     AllowHosts = Webize.configList 'hosts/allow'
     BlockedSchemes = Webize.configList 'blocklist/scheme'
     CDNdoc = Webize.configRegex 'formats/CDN'
-    CDNhost = Webize.configRegex 'hosts/CDN'
     ImgExt = Webize.configList 'formats/image/ext'
     KillFile = Webize.configList 'blocklist/sender'
     DenyDomains = {}
@@ -35,10 +34,10 @@ module Webize
     def dataURI?; scheme == 'data' end
 
     def deny?
-      return true if BlockedSchemes.member? scheme                  # block scheme
-      return true if uri.match? Gunk                                # block URI patterns
-      return false if host&.match?(CDNhost) && path&.match?(CDNdoc) # allow URI patterns on host
-      return deny_domain?                                           # allow or block domain
+      return true if BlockedSchemes.member? scheme                    # block scheme
+      return true if uri.match? Gunk                                  # block URI pattern
+      return false if host&.match?(CDN_hosts) && path&.match?(CDNdoc) # allow URI pattern
+      return deny_domain?                                             # allow or block domain
     end
 
     def deny_domain?
@@ -130,10 +129,10 @@ module Webize
     end
 
     def relocate
+      q = query_values || {}
       Resource(if FWD_hosts.member? host
                ['//', FWD_hosts[host], path].join
-              elsif URL_hosts.member? host
-                q = query_values || {}
+              elsif URL_hosts.member?(host) || (host&.match?(CDN_hosts) && q.has_key?('url'))
                 q['url'] || q['u'] || q['q'] || self
               elsif YT_hosts.member? host
                 ['//www.youtube.com/watch?v=', (query_values || {})['v'] || path[1..-1]].join
