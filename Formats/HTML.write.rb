@@ -126,7 +126,7 @@ module Webize
 
                                {_: :style,
                                 c: [CSS::Site,
-                                    "body {background: repeating-linear-gradient(#{rand(8) * 45}deg, #{bgcolor}, #{bgcolor} 8em, #000 8em, #000 16em)}",
+                                    "body {background-color: #{bgcolor}}",
                                     "#updates {background: repeating-linear-gradient(#{rand(8) * 45}deg, #444, #444 1px, transparent 1px, transparent 16px)"].join("\n")},
 
                                env[:links].map{|type, resource|
