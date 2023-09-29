@@ -114,6 +114,7 @@ fb:profile_id
 following
 format-detection
 friends_count
+fullPage
 generated
 geo_enabled
 gh-contentid
@@ -137,6 +138,7 @@ has_extended_profile
 has_nft_avatar
 hidden
 hideCredit
+hideFromMenu
 hostname
 hovercard-subject-tag
 html-safe-nonce
@@ -179,6 +181,7 @@ is_quote_status
 is_translation_enabled
 is_translator
 isrc
+landingPageInMobile
 layout
 layoutTemplate
 linecap
@@ -200,6 +203,7 @@ msapplication-tap-highlight
 msapplication-task
 msapplication-window
 msvalidate.01
+multiInstanceEnabled
 mw-deduplicated-inline-style
 naver-site-verification
 newTab
