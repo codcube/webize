@@ -29,6 +29,7 @@ expanded
 expanded_url
 external
 externalURL
+facebookURL
 fileName
 filename
 foaf:page
@@ -107,6 +108,7 @@ shorturl
 source_url
 static_url
 stylesheet
+syndicationURL
 taboola:url
 target
 template

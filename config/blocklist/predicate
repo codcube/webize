@@ -33,6 +33,7 @@ al:iphone:app_store_id
 al:iphone:url
 al:web:should_fallback
 alexaVerifyID
+align
 alignment
 amphtml
 animation
@@ -44,6 +45,7 @@ apple-mobile-web-app-title
 apple-touch-fullscreen
 applicationId
 applicationServerKey
+archived
 article:content_tier
 articleid
 artifactId
@@ -131,6 +133,7 @@ google-translate-customization
 googlebot
 googlebot-news
 gridsome:hash
+hasLanding
 hasModeratedReplies
 has_custom_timelines
 has_downloads_left
@@ -171,6 +174,7 @@ isRedBulletin
 isRookiesCup
 isShareButtonEnabled
 isShareLinksEnabled
+isSource
 isStarred
 isVenmoEnabled
 isVisible
@@ -229,6 +233,7 @@ parsely-post-id
 pingback
 pinned_tweet_ids
 pinned_tweet_ids_str
+podcastUnpublish
 possibly_sensitive
 possibly_sensitive_editable
 private
