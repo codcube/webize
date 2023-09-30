@@ -14,35 +14,30 @@ module Webize
         "\e[38;5;7;7m#{k}\e[0m#{v}\n" }
     end
 
-    # instantiate HTTP resource, call HTTP method and log request/response
+    # instantiate resource, call method and log response
     def self.call env
-      return [403,{},[]] unless Methods.member? env['REQUEST_METHOD']
-
-      env[:start_time] = Time.now                           # start timer
-      env['SERVER_NAME'].downcase!                          # normalize hostname
-      env.update HTTP.env                                   # init environment storage
-
-      isPeer = PeerHosts.has_key? env['SERVER_NAME']        # peer node?
+      return [403, {}, []] unless Methods.member? env['REQUEST_METHOD']
+      env[:start_time] = Time.now                      # start timer
+      env['SERVER_NAME'].downcase!                     # normalize hostname
+      env.update HTTP.env                              # init environment storage
+      isPeer = PeerHosts.has_key? env['SERVER_NAME']   # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
-
-      u = (isLocal ? '/' : [isPeer ? :http : :https, '://', # scheme, host, path
-          env['HTTP_HOST']].join).R.join RDF::URI(env['REQUEST_PATH']).path
-
-      env[:base] = (Node u, env).freeze                     # external URI - immutable
-             uri =  Node u, env                             # internal URI - mutable for follow-on requests of specific concrete-representations / variants
-
-      uri.port = nil if [80,443,8000].member? uri.port      # strip default ports
-
-      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query string?
-        env[:qs] = URI('?' + env['QUERY_STRING']).query_values || {} # parse query
-        qs = env[:qs].dup                                   # external query
-        Args.map{|k|                                        # (💻 <> 🖥) internal args
-         env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) internal args to request environment
-        uri.query_values = qs unless qs.empty?              # (🖥 <> ☁️) external args to request URI
+                                                       # scheme, host, path
+      u = RDF::URI(isLocal ? '/' : [isPeer ? :http : :https, '://', env['HTTP_HOST']].join).join RDF::URI(env['REQUEST_PATH']).path
+      env[:base] = (Node u, env).freeze                # external URI - immutable
+             uri =  Node u, env                        # internal URI - mutable for refinement to specific concrete representation
+      uri.port = nil if [80,443,8000].member? uri.port # strip default port specifiers
+      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query?
+        env[:qs] = RDF::URI('?' + env['QUERY_STRING']).query_values || {} # parse query and memoize
+        qs = env[:qs].dup                              # query args
+        Args.map{|k|                                   # (💻 <> 🖥) internal args to request environment
+         env[k.to_sym] = qs.delete(k) || true if qs.has_key? k}
+        uri.query_values = qs unless qs.empty?         # (🖥 <> ☁️) external args to request URI
       end
 
-      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH'] # parse eTags
-      env[:proxy_href] = isPeer || isLocal                  # relocate hrefs when proxying over local or peer host
+      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].   # parse entity-tags
+                            strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
+      env[:proxy_href] = isPeer || isLocal             # proxy hrefs over local or peer host?
 
       URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist
 
