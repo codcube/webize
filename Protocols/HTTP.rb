@@ -298,7 +298,7 @@ module Webize
           if timestamp = h['Last-Modified']                             # HTTP timestamp?
             if t = Time.httpdate(timestamp) rescue nil                  # parse timestamp
               FileUtils.touch doc, mtime: t                             # set timestamp on filesystem
-              repository << RDF::Statement.new(self, Date.R, t.iso8601) # set timestamp in RDF
+              repository << RDF::Statement.new(self, RDF::URI(Date), t.iso8601) # set timestamp in RDF
             end
           end
           if env[:notransform] || format.match?(FixedFormat)
@@ -686,7 +686,7 @@ module Webize
         if day
           hour = dp[3]
           p = hour <=  0 ? (day - 1).strftime('/%Y/%m/%d/23') : (day.strftime('/%Y/%m/%d/')+('%02d' % (hour-1)))
-          n = hour >= 23 ? (day + 1).strftime('/0%Y/%m/%d/00') : (day.strftime('/%Y/%m/%d/')+('%02d' % (hour+1)))
+          n = hour >= 23 ? (day + 1).strftime('/%Y/%m/%d/00') : (day.strftime('/%Y/%m/%d/')+('%02d' % (hour+1)))
         end
       end
 
@@ -719,7 +719,7 @@ module Webize
     # URIs from uri-list
     def uris
       return [] unless extname == '.u'
-      readRDF.query(RDF::Query::Pattern.new :s, Contains.R, :o).objects
+      readRDF.query(RDF::Query::Pattern.new :s, RDF::URI(Contains), :o).objects
     end
 
   end

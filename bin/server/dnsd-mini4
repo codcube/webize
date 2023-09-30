@@ -72,7 +72,7 @@ class DNSServer
       else
         reverse = domain.index 'in-addr.arpa'
         domain = domain[0..reverse-2].split('.').reverse.join('.') if reverse
-        resource = ['//', hostname].join.R
+        resource = Webize::URI(['//', hostname].join)
         deny = resource.deny?
         result = Cache[domain] = deny ? DefaultAddr : Resolv.send((reverse ? :getname : :getaddress), domain) rescue (failed = true; DefaultAddr)
         color = if deny

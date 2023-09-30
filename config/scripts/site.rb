@@ -27,15 +27,15 @@ module Webize
     def Mixcloud tree, &b
       if data = tree['data']
         data.map{|mix|
-          graph = subject = mix['url'].R
+          graph = subject = RDF::URI(mix['url'])
           date = mix['created_time']
-          yield subject, Type, Post.R, graph
+          yield subject, Type, RDF::URI(Post), graph
           yield subject, Title, mix['name'], graph
           yield subject, Date, date, graph
           yield subject, Creator, mix['user']['name'], graph
-          yield subject, To, mix['user']['url'].R, graph
+          yield subject, To, RDF::URI(mix['user']['url']), graph
           mix['pictures'].map{|_,i|
-            yield subject, Image, i.R, graph if i.match? /1024x1024/}
+            yield subject, Image, RDF::URI(i), graph if i.match? /1024x1024/}
           if duration = mix['audio_length']
             yield subject, Schema+'duration', duration, graph
           end

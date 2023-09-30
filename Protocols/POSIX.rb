@@ -137,7 +137,7 @@ module Webize
 
     # [path, path..] -> [URI, URI..]
     def from_names ps
-      base = host ? self : '/'.R
+      base = host ? self : RDF::URI('/')
       pathbase = host ? host.size : 0
       ps.map{|p|
         Node base.join p.to_s[pathbase..-1].gsub(':','%3A').gsub(' ','%20').gsub('#','%23')}
