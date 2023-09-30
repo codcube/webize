@@ -129,16 +129,16 @@ rss rss.xml
             reddit = subject.host&.match /reddit.com$/
             # type tag
             yield subject, Type,
-                  if subject.host == 'www.youtube.com'
-                    Video
-                  elsif subject.imgPath?
-                    Image
-                  else
-                    Post
-                  end.R
+                  RDF::URI(if subject.host == 'www.youtube.com'
+                           Video
+                          elsif subject.imgPath?
+                            Image
+                          else
+                            Post
+                           end)
 
-            # addressee/recipient/destination group
-            to = reddit ? ('https://www.reddit.com/' + subject.parts[0..1].join('/')).R : @base
+            # addressee/recipient/destination-group
+            to = reddit ? RDF::URI('https://www.reddit.com/' + subject.parts[0..1].join('/')) : @base
             yield subject, To, to
 
             # media links
@@ -170,13 +170,13 @@ rss rss.xml
                 # XML name + URI
                 uri = e[3].match /<uri>([^<]+)</
                 name = e[3].match /<name>([^<]+)</
-                crs.push uri[1].R if uri
-                crs.push name[1] if name && !(uri && (uri[1].R.path||'/').sub('/user/','/u/') == name[1])
+                crs.push RDF::URI(uri[1]) if uri
+                crs.push name[1] if name && !(uri && (RDF::URI(uri[1]).path || '/').sub('/user/', '/u/') == name[1]) # dedupe between prefix /u & /user
                 unless name || uri
                   crs.push e[3].yield_self{|o|
                     case o
                     when isURL
-                      o.R
+                      RDF::URI(o)
                     when isCDATA
                       o.sub reCDATA, '\1'
                     else
@@ -197,7 +197,7 @@ rss rss.xml
                   end
                 }.yield_self{|o|                      # map datatypes
                   if o.match? isURL
-                    o.R
+                    RDF::URI(o)
                   elsif reddit && p == Atom+'title'
                     o.sub /\/u\/\S+ on /, ''
                   else

@@ -23,7 +23,7 @@ module Webize
       {_: :table, class: :tabular,            # table
        c: [({_: :thead,
             c: {_: :tr, c: keys.map{|p|       # table heading
-                  p = p.R
+                  p = RDF::URI(p)
                   slug = p.display_name
                   icon = Icons[p.uri] || slug
                   [{_: :th,                   # ☛ sorted columns

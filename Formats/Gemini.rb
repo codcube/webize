@@ -31,7 +31,7 @@ module Webize
 
       def each_statement &fn
         gemtext_triples{|s,p,o|
-          fn.call RDF::Statement.new(s, p.R,
+          fn.call RDF::Statement.new(s, RDF::URI(p),
                                      (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
                                                                                             l.datatype=RDF.XMLLiteral if p == Content
                                                                                             l),
@@ -59,7 +59,7 @@ module Webize
                  c: CGI.escapeHTML(line.sub(Heading, ''))})
             when Link
               _, uri, title = line.split /\s+/, 3
-              uri = (@base.join uri).R
+              uri = RDF::URI(@base.join uri)
               videos.push uri if %w{www.youtube.com}.member? uri.host
               [HTML.render(
                  {_: :a, href: uri,
@@ -90,7 +90,7 @@ module Webize
           }.join, @base)
 
         videos.map{|video|
-          yield video, Type, Video.R}
+          yield video, Type, RDF::URI(Video)}
       end
     end
   end

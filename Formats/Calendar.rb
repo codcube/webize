@@ -56,7 +56,7 @@ title)
 
       def initialize(input = $stdin, options = {}, &block)
         @doc = input.respond_to?(:read) ? input.read : input
-        @subject = (options[:base_uri] || '#textfile').R
+        @subject = RDF::URI(options[:base_uri] || '#textfile')
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -70,7 +70,7 @@ title)
 
       def each_statement &fn
         calendar_triples{|s,p,o|
-          fn.call RDF::Statement.new(@subject, p.R,
+          fn.call RDF::Statement.new(@subject, RDF::URI(p),
                                      (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
                                                                                             l.datatype=RDF.XMLLiteral if p == Content
                                                                                             l),

@@ -15,7 +15,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
-        @subject = (options[:base_uri] || '#image').R
+        @subject = RDF::URI(options[:base_uri] || '#image')
         @img = Exif::Data.new(input.respond_to?(:read) ? input.read : input) rescue nil
         if block_given?
           case block.arity
@@ -80,7 +80,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
-        @subject = (options[:base_uri] || '#image').R 
+        @subject = RDF::URI(options[:base_uri] || '#image')
 #        @img = Exif::Data.new(input.respond_to?(:read) ? input.read : input) rescue nil
         if block_given?
           case block.arity
@@ -97,7 +97,7 @@ module Webize
         return # EXIF segfaulting, investigate.. or use perl exiftool?
         image_tuples{|p, o|
           fn.call RDF::Statement.new(@subject,
-                                     p.R,
+                                     RDF::URI(p),
                                      (o.class == Webize::URI || o.class == RDF::URI) ? o : RDF::Literal(o),
                                      :graph_name => @subject)}
       end
@@ -131,7 +131,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
-         @subject = (options[:base_uri] || '#image').R 
+        @subject = RDF::URI(options[:base_uri] || '#image')
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -165,7 +165,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
-        @subject = (options[:base_uri] || '#image').R 
+        @subject = RDF::URI(options[:base_uri] || '#image')
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)

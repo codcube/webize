@@ -99,7 +99,7 @@ module Webize
             end
           elsif m['http-equiv'] == 'refresh'
             if u = m['content'].split('url=')[-1]
-              yield @base, Link, u.R
+              yield @base, Link, RDF::URI(u)
             end
           end}
 
@@ -147,7 +147,7 @@ module Webize
           fragment.css('img[src][alt], img[src][title]').map{|img|
             image = @base.join img['src']
             yield subject, Contains, image
-            yield image, Type, Image.R
+            yield image, Type, RDF::URI(Image)
             %w(alt title).map{|attr|
               if val = img[attr]
                 yield image, Abstract, val

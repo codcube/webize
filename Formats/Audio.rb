@@ -10,7 +10,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
-        @subject = (options[:base_uri] || '#aac').R
+        @subject = RDF::URI(options[:base_uri] || '#aac')
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -37,7 +37,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
-        @subject = (options[:base_uri] || '#mp3').R 
+        @subject = RDF::URI(options[:base_uri] || '#mp3')
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -66,7 +66,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
-        @subject = (options[:base_uri] || '#opus').R
+        @subject = RDF::URI(options[:base_uri] || '#opus')
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -97,7 +97,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
-        @subject = (options[:base_uri] || '#m4s').R
+        @subject = RDF::URI(options[:base_uri] || '#m4s')
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -124,7 +124,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
-        @subject = (options[:base_uri] || '#wav').R
+        @subject = RDF::URI(options[:base_uri] || '#wav')
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -153,7 +153,7 @@ module Webize
 
       def initialize(input = $stdin, options = {}, &block)
         @doc = input.respond_to?(:read) ? input.read : input
-        @subject = (options[:base_uri] || '#js').R
+        @subject = RDF::URI(options[:base_uri] || '#js')
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -167,7 +167,7 @@ module Webize
 
       def each_statement &fn
         playlist_triples{|s,p,o|
-          fn.call RDF::Statement.new(@subject, p.R,
+          fn.call RDF::Statement.new(@subject, RDF::URI(p),
                                      (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
                                                                                             l.datatype=RDF.XMLLiteral if p == Content
                                                                                             l),
@@ -184,19 +184,19 @@ module Webize
     def audio_triples graph
       require 'taglib'
 
-      graph << RDF::Statement.new(self, Type.R, Audio.R)
-      graph << RDF::Statement.new(self, Title.R, Rack::Utils.unescape_path(basename))
+      graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI(Audio))
+      graph << RDF::Statement.new(self, RDF::URI(Title), Rack::Utils.unescape_path(basename))
       TagLib::FileRef.open(fsPath) do |fileref|
         unless fileref.null?
           tag = fileref.tag
-          graph << RDF::Statement.new(self, Title.R, tag.title)
-          graph << RDF::Statement.new(self, Creator.R, tag.artist)
-          graph << RDF::Statement.new(self, Date.R, tag.year) unless !tag.year || tag.year == 0
-          graph << RDF::Statement.new(self, Content.R, tag.comment)
-          graph << RDF::Statement.new(self, (Schema+'album').R, tag.album)
-          graph << RDF::Statement.new(self, (Schema+'track').R, tag.track)
-          graph << RDF::Statement.new(self, (Schema+'genre').R, tag.genre)
-          graph << RDF::Statement.new(self, (Schema+'length').R, fileref.audio_properties.length_in_seconds)
+          graph << RDF::Statement.new(self, RDF::URI(Title), tag.title)
+          graph << RDF::Statement.new(self, RDF::URI(Creator), tag.artist)
+          graph << RDF::Statement.new(self, RDF::URI(Date), tag.year) unless !tag.year || tag.year == 0
+          graph << RDF::Statement.new(self, RDF::URI(Content), tag.comment)
+          graph << RDF::Statement.new(self, RDF::URI(Schema+'album'), tag.album)
+          graph << RDF::Statement.new(self, RDF::URI(Schema+'track'), tag.track)
+          graph << RDF::Statement.new(self, RDF::URI(Schema+'genre'), tag.genre)
+          graph << RDF::Statement.new(self, RDF::URI(Schema+'length'), fileref.audio_properties.length_in_seconds)
         end
       end
     end
