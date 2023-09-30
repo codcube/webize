@@ -16,7 +16,7 @@ module Webize
         require "webvtt"
 
         @doc = input.respond_to?(:read) ? input.read : input
-        @base = options[:base_uri].R
+        @base = options[:base_uri]
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -30,7 +30,7 @@ module Webize
 
       def each_statement &fn
         vtt_triples{|s,p,o|
-          fn.call RDF::Statement.new(s, p.R,
+          fn.call RDF::Statement.new(s, RDF::URI(p),
                                      (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
                                                                                             l.datatype=RDF.XMLLiteral if p == Content
                                                                                             l),
@@ -42,7 +42,7 @@ module Webize
         line = 0
         webvtt.cues.each do |cue|
           subject = @base.join '#l' + line.to_s; line += 1
-          yield subject, Type, Post.R
+          yield subject, Type, RDF::URI(Post)
           yield subject, Date, cue.start
           yield subject, Content, cue.text
         end

@@ -17,7 +17,7 @@ module Webize
 
       def initialize(input = $stdin, options = {}, &block)
         @doc = input.respond_to?(:read) ? input.read : input
-        @base = options[:base_uri].R
+        @base = options[:base_uri]
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -37,7 +37,7 @@ module Webize
       def source_tuples
         html = RDF::Literal Orgmode::Parser.new(@doc).to_html
         html.datatype = RDF.XMLLiteral
-        yield Content.R, html
+        yield RDF::URI(Content), html
       end
     end
   end

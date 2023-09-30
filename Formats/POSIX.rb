@@ -5,44 +5,44 @@ module Webize
 
     def dir_triples graph
       return Node(join basename + '/').dir_triples graph unless dirURI?
-      graph << RDF::Statement.new(self, Type.R, Container.R)
-      graph << RDF::Statement.new(self, Date.R, node.stat.mtime.iso8601)
+      graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI(Container))
+      graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601)
       children = node.children
       alpha_binning = children.size > 52
-      graph << RDF::Statement.new(self, Type.R, Directory.R) unless alpha_binning
-      graph << RDF::Statement.new(self, Title.R, basename)
+      graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI(Directory)) unless alpha_binning
+      graph << RDF::Statement.new(self, RDF::URI(Title), basename)
       children.select{|n|n.basename.to_s[0] != '.'}.map{|child| # 👉 contained nodes
         base = child.basename.to_s
         c = Node join base.gsub(' ','%20').gsub('#','%23')
         if child.directory?
           c += '/'
-          graph << RDF::Statement.new(c, Type.R, Container.R)
-          graph << RDF::Statement.new(c, Title.R, base + '/')
+          graph << RDF::Statement.new(c, RDF::URI(Type), RDF::URI(Container))
+          graph << RDF::Statement.new(c, RDF::URI(Title), base + '/')
         elsif child.file?
-          graph << RDF::Statement.new(c, Title.R, base)
-          graph << RDF::Statement.new(c, Type.R, MIME.format_icon(c.fileMIME))
+          graph << RDF::Statement.new(c, RDF::URI(Title), base)
+          graph << RDF::Statement.new(c, RDF::URI(Type), MIME.format_icon(c.fileMIME))
         end
         if alpha_binning
           alphas = {}
           alpha = base[0].downcase
           alpha = '0' unless ('a'..'z').member? alpha
-          a = ('#' + alpha).R
+          a = RDF::URI('#' + alpha)
           alphas[alpha] ||= (
-            graph << RDF::Statement.new(a, Type.R, Container.R)
-            graph << RDF::Statement.new(a, Type.R, Directory.R)
-            graph << RDF::Statement.new(self, Contains.R, a))
-          graph << RDF::Statement.new(a, Contains.R, c)
+            graph << RDF::Statement.new(a, RDF::URI(Type), RDF::URI(Container))
+            graph << RDF::Statement.new(a, RDF::URI(Type), RDF::URI(Directory))
+            graph << RDF::Statement.new(self, RDF::URI(Contains), a))
+          graph << RDF::Statement.new(a, RDF::URI(Contains), c)
         else
-          graph << RDF::Statement.new(self, Contains.R, c)
+          graph << RDF::Statement.new(self, RDF::URI(Contains), c)
         end}
       graph
     end
 
     def file_triples graph
-      graph << RDF::Statement.new(self, Type.R, 'http://www.w3.org/ns/posix/stat#File'.R)
+      graph << RDF::Statement.new(self, RDF::URI(Type) RDF::URI('http://www.w3.org/ns/posix/stat#File'))
       stat = File.stat fsPath
-      graph << RDF::Statement.new(self, 'http://www.w3.org/ns/posix/stat#size'.R, stat.size)
-      graph << RDF::Statement.new(self, Date.R, stat.mtime.iso8601)
+      graph << RDF::Statement.new(self, RDF::URI('http://www.w3.org/ns/posix/stat#size'), stat.size)
+      graph << RDF::Statement.new(self, RDF::URI(Date), stat.mtime.iso8601)
       graph
     end
 
@@ -64,7 +64,7 @@ module Webize
 
     Markup[Container] = -> dir, env {
       uri = dir['uri']
-      id = uri.R.fragment if uri
+      id = RDF::URI(uri).fragment if uri
       content = dir.delete(Contains) || []
       tabular = (dir[Type] || []).find{|type| TabularLayout.member? type} && content.size > 1
       dir.delete Type

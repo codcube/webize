@@ -39,7 +39,7 @@ module Webize
       end
 
       def markdown_triples
-        yield @base, Content.R, (Webize::HTML.format ::Redcarpet::Markdown.new(Renderer, fenced_code_blocks: true).render(@doc), @base)
+        yield @base, RDF::URI(Content), (Webize::HTML.format ::Redcarpet::Markdown.new(Renderer, fenced_code_blocks: true).render(@doc), @base)
       end
     end
   end

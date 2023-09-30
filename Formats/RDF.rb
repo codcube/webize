@@ -35,10 +35,10 @@ module Webize
     def persist env, dataset # environment, dataset URI
 
       # query patterns
-      timestamp = RDF::Query::Pattern.new :s, Date.R, :o  # timestamp
-      creator = RDF::Query::Pattern.new :s, Creator.R, :o # sender
-      to = RDF::Query::Pattern.new :s, To.R, :o           # receiver
-      type = RDF::Query::Pattern.new :s, Type.R, :o       # type
+      timestamp = RDF::Query::Pattern.new :s, RDF::URI(Date), :o  # timestamp
+      creator = RDF::Query::Pattern.new :s, RDF::URI(Creator), :o # sender
+      to = RDF::Query::Pattern.new :s, RDF::URI(To), :o           # receiver
+      type = RDF::Query::Pattern.new :s, RDF::URI(Type), :o       # type
 
       out = env.has_key?(:updates_only) ? RDF::Repository.new : self # update graph
 
@@ -54,22 +54,22 @@ module Webize
           else # store graph:
             RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
             if env.has_key? :updates_only                       # updates graph:
-              out << RDF::Statement.new(dataset, Contains.R, g) # 👉 graph
+              out << RDF::Statement.new(dataset, RDF::URI(Contains), g) # 👉 graph
               out << graph                                      # init updates graph
             else                                                # original graph:
-              env[:updates] ||= out << RDF::Statement.new('#updates'.R, Type.R, Container.R) # init updates container
+              env[:updates] ||= out << RDF::Statement.new(RDF::URI('#updates'), RDF::URI(Type), RDF::URI(Container)) # init updates container
               graph.subjects.map{|subject|                      # 👉 updates
-                if dest = graph.query(RDF::Query::Pattern.new subject, To.R, :o).first_object
+                if dest = graph.query(RDF::Query::Pattern.new subject, RDF::URI(To), :o).first_object
                   env[:dests] ||= {}
                   env[:dests][dest] ||= (
                     dest_bin = RDF::Node.new
-                    out << RDF::Statement.new(dest_bin, Type.R, Container.R)
-                    out << RDF::Statement.new(dest_bin, Title.R, dest.class == RDF::Literal ? dest : Webize::URI(dest).display_name)
-                    out << RDF::Statement.new('#updates'.R, Contains.R, dest_bin)
+                    out << RDF::Statement.new(dest_bin, RDF::URI(Type), RDF::URI(Container))
+                    out << RDF::Statement.new(dest_bin, RDF::URI(Title), dest.class == RDF::Literal ? dest : Webize::URI(dest).display_name)
+                    out << RDF::Statement.new(RDF::URI('#updates'), RDF::URI(Contains), dest_bin)
                     dest_bin)
-                  out << RDF::Statement.new(env[:dests][dest], Contains.R, subject)
+                  out << RDF::Statement.new(env[:dests][dest], RDF::URI(Contains), subject)
                 else
-                  out << RDF::Statement.new('#updates'.R, Contains.R, subject)
+                  out << RDF::Statement.new(RDF::URI('#updates'), RDF::URI(Contains), subject)
                 end
               }
             end
@@ -84,7 +84,7 @@ module Webize
                                                     ([g.slugs, [type, creator, to].map{|pattern|          # name tokens from graph and query pattern
                                                         slugify = pattern==type ? :display_name : :slugs  # slug verbosity
                                                         graph.query(pattern).objects.map{|o|              # query for slug-containing triples
-                                                          o.respond_to?(:R) ? o.R.send(slugify) : o.to_s.split(/[\W_]/)}}]. # tokenize
+                                                          o.respond_to?(:R) ? Webize::URI(o).send(slugify) : o.to_s.split(/[\W_]/)}}]. # tokenize
                                                        flatten.compact.map(&:downcase).uniq - BasicSlugs)]. # apply slug skiplist
                                                      compact.join('.')[0..125].sub(/\.$/,'')+'.🐢'].compact.join '/' # 🕒 path
             unless File.exist? 🕒
@@ -98,13 +98,13 @@ module Webize
 
       # graph stats
       count = out.size
-      out << RDF::Statement.new(dataset, Size.R, count) unless count == 0 # dataset triple-count
+      out << RDF::Statement.new(dataset, RDF::URI(Size), count) unless count == 0 # dataset triple-count
       env[:datasets] ||= (
-        out << RDF::Statement.new('#datasets'.R, Type.R, Container.R)     # dataset container
-        out << RDF::Statement.new('#datasets'.R, Type.R, Directory.R))
-      out << RDF::Statement.new('#datasets'.R, Contains.R, dataset)       # dataset
-      if newest = query(timestamp).objects.sort[-1]                       # dataset timestamp
-        out << RDF::Statement.new(dataset, Date.R, newest)
+        out << RDF::Statement.new(RDF::URI('#datasets'), RDF::URI(Type), RDF::URI(Container)) # dataset container
+        out << RDF::Statement.new(RDF::URI('#datasets'), RDF::URI(Type), RDF::URI(Directory)))
+      out << RDF::Statement.new(RDF::URI('#datasets'), RDF::URI(Contains), dataset)                   # dataset
+      if newest = query(timestamp).objects.sort[-1]                                           # dataset timestamp
+        out << RDF::Statement.new(dataset, RDF::URI(Date), newest)
       end
 
       out # output graph

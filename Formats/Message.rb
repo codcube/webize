@@ -36,7 +36,7 @@ module Webize
         # weechat:
         #  /set logger.mask.irc "%Y/%m/%d/%H/$server.$channel.irc"
 
-        type = (SIOC + 'InstantMessage').R
+        type = RDF::URI(SIOC + 'InstantMessage')
         parts = @base.parts
         dirname = File.dirname @base.path
         daydir = File.dirname dirname
@@ -49,8 +49,8 @@ module Webize
         lines = 0
         ts = {}
 
-        yield target, Type, Container.R
-        yield target, Type, 'http://rdfs.org/sioc/ns#ChatLog'.R
+        yield target, Type, RDF::URI(Container)
+        yield target, Type, RDF::URI('http://rdfs.org/sioc/ns#ChatLog')
 
         @doc.lines.grep(/^[^-]/).map{|msg|
           tokens = msg.split /\s+/
@@ -70,12 +70,12 @@ module Webize
           timestamp = day + time
           subject = '#' + channame + hourslug + (lines += 1).to_s
           yield subject, Type, type
-          yield target, Contains, subject.R
+          yield target, Contains, RDF::URI(subject)
           ts[timestamp] ||= 0
           yield subject, Date, [timestamp, '%02d' % ts[timestamp]].join('.')
           ts[timestamp] += 1
           yield subject, To, target
-          creator = (daydir + '/*/*irc?q=' + nick + '&sort=date&view=table#' + nick).R
+          creator = RDF::URI(daydir + '/*/*irc?q=' + nick + '&sort=date&view=table#' + nick)
           yield subject, Creator, creator
           yield subject, Content, ['<pre>',
                                    msg.hrefs{|p,o| yield [Image,Video].member?(p) ? subject : linkgroup, p, o}, # cluster non-media links per channel for space-efficient layout
@@ -89,7 +89,7 @@ module Webize
           date, msg = line.split /\t/
           graph = @base.join (dirname == '/' ? '' : dirname) + '/twtxt.' + date.gsub(/\D/,'.')
           subject = graph.join '#msg'
-          yield subject, Type, Post.R, graph
+          yield subject, Type, RDF::URI(Post), graph
           yield subject, Date, date, graph
           yield subject, Content, Webize::HTML.format(msg.hrefs, @base), graph if msg
           yield subject, Creator, (@base.host + dirname).split(/\W/).join('.'), graph
