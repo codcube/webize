@@ -1,5 +1,4 @@
 #!/bin/sh
-
-dillo "http://localhost:8000/$1"
+dillo "http://localhost/$1"
 
 #http_proxy=http://localhost:8080 https_proxy=http://localhost:8080 no_proxy=l,localhost dillo "$@"
