@@ -34,7 +34,7 @@ module Webize
       uri.port = nil if [80,443,8000].member? uri.port      # strip default ports
 
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query string?
-        env[:qs] = ('?' + env['QUERY_STRING'].sub(/^&+/,'').sub(/&+$/,'').gsub(/&&+/,'&')).R.query_values || {} # strip excess & and parse
+        env[:qs] = URI('?' + env['QUERY_STRING']).query_values || {} # parse query
         qs = env[:qs].dup                                   # external query
         Args.map{|k|                                        # (💻 <> 🖥) internal args
          env[k.to_sym]=qs.delete(k)||true if qs.has_key? k} # (💻 <> 🖥) internal args to request environment
