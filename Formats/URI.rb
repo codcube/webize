@@ -215,18 +215,18 @@ module Webize
       def each_statement &fn
         list = @base + '#list'
         dropCount, linkCount = [0, 0] # stats
-        fn.call RDF::Statement.new list, Type.R, Container.R
-        fn.call RDF::Statement.new list, Type.R, Directory.R
+        fn.call RDF::Statement.new list, RDF::URI(Type), RDF::URI(Container)
+        fn.call RDF::Statement.new list, RDF::URI(Type), RDF::URI(Directory)
         @doc.lines.shuffle.map(&:chomp).map{|line|
           unless line.empty? || line.match?(/^#/) # skip empty and commented lines
             uri, title = line.split ' ', 2        # URI and optional title
-            u = uri.R                             # URI-list item
+            u = Webize::URI(uri)                  # URI-list item
             if u.deny?
               dropCount += 1
             else
               linkCount += 1
-              fn.call RDF::Statement.new list, Contains.R, u
-              fn.call RDF::Statement.new u, Title.R, title || uri
+              fn.call RDF::Statement.new list, RDF::URI(Contains), u
+              fn.call RDF::Statement.new u, RDF::URI(Title), title || uri
             end
           end}
         puts "#{linkCount} URIs. dropped #{dropCount}" unless dropCount == 0

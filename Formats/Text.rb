@@ -63,11 +63,11 @@ module Webize
       end
 
       def source_tuples
-        yield Type.R, (Schema + 'Document').R
+        yield RDF::URI(Type), RDF::URI(Schema + 'Document')
         converter = File.extname(@path) == '.doc' ? :antiword : :docx2txt
         html = RDF::Literal '<pre>' + `#{converter} #{Shellwords.escape @path}` + '</pre>'
         html.datatype = RDF.XMLLiteral
-        yield Content.R, html
+        yield RDF::URI(Content), html
       end
     end
   end
@@ -83,7 +83,7 @@ module Webize
 
       def initialize(input = $stdin, options = {}, &block)
         @doc = (input.respond_to?(:read) ? input.read : input).force_encoding('CP437').encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
-        @base = options[:base_uri].R
+        @base = options[:base_uri]
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -97,7 +97,7 @@ module Webize
 
       def each_statement &fn
         nfo_triples{|p,o|
-          fn.call RDF::Statement.new(@base, p.R,
+          fn.call RDF::Statement.new(@base, RDF::URI(p),
                                      (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
                                                                                             l.datatype=RDF.XMLLiteral if p == Content
                                                                                             l),

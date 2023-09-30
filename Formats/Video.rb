@@ -9,7 +9,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
-        @subject = (options[:base_uri] || '#mp3').R
+        @subject = RDF::URI(options[:base_uri] || '#mp3')
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -35,7 +35,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
-        @subject = (options[:base_uri] || '#mp3').R 
+        @subject = RDF::URI(options[:base_uri] || '#mp4')
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -61,7 +61,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
-        @subject = (options[:base_uri] || '#mp3').R 
+        @subject = RDF::URI(options[:base_uri] || '#webm')
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
