@@ -61,12 +61,12 @@ module Webize
       def JSONfeed
         @json['items'].map{|item|
           s = @base.join(item['url'] || item['id'])
-          yield s, Type, Post.R
+          yield s, Type, RDF::URI(Post)
           item.map{|p, o|
             case p
             when 'attachments'
               o.map{|a|
-                attachment = @base.join(a['url']).R; attachment.path ||= '/'
+                attachment = @base.join(a['url']); attachment.path ||= '/'
                 type = case File.extname attachment.path
                        when /m4a|mp3|ogg|opus/i
                          Audio
@@ -79,7 +79,7 @@ module Webize
               drop = true
             when 'author'
               yield s, Creator, o['name']
-              yield s, Creator, o['url'].R
+              yield s, Creator, RDF::URI(o['url'])
               drop = true
             when 'content_text'
               p = Content
@@ -97,7 +97,7 @@ module Webize
                    ((id = h['id'] || h['ID'] || h['_id'] || h['id_str']) && ['#', id].join)         # id attribute
               s = Webize::URI.new @base.join s                                                      # subject URI. TODO return to caller for triple pointing to inner resource
               if s.parts[0] == 'users'
-                host = ('https://' + s.host).R
+                host = RDF::URI('https://' + s.host)
                 yield s, Creator, host.join(s.parts[0..1].join('/'))
                 yield s, To, host
               end

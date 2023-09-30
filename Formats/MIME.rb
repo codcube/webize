@@ -112,11 +112,11 @@ module Webize
       when /^audio/                                               #  audio
         audio_triples repository
       when /^image/                                               #  image
-        repository << RDF::Statement.new(self, Type.R, Image.R)
-        repository << RDF::Statement.new(self, Title.R, basename)
+        repository << RDF::Statement.new(self, RDF::URI(Type), RDF::URI(Image))
+        repository << RDF::Statement.new(self, RDF::URI(Title), basename)
       when /^video/                                               #  video
-        repository << RDF::Statement.new(self, Type.R, Video.R)
-        repository << RDF::Statement.new(self, Title.R, basename)
+        repository << RDF::Statement.new(self, RDF::URI(Type), RDF::URI(Video))
+        repository << RDF::Statement.new(self, RDF::URI(Title), basename)
       else
         if reader ||= RDF::Reader.for(content_type: format)       # find reader
           reader.new(content, base_uri: self){|_|repository << _} # read RDF
@@ -127,7 +127,7 @@ module Webize
                 g.each_statement{|statement|
                   if predicate = Webize::MetaMap[statement.predicate.to_s]
                     next if predicate == :drop
-                    statement.predicate = predicate.R
+                    statement.predicate = RDF::URI(predicate)
                   end
                   repository << statement
                 }}

@@ -39,7 +39,7 @@ module Webize
     end
 
     def file_triples graph
-      graph << RDF::Statement.new(self, RDF::URI(Type) RDF::URI('http://www.w3.org/ns/posix/stat#File'))
+      graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#File'))
       stat = File.stat fsPath
       graph << RDF::Statement.new(self, RDF::URI('http://www.w3.org/ns/posix/stat#size'), stat.size)
       graph << RDF::Statement.new(self, RDF::URI(Date), stat.mtime.iso8601)

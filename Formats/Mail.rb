@@ -43,15 +43,15 @@ module Webize
 
         # Message resource
         id = m.message_id || m.resent_message_id || Digest::SHA2.hexdigest(rand.to_s)
-        mail = graph = ('/msg/' + Rack::Utils.escape_path(id)).R
+        mail = graph = RDF::URI('/msg/' + Rack::Utils.escape_path(id))
 
-        yield mail, Type, (SIOC + 'MailMessage').R, graph
+        yield mail, Type, RDF::URI(SIOC + 'MailMessage'), graph
 
         # HTML message
         htmlFiles, parts = m.all_parts.push(m).partition{|p| p.mime_type == 'text/html' }
         htmlCount = 0
         htmlFiles.map{|p|
-          html = POSIX::Node '/'.R.join(POSIX::Node(graph).fsPath + ".#{htmlCount}.html") # HTMLfile URI
+          html = POSIX::Node RDF::URI('/').join(POSIX::Node(graph).fsPath + ".#{htmlCount}.html") # HTMLfile URI
           yield mail, DC + 'hasFormat', html, graph   # reference
           html.write p.decoded unless html.exist? # store
           htmlCount += 1 }
@@ -87,7 +87,7 @@ module Webize
           ((f.class == Array || f.class == ::Mail::AddressContainer) ? f : [f]).compact.map{|f|
             noms = f.split ' '
             f = "#{noms[0]}@#{noms[2]}" if noms.size > 2 && noms[1] == 'at'
-            yield mail, Creator, ('/mailto/' + f).R, graph
+            yield mail, Creator, RDF::URI('/mailto/' + f), graph
           }}
         m[:from] && m[:from].yield_self{|fr|
           fr.addrs.map{|a|
@@ -99,12 +99,12 @@ module Webize
         %w{to cc bcc resent_to}.map{|p|      # recipient accessor-methods
           m.send(p).yield_self{|r|           # recipient(s)
             ((r.class == Array || r.class == ::Mail::AddressContainer) ? r : [r]).compact.map{|r| # recipient
-              yield mail, To, ('/mailto/' + r).R, graph
+              yield mail, To, RDF::URI('/mailto/' + r), graph
             }}}
         m['X-BeenThere'].yield_self{|b|      # anti-loop recipient property
           (b.class == Array ? b : [b]).compact.map{|r|
             r = r.to_s
-            yield mail, To, ('/mailto/' + r).R, graph
+            yield mail, To, RDF::URI('/mailto/' + r), graph
           }}
         m['List-Id'] && m['List-Id'].yield_self{|name|
           yield mail, To, name.decoded.sub(/<[^>]+>/,'').gsub(/[<>&]/,''), graph} # mailinglist name
@@ -131,7 +131,7 @@ module Webize
         %w{in_reply_to references}.map{|ref|
           m.send(ref).yield_self{|rs|
             (rs.class == Array ? rs : [rs]).compact.map{|r|
-              msg = ('/msg/' + Rack::Utils.escape_path(r)).R
+              msg = RDF::URI('/msg/' + Rack::Utils.escape_path(r))
               yield mail, SIOC + 'reply_of', msg, graph
               yield msg, SIOC + 'has_reply', mail, graph
             }}}
@@ -141,7 +141,7 @@ module Webize
           ::Mail::Encodings.defined?(p.body.encoding)}.map{|p|     # decodability check
           name = p.filename && !p.filename.empty? && p.filename || # attachment name
                  (Digest::SHA2.hexdigest(rand.to_s) + (Rack::Mime::MIME_TYPES.invert[p.mime_type&.downcase] || '.bin').to_s) # generate name
-          file = POSIX::Node '/'.R.join(POSIX::Node(graph).fsPath + '.' + name) # file URI
+          file = POSIX::Node RDF::URI('/').join(POSIX::Node(graph).fsPath + '.' + name) # file URI
           unless file.exist?              # store file
             file.write p.body.decoded.force_encoding 'UTF-8'
           end
@@ -158,5 +158,5 @@ module Webize
   end
 end
 
-# TODO HTTP mailto: handler <https://www.w3.org/DesignIssues/UI.html>
+# TODO mailto handler <https://www.w3.org/DesignIssues/UI.html>:
 # A mailto address is a misnomer (my fault I feel as I didn't think when we created it) as it is not supposed to be a verb "start a mail message to this person", it is supposed to be a reference to a web object, a mailbox. So clicking on a link to it should bring up a representation of the mailbox. This for example might include (subject to my preferences) an address book entry and a list of the messages sent to/from [Cc] the person recently to my knowledge. Then I could mail something to someone by linking (dragging) the mailbox icon to or from the document icon. 

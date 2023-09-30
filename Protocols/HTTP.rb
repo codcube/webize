@@ -39,7 +39,7 @@ module Webize
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].   # parse entity-tags
                             strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
       env[:proxy_href] = isPeer || isLocal             # proxy hrefs over local or peer host?
-      env[:referer] = Webize::URI(env['HTTP_REFERER']) if env['HTTP_REFERER'] # referrer
+      env[:referer] = Node(env['HTTP_REFERER'], env) if env['HTTP_REFERER'] # referer
 
       URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist
 
