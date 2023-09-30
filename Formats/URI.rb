@@ -234,7 +234,3 @@ module Webize
     end
   end
 end
-
-class String
-  def R; Webize::URI self end
-end

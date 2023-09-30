@@ -27,6 +27,7 @@ module Webize
       env[:base] = (Node u, env).freeze                # external URI - immutable
              uri =  Node u, env                        # internal URI - mutable for refinement to specific concrete representation
       uri.port = nil if [80,443,8000].member? uri.port # strip default port specifiers
+
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query?
         env[:qs] = RDF::URI('?' + env['QUERY_STRING']).query_values || {} # parse query and memoize
         qs = env[:qs].dup                              # query args
@@ -38,6 +39,7 @@ module Webize
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].   # parse entity-tags
                             strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
       env[:proxy_href] = isPeer || isLocal             # proxy hrefs over local or peer host?
+      env[:referer] = Webize::URI(env['HTTP_REFERER']) if env['HTTP_REFERER'] # referrer
 
       URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist
 
@@ -45,7 +47,6 @@ module Webize
         inFmt = MIME.format_icon env[:origin_format]                # input format
         outFmt = MIME.format_icon head['Content-Type']              # output format
         color = env[:deny] ? '38;5;196' : (MIME::Color[outFmt]||0)  # format -> color
-        referer = env['HTTP_REFERER'].R if env['HTTP_REFERER']      # referer
 
         Console.logger.info [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil, # transport security
 
@@ -59,30 +60,30 @@ module Webize
                '🔌'                                                 # offline response
              end,
 
-             (ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched]),          # upstream type: origin or proxy/middlebox
+             (ENV.has_key?('http_proxy') ? '🖥' : '🐕' if env[:fetched]),    # upstream type: origin or proxy/middlebox
 
-             referer ? ["\e[#{color}m",
-                        referer.display_host,
-                        "\e[0m → "] : nil,  # referer
+             env[:referer] ? ["\e[#{color}m",
+                              env[:referer].display_host,
+                              "\e[0m → "] : nil,  # referer
 
-             outFmt, ' ',                                                         # output format
+             outFmt, ' ',                                                     # output format
 
-             "\e[#{color}#{';7' if referer && referer.host != env[:base].host}m", # off-site referer
+             "\e[#{color}#{';7' if env[:referer]&.host != env[:base].host}m", # off-site referer
 
-             (env[:base].display_host unless referer && referer.host == env[:base].host), env[:base].path, "\e[0m", # host, path
+             (env[:base].display_host unless env[:referer]&.host == env[:base].host), env[:base].path, "\e[0m", # host, path
 
-             ([' ⟵ ', inFmt, ' '] if inFmt && inFmt != outFmt),                   # input format, if transcoded
+             ([' ⟵ ', inFmt, ' '] if inFmt && inFmt != outFmt),             # input format, if transcoded
 
              (qs.map{|k,v|
-                " \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?),              # query arguments
+                " \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?),         # query arguments
 
              head['Location'] ? [" → \e[#{color}m",
                                  (Node head['Location'], env).unproxyURI,
-                                 "\e[0m"] : nil,                                  # redirect target
+                                 "\e[0m"] : nil,                             # redirect target
 
             ].flatten.compact.map{|t|t.to_s.encode 'UTF-8'}.join
 
-        [status, head, body]}                                                     # response
+        [status, head, body]}                                                # response
     rescue Exception => e
       Console.logger.failure uri, e
       [500, {'Content-Type' => 'text/html; charset=utf-8'},
@@ -563,8 +564,8 @@ module Webize
     def origin
       if env['HTTP_ORIGIN']
         env['HTTP_ORIGIN']
-      elsif referer = env['HTTP_REFERER']
-        'http' + (host == 'localhost' ? '' : 's') + '://' + referer.R.host
+      elsif env[:referer]
+        'http' + (host == 'localhost' ? '' : 's') + '://' + env[:referer].host
       else
         '*'
       end
@@ -685,7 +686,7 @@ module Webize
         if day
           hour = dp[3]
           p = hour <=  0 ? (day - 1).strftime('/%Y/%m/%d/23') : (day.strftime('/%Y/%m/%d/')+('%02d' % (hour-1)))
-          n = hour >= 23 ? (day + 1).strftime('/%Y/%m/%d/00') : (day.strftime('/%Y/%m/%d/')+('%02d' % (hour+1)))
+          n = hour >= 23 ? (day + 1).strftime('/0%Y/%m/%d/00') : (day.strftime('/%Y/%m/%d/')+('%02d' % (hour+1)))
         end
       end
 
@@ -697,12 +698,15 @@ module Webize
 
     # unproxy request/environment URLs
     def unproxy
-      r = unproxyURI                                                                             # unproxy URI
-      r.scheme ||= 'https'                                                                       # default scheme
-      r.host = r.host.downcase if r.host.match? /[A-Z]/                                          # normalize hostname
-      env[:base] = Node r.uri                                                                    # update base URI and
-      env['HTTP_REFERER'] = Node(env['HTTP_REFERER']).unproxyURI.to_s if env.has_key? 'HTTP_REFERER' # referer URI
-      r                                                                                          # origin URI
+      r = unproxyURI                                            # unproxied URI
+      r.scheme ||= 'https'                                      # set default scheme
+      r.host = r.host.downcase if r.host.match? /[A-Z]/         # normalize hostname
+      env[:base] = Node r.uri                                   # update base URI
+      if env[:referer] # update referer URI
+        env[:referer] = env[:referer].unproxyURI
+        env['HTTP_REFERER'] = env[:referer].to_s
+      end
+      r
     end
 
     # proxy URI -> canonical URI
