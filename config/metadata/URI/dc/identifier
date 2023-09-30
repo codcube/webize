@@ -5,6 +5,8 @@ ID
 dc.identifier
 dcterms.identifier
 fragment
+guid
 id
 nodeId
 uid
+wordpressID

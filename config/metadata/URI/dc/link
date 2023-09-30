@@ -3,6 +3,7 @@ SHORTCUT
 Shortcut
 ajax_url
 al:web:url
+apiURL
 apiUrl
 api_url
 archives
@@ -27,6 +28,7 @@ embedUrl
 expanded
 expanded_url
 external
+externalURL
 fileName
 filename
 foaf:page
@@ -72,6 +74,12 @@ path
 permalink
 permalink_url
 pinterest:url
+podcastAzMusic
+podcastGoogle
+podcastItunes
+podcastRadioPublic
+podcastSpotify
+podcastTuneIn
 preconnect
 prefetch
 preload
@@ -83,6 +91,7 @@ referrer
 refs
 rel
 relativePath
+relativeURL
 remote_url
 search
 section-url

@@ -79,6 +79,7 @@ image_caption
 instapp:hashtags
 intro
 itunes:subtitle
+itunesCategory
 keyword
 keywords
 kwl
@@ -88,6 +89,7 @@ localizedCaption
 log_category
 message
 meta_description
+miniExcerpt
 mostRelevantTags
 mpTags
 msapplication-tooltip
@@ -167,4 +169,5 @@ vertical
 verticals
 vf:topic
 video:tag
+wordpressSlug
 wssTags

@@ -68,6 +68,7 @@ http://www.itunes.com/dtds/podcast-1.0.dtd#author
 http://www.livejournal.org/rss/lj/1.0/poster
 https://schema.org/author
 itunes:author
+itunesAuthor
 lastModifiedBy
 lastName
 ledeCredit
