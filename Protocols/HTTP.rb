@@ -1,5 +1,12 @@
 %w(async async/barrier async/semaphore brotli cgi digest/sha2 open-uri rack resolv).map{|_| require _}
 
+# system DNS blocklist is selectively bypassed for rewriting & allowing static CDN data on cloud domains
+require 'resolv'
+require 'resolv-replace'
+hosts_resolver = Resolv::Hosts.new('/etc/hosts')
+dns_resolver = Resolv::DNS.new nameserver: %w(8.8.8.8 9.9.9.9 1.1.1.1)
+Resolv::DefaultResolver.replace_resolvers([hosts_resolver, dns_resolver])
+
 module Webize
   module HTTP
     Args = Webize.configList 'HTTP/arguments'            # permitted query arguments
@@ -380,10 +387,7 @@ module Webize
       when 'gemini'
         Gemini::Node.new(uri).env(env).fetch                # fetch w/ Gemini protocol
       when /https?/
-        if deny_domain? && env[:proxy_href]                 # domain adapted/rewritten by proxy
-          self.port = 8000                                  # set proxy port
-          insecure.fetchHTTP **opts                         # fetch w/ HTTP - implicit proxy (DNS or routing config)
-        elsif ENV.has_key?('http_proxy')
+        if ENV.has_key?('http_proxy')
           insecure.fetchHTTP **opts                         # fetch w/ HTTP - explicit proxy (environment variable)
         else
           fetchHTTP **opts                                  # fetch w/ HTTP(S)
