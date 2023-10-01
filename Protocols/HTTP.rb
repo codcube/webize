@@ -200,13 +200,13 @@ module Webize
     # navigation pointers in HTTP metadata
     def dirMeta
       root = !path || path == '/'
-      self.path += '.rss' if host == 'www.reddit.com' && %w(r u user).member?(parts[0]) && !path.index('.rss')
-      if host && root                                            # up to parent domain
+      self.path += '.rss' if host == 'www.reddit.com' && %w(r u user).member?(parts[0]) && !path.index('.rss') # TODO other hosts (detect activitypub/mastodon servers w/ blankpage+JS)
+      if host && root # up to parent domain
         env[:links][:up] = '//' + host.split('.')[1..-1].join('.')
-      elsif !root                                                # up to parent path
+      elsif !root     # up to parent path
         env[:links][:up] = [File.dirname(env['REQUEST_PATH']), '/', (env['QUERY_STRING'] && !env['QUERY_STRING'].empty?) ? ['?',env['QUERY_STRING']] : nil].join
-      end
-      env[:links][:down] = '*' if (!host || offline?) && dirURI? # down to children
+      end             # down to children
+      env[:links][:down] = '*' if (!host || offline?) && dirURI?
     end
 
     def dropQS
@@ -375,8 +375,8 @@ module Webize
         elsif x.directory?                                  # directory?
           x.dir_triples RDF::Repository.new                 # read directory metadata
         end}
-      dirMeta                                               # 👉 storage-adjacent nodes
-      timeMeta unless host                                  # 👉 timeline-adjacent nodes
+      dirMeta                                               # 👉 container-adjacent nodes
+      timeMeta unless host                                  # 👉 timeslice-adjacent nodes
       respond repos                                         # response
     end
 
@@ -437,14 +437,14 @@ module Webize
     end
  
     def GET
-      return hostGET if host                  # remote node - canonical URI
+      return hostGET if host                  # remote node
       ps = parts ; p = ps[0]                  # parse path
       return fetchLocal unless p              # local node - / or no path
-      return unproxy.hostGET if p[-1] == ':' && ps.size > 1        # remote node - proxy URI w/ scheme
+      return unproxy.hostGET if p[-1] == ':' && ps.size > 1        # remote node - proxy URI with scheme
       return unproxy.hostGET if p.index('.') && p != 'favicon.ico' # remote node - proxy URI sans scheme
       return dateDir if %w{m d h y}.member? p # year/month/day/hour redirect
       return block parts[1] if p == 'block'   # block domain action
-      return fetch uris if extname == '.u' && query == 'fetch'
+      return fetch uris if extname == '.u' && query == 'fetch' # remote node(s)
       fetchLocal                              # local node
     end
 
@@ -505,10 +505,10 @@ module Webize
 
     def hostGET
       return [301, {'Location' => relocate.href}, []] if relocate? # relocated node
-      return fetch Feed::Subscriptions[host] if path=='/feed' && adapt? && Feed::Subscriptions[host] # aggregated feed node
+      return fetch Feed::Subscriptions[host] if path == '/feed' && adapt? && Feed::Subscriptions[host] # aggregated feed node
+      dirMeta              # 👉 adjacent nodes
       return deny if deny? # blocked node
-      dirMeta # navigation metadata
-      fetch   # basic remote node
+      fetch                # remote node
     end
 
     def linkHeader
