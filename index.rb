@@ -25,9 +25,11 @@ Subtitle
 Text
 Video),
  Protocols: %w(
-POSIX
+DNS
 Gemini
-HTTP),
+HTTP
+POSIX
+),
  config: %w(scripts/site)}.
   map{|category, components|
   components.map{|component|
