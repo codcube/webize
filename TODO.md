@@ -40,8 +40,6 @@ dangling realpaths http://l/news/prt/i/
 - grep inside list http://l/src/webize/config/feeds?q=gitter
 - offline/online content merge by default? following feeds (API or RSS/Atom) to canonical URL often results in empty page due to SPA stuff, but we have the content already. http://l/gitter.im/solid/specification should link to spec, solidos etc 
 - define webresource level #join and call super/RDF::URI #join to eliminate manual environment threading.
-- eliminate all the #R methods
-- switch to RDF::Vocab instead of our hand-rolled constants, if comparable in perf
 - history -  store versions/variants eg full blogpost and preview from feed may be from same "version" of resource
 - backlink indexing and more indexing in general - frequently linked posts 'daily heat'
 - cache redirects. instantly syndicate these (t.co dereferences, tokens and icons) to peers) 🐕➡️  http://l/2021/09/29/11/*blogpost* →  //federalhillprov.com/favicon.ico  → https://federalhillprov.com/wp-content/uploads/2021/08/cropped-fed-hill-favicon-178px-32x32.png
