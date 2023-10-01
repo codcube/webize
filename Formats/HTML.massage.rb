@@ -61,7 +61,7 @@ module Webize
           e.set_attribute 'src',a.value if SRCnotSRC.member? attr # map alternative src attributes to @src
           e.set_attribute 'srcset',a.value if SRCSET.member? attr # map alternative srcset attributes to @srcset
           a.unlink if attr.match?(/^(aria|data|js|[Oo][Nn])|react/) ||
-                      %w(autofocus bgcolor border color face height http-equiv id ping size style target width).member?(attr) ||
+                      %w(autofocus autoplay bgcolor border color face height http-equiv id ping size style target width).member?(attr) ||
                       (attr == 'class' && !%w(greentext original q quote quote-text QuotedText).member?(a.value))} # drop attributes
 
         if e['src']
