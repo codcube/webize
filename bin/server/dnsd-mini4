@@ -58,11 +58,11 @@ class DNSRequest
   end
 end
 class DNSServer
-  DefaultAddr = ENV['ADDR'] || '10.10.10.1'
+  DefaultAddr = ENV['ADDR'] || '127.0.0.1'
   Cache = {}
 
   def run
-    # change this port, run ../low_ports or sudo setcap 'cap_net_bind_service=+ep' /usr/bin/ruby
+    # if binding isn't allowed, change this port and run ../low_ports for iptables redirection, sudo setcap 'cap_net_bind_service=+ep' /usr/bin/ruby, sudo socat, etc
     Socket.udp_server_loop(53) do |data, src|
       r = DNSRequest.new(self, data)
       domain = r.domain
