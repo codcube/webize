@@ -62,9 +62,9 @@ dangling realpaths http://l/news/prt/i/
 
 ## HTTP(S)
 - stop redir to blocked contetnt: http://l/2021/09/27/21/*blogpost*?view=table&sort=date →  //link.mail.bloombergbusiness.com/favicon.ico  → https://cdn.sailthru.com/assets/images/favicon.ico
-- ask all the peer-caches (pi/vps/phone from laptop) ahead of origin servers for static resources - HEAD All then cancel remaining HEADs on first response and GET winner? or cache availability notices recieved via UDP mesh.  - or announce availability at cache-time of stuff not autoimagically syndicated (larger static media stuff etc)
+- ask all the peer-caches (pi/vps/phone from laptop) ahead of origin servers for static resources - HEAD All then cancel remaining HEADs on first response and GET winner? or announce availability at cache-time of stuff not autoimagically syndicated (larger static media stuff etc)
 - auto-certgen for Falcon HTTPS
-- adrop specific query keys - less destructive than total qs strip - de-utmize and other gunk
+- drop specific query keys - less destructive than total qs strip - de-utmize and other gunk
 - implement ioquatix streaming template stuff for earlier first byte on multi/merge-GET - basically required for 500-blog subscription list or we get gateway/rack/server 60s timeouts
 
 # Format
@@ -78,17 +78,13 @@ dangling realpaths http://l/news/prt/i/
 - for pages still completely blank - https://laiyiohlsen.com/projects/while-x.html - multifetch triplr on the Link field (the text is inside included JS files in this case)
 - dedupe images, link to shown image from placeholder icons
 - assemble dash/hls manifest for youtube data we have from the json , so we can stop using their borked player with the unskippable adloop bug
-- multiple videos, using first:https://www.youtube.com/opensearch?locale=en_US, https://www.youtube.com/watch?v=k2sIDDco5xg, http://www.youtube.com/watch?v=k2sIDDco5xg&feature=applinks, @youtube
-- 12h: ⚠️ no RDF reader for application/opensearchdescription+xml
-- link from parent to child resources in generic JSON triplr
-- emit blank nodes in JSON triplr (requires above for reachability) https://radio.montezpress.com/api/archive/
+- ⚠️ no RDF reader for application/opensearchdescription+xml
+- redo JSON triplr too topofdoc https://radio.montezpress.com/api/archive/
 - next/prev links in HTML not lifted to HTTP metadata and/or collide with proxy-added #next/#prev http://techrights.org/2021/11/30/freedom-respecting-internet/ http://www.w3.org/1999/xhtml/vocab#role
 - link gemini posts to timeline - use current timestamp if server doesn't provide
 - make HTML/RSS renderers genuine RSS:Writer instances
 - ruby-net-text (gemtext) is failing on URI parse errors all the time - it shouldn't even parse the body - write a Gemini parser? do we/you use Gemini still? also TWTXT etc
 - chat view
-- RDF::URI #query_values hates multiple/leading/trailing &s, submit patch upstream 'https://minnit.chat/DOYOUFAMILY?embed&&nickname='.R.query_values
-- re-parsing PDFs when offline http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date - remove @path
-- PDF images missing http://localhost:8000/https://www.bc.edu/content/dam/bc1/schools/carroll/Centers/corcoran-center/Gallivan%20Boulevard%20Concept%20Final%20-%20Spreads.pdf
-- if our HTML-metadata extractor overlaps with RDFa library causing WARN predicate URI unmappped for sioc:container_of https://doriantaylor.com/summer-of-protocols/implementation-guide, remove the overlapping extracts or implement prefix expansion. a lot of non-dorian content fails to expand though anyways so we probably want a default-prefix expander no matter what
+- re-parsing PDFs when offline http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date (remove @path), images missing http://localhost:8000/https://www.bc.edu/content/dam/bc1/schools/carroll/Centers/corcoran-center/Gallivan%20Boulevard%20Concept%20Final%20-%20Spreads.pdf
+
 
