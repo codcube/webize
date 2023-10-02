@@ -27,10 +27,12 @@ module Webize
       doc.to_html                                  # output doc
     end
 
-    # (String -> String) or (Nokogiri -> Nokogiri)
+    ## rewrite doc to local format preferences
+    # (String -> String)
+    # (Nokogiri -> Nokogiri)
     def self.format html, base
 
-      # parse to Nokogiri document-fragment
+      # parse to Nokogiri fragment
       if html.class == String
         html = Nokogiri::HTML.fragment html.gsub(StripTags, '')
         serialize = true
@@ -60,8 +62,8 @@ module Webize
       html.traverse{|e|
         e.respond_to?(:attribute_nodes) && e.attribute_nodes.map{|a| # inspect attributes
           attr = a.name                                              # attribute name
-          e.set_attribute 'src',a.value if SRCnotSRC.member? attr    # map alternative src attributes to @src
-          e.set_attribute 'srcset',a.value if SRCSET.member? attr    # map alternative srcset attributes to @srcset
+          e.set_attribute 'src', a.value if SRCnotSRC.member? attr   # map alternative src attributes to @src
+          e.set_attribute 'srcset', a.value if SRCSET.member? attr   # map alternative srcset attributes to @srcset
           a.unlink if DropAttrs.member?(attr) ||                     # drop attributes
                       attr.match?(DropPrefix) ||                     # drop prefixes            allow CSS classes
                       (attr == 'class' && !%w(greentext original q quote quote-text QuotedText).member?(a.value))}
