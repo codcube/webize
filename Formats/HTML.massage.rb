@@ -1,7 +1,9 @@
 module Webize
   module HTML
 
-    DropNodes = %w(frame iframe link script style)
+    DropAttrs = Webize.configList 'blocklist/attr'
+    DropNodes = Webize.configList 'blocklist/node'
+    DropPrefix = /^(aria|data|js|[Oo][Nn])|react/
     QuotePrefix = /^\s*&gt;\s*/
     StripTags = /<\/?(noscript|wbr)[^>]*>/i
 
@@ -33,7 +35,7 @@ module Webize
         html = Nokogiri::HTML.fragment html.gsub(StripTags, '')
         serialize = true
       end
-      #puts :FORMAT_________________________________,html.to_html if html.to_html.match? /<iframe/
+
       html.css(DropNodes.join ', ').remove
 
       # <img> mapping
@@ -57,12 +59,12 @@ module Webize
 
       html.traverse{|e|
         e.respond_to?(:attribute_nodes) && e.attribute_nodes.map{|a| # inspect attributes
-          attr = a.name                                           # attribute name
-          e.set_attribute 'src',a.value if SRCnotSRC.member? attr # map alternative src attributes to @src
-          e.set_attribute 'srcset',a.value if SRCSET.member? attr # map alternative srcset attributes to @srcset
-          a.unlink if attr.match?(/^(aria|data|js|[Oo][Nn])|react/) ||
-                      %w(autofocus autoplay bgcolor border color face height http-equiv id ping size style target width).member?(attr) ||
-                      (attr == 'class' && !%w(greentext original q quote quote-text QuotedText).member?(a.value))} # drop attributes
+          attr = a.name                                              # attribute name
+          e.set_attribute 'src',a.value if SRCnotSRC.member? attr    # map alternative src attributes to @src
+          e.set_attribute 'srcset',a.value if SRCSET.member? attr    # map alternative srcset attributes to @srcset
+          a.unlink if DropAttrs.member?(attr) ||                     # drop attributes
+                      attr.match?(DropPrefix) ||                     # drop prefixes            allow CSS classes
+                      (attr == 'class' && !%w(greentext original q quote quote-text QuotedText).member?(a.value))}
 
         if e['src']
           src = URI.new base.join e['src']                        # resolve @src
