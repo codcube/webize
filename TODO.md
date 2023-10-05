@@ -86,5 +86,3 @@ dangling realpaths http://l/news/prt/i/
 - ruby-net-text (gemtext) is failing on URI parse errors all the time - it shouldn't even parse the body - write a Gemini parser? do we/you use Gemini still? also TWTXT etc
 - chat view
 - re-parsing PDFs when offline http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date (remove @path), images missing http://localhost:8000/https://www.bc.edu/content/dam/bc1/schools/carroll/Centers/corcoran-center/Gallivan%20Boulevard%20Concept%20Final%20-%20Spreads.pdf
-
-

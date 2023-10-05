@@ -7,4 +7,5 @@
 [class*="post"]
 article
 div.g
+li
 section
