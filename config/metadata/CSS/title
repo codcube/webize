@@ -1,6 +1,7 @@
 [class*="headline"]
 [class*="subject"]
 [class*="title"]
+[class*="title"] a
 h1
 h2
 h3
