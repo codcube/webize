@@ -16,6 +16,7 @@ assets.squarespace.com
 berkeleybeacon.com
 blog.google
 books.google.com
+bpldcassets.blob.core.windows.net
 cartodb-basemaps-a.global.ssl.fastly.net
 cdn.mos.cms.futurecdn.net
 cdnjs.cloudflare.com
@@ -28,7 +29,6 @@ developer.mozilla.org
 docs.google.com
 duckduckgo.com
 edge.api.brightcove.com
-ems-cust-content.s3.eu-central-1.amazonaws.com
 entitlement.auth.adobe.com
 external-content.duckduckgo.com
 feeds.bizjournals.com
@@ -44,7 +44,6 @@ invisiblecollege.s3-us-west-1.amazonaws.com
 invisiblecollege.s3.us-west-1.amazonaws.com
 khms0.googleapis.com
 khms1.googleapis.com
-m.media-amazon.com
 m.yelp.com
 maps.google.com
 maps.googleapis.com
@@ -61,7 +60,6 @@ pbs.twimg.com
 players.brightcove.net
 prod-fastly-eu-west-3.video.pscp.tv
 reader.elsevier.com
-s3.amazonaws.com
 science.mozilla.org
 signin.ebay.com
 sites.google.com
@@ -83,8 +81,6 @@ video.twimg.com
 www.alibaba.com
 www.aliexpress.com
 www.aliexpress.us
-www.amazon.com
-www.bestbuy.com
 www.bizjournals.com
 www.bloomberg.com
 www.boston.com
@@ -117,7 +113,6 @@ www.the-sun.com
 www.theguardian.com
 www.tripadvisor.com
 www.usatoday.com
-www.walmart.com
 www.washingtonpost.com
 www.wickedlocal.com
 www.wsj.com
