@@ -1,6 +1,7 @@
 most of these should fix themselves once the HTML/JSON-triplr reworks are done. test corpus:
 missing content http://localhost:8000/com/danielbachhuber/working-at-automattic/#f18efa4a785aeb87dabda0954ae72685914b72905a644498043ef39f1dc762aa8 http://l/gov/nsf/new/funding/opportunities/cyberinfrastructure-sustained-scientific
 comments/posts http://localhost:8000/org/bryanalexander/technology/digg-is-going-to-kill-digg-reader-what-should-we-do-now/index.html http://l/com/reddit/old/user/squeakywipers.e84e319f01a80ba2. http://l/https://www.codeforsociety.org/news http://localhost:8000/https://www.worldwidedx.com/forums/#amateur-radio-related.64
+http://localhost:8000/https://rhiaro.co.uk/2015/03/microformats2-rdf#rootpath
 loop http://l/pub/mostr/users/de7ecd1e2976a6adb2ffa5f4db81a7d812c8bb6698aa00dcf1e76adb55efd645/following
 list render http://l/pub/mostr/users/de7ecd1e2976a6adb2ffa5f4db81a7d812c8bb6698aa00dcf1e76adb55efd645/followers
 allow raw html in abstract http://l/pub/mostr/objects/5996c19eb87eb641db9826cc1c79d4cc905e7b073ffea328b6d98d34c687dca0 http://l/https://git.drupalcode.org/project/drupal/-/commits/11.x?format=atom
