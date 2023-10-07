@@ -9,10 +9,10 @@ Marketing_Bullets
 Section
 abstract
 alt
-alttext
 altText
 alt_text
 alternativeText
+alttext
 ariaLabel
 article.summary
 article.tag
@@ -48,6 +48,7 @@ entity_keywords
 excerpt
 ext_alt_text
 fb:status
+firstParagraph
 firstWords
 five_hundred_pixels:category
 five_hundred_pixels:tags
