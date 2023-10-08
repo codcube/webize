@@ -1,9 +1,10 @@
-most of these should fix themselves once the HTML/JSON-triplr reworks are done. test corpus:
+these should fix themselves once the HTML/JSON-triplr reworks are done. test corpus:
 missing content http://localhost:8000/com/danielbachhuber/working-at-automattic/#f18efa4a785aeb87dabda0954ae72685914b72905a644498043ef39f1dc762aa8 http://l/gov/nsf/new/funding/opportunities/cyberinfrastructure-sustained-scientific
 comments/posts http://localhost:8000/org/bryanalexander/technology/digg-is-going-to-kill-digg-reader-what-should-we-do-now/index.html http://l/com/reddit/old/user/squeakywipers.e84e319f01a80ba2. http://l/https://www.codeforsociety.org/news http://localhost:8000/https://www.worldwidedx.com/forums/#amateur-radio-related.64
 http://localhost:8000/https://rhiaro.co.uk/2015/03/microformats2-rdf#rootpath
 loop http://l/pub/mostr/users/de7ecd1e2976a6adb2ffa5f4db81a7d812c8bb6698aa00dcf1e76adb55efd645/following
 list render http://l/pub/mostr/users/de7ecd1e2976a6adb2ffa5f4db81a7d812c8bb6698aa00dcf1e76adb55efd645/followers
+http://l/https://possible.social/join#UI
 allow raw html in abstract http://l/pub/mostr/objects/5996c19eb87eb641db9826cc1c79d4cc905e7b073ffea328b6d98d34c687dca0 http://l/https://git.drupalcode.org/project/drupal/-/commits/11.x?format=atom
 semiexorix image ptrs (wix JSONnonLD?) https://www.blacktimebelt.net/
 css leak (multiple <body nodes) http://localhost:8000/https://theleap.org/ #ff3458a53a2c2de61a1609eec536a918c02779cbbdc45d7f6b0a1706d8b49f9b8 http://localhost:8000/fi/poutapilvi/www/index.html http://l/au/com/kidgredients/cheese-and-bacon-rolls-just-like-bakery-ones/ (we need to decide on node vs bodeset input to emitcontent) and this one is trickier, maybe coming in thru RDF::RDFa or some rouge/nokogiri cornercase w/ comments or idk PEBKAC. http://localhost:8000/https://www.cbsnews.com/news/rush-limbaugh-arrested-on-drug-charges/
