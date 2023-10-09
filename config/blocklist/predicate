@@ -65,6 +65,9 @@ browser-stats-url
 business_profile_state
 bytedance-verification-code
 canHaveEpisodes
+can_edit
+can_edit_canvas
+can_manage
 chrome-webstore-item
 colType
 color-scheme
@@ -185,6 +188,7 @@ is_album
 is_quote_status
 is_translation_enabled
 is_translator
+is_try_file
 isrc
 landingPageInMobile
 layout
@@ -276,6 +280,7 @@ shopify-digital-wallet
 shopify-storefront-access-token
 show
 showRepeatVisitorSignupCta
+show_edit_button
 siteid
 skype_toolbar
 slack-app-id
@@ -339,6 +344,7 @@ user_sorting
 uuid
 verified
 verify-v1
+viewer_export_restricted
 viewport
 visibility
 visible_in_picker

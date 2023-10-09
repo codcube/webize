@@ -36,6 +36,7 @@ filename
 foaf:page
 follow
 fullUrl
+handoff_url
 home
 href
 http://data-vocabulary.org/url
@@ -88,6 +89,7 @@ preload
 prerender
 preview_url
 profile
+prototype_url
 purchase_url
 referrer
 refs

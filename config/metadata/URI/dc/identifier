@@ -7,6 +7,7 @@ dcterms.identifier
 fragment
 guid
 id
+key
 nodeId
 uid
 wordpressID
