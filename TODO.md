@@ -56,7 +56,7 @@ dangling realpaths http://l/news/prt/i/
 - http, (web)socket, DNS in one process (toplevel Async reactor?) for RAM efficiency on oldphone/pi3
 
 ## DNS
-- replace dnsd-mini4 with rubydns/async-dns
+- replace dnsd-mini4 with rubydns/async-dns for IPV6 and reverse lookups
 
 ## Gemini
 - gack (gemini) server

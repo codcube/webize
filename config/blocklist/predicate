@@ -188,6 +188,7 @@ isVisible
 isVisibleMobile
 isWhatsappNotificationsEnabled
 is_album
+is_favorited
 is_quote_status
 is_translation_enabled
 is_translator

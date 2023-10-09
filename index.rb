@@ -25,7 +25,6 @@ Subtitle
 Text
 Video),
  Protocols: %w(
-DNS
 Gemini
 HTTP
 POSIX
