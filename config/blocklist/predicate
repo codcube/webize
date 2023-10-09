@@ -97,6 +97,7 @@ display_text_range
 distribution
 donationsActive
 downloadable
+editor_type
 edituri
 embeddable_by
 enableNewTagCreationWarning
@@ -142,7 +143,9 @@ hasModeratedReplies
 has_custom_timelines
 has_downloads_left
 has_extended_profile
+has_file_link_password
 has_nft_avatar
+has_proto_link_password
 hidden
 hideCredit
 hideFromMenu
