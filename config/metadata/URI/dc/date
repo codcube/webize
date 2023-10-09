@@ -140,6 +140,7 @@ modifiedGmt
 modifiedOn
 modified_time
 music:release_date
+ob:pubDate
 og:article:modified_time
 og:article:published_time
 og:datePublished

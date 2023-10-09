@@ -60,6 +60,7 @@ meta_title
 mobileTitle
 name
 navLabel
+ob:title
 og:title
 ogTitle
 originalFilename

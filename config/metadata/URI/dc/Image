@@ -2,6 +2,8 @@ ICON
 Icon
 Image
 ImageRendition
+ImageURL
+SquareImageUrl
 Thumbnail
 android-touch-icon
 apple-touch-icon

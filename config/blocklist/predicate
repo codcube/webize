@@ -227,6 +227,7 @@ not_interested
 nyt_uri
 og:ignore_canonical
 onesignal
+openInNewWindow
 openNewTab
 openid.delegate
 openid.server
