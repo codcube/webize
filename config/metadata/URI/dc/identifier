@@ -2,6 +2,7 @@ DC.Identifier
 DC.Identifier.URL
 DC.identifier
 ID
+contentId
 dc.identifier
 dcterms.identifier
 fragment
