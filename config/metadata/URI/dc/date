@@ -60,6 +60,7 @@ datePosted
 datePublished
 datePublishedString
 date_created
+date_gmt
 date_modified
 date_published
 datemodified
@@ -138,6 +139,7 @@ modifiedAt
 modifiedDate
 modifiedGmt
 modifiedOn
+modified_gmt
 modified_time
 music:release_date
 ob:pubDate
