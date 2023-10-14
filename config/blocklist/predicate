@@ -46,6 +46,7 @@ apple-touch-fullscreen
 applicationId
 applicationServerKey
 archived
+aria-current
 article:content_tier
 articleid
 artifactId
@@ -220,6 +221,7 @@ multiInstanceEnabled
 mw-deduplicated-inline-style
 naver-site-verification
 newTab
+new_tab
 next-head-count
 noopenner
 norton-safeweb-site-verification
