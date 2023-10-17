@@ -52,6 +52,7 @@ https://ogp.me/ns#title
 https://schema.org/alternativeHeadline
 https://schema.org/headline
 https://schema.org/name
+item-title
 itunes:title
 krux:title
 label

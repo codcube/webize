@@ -71,7 +71,7 @@ module Webize
           end}
 
         # page pointers
-        @doc.css('#next, #nextPage, a.next').map{|nextPage|
+        @doc.css('#next, #nextPage, a.next, .show-more > a').map{|nextPage|
           if ref = nextPage.attr('href')
             @env[:links][:next] ||= @base.join ref
           end}
