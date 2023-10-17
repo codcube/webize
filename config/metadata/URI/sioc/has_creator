@@ -48,6 +48,7 @@ dc.source
 dct:creator
 dcterms.creator
 designer
+displayAuthors
 firstName
 first_name
 five_hundred_pixels:author

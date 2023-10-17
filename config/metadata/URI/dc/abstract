@@ -113,7 +113,10 @@ page:topic
 parsely-section
 parsely-tags
 podcastEpisodeDesc
+postLabel
 primaryCategory
+primaryTag
+primaryTopic
 promotionalSummary
 pubexchange:description
 quote
@@ -153,6 +156,7 @@ tagNames
 tag_list
 tagline
 tags
+taxonomyTerms
 tbi-vertical
 teaser
 teaserBody
