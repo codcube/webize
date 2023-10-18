@@ -96,12 +96,41 @@ module Webize
 
     def query_hash; Digest::SHA2.hexdigest(query)[0..15] end
 
+    def relocate?
+      url_host? ||
+        [FWD_hosts,
+         YT_hosts].find{|group|
+        group.member? host} ||
+        (RSS_hosts.member?(host) && !path.index('.rss'))
+    end
+
+    def relocate
+      URI(if url_host?
+          q = query_values || {}
+          q['url'] || q['u'] || q['q'] || self
+         elsif FWD_hosts.member? host
+           ['//', FWD_hosts[host], path].join
+         elsif RSS_hosts.member?(host) && !path.index('.rss')
+           ['//', host, path, '.rss'].join
+         elsif YT_hosts.member? host
+           ['//www.youtube.com/watch?v=',
+            (query_values || {})['v'] || path[1..-1]].join
+         else
+           self
+          end)
+    end
+
     def slugs
       re = /[\W_]/
       [(host&.split re),
        parts.map{|p| p.split re},
        (query&.split re),
        (fragment&.split re)]
+    end
+
+    def url_host?
+      URL_hosts.member?(host) || # explicit URL rehoster
+        (host&.match?(CDN_hosts) && (query_values||{}).has_key?('url')) # URL rehost on CDN host
     end
 
     alias_method :uri, :to_s
@@ -124,31 +153,8 @@ module Webize
       end
     end
 
-    def relocate?
-      url_host? ||
-        [FWD_hosts,
-         YT_hosts].find{|group|
-        group.member? host} ||
-        (RSS_hosts.member?(host) && !path.index('.rss'))
-    end
-
     def relocate
-      Resource(if url_host?
-                q = query_values || {}
-                q['url'] || q['u'] || q['q'] || self
-              elsif FWD_hosts.member? host
-                ['//', FWD_hosts[host], path].join
-              elsif RSS_hosts.member?(host) && !path.index('.rss')
-                ['//', host, path, '.rss'].join
-              elsif YT_hosts.member? host
-                ['//www.youtube.com/watch?v=', (query_values || {})['v'] || path[1..-1]].join
-              else
-                self
-               end)
-    end
-
-    def url_host?
-      URL_hosts.member?(host) || (host&.match?(CDN_hosts) && (query_values||{}).has_key?('url'))
+      Resource super
     end
 
     # resolve URI for current environment/context
