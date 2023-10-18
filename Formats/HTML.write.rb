@@ -172,7 +172,8 @@ module Webize
                 bc += '/' + p                                                                                        # 👉 path breadcrumbs
                 ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
                        href: Resource.new(env[:base].join(bc)).env(env).href,
-                       c: CGI.escapeHTML(Rack::Utils.unescape p)}]}}, "\n",
+                       c: CGI.escapeHTML(Webize::URI(Rack::Utils.unescape p).basename)}]}},
+             "\n",
              ([{_: :form, c: env[:qs].map{|k,v|                                                                      # searchbox
                   {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}},                          # invisible search parameters
                "\n"] if env[:qs].has_key? 'q'),
