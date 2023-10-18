@@ -124,9 +124,9 @@ module Webize
     def relocate?
       url_host? ||
         [FWD_hosts,
-         RSS_hosts,
          YT_hosts].find{|group|
-        group.member? host}
+        group.member? host} ||
+        (RSS_hosts.member?(host) && !path.index('.rss'))
     end
 
     def relocate
@@ -135,7 +135,7 @@ module Webize
                 q['url'] || q['u'] || q['q'] || self
               elsif FWD_hosts.member? host
                 ['//', FWD_hosts[host], path].join
-              elsif RSS_hosts.member?(host) && !path.index('.rss')
+              elsif RSS_hosts.member? host
                 ['//', host, path, '.rss'].join
               elsif YT_hosts.member? host
                 ['//www.youtube.com/watch?v=', (query_values || {})['v'] || path[1..-1]].join
