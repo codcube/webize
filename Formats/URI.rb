@@ -15,7 +15,7 @@ module Webize
 
     AllowHosts = Webize.configList 'hosts/allow'
     BlockedSchemes = Webize.configList 'blocklist/scheme'
-    CDNdoc = Webize.configRegex 'formats/CDN'
+    CDN_doc = Webize.configRegex 'formats/CDN'
     ImgExt = Webize.configList 'formats/image/ext'
     KillFile = Webize.configList 'blocklist/sender'
     DenyDomains = {}
@@ -31,21 +31,24 @@ module Webize
 
     def basename; File.basename path if path end
 
+    def CDN_doc?; host&.match?(CDN_hosts) && path&.match?(CDN_doc) end
+
     def dataURI?; scheme == 'data' end
 
     def deny?
-      return true if BlockedSchemes.member? scheme                    # block scheme
-      return true if uri.match? Gunk                                  # block URI pattern
-      return false if host&.match?(CDN_hosts) && path&.match?(CDNdoc) # allow URI pattern
-      return deny_domain?                                             # allow or block domain
+      return false if AllowHosts.member? host      # allow host
+      return true if BlockedSchemes.member? scheme # block scheme
+      return true if uri.match? Gunk               # block URI pattern
+      return false if CDN_doc?                     # allow URI pattern
+      return deny_domain?                          # block host
     end
 
     def deny_domain?
-      return false if !host || AllowHosts.member?(host)             # allow host
-      d = DenyDomains                                               # cursor to base of tree
-      domains.find{|name|                                           # parse domain name
-        return unless d = d[name]                                   # advance cursor
-        d.empty? }                                                  # named leaf exists in tree?
+      return false unless host    # rule applies only to domain names
+      d = DenyDomains             # cursor to base of tree
+      domains.find{|name|         # parse domain name
+        return unless d = d[name] # advance cursor
+        d.empty? }                # named leaf exists in tree?
     end
 
     def dirURI?; !path || path[-1] == '/' end
