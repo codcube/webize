@@ -138,7 +138,7 @@ module Webize
                 q['url'] || q['u'] || q['q'] || self
               elsif FWD_hosts.member? host
                 ['//', FWD_hosts[host], path].join
-              elsif RSS_hosts.member? host
+              elsif RSS_hosts.member?(host) && !path.index('.rss')
                 ['//', host, path, '.rss'].join
               elsif YT_hosts.member? host
                 ['//www.youtube.com/watch?v=', (query_values || {})['v'] || path[1..-1]].join
