@@ -66,6 +66,7 @@ rss rss.xml
         send(*f){|s,p,o|
           p = MetaMap[p] if MetaMap.has_key? p # map to predicate URI
           o = Webize.date o if p.to_s == Date  # normalize date format
+          o = o.relocate if o.class == Webize::URI && o.relocate? # relocate object URI
           unless p == :drop
             logger.warn ['no RDF predicate found:', p, o].join ' ' unless p.match? /^https?:/
             yield s, p, o
@@ -129,7 +130,7 @@ rss rss.xml
             reddit = subject.host&.match /reddit.com$/
             # type tag
             yield subject, Type,
-                  RDF::URI(if subject.host == 'www.youtube.com'
+                  Webize::URI(if subject.host == 'www.youtube.com'
                            Video
                           elsif subject.imgPath?
                             Image
@@ -138,7 +139,7 @@ rss rss.xml
                            end)
 
             # addressee/recipient/destination-group
-            to = reddit ? RDF::URI('https://www.reddit.com/' + subject.parts[0..1].join('/')) : @base
+            to = reddit ? Webize::URI('https://www.reddit.com/' + subject.parts[0..1].join('/')) : @base
             yield subject, To, to
 
             # media links
@@ -170,13 +171,13 @@ rss rss.xml
                 # XML name + URI
                 uri = e[3].match /<uri>([^<]+)</
                 name = e[3].match /<name>([^<]+)</
-                crs.push RDF::URI(uri[1]) if uri
+                crs.push Webize::URI(uri[1]) if uri
                 crs.push name[1] if name && !(uri && (RDF::URI(uri[1]).path || '/').sub('/user/', '/u/') == name[1]) # dedupe between prefix /u & /user
                 unless name || uri
                   crs.push e[3].yield_self{|o|
                     case o
                     when isURL
-                      RDF::URI(o)
+                      Webize::URI(o)
                     when isCDATA
                       o.sub reCDATA, '\1'
                     else
@@ -197,7 +198,7 @@ rss rss.xml
                   end
                 }.yield_self{|o|                      # map datatypes
                   if o.match? isURL
-                    RDF::URI(o)
+                    Webize::URI(o)
                   elsif reddit && p == Atom+'title'
                     o.sub /\/u\/\S+ on /, ''
                   else
