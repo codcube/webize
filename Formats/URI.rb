@@ -123,15 +123,20 @@ module Webize
 
     def relocate?
       url_host? ||
-        [FWD_hosts, YT_hosts].find{|group| group.member? host}
+        [FWD_hosts,
+         RSS_hosts,
+         YT_hosts].find{|group|
+        group.member? host}
     end
 
     def relocate
-      Resource(if FWD_hosts.member? host
-               ['//', FWD_hosts[host], path].join
-              elsif url_host?
+      Resource(if url_host?
                 q = query_values || {}
                 q['url'] || q['u'] || q['q'] || self
+              elsif FWD_hosts.member? host
+                ['//', FWD_hosts[host], path].join
+              elsif RSS_hosts.member?(host) && !path.index('.rss')
+                ['//', host, path, '.rss'].join
               elsif YT_hosts.member? host
                 ['//www.youtube.com/watch?v=', (query_values || {})['v'] || path[1..-1]].join
               else
