@@ -149,6 +149,7 @@ has_nft_avatar
 has_proto_link_password
 hidden
 hideCredit
+hideDate
 hideFromMenu
 hostname
 hovercard-subject-tag
