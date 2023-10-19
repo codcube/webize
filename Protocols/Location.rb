@@ -67,12 +67,6 @@ module Webize
       Resource super
     end
 
-    def RSS_available?
-      RSS_hosts.member?(host) &&
-        !path.index('.rss') &&
-        parts[0] != 'gallery'
-    end
-
     def URL_host?
       URL_hosts.member?(host) ||                               # explicit URL rehoster
         (host&.match?(CDN_hosts) && (query_values||{}).has_key?('url')) # URL rehost on CDN host

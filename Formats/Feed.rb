@@ -1,5 +1,14 @@
 # coding: utf-8
 module Webize
+  class URI
+
+    def RSS_available?
+      RSS_hosts.member?(host) &&
+        !path.index('.rss') &&
+        parts[0] != 'gallery'
+    end
+
+  end
   module Feed
 
     Extensions = %w(
