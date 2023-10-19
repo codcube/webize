@@ -8,16 +8,15 @@ module Webize
   Gunk = Webize.configRegex 'blocklist/regex'
   RegexChars = /[\^\(\)\|\[\]\$]/
 
-  # load URI-constant configuration
-  configHash('metadata/constants').map{|symbol, uri| const_set symbol, uri }
+  # define URI constants
+  configHash('metadata/constants').map{|symbol, uri|
+    const_set symbol, uri }
 
   class URI < RDF::URI
 
     def basename
       File.basename path, extname if path
     end
-
-    def CDN_doc?; host&.match?(CDN_hosts) && path&.match?(CDN_doc) end
 
     def dataURI?; scheme == 'data' end
 
@@ -41,10 +40,6 @@ module Webize
 
     def extname; File.extname path if path end
 
-    def imgPath?; path && (ImgExt.member? extname.downcase) end
-
-    def imgURI?; imgPath? || (dataURI? && path.index('image') == 0) end
-
     def local_id
       if fragment && in_doc?
         fragment
@@ -66,23 +61,12 @@ module Webize
 
     def query_hash; Digest::SHA2.hexdigest(query)[0..15] end
 
-    def RSS_available?
-      RSS_hosts.member?(host) &&
-        !path.index('.rss') &&
-        parts[0] != 'gallery'
-    end
-
     def slugs
       re = /[\W_]/
       [(host&.split re),
        parts.map{|p| p.split re},
        (query&.split re),
        (fragment&.split re)]
-    end
-
-    def url_host?
-      URL_hosts.member?(host) ||                               # explicit URL rehoster
-        (host&.match?(CDN_hosts) && (query_values||{}).has_key?('url')) # URL rehost on CDN host
     end
 
     alias_method :uri, :to_s
@@ -103,22 +87,6 @@ module Webize
       else
         @env ||= {}
       end
-    end
-
-    # set scheme to HTTP for fetch method/library protocol selection for peer nodes on private/local networks
-    def insecure
-      return self if scheme == 'http'
-      _ = dup.env env
-      _.scheme = 'http'
-       _.env[:base] = _
-    end
-
-    def in_doc?  # is URI in request graph?
-      on_host? && env[:base].path == path
-    end
-
-    def on_host? # is URI on request host?
-      env[:base].host == host
     end
 
   end

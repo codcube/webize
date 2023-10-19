@@ -1,7 +1,15 @@
 module Webize
   class URI
+
     CDN_doc = Webize.configRegex 'formats/CDN'
     ImgExt = Webize.configList 'formats/image/ext'
+
+    def CDN_doc?; host&.match?(CDN_hosts) && path&.match?(CDN_doc) end
+
+    def imgPath?; path && (ImgExt.member? extname.downcase) end
+
+    def imgURI?; imgPath? || (dataURI? && path.index('image') == 0) end
+
   end
   module MIME
 
