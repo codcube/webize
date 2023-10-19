@@ -1,4 +1,8 @@
 module Webize
+  class URI
+    CDN_doc = Webize.configRegex 'formats/CDN'
+    ImgExt = Webize.configList 'formats/image/ext'
+  end
   module MIME
 
     # formats we prefer to not (given conneg flexibility) or can not (unimplemented in format library,

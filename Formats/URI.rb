@@ -13,22 +13,6 @@ module Webize
 
   class URI < RDF::URI
 
-    AllowHosts = Webize.configList 'hosts/allow'
-    BlockedSchemes = Webize.configList 'blocklist/scheme'
-    CDN_doc = Webize.configRegex 'formats/CDN'
-    ImgExt = Webize.configList 'formats/image/ext'
-    KillFile = Webize.configList 'blocklist/sender'
-    DenyDomains = {}
-
-    def self.blocklist
-      DenyDomains.clear
-      Webize.configList('blocklist/domain').map{|l|          # parse blocklist
-        cursor = DenyDomains                                 # reset cursor
-        l.chomp.sub(/^\./,'').split('.').reverse.map{|name|  # parse name
-          cursor = cursor[name] ||= {}}}                     # initialize and advance cursor
-    end
-    self.blocklist                                           # load blocklist
-
     def basename
       File.basename path, extname if path
     end
@@ -36,22 +20,6 @@ module Webize
     def CDN_doc?; host&.match?(CDN_hosts) && path&.match?(CDN_doc) end
 
     def dataURI?; scheme == 'data' end
-
-    def deny?
-      return false if AllowHosts.member? host      # allow host
-      return true if BlockedSchemes.member? scheme # block scheme
-      return true if uri.match? Gunk               # block URI pattern
-      return false if CDN_doc?                     # allow URI pattern
-      return deny_domain?                          # block host
-    end
-
-    def deny_domain?
-      return false unless host    # rule applies only to domain names
-      d = DenyDomains             # cursor to base of tree
-      domains.find{|name|         # parse domain name
-        return unless d = d[name] # advance cursor
-        d.empty? }                # named leaf exists in tree?
-    end
 
     def dirURI?; !path || path[-1] == '/' end
 
@@ -98,29 +66,6 @@ module Webize
 
     def query_hash; Digest::SHA2.hexdigest(query)[0..15] end
 
-    def relocate?
-      url_host? || RSS_available? ||
-        [FWD_hosts,
-         YT_hosts].find{|group|
-        group.member? host}
-    end
-
-    def relocate
-      Webize::URI(if url_host?
-                  q = query_values || {}
-                  q['url'] || q['u'] || q['q'] || self
-                 elsif FWD_hosts.member? host
-                   ['//', FWD_hosts[host], path].join
-                 elsif RSS_available?
-                   ['//', host, path.sub(/\/$/,''), '.rss'].join
-                 elsif YT_hosts.member? host
-                   ['//www.youtube.com/watch?v=',
-                    (query_values || {})['v'] || path[1..-1]].join
-                 else
-                   self
-                  end)
-    end
-
     def RSS_available?
       RSS_hosts.member?(host) &&
         !path.index('.rss') &&
@@ -160,25 +105,6 @@ module Webize
       end
     end
 
-    def relocate
-      Resource super
-    end
-
-    # resolve URI for current environment/context
-    def href
-      if in_doc? && fragment # local reference
-        '#' + fragment
-      elsif env[:proxy_href] # proxy reference:
-        if !host || env['SERVER_NAME'] == host
-          uri                #  local node
-        else                 #  remote node
-          ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join
-        end
-      else                   # direct URI<>URL map
-        uri
-      end
-    end
-
     # set scheme to HTTP for fetch method/library protocol selection for peer nodes on private/local networks
     def insecure
       return self if scheme == 'http'
@@ -189,10 +115,6 @@ module Webize
 
     def in_doc?  # is URI in request graph?
       on_host? && env[:base].path == path
-    end
-
-    def offline?
-      ENV.has_key? 'OFFLINE'
     end
 
     def on_host? # is URI on request host?
