@@ -25,6 +25,11 @@ module Webize
                   end)
     end
 
+    def URL_host?
+      URL_hosts.member?(host) ||                               # explicit URL rehoster
+        (host&.match?(CDN_hosts) && (query_values||{}).has_key?('url')) # URL rehost on CDN host
+    end
+
   end
   class Resource
 
@@ -65,11 +70,6 @@ module Webize
 
     def relocate
       Resource super
-    end
-
-    def URL_host?
-      URL_hosts.member?(host) ||                               # explicit URL rehoster
-        (host&.match?(CDN_hosts) && (query_values||{}).has_key?('url')) # URL rehost on CDN host
     end
 
   end
