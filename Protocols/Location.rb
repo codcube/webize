@@ -1,4 +1,12 @@
 module Webize
+
+  # declarative host categories
+  CDN_hosts = Webize.configRegex 'hosts/CDN'
+  FWD_hosts = Webize.configHash 'hosts/forward'
+  URL_hosts = Webize.configList 'hosts/url'
+  RSS_hosts = Webize.configList 'hosts/rss'
+  YT_hosts = Webize.configList 'hosts/youtube'
+
   class URI
 
     def relocate?
