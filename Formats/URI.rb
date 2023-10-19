@@ -99,11 +99,10 @@ module Webize
     def query_hash; Digest::SHA2.hexdigest(query)[0..15] end
 
     def relocate?
-      url_host? ||
+      url_host? || RSS_available? ||
         [FWD_hosts,
          YT_hosts].find{|group|
-        group.member? host} ||
-        (RSS_hosts.member?(host) && !path.index('.rss'))
+        group.member? host}
     end
 
     def relocate
@@ -112,7 +111,7 @@ module Webize
                   q['url'] || q['u'] || q['q'] || self
                  elsif FWD_hosts.member? host
                    ['//', FWD_hosts[host], path].join
-                 elsif RSS_hosts.member?(host) && !path.index('.rss')
+                 elsif RSS_available?
                    ['//', host, path.sub(/\/$/,''), '.rss'].join
                  elsif YT_hosts.member? host
                    ['//www.youtube.com/watch?v=',
@@ -120,6 +119,12 @@ module Webize
                  else
                    self
                   end)
+    end
+
+    def RSS_available?
+      RSS_hosts.member?(host) &&
+        !path.index('.rss') &&
+        parts[0] != 'gallery'
     end
 
     def slugs
