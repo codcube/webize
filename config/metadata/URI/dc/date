@@ -155,6 +155,8 @@ originalPublicationTimestamp
 originalPublishDate
 parsely-pub-date
 pdate
+post_date
+post_date_gmt
 pubDate
 pub_date
 pubdate

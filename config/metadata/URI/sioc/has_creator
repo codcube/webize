@@ -88,6 +88,7 @@ p_line
 p_line_for_display
 page:author
 parsely-author
+post_author
 profile:first_name
 profile:last_name
 profile:username
