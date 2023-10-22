@@ -44,8 +44,8 @@ module Webize
 
     # reference in current context
     def href
-      return '#' + fragment if in_doc? && fragment                       # relativized fragment reference
-      return uri unless host && env[:proxy_hrefs] && !proxy_reference?   # URI (identifier) as URL (locator)
+      return '#' + fragment if in_doc? && fragment              # relativized fragment reference
+      return uri unless host && env[:proxy_refs] && !proxy_ref? # URI (identifier) as URL (locator)
       ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join # proxy reference
     end
 
@@ -69,7 +69,7 @@ module Webize
       ENV.has_key? 'OFFLINE'
     end
 
-    def proxy_reference?
+    def proxy_ref?
       [CDN_host,
        env['SERVER_NAME']].member? host
     end
