@@ -17,7 +17,7 @@ module Webize
     end
 
     def CDN_available?
-      CDN_doc? && deny_domain?
+      CDN_doc? && deny_domain? && !(respond_to?(:env) && env['SERVER_NAME'] == CDN_host)
     end
 
     def relocate
