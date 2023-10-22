@@ -28,7 +28,7 @@ module Webize
                    ['//www.youtube.com/watch?v=',
                     (query_values || {})['v'] || path[1..-1]].join
                  elsif CDN_doc? && deny_domain?
-                   ['//', CDN_host, '/', self].join
+                   ['//', CDN_host, '/', host, path, query ? ['?', query] : nil].join
                  else
                    self
                   end)
