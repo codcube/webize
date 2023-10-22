@@ -38,7 +38,7 @@ module Webize
 
       env[:client_tags] = env['HTTP_IF_NONE_MATCH'].   # parse entity-tags
                             strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
-      env[:proxy_href] = isPeer || isLocal             # proxy hrefs over local or peer host?
+      env[:proxy_hrefs] = isPeer || isLocal            # proxy references on local or peer host
       env[:referer] = Node(env['HTTP_REFERER'], env) if env['HTTP_REFERER'] # referer
 
       URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist
@@ -634,10 +634,6 @@ module Webize
     end
 
     def staticResponse format, body
-      if format == 'text/html' && env[:proxy_href] # resolve proxy-hrefs
-        body = Webize::HTML.resolve_hrefs body, env, true
-      end
-
       head = {'Content-Type' => format,               # response header
               'Content-Length' => body.bytesize.to_s,
              'Expires' => (Time.now + 3e7).httpdate}

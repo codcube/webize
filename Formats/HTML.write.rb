@@ -43,7 +43,7 @@ module Webize
         o
       when RDF::Literal
         if [RDF.HTML, RDF.XMLLiteral].member? o.datatype
-          if env[:proxy_href] # rewrite hrefs
+          if env[:proxy_hrefs] # proxy references
             resolve_hrefs o.to_s, env
           else
             o.to_s            # HTML literal

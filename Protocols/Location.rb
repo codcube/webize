@@ -28,7 +28,7 @@ module Webize
                    ['//www.youtube.com/watch?v=',
                     (query_values || {})['v'] || path[1..-1]].join
                  elsif CDN_doc? && deny_domain?
-                   ['//', CDN_host, '/', host, path, query ? ['?', query] : nil].join
+                   ['//', CDN_host, ':', CDN_port, '/', host, path, query ? ['?', query] : nil].join
                  else
                    self
                   end)
@@ -42,19 +42,11 @@ module Webize
   end
   class Resource
 
-    # resolve URI for current environment/context
+    # reference in current context
     def href
-      if in_doc? && fragment # local reference
-        '#' + fragment
-      elsif env[:proxy_href] # proxy reference:
-        if !host || env['SERVER_NAME'] == host
-          uri                #  local node
-        else                 #  remote node
-          ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join
-        end
-      else                   # direct URI<>URL map
-        uri
-      end
+      return '#' + fragment if in_doc? && fragment                       # relativized fragment reference
+      return uri unless host && env[:proxy_hrefs] && !proxy_reference?   # URI (identifier) as URL (locator)
+      ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join # proxy reference
     end
 
     # set scheme to HTTP for fetch method/library protocol selection for peer nodes on private/local networks
@@ -75,6 +67,11 @@ module Webize
 
     def offline?
       ENV.has_key? 'OFFLINE'
+    end
+
+    def proxy_reference?
+      [CDN_host,
+       env['SERVER_NAME']].member? host
     end
 
     def relocate

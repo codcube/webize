@@ -1,6 +1,7 @@
 module Webize
 
-  CDN_host = 'x:8000'
+  CDN_host = 'x'
+  CDN_port = 8000
 
   module Feed
 
