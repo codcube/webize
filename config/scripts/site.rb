@@ -1,4 +1,7 @@
 module Webize
+
+  CDN_host = 'x:8000'
+
   module Feed
 
     # subscriptions

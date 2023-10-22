@@ -12,9 +12,8 @@ module Webize
     def relocate?
       URL_host? ||
         RSS_available? ||
-        [FWD_hosts,
-         YT_hosts].find{|group|
-        group.member? host}
+        (CDN_doc? && deny_domain?) ||
+        [FWD_hosts, YT_hosts].find{|_| _.member? host}
     end
 
     def relocate
@@ -28,6 +27,8 @@ module Webize
                  elsif YT_hosts.member? host
                    ['//www.youtube.com/watch?v=',
                     (query_values || {})['v'] || path[1..-1]].join
+                 elsif CDN_doc? && deny_domain?
+                   ['//', CDN_host, '/', self].join
                  else
                    self
                   end)
