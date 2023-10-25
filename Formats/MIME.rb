@@ -40,7 +40,7 @@ module Webize
       name = basename.downcase      # normalize case
       if TextFiles.member? name     # well-known textfile names (README etc)
         'text/plain'
-      elsif name.index('msg.') == 0 || path.index('/sent/cur') == 0
+      elsif name == 'msg'
         'message/rfc822'            # procmail $PREFIX or maildir container
       end
     end
