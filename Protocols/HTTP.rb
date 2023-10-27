@@ -561,7 +561,7 @@ module Webize
       if env['HTTP_ORIGIN']
         env['HTTP_ORIGIN']
       elsif env[:referer]
-        'http' + (host == 'localhost' ? '' : 's') + '://' + env[:referer].host
+        ['http', host == 'localhost' ? '' : 's', '://', env[:referer].host].join
       else
         '*'
       end
