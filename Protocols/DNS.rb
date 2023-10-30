@@ -85,8 +85,8 @@ class DNSServer
                 else
                   "\e[38;5;51m"
                 end
-        puts [Time.now.iso8601[11..15],
-              [color, "\e]8;;https://#{hostname}/\a#{hostname}\e]8;;\a\e[0m"].join].join ' '
+        puts [ # Time.now.iso8601[11..15],
+          [color, "\e]8;;https://#{hostname}/\a#{hostname}\e]8;;\a\e[0m"].join].join ' '
       end
       src.reply r.response(result)
     end
