@@ -14,6 +14,7 @@ subj URI collision http://localhost:8000/coop/agaric/blog/feed
 new JSON Extractor . http://l/com/blastradio/ronnieloko
 video tags http://localhost:8000/https://prodamdlim.akamaized.net/#p96ed80bee1d4989e50d902a0d11b0f05fc8b40868d4fedb18aefc601d52c0076
 image hosts  (and the other two host types we added) http://l/2023/09/25/17/*idm.irc#prev
+hrefize text links in htML http://localhost:8000/com/ycombinator/news/user.19ef6bd79da1a6d.0
 @felt-data http://localhost:8000/https://felt.com/map/Dead-Co-Summer-Road-Trip-Guide-copy-OEZ0VtcCRMCKN5N2xMhuIC?loc=43.33,-106.066,5.7z
 http://localhost:8000/https://developer.mozilla.org/en-US/blog/introducing-the-mdn-playground/
 dangling realpaths http://l/news/prt/i/
@@ -57,7 +58,6 @@ dangling realpaths http://l/news/prt/i/
 - ipfs/ipns protocol handler https://archive.fosdem.org/2021/schedule/event/open_research_filecoin_ipfs/
 - NNTP server/client
 - http, (web)socket, DNS in one process (toplevel Async reactor?) for RAM efficiency on oldphone/pi3
-
 ## DNS
 - replace dnsd-mini4 with rubydns/async-dns for IPV6 and reverse lookups
 
