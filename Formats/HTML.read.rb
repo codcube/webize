@@ -122,17 +122,16 @@ module Webize
         @doc.css(MsgCSS[:post]).map{|post| # generate post identifier if missing
           post['id'] = 'post' + Digest::SHA2.hexdigest(rand.to_s) unless post['id']}
 
-        # bind subject URI, traverse fragment and emit triples describing it
+        # emit triples describing document fragment
         emitFragment = -> subject, fragment {
 
-          # recursive within fragment boundary
+          # recursively visit DOM-nodes inside fragment
           walk = -> node {
             node.children.map{|n|
               unless n.text?
-                if id = n['id']
-                  id = '#' + CGI.escape(id)
-                  yield subject, Contains, URI(id)
-                  yield URI(id), Title, id unless id.index('#post') == 0
+                if id = n['id'] # child fragment found - emit separately
+                  id = '#' + CGI.escape(id)        # fragment identifier
+                  yield subject, Contains, URI(id) # containment triple
                   emitFragment[id, n] unless DropNodes.member? n.name
                   n.remove
                 else
@@ -143,7 +142,9 @@ module Webize
           # traverse fragment
           walk[fragment]
 
-          # <img>
+          fragment.css(MsgCSS[:link]).map{|l| puts l}
+
+            # <img>
           fragment.css('img[src][alt], img[src][title]').map{|img|
             image = @base.join img['src']
             yield subject, Contains, image
@@ -169,6 +170,7 @@ module Webize
               yield subject, Title, title
               subj.remove if title == subj.inner_html
             end}
+          # yield URI(id), Title, id # title derived from fragment identifier
 
           # sender
           (authorText = fragment.css(MsgCSS[:creator])).map{|c|
@@ -191,10 +193,11 @@ module Webize
                                             #end}
 
           # HTML content
-          yield subject, Content, HTML.format(fragment, @base).send(%w(html head body div).member?(fragment.name) ? :inner_html : :to_html)
+          yield subject, Content,
+                HTML.format(fragment, @base).send(%w(html head body div).member?(fragment.name) ? :inner_html : :to_html)
         }
 
-        # <body>, or entire doc if <body> isn't found
+        # emit <body>, or entire document if <body> doesn't exist
         emitFragment[@base, @doc.css('body')[0] || @doc]
 
       end
