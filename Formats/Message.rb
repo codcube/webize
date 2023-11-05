@@ -14,7 +14,7 @@ module Webize
  date
  gunk
  image imageP imagePP
- link
+ permalink
  post
  reply
  title

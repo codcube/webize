@@ -123,26 +123,35 @@ module Webize
           post['id'] = 'post' + Digest::SHA2.hexdigest(rand.to_s) unless post['id']}
 
         # emit triples describing document fragment
-        emitFragment = -> subject, fragment {
+        emitFragment = -> fragment {
+          fragID = '#' + CGI.escape(fragment['id']) # fragment identifier
 
-          # recursively visit DOM-nodes inside fragment
+          # recursively visit DOM nodes inside fragment
           walk = -> node {
             node.children.map{|n|
               unless n.text?
-                if id = n['id'] # child fragment found - emit separately
-                  id = '#' + CGI.escape(id)        # fragment identifier
-                  yield subject, Contains, URI(id) # containment triple
-                  emitFragment[id, n] unless DropNodes.member? n.name
+                if n['id'] # contained fragment found
+                  yield fragID, Contains, URI '#' + CGI.escape(n['id']) # containment triple
+                  emitFragment[n] unless DropNodes.member? n.name # emit fragment
                   n.remove
                 else
                   walk[n]
                 end
               end}}
 
-          # traverse fragment
           walk[fragment]
 
-          fragment.css(MsgCSS[:link]).map{|l| puts l}
+          # subject URI
+          subject = if (links = fragment.css MsgCSS[:permalink]).empty?
+                      fragID # fragment URI
+                    else # inlined content with graph URI permalink
+                      if links.size > 1
+                        puts "multiple links from content: #{links.join ', '}, using #{links[0]['href']} as identifier"
+                        links[1..-1].map{|link|
+                          yield fragID, Link, URI link['href']}
+                      end
+                      links[0]['href']
+                    end
 
             # <img>
           fragment.css('img[src][alt], img[src][title]').map{|img|
@@ -170,7 +179,6 @@ module Webize
               yield subject, Title, title
               subj.remove if title == subj.inner_html
             end}
-          # yield URI(id), Title, id # title derived from fragment identifier
 
           # sender
           (authorText = fragment.css(MsgCSS[:creator])).map{|c|
@@ -194,11 +202,11 @@ module Webize
 
           # HTML content
           yield subject, Content,
-                HTML.format(fragment, @base).send(%w(html head body div).member?(fragment.name) ? :inner_html : :to_html)
-        }
+                HTML.format(fragment, @base).send(%w(html head body div).member?(fragment.name) ? :inner_html : :to_html)}
 
-        # emit <body>, or entire document if <body> doesn't exist
-        emitFragment[@base, @doc.css('body')[0] || @doc]
+        el = @doc.css('body')[0] || @doc # emit <body> or entire document
+        el['id'] = '' unless el['id']    # fragment identity
+        emitFragment[@base]
 
       end
     end
