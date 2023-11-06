@@ -208,9 +208,9 @@ module Webize
           yield subject, Content,
                 HTML.format(fragment, @base).send(%w(html head body div).member?(fragment.name) ? :inner_html : :to_html)}
 
-        el = @doc.css('body')[0] || @doc # emit <body> or entire document
-        el['id'] = '' unless el['id']    # fragment identity
-        emitFragment[@base]
+        el = @doc.css('body')[0] || @doc # find <body> or entire document
+        el['id'] = '' unless el['id']    # set default fragment identity
+        emitFragment[el]                 # emit content
 
       end
     end
