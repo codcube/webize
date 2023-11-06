@@ -147,11 +147,11 @@ module Webize
                       fragID # fragment URI
                     else # inlined content from or about another base graph w/ URI permalink
                       if links.size > 1
-                        puts "multiple links from content: #{links.join ', '}"
                         links[1..-1].map{|link|
-                          yield fragID, Link, (URI link['href'])}
+                          puts "@permalink: #{link}"
+                          yield fragID, Link, @base.join(link['href'])}
                       end
-                      graph = URI links[0]['href']
+                      graph = @base.join links[0]['href']
                       yield fragID, Contains, graph # better predicate? "exerpts" "transcludes" etc
                       puts "using #{graph} as identifier for inlined content"
                       graph
