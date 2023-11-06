@@ -1,12 +1,7 @@
-.age
-.byline > span[title]
-.datetime
-.labelCreated
-.note-header > a[title]
-.postdate
-.time-since
-.timestamp > a
-.tweet-date > a
+[class*="date"]
+[class*="date"] > a
+[class*="time"]
+[class*="time"] > a
 [data-time]
 [data-timestamp]
 [data-utc]
@@ -14,5 +9,4 @@
 [timestamp]
 [unixtime]
 relative-time
-td.thead > div.normal
 time

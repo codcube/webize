@@ -5,5 +5,5 @@
 [class*="message"]
 [class*="msg"]
 [class*="post"]
-[class*="row"]
 div.g
+.views-row
