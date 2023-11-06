@@ -122,15 +122,16 @@ module Webize
         @doc.css(MsgCSS[:post]).map{|post| # generate post identifier if missing
           post['id'] = 'post' + Digest::SHA2.hexdigest(rand.to_s) unless post['id']}
 
-        # emit triples describing document fragment
+        # emit triples describing HTML fragment
         emitFragment = -> fragment {
-          fragID = '#' + CGI.escape(fragment['id']) # fragment identifier
+          # fragment identifier
+          fragID = ['#', fragment['id'] ? CGI.escape(fragment['id']) : nil].join
 
-          # recursively visit DOM nodes in fragment, emit and reference identified subfragments as they're found
+          # recursively visit DOM nodes, emit and reference identified fragments as they're found
           walk = -> node {
             node.children.map{|n|
               unless n.text?
-                if n['id'] # identified subfragment
+                if n['id'] # identified fragment
                   yield fragID, Contains, (URI '#' + CGI.escape(n['id'])) # containment triple
                   emitFragment[n] unless DropNodes.member? n.name # emit fragment
                   n.remove
@@ -142,18 +143,18 @@ module Webize
           walk[fragment]
 
           # subject URI
-          links = fragment.css MsgCSS[:permalink]
-          subject = if links.empty?
-                      fragID # fragment URI
-                    else # inlined content from or about another base graph w/ URI permalink
+          subject = if fragment.name == 'body' || (links = fragment.css MsgCSS[:permalink]).empty?
+                      fragID # fragment identity
+                    else # inlined content from another graph with URI permalink
                       if links.size > 1
-                        links[1..-1].map{|link|
+                        links.map{|link|
                           puts "@permalink: #{link}"
                           yield fragID, Link, @base.join(link['href'])}
                       end
+#                      puts :__________________________, fragment
                       graph = @base.join links[0]['href']
                       yield fragID, Contains, graph # better predicate? "exerpts" "transcludes" etc
-                      puts "using #{graph} as identifier for inlined content"
+                      puts "using #{graph} as identifier for inlined content in #{fragID}"
                       graph
                     end
 
@@ -208,9 +209,8 @@ module Webize
           yield subject, Content,
                 HTML.format(fragment, @base).send(%w(html head body div).member?(fragment.name) ? :inner_html : :to_html)}
 
-        el = @doc.css('body')[0] || @doc # find <body> or entire document
-        el['id'] = '' unless el['id']    # set default fragment identity
-        emitFragment[el]                 # emit content
+        emitFragment[@doc.css('body')[0] || # emit <body> or entire document as RDF
+                     @doc]
 
       end
     end

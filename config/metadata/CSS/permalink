@@ -1,14 +1,5 @@
-.CommentPoster > a
-.age > a
-.timestamp > a
-.u-url
-[class*="post"] a
-[class*="title"] a
-[id*="permalink"]
-[id*="post"] a
-a.chat-item__time
-a.post_no
-a[class*="link"]
-a[class*="title"]
-a[ping]
-h3 > a
+[class*="link"] a[href]
+[class*="title"] a[href]
+a[class*="link"][href]
+a[class*="title"][href]
+a[ping][href]
