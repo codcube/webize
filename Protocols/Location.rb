@@ -25,7 +25,7 @@ module Webize
                   q = query_values || {}
                   q['url'] || q['u'] || q['q'] || self
                  elsif FWD_hosts.member? host
-                   ['//', FWD_hosts[host], path].join
+                   ['//', FWD_hosts[host], path, query ? ['?', query] : nil].join
                  elsif RSS_available?
                    ['//', host, path.sub(/\/$/,''), '.rss'].join
                  elsif YT_hosts.member? host
