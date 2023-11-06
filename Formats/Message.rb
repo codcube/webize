@@ -14,8 +14,8 @@ module Webize
  date
  gunk
  image imageP imagePP
+ inline
  permalink
- post
  reply
  title
  video

@@ -119,13 +119,18 @@ module Webize
         @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
           JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
-        @doc.css(MsgCSS[:post]).map{|post| # generate post identifier if missing
-          post['id'] = 'post' + Digest::SHA2.hexdigest(rand.to_s) unless post['id']}
+        # generate inline-content identifier if missing
+        @doc.css(MsgCSS[:inline]).map{|post|
+          puts post,:_______________________________
+          post['inline'] = true # flag as inlined content for identifier search
+          post['id'] = 'e' + Digest::SHA2.hexdigest(rand.to_s)[0..12] unless post['id']}
 
         # emit triples describing HTML fragment
         emitFragment = -> fragment {
-          # fragment identifier
+
+          # fragment identity and label
           fragID = ['#', fragment['id'] ? CGI.escape(fragment['id']) : nil].join
+          yield fragID, Title, fragID if fragment['id']
 
           # recursively visit DOM nodes, emit and reference identified fragments as they're found
           walk = -> node {
@@ -143,15 +148,14 @@ module Webize
           walk[fragment]
 
           # subject URI
-          subject = if fragment.name == 'body' || (links = fragment.css MsgCSS[:permalink]).empty?
+          subject = if !fragment['inline'] || (links = fragment.css MsgCSS[:permalink]).empty?
                       fragID # fragment identity
-                    else # inlined content from another graph with URI permalink
+                    else # inlined content with URI permalink
                       if links.size > 1
                         links.map{|link|
                           puts "@permalink: #{link}"
                           yield fragID, Link, @base.join(link['href'])}
                       end
-#                      puts :__________________________, fragment
                       graph = @base.join links[0]['href']
                       yield fragID, Contains, graph # better predicate? "exerpts" "transcludes" etc
                       puts "using #{graph} as identifier for inlined content in #{fragID}"
