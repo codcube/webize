@@ -131,7 +131,7 @@ module Webize
             node.children.map{|n|
               unless n.text?
                 if n['id'] # identified subfragment
-                  yield fragID, Contains, URI '#' + CGI.escape(n['id']) # containment triple
+                  yield fragID, Contains, (URI '#' + CGI.escape(n['id'])) # containment triple
                   emitFragment[n] unless DropNodes.member? n.name # emit fragment
                   n.remove
                 else
@@ -145,11 +145,11 @@ module Webize
           links = fragment.css MsgCSS[:permalink]
           subject = if links.empty?
                       fragID # fragment URI
-                    else # inlined content from another graph w/ URI permalink
+                    else # inlined content from or about another base graph w/ URI permalink
                       if links.size > 1
                         puts "multiple links from content: #{links.join ', '}"
                         links[1..-1].map{|link|
-                          yield fragID, Link, URI link['href']}
+                          yield fragID, Link, (URI link['href'])}
                       end
                       graph = URI links[0]['href']
                       yield fragID, Contains, graph # better predicate? "exerpts" "transcludes" etc
