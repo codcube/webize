@@ -119,9 +119,8 @@ module Webize
         @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
           JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
-        # generate inline-content identifier if missing
+        # mint fragment-identifier for possibly-inlined-content, so the fragment emitter will see it
         @doc.css(MsgCSS[:inline]).map{|post|
-          puts post,:_______________________________
           post['inline'] = true # flag as inlined content for identifier search
           post['id'] = 'e' + Digest::SHA2.hexdigest(rand.to_s)[0..12] unless post['id']}
 
