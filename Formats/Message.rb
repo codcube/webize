@@ -59,6 +59,7 @@ module Webize
       end
 
       # twtxt -> RDF
+      # https://twtxt.readthedocs.io/
       def twtxt_triples
         dirname = File.dirname @base.path
         @doc.lines.grep(/^[^#]/).map{|line|
@@ -73,41 +74,5 @@ module Webize
         }
       end
     end
-  end
-  module HTML
-
-    # message sender
-    MarkupPredicate[Creator] = MarkupPredicate['http://xmlns.com/foaf/0.1/maker'] = -> creators, env {
-      creators.map{|creator|
-        if [Webize::URI, Webize::Resource, RDF::URI].member? creator.class
-          uri = Webize::Resource.new(creator).env env
-          name = uri.display_name
-          color = Digest::SHA2.hexdigest(name)[0..5]
-          {_: :a, class: :from, href: uri.href, style: "background-color: ##{color}", c: name}
-        else
-          markup creator, env
-        end}}
-
-    # message receiver
-    MarkupPredicate[To] = -> recipients, env {
-      recipients.map{|r|
-        if [Webize::URI, Webize::Resource, RDF::URI].member? r.class
-          uri = Webize::Resource.new(r).env env
-          name = uri.display_name
-          color = Digest::SHA2.hexdigest(name)[0..5]
-          {_: :a, class: :to, href: uri.href, style: "background-color: ##{color}", c: ['&rarr;', name].join}
-        else
-          markup r, env
-        end}}
-
-    Markup[Schema + 'InteractionCounter'] = -> counter, env {
-      if type = counter[Schema+'interactionType']
-        type = type[0].to_s
-        icon = Icons[type] || type
-      end
-      {_: :span, class: :interactionCount,
-       c: [{_: :span, class: :type, c: icon},
-           {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
-
   end
 end
