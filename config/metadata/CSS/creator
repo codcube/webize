@@ -1,16 +1,5 @@
-.CommentPoster > b
-.artist
-.author
-.bigusername
-.chat-item__from
-.chat-item__username
-.comment-author
-.name
-.nick
-.post_author
-.poster
-.poster-name
-.postername
-.username
-[data-hovercard-type="user"]
-a.user
+[class*="author"]
+[class*="creator"]
+[class*="poster"]
+[class*="sender"]
+[class*="user"]

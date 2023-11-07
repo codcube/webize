@@ -1,29 +1,5 @@
 # coding: utf-8
 module Webize
-  module HTML
-    class Reader
-
-      # initialize {CSS selector -> RDF attribute} map
-      MsgCSS = {}
-
-      # load user-defined maps
-      %w(
- content
- creator
- creatorHref
- date
- gunk
- image imageP imagePP
- inline
- permalink
- reply
- title
- video
-).map{|a|
-        MsgCSS[a.to_sym] = Webize.configList('metadata/CSS/' + a).join ', '}
-
-    end
-  end
   module Plaintext
 
     class Reader < RDF::Reader

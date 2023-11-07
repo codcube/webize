@@ -14,6 +14,11 @@ module Webize
 
       format Format
 
+      # user-defined CSS-selector<>RDF-predicate maps
+      MsgCSS = {}
+      %w( creator creatorHref date inline permalink reply title
+).map{|a| MsgCSS[a.to_sym] = Webize.configList('metadata/CSS/' + a).join ', '}
+
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
         @env = @base.respond_to?(:env) ? @base.env : HTTP.env
@@ -119,7 +124,7 @@ module Webize
         @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
           JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
-        # mint fragids for inline-candidate nodes so fragment emitter is invoked for permalink search
+        # identify inlined-content fragments
         @doc.css(MsgCSS[:inline]).map{|post|
           post['transclude'] = true
           post['id'] = 'e' + Digest::SHA2.hexdigest(rand.to_s)[0..12] unless post['id']}

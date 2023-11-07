@@ -1,10 +1,10 @@
-.author > a
-.byline > a
-.p-author > a
-.poster a
-.sender > a
-a.author
-a.bigusername
-a.hnuser
-a.user
-a.username
+[class*="author"] > a
+[class*="creator"] > a
+[class*="poster"] > a
+[class*="sender"] > a
+[class*="user"] > a
+a[class*="author"]
+a[class*="creator"]
+a[class*="poster"]
+a[class*="sender"]
+a[class*="user"]
