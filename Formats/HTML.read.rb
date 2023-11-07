@@ -152,12 +152,12 @@ module Webize
                     else # inlined content with URI permalink
                       if links.size > 1
                         links.map{|link|
-                          puts "@permalink: #{link}"
+                          #puts "@permalink: #{link}"
                           yield fragID, Link, @base.join(link['href'])}
                       end
                       graph = @base.join links[0]['href']
+                      #puts "using #{graph} as identifier for inlined content in #{fragID}"
                       yield fragID, Contains, graph # better predicate? "exerpts" "transcludes" etc
-                      puts "using #{graph} as identifier for inlined content in #{fragID}"
                       graph
                     end
 
