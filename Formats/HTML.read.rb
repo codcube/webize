@@ -153,6 +153,7 @@ module Webize
 
           # subject URI - same as fragment URI unless inlined/exerpted content
           subject = if !fragment['transclude'] || (links = fragment.css MsgCSS[:permalink]).empty?
+                      graph = nil
                       fragID
                     else # inlined content with URI permalink
                       if links.size > 1
@@ -169,53 +170,50 @@ module Webize
             # <img>
           fragment.css('img[src][alt], img[src][title]').map{|img|
             image = @base.join img['src']
-            yield subject, Contains, image
-            yield image, Type, RDF::URI(Image)
+            yield subject, Contains, image, graph
+            yield image, Type, RDF::URI(Image), graph
             %w(alt title).map{|attr|
               if val = img[attr]
-                yield image, Abstract, val
+                yield image, Abstract, val, graph
               end}}
 
           # <video>
           ['video[src]', 'video > source[src]'].map{|vsel|
             fragment.css(vsel).map{|v|
-              yield subject, Video, @base.join(v.attr('src'))}}
+              yield subject, Video, @base.join(v.attr('src')), graph}}
 
           # <datetime>
           fragment.css(MsgCSS[:date]).map{|d| # search on ISO8601 and UNIX timestamp selectors
-            yield subject, Date, d[DateAttr.find{|a| d.has_attribute? a }] || d.inner_text
+            yield subject, Date, d[DateAttr.find{|a| d.has_attribute? a }] || d.inner_text, graph
             d.remove}
 
           # title
           fragment.css(MsgCSS[:title]).map{|subj|
             if (title = subj.inner_text) && !title.empty?
-              yield subject, Title, title
+              yield subject, Title, title, graph
               subj.remove if title == subj.inner_html
             end}
 
           # sender
           (authorText = fragment.css(MsgCSS[:creator])).map{|c|
-            yield subject, Creator, c.inner_text }
+            yield subject, Creator, c.inner_text, graph }
+
           (authorURI = fragment.css(MsgCSS[:creatorHref])).map{|c|
-            yield subject, Creator, @base.join(c['href']) }
+            yield subject, Creator, @base.join(c['href']), graph }
+
           [authorURI, authorText].map{|a|
             a.map{|c|
               c.remove }}
 
           # receiver
           fragment.css(MsgCSS[:reply]).map{|reply_of|
-            yield subject, To, @base.join(reply_of['href'])
+            yield subject, To, @base.join(reply_of['href']), graph
             reply_of.remove}
-
-          # comment count
-          #post.css('.comment-comments').map{|c|
-          #if count = c.inner_text.strip.match(/^(\d+) comments$/)
-          #yield subject, 'https://schema.org/commentCount', count[1]
-                                            #end}
 
           # HTML content
           yield subject, Content,
-                HTML.format(fragment, @base).send(%w(html head body div).member?(fragment.name) ? :inner_html : :to_html)}
+                HTML.format(fragment, @base).send(%w(html head body div).member?(fragment.name) ? :inner_html : :to_html),
+                graph}
 
         emitFragment[@doc.css('body')[0] || # emit <body> or entire document as RDF
                      @doc]
