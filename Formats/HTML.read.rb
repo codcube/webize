@@ -119,9 +119,9 @@ module Webize
         @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
           JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
-        # mint fragment-id for maybe-inlined content so the fragment emitter is invoked for permalink search
+        # mint fragids for inline-candidate nodes so fragment emitter is invoked for permalink search
         @doc.css(MsgCSS[:inline]).map{|post|
-          post['inline'] = true # flag as inlined content for identifier search
+          post['transclude'] = true
           post['id'] = 'e' + Digest::SHA2.hexdigest(rand.to_s)[0..12] unless post['id']}
 
         # emit triples describing HTML fragment
@@ -146,9 +146,9 @@ module Webize
 
           walk[fragment]
 
-          # subject URI
-          subject = if !fragment['inline'] || (links = fragment.css MsgCSS[:permalink]).empty?
-                      fragID # fragment identity
+          # subject URI - same as fragment URI unless inlined/exerpted content
+          subject = if !fragment['transclude'] || (links = fragment.css MsgCSS[:permalink]).empty?
+                      fragID
                     else # inlined content with URI permalink
                       if links.size > 1
                         links.map{|link|
