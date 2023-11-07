@@ -119,7 +119,7 @@ module Webize
         @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
           JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
-        # mint fragment-identifier for possibly-inlined-content, so the fragment emitter will see it
+        # mint fragment-id for maybe-inlined content so the fragment emitter is invoked for permalink search
         @doc.css(MsgCSS[:inline]).map{|post|
           post['inline'] = true # flag as inlined content for identifier search
           post['id'] = 'e' + Digest::SHA2.hexdigest(rand.to_s)[0..12] unless post['id']}
