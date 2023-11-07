@@ -59,7 +59,7 @@ module Webize
       end
 
       # twtxt -> RDF
-      # https://twtxt.readthedocs.io/
+      # https://dev.twtxt.net/ https://twtxt.readthedocs.io/
       def twtxt_triples
         dirname = File.dirname @base.path
         @doc.lines.grep(/^[^#]/).map{|line|
