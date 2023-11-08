@@ -125,24 +125,30 @@ module Webize
           JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
         # identify inlined-content fragments
-        @doc.css(MsgCSS[:inline]).map{|post|
-          post['transclude'] = true
-          post['id'] = 'e' + Digest::SHA2.hexdigest(rand.to_s)[0..12] unless post['id']}
+        @doc.css(MsgCSS[:inline]).map{|n| n['inline'] = true}
 
         # emit triples describing HTML fragment
         emitFragment = -> fragment {
 
           # fragment identity and label
-          fragID = ['#', fragment['id'] ? CGI.escape(fragment['id']) : nil].join
+          fragID = ['#', fragment['id']].join
           yield fragID, Title, fragID if fragment['id']
 
           # recursively visit DOM nodes, emit and reference identified fragments as they're found
           walk = -> node {
             node.children.map{|n|
               unless n.text?
-                if n['id'] # identified fragment
-                  yield fragID, Contains, (URI '#' + CGI.escape(n['id'])) # containment triple
-                  emitFragment[n] unless DropNodes.member? n.name # emit fragment
+                if n['id'] || n['inline'] # recursive fragment handling
+
+                  n['id'] = 'inline' + Digest::SHA2.hexdigest(rand.to_s) unless n['id']
+
+                  # containment triple
+                  yield fragID, Contains, (URI '#' + n['id'])
+
+                  # emit child-fragment
+                  emitFragment[n] unless DropNodes.member? n.name
+
+                  # remove child-fragment reference in HTML, now referenced in RDF
                   n.remove
                 else
                   walk[n]
@@ -152,7 +158,7 @@ module Webize
           walk[fragment]
 
           # subject URI - same as fragment URI unless inlined/exerpted content
-          subject = if !fragment['transclude'] || (links = fragment.css MsgCSS[:permalink]).empty?
+          subject = if !fragment['inline'] || (links = fragment.css MsgCSS[:permalink]).empty?
                       graph = nil
                       fragID
                     else # inlined content with URI permalink
