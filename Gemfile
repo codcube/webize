@@ -1,4 +1,6 @@
 source "https://rubygems.org/"
+
+gem 'async-dns'
 gem 'brotli'
 gem 'chronic'
 gem 'console'
@@ -11,5 +13,4 @@ gem 'org-ruby'
 gem 'redcarpet'
 gem 'rouge'
 gem 'ruby-net-text'
-gem 'rubydns'
 gem 'taglib-ruby'

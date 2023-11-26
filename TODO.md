@@ -57,9 +57,7 @@ dangling realpaths http://l/news/prt/i/
 - notification/update mesh - pick a protocol or create one like NNTPish atop Solid
 - ipfs/ipns protocol handler https://archive.fosdem.org/2021/schedule/event/open_research_filecoin_ipfs/
 - NNTP server/client
-- http, (web)socket, DNS in one process (toplevel Async reactor?) for RAM efficiency on oldphone/pi3
-## DNS
-- replace dnsd-mini4 with rubydns/async-dns for IPV6 and reverse lookups
+- http, (web)socket, DNS in one process / toplevel Async reactor for RAM efficiency on oldphone/pi<4
 
 ## Gemini
 - gack (gemini) server
