@@ -6,6 +6,10 @@ class FilteredServer < Async::DNS::Server
 
   DefaultAddr = ENV['ADDR'] || '127.0.0.1'
 
+  Log = -> name, color {
+    puts [Time.now.iso8601[11..15], v6 ? '6️⃣' : nil, [color, "\e]8;;https://#{name}/\a#{name}\e]8;;\a\e[0m"].join].compact.join ' '
+  }
+
   def process(name, resource_class, transaction)
 
     # TODO find any upstream/ISP-provided resolvers in /etc/resolv.conf before setting that to point to us
@@ -32,12 +36,11 @@ class FilteredServer < Async::DNS::Server
 
     if resource.deny?
       color = "\e[38;5;#{resource.deny_domain? ? 196 : 202};7m"
-      puts [Time.now.iso8601[11..15], v6 ? '6️⃣' : nil, [color, "\e]8;;https://#{name}/\a#{name}\e]8;;\a\e[0m"].join].join ' '
-      addr = v6 ? '::1' : DefaultAddr
-      transaction.respond! addr
+      Log[name, color]
+      transaction.respond! v6 ? '::1' : DefaultAddr
     else
       color = name.index('www.') == 0 ? nil : "\e[38;5;51m"
-      puts [Time.now.iso8601[11..15], v6 ? '6️⃣' : nil, [color, "\e]8;;https://#{name}/\a#{name}\e]8;;\a\e[0m"].join].join ' '
+      Log[name, color]
       transaction.passthrough! @resolver
     end
   end
