@@ -27,16 +27,17 @@ class FilteredServer < Async::DNS::Server
                                              [:tcp, '2001:4860:4860::8844', 53],
                                            ])
 
+    v6 = resource_class == Resolv::DNS::Resource::IN::AAAA
     resource = Webize::URI(['//', name].join)
 
     if resource.deny?
       color = "\e[38;5;#{resource.deny_domain? ? 196 : 202};7m"
-      puts [Time.now.iso8601[11..15], [color, "\e]8;;https://#{name}/\a#{name}\e]8;;\a\e[0m"].join].join ' '
-      addr = resource_class == Resolv::DNS::Resource::IN::AAAA ? '::1' : DefaultAddr
+      puts [Time.now.iso8601[11..15], v6 ? '6️⃣' : nil, [color, "\e]8;;https://#{name}/\a#{name}\e]8;;\a\e[0m"].join].join ' '
+      addr = v6 ? '::1' : DefaultAddr
       transaction.respond! addr
     else
-      color = hostname.index('www.') == 0 ? nil : "\e[38;5;51m"
-      puts [Time.now.iso8601[11..15], [color, "\e]8;;https://#{name}/\a#{name}\e]8;;\a\e[0m"].join].join ' '
+      color = name.index('www.') == 0 ? nil : "\e[38;5;51m"
+      puts [Time.now.iso8601[11..15], v6 ? '6️⃣' : nil, [color, "\e]8;;https://#{name}/\a#{name}\e]8;;\a\e[0m"].join].join ' '
       transaction.passthrough! @resolver
     end
   end
