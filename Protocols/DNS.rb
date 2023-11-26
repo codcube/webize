@@ -10,7 +10,10 @@ class FilteredServer < Async::DNS::Server
   Log = -> name, color, v6 {
     unless @@last == name
       @@last = name
-      puts [Time.now.iso8601[11..15], v6 ? '6️⃣' : nil, [color, "\e]8;;https://#{name}/\a#{name}\e]8;;\a\e[0m"].join].compact.join ' '
+      puts [Time.now.iso8601[11..15],
+            v6 ? '6️⃣' : nil,
+            [color, "\e]8;;https://#{name}/\a#{name}\e]8;;\a\e[0m"].join].
+             compact.join ' '
     end
   }
 
