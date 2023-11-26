@@ -6,8 +6,7 @@ class FilteredServer < Async::DNS::Server
 
   DefaultAddr = ENV['ADDR'] || '127.0.0.1'
 
-  Log = -> name, color {
-    v6 = resource_class == Resolv::DNS::Resource::IN::AAAA
+  Log = -> name, color, v6 {
     puts [Time.now.iso8601[11..15], v6 ? '6️⃣' : nil, [color, "\e]8;;https://#{name}/\a#{name}\e]8;;\a\e[0m"].join].compact.join ' '
   }
 
@@ -36,15 +35,16 @@ class FilteredServer < Async::DNS::Server
                                              [:tcp, '2001:4860:4860::8844', 53],
                                            ])
 
+    v6 = resource_class == Resolv::DNS::Resource::IN::AAAA
     resource = Webize::URI(['//', name].join)
 
     if resource.deny?
       color = "\e[38;5;#{resource.deny_domain? ? 196 : 202};7m"
-      Log[name, resource_class, color]
+      Log[name, color, v6]
       transaction.respond! v6 ? '::1' : DefaultAddr
     else
       color = name.index('www.') == 0 ? nil : "\e[38;5;51m"
-      Log[name, resource_class, color]
+      Log[name, color, v6]
       transaction.passthrough! @resolver
     end
   end
