@@ -25,8 +25,8 @@ Subtitle
 Text
 Video),
  Protocols: %w(
-Access
-Location
+access
+location
 Gemini
 HTTP
 POSIX
