@@ -20,25 +20,25 @@ class FilteredServer < Async::DNS::Server
 
     # TODO find any upstream/ISP-provided resolvers in /etc/resolv.conf before setting that to point to us
     @resolver ||= Async::DNS::Resolver.new([
-                                             # cloudflare
-                                             [:udp, '1.1.1.1', 53],
-                                             [:tcp, '1.1.1.1', 53],
-                                             [:udp, '1.0.0.1', 53],
-                                             [:tcp, '1.0.0.1', 53],
+                                             # Cloudflare
                                              [:udp, '2606:4700:4700::1111', 53],
                                              [:tcp, '2606:4700:4700::1111', 53],
                                              [:udp, '2606:4700:4700::1001', 53],
                                              [:tcp, '2606:4700:4700::1001', 53],
+                                             [:udp, '1.1.1.1', 53],
+                                             [:tcp, '1.1.1.1', 53],
+                                             [:udp, '1.0.0.1', 53],
+                                             [:tcp, '1.0.0.1', 53],
 
-                                             # google
-                                             [:udp, '8.8.8.8', 53],
-                                             [:tcp, '8.8.8.8', 53],
-                                             [:udp, '8.8.4.4', 53],
-                                             [:tcp, '8.8.4.4', 53],
+                                             # Google
                                              [:udp, '2001:4860:4860::8888', 53],
                                              [:tcp, '2001:4860:4860::8888', 53],
                                              [:udp, '2001:4860:4860::8844', 53],
                                              [:tcp, '2001:4860:4860::8844', 53],
+                                             [:udp, '8.8.8.8', 53],
+                                             [:tcp, '8.8.8.8', 53],
+                                             [:udp, '8.8.4.4', 53],
+                                             [:tcp, '8.8.4.4', 53],
                                            ])
 
     v6 = resource_class == Resolv::DNS::Resource::IN::AAAA
