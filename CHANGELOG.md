@@ -1,3 +1,7 @@
+Sep 10 01:07:53 2023 -> Mon Nov 27 09:20:35 2023 (adb0306d790901d5b38f9d6966b1de39a3c378f7 -> 6bd36a444575b927354c1cd07cd0c7aa2bd8959d)
+
+- remove String#R shorthand to cast a URI string to a Resource. simple mechanical replace of a few hundred calls from this to RDF::URI constructors when possible, Webize::URI when a few additional 'pure' URI-arithmetic functions are used, or Webize::Resource when there's an environment dependency. there's also instance-method constructors that plumb the environment through to the new object for minimal verbosity and no more namespace-polluting the String class
+
 Jul 20 16:22:11 2023 -> Sep 10 01:07:53 2023 (ad57a727491c5b28f8ed5bff1bd25c71bb61214a -> adb0306d790901d5b38f9d6966b1de39a3c378f7)
 
 - make env optional and improve text output on [tabular](https://gitlab.com/ix/webize/-/blob/13081569080381510456d73fb4983d92b6b7a71a/Formats/CSV.rb#L6) renderer

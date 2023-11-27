@@ -41,6 +41,7 @@ dangling realpaths http://l/news/prt/i/
 - if first news page is all new updates, bounded recursive fetch of next pages to catch up
 
 # Model
+- remove requirement for explicit graph specification in triplrs, it's implicit in the request and resource URIs. we can now use #relocate to move resources to better URIs if absolutely necessary.  in aggregation scenarios (feed/update endpoints), the graph URI is currently being set to the canonical location of the individual resource so it's stored there rather than under the feed URL. we'll probably change the graph URI to just be the URI the resources were found at, and add better provenance linking back to that when linking the canonical location. 
 - populate geographic index from encountered RDF https://www.jphs.org/20th-century/2017/11/13/boston-remembers-kurt-cobain
 - now that bnode/contained/referred subresource rendering is handled better, move DC:Image triples that are actually avatars to first-class avatar triple
 - grep inside list http://l/src/webize/config/feeds?q=gitter
@@ -54,10 +55,10 @@ dangling realpaths http://l/news/prt/i/
 # HTTP(S)
 - stop redir to blocked content: http://l/2021/09/27/21/*blogpost*?view=table&sort=date →  //link.mail.bloombergbusiness.com/favicon.ico  → https://cdn.sailthru.com/assets/images/favicon.ico
 - ask all the peer-caches (pi/vps/phone from laptop) ahead of origin servers for static resources - HEAD All then cancel remaining HEADs on first response and GET winner? or announce availability at cache-time of stuff not autoimagically syndicated (larger static media stuff etc)
-- auto-certgen for Falcon
+- auto-certgen for Falcon for full MITM (See localhost gem as starting point)
 - drop specific query keys - less destructive than total qs strip - de-utmize and other gunk
-- implement ioquatix streaming template stuff for earlier first byte on multi/merge-GET - basically required for 500-blog subscription list or we get gateway/rack/server 60s timeouts
-- notification/update mesh - pick a protocol or create one (NNTP-alike atop Solid?)
+- implement ioquatix 'trenni' etc streaming templates for earlier first byte on multi/merge-GET - basically required for 500-blog subscription list or we get gateway/rack/server 60s timeouts
+- notification/update mesh - pick a protocol or create one (NNTP-inspired flood/gossipsub atop Solid notifications/inboxes, most likely)
 
 # Format
 - mboxes, gunzipped https://www.redhat.com/archives/dm-devel/2020-November.txt.gz
@@ -74,7 +75,7 @@ dangling realpaths http://l/news/prt/i/
 - redo JSON triplr too topofdoc https://radio.montezpress.com/api/archive/
 - next/prev links in HTML not lifted to HTTP metadata and/or collide with proxy-added #next/#prev http://techrights.org/2021/11/30/freedom-respecting-internet/ http://www.w3.org/1999/xhtml/vocab#role
 - link gemini posts to timeline - use current timestamp if server doesn't provide
-- make HTML/RSS renderers genuine RSS:Writer instances
+- make HTML/RSS renderers genuine RSS:Writer instances. 
 - ruby-net-text (gemtext) is failing on URI parse errors all the time - it shouldn't even parse the body - write a Gemini parser? do we/you use Gemini still? also TWTXT etc
 - chat view
 - re-parsing PDFs when offline http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date (remove @path), images missing http://localhost:8000/https://www.bc.edu/content/dam/bc1/schools/carroll/Centers/corcoran-center/Gallivan%20Boulevard%20Concept%20Final%20-%20Spreads.pdf
