@@ -1,8 +1,3 @@
-https://librelounge.org/atom-feed.atom
-https://linuxrocks.online/@dnkl
-https://linuxrocks.online/@dnkl.rss
-https://ariadne.space/atom.xml
-https://techrights.org/feed.xml
 http://mcld.co.uk/blog/feeds/mcld_blog.atom
 http://mcld.co.uk/blog/feeds/mcld_blog.rss
 https://0x00sec.org/latest.rss
@@ -10,12 +5,12 @@ https://agaric.coop/blog/feed
 https://alexanderobenauer.com/assets/feed/rss.xml
 https://alexschroeder.ch/wiki/feed/full/
 https://ar.al/index.xml
+https://ariadne.space/atom.xml
 https://battlepenguin.com/feed.xml
 https://blog.cryptographyengineering.com/feed/
 https://blog.datadryad.org/feed/
 https://blog.dxos.org/rss/
 https://blog.ipfs.io/index.xml
-https://refi64.dev/atom.xml
 https://blog.mauve.moe/
 https://blog.nationalarchives.gov.uk/feed/
 https://blog.okfn.org/feed/
@@ -33,6 +28,7 @@ https://codata.org/feed/
 https://code4lib.social/@dltj.rss
 https://communitynets.org/rss.xml
 https://council.science/feed/
+https://cpj.org/feed/
 https://crystal-lang.org/feed.xml
 https://cyber.harvard.edu/news/feed
 https://dair-community.social/@timnitGebru.rss
@@ -86,6 +82,9 @@ https://jvns.ca/atom.xml
 https://leftychan.net/leftypol/
 https://lemmy.ml/feeds/c/libre_culture.xml
 https://librarytechnology.org/rss/
+https://librelounge.org/atom-feed.atom
+https://linuxrocks.online/@dnkl
+https://linuxrocks.online/@dnkl.rss
 https://lobste.rs/comments.rss
 https://lobste.rs/rss
 https://lucyparsonslabs.com/feed.xml
@@ -124,6 +123,7 @@ https://pkp.sfu.ca/feed/
 https://psychedelicalpha.com/feed
 https://puri.sm/feed/
 https://reb00ted.org/index.xml
+https://refi64.dev/atom.xml
 https://researchsoftware.org/feed.xml
 https://retractionwatch.com/feed/
 https://rss.slashdot.org/slashdot/slashdotMain?format=xml
@@ -141,6 +141,7 @@ https://sysdfree.wordpress.com/comments/feed/
 https://sysdfree.wordpress.com/feed/
 https://tante.cc/feed/
 https://techpolicy.press/feed/
+https://techrights.org/feed.xml
 https://thepalaceproject.org/feed/
 https://tldr.nettime.org/@tante.rss
 https://tommorris.org/index.xml
@@ -174,6 +175,7 @@ https://www.go-fair.org/feed/
 https://www.hifa.org/news/rss
 https://www.hotosm.org/feed.xml
 https://www.huntonprivacyblog.com/feed/
+https://www.liberationnews.org/feed/
 https://www.librarycopyrightalliance.org/feed/
 https://www.macarthurjustice.org/feed/
 https://www.michalzelazny.com/feed/
@@ -184,6 +186,7 @@ https://www.nsf.gov/rss/rss_www_impacts.xml
 https://www.phoronix.com/rss.php
 https://www.pine64.org/feed/
 https://www.rd-alliance.org/rss.xml
+https://www.realhartford.org/feed/
 https://www.researchsoft.org/feed.xml
 https://www.reset.tech/index.xml
 https://www.scholcommlab.ca/feed/
