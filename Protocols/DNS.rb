@@ -4,18 +4,17 @@ require_relative '../index'
 
 class FilteredServer < Async::DNS::Server
 
-  @@last = nil
   DefaultAddr = ENV['ADDR'] || '127.0.0.1'
+  Seen = {}
 
   Log = -> name, color, v6 {
-    unless @@last == name
-      @@last = name
+    unless Seen[name]
+      Seen[name] = true
       puts [Time.now.iso8601[11..15],
             v6 ? '6️⃣' : nil,
             [color, "\e]8;;https://#{name}/\a#{name}\e]8;;\a\e[0m"].join].
              compact.join ' '
-    end
-  }
+    end}
 
   def process(name, resource_class, transaction)
 
