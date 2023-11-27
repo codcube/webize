@@ -21,7 +21,8 @@ dangling realpaths http://l/news/prt/i/
 
 # Config/Setup
 - use ~/.config/webize instead of git dir for config
-- reload all the conf files on ctrl-shift-R (currently just blocklist
+- reload all conf files on ctrl-shift-R
+- http, (web)socket, DNS in one process - toplevel Async reactor for RAM efficiency on oldphone/pi<4
 - turtle documenting of our declarative config files - maybe w3 CSV schema since it's mostly tabular?
 - handle comments in config parsing
 - systemd + openrc unit files
@@ -30,7 +31,6 @@ dangling realpaths http://l/news/prt/i/
 
 # UI
 - down link on google for all results inlined
-- JS: 'n' key jumps to first in view
 - title missing if source is RDF, not HTML
 - resource/update/origin-triple count in dataset list
 - blank page https://efdn.notion.site/0314a1800b774258a8e6197487c479bc?v=15fb6b39a490413cbba3b7f78ad67c2b
@@ -51,24 +51,13 @@ dangling realpaths http://l/news/prt/i/
 - cache redirects. instantly syndicate these (t.co dereferences, tokens and icons) to peers) 🐕➡️  http://l/2021/09/29/11/*blogpost* →  //federalhillprov.com/favicon.ico  → https://federalhillprov.com/wp-content/uploads/2021/08/cropped-fed-hill-favicon-178px-32x32.png
 - du on directories
 
-# Protocol
-## misc
-- finger URIs gemini://freeshell.de/gemlog/2022-01-11.gmi
-- notification/update mesh - pick a protocol or create one like NNTPish atop Solid
-- ipfs/ipns protocol handler https://archive.fosdem.org/2021/schedule/event/open_research_filecoin_ipfs/
-- NNTP server/client
-- http, (web)socket, DNS in one process / toplevel Async reactor for RAM efficiency on oldphone/pi<4
-
-## Gemini
-- gack (gemini) server
-- serve gemini from cache when gone missing gemini://rfmpie.smol.pub/reviving-macbook-with-linux
-
-## HTTP(S)
-- stop redir to blocked contetnt: http://l/2021/09/27/21/*blogpost*?view=table&sort=date →  //link.mail.bloombergbusiness.com/favicon.ico  → https://cdn.sailthru.com/assets/images/favicon.ico
+# HTTP(S)
+- stop redir to blocked content: http://l/2021/09/27/21/*blogpost*?view=table&sort=date →  //link.mail.bloombergbusiness.com/favicon.ico  → https://cdn.sailthru.com/assets/images/favicon.ico
 - ask all the peer-caches (pi/vps/phone from laptop) ahead of origin servers for static resources - HEAD All then cancel remaining HEADs on first response and GET winner? or announce availability at cache-time of stuff not autoimagically syndicated (larger static media stuff etc)
-- auto-certgen for Falcon HTTPS
+- auto-certgen for Falcon
 - drop specific query keys - less destructive than total qs strip - de-utmize and other gunk
 - implement ioquatix streaming template stuff for earlier first byte on multi/merge-GET - basically required for 500-blog subscription list or we get gateway/rack/server 60s timeouts
+- notification/update mesh - pick a protocol or create one (NNTP-alike atop Solid?)
 
 # Format
 - mboxes, gunzipped https://www.redhat.com/archives/dm-devel/2020-November.txt.gz
