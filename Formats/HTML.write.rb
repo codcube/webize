@@ -138,7 +138,7 @@ module Webize
 
                                toolbar,
 
-                               ({class: :warning, c: env[:warning]} if env.has_key? :warning), # warning(s)
+                               ({class: :warning, c: env[:warnings]} if env.has_key?(:warnings) && !env[:warnings].empty?), # warning(s)
 
                                link[:up,'&#9650;'],
 

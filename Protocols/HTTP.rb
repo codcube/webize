@@ -110,12 +110,14 @@ module Webize
       body
     end
 
-    # blank environment structure
+    # initialize environment structure
     def self.env
       {client_etags: [],
        feeds: [],
        links: {},
-       qs: {}}
+       qs: {},
+       warnings: [],
+      }
     end
 
     def self.Node uri, env
@@ -126,7 +128,7 @@ module Webize
   class HTTP::Node < Resource
     include MIME
 
-    # host adaptation runs on last proxy in chain
+    # host adaptation only runs on last proxy in chain
     def adapt?
       !ENV.has_key?('http_proxy')
     end
@@ -153,7 +155,7 @@ module Webize
                                   else
                                   end)
       globbed = ps[1]&.match? GlobChars
-      pattern = ['*/' * hdepth,                       # glob less-significant subslices inside slice
+      pattern = ['*/' * hdepth,                       # glob less-significant (sub)slices in slice
                  globbed ? nil : '*', ps[1],          # globify slug if bare
                  globbed ? nil : '*'] if ps.size == 2 # .. if slug provided
 
@@ -315,8 +317,11 @@ module Webize
       when /30[12378]/                                      # redirect
         location = e.io.meta['location']
         dest = Node join location
-        if !thru
-          logger.warn "⚠️ redirected #{uri} → #{location} but configured to not follow - update source reference"
+        if !thru # location not returned to caller, notify on stderr/warning-bar new location
+          logger.warn "➡️ #{uri} → #{location}"
+          env[:warnings].push [{_: :a, href: href, c: uri},
+                               '➡️',
+                               {_: :a, href: dest.href, c: dest.uri}, '<br>']
         elsif no_scheme == dest.no_scheme
           if scheme == 'https' && dest.scheme == 'http'     # 🔒downgrade
             logger.warn "🛑 downgrade redirect #{dest}"
@@ -387,15 +392,14 @@ module Webize
       when 'spartan'                                        # fetch w/ Spartan
         fetchSpartan
       else
-        logger.warn "⚠️ unsupported scheme #{uri}"           # unsupported scheme
+        logger.warn "⚠️ unsupported scheme #{uri}"          # unsupported scheme
         opts[:thru] == false ? nil : notfound
       end
     rescue Exception => e                                   # warn on error
-      env[:warning] ||= []
-      env[:warning].push [{_: :span, c: e.class},
-                          {_: :a, href: href, c: uri},
-                          CGI.escapeHTML(e.message),
-                          {_: :b, c: [:⏱️, Time.now - start_time, :s]}, '<br>']
+      env[:warnings].push [{_: :span, c: e.class},
+                           {_: :a, href: href, c: uri},
+                           CGI.escapeHTML(e.message),
+                           {_: :b, c: [:⏱️, Time.now - start_time, :s]}, '<br>']
       puts [:⚠️, uri,
             e.class, e.message,
           # e.backtrace.join("\n")
