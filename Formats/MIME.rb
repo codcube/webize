@@ -37,11 +37,11 @@ module Webize
     end
 
     def fileMIMEprefix
-      name = basename.downcase      # normalize case
-      if TextFiles.member? name     # well-known textfile names (README etc)
-        'text/plain'
+      name = basename.downcase # normalize case
+      if TextFiles.member?(name) && extname.empty?
+        'text/plain'           # well-known textfile name
       elsif name == 'msg'
-        'message/rfc822'            # procmail $PREFIX or maildir container
+        'message/rfc822'       # procmail $PREFIX or maildir container
       end
     end
 
