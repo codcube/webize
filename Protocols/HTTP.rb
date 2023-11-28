@@ -260,21 +260,20 @@ module Webize
         else                                                # massage metadata, cache and return data
           body = HTTP.decompress h, response.read           # decompress body
 
-          format = if (parts[0] == 'feed' || (Feed::Names.member? basename)) && adapt? # format on adapted feed URI
-                     'application/atom+xml'
-                   elsif content_type = h['Content-Type']   # format defined in HTTP header
+          format = if (parts[0] == 'feed' || (Feed::Names.member? basename)) && adapt?
+                     'application/atom+xml'                            # format defined on feed URI
+                   elsif content_type = h['Content-Type']              # format defined in HTTP header
                      ct = content_type.split(/;/)
-                     if ct.size == 2 && ct[1].index('charset') # charset defined in HTTP header
+                     if ct.size == 2 && ct[1].index('charset')         # charset defined in HTTP header
                        charset = ct[1].sub(/.*charset=/i,'')
                        charset = nil if charset.empty? || charset == 'empty'
                      end
                      ct[0]
                    elsif path && content_type = (MIME.fromSuffix File.extname path)
-                     content_type                           # format defined on basename
+                     content_type                                       # format defined on basename
                    else
                      'application/octet-stream'
-                   end
-          format.downcase!                                              # normalize format identifier
+                   end.downcase                                         # normalize format
                                                                         # detect in-band charset definition
           if !charset && format.index('html') && metatag = body[0..4096].encode('UTF-8', undef: :replace, invalid: :replace).match(/<meta[^>]+charset=['"]?([^'">]+)/i)
             charset = metatag[1]
@@ -402,7 +401,7 @@ module Webize
                            {_: :b, c: [:⏱️, Time.now - start_time, :s]}, '<br>']
       puts [:⚠️, uri,
             e.class, e.message,
-          # e.backtrace.join("\n")
+            e.backtrace.join("\n")
            ].join ' '
       opts[:thru] == false ? nil : notfound
     end
