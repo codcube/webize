@@ -131,7 +131,7 @@ module Webize
         emitFragment = -> fragment {
 
           # fragment identity and label
-          fragID = ['#', fragment['id']].join
+          fragID = ['#', fragment['id'] ? CGI.escape(fragment['id']) : nil].join
           yield fragID, Title, fragID if fragment['id']
 
           # recursively visit DOM nodes, emit and reference identified fragments as they're found
@@ -143,7 +143,7 @@ module Webize
                   n['id'] = 'inline' + Digest::SHA2.hexdigest(rand.to_s) unless n['id']
 
                   # containment triple
-                  yield fragID, Contains, (URI '#' + n['id'])
+                  yield fragID, Contains, (URI '#' + CGI.escape(n['id']))
 
                   # emit child-fragment
                   emitFragment[n] unless DropNodes.member? n.name
