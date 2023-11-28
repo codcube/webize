@@ -39,7 +39,7 @@ title)
     if c = Chronic.parse(d) # Chronic parse
       c.utc.iso8601
     else
-      Console.logger.warn "failed to parse time: #{d}"
+      Console.logger.debug "failed to parse time: #{d}"
       d
     end
   end
