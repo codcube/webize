@@ -353,14 +353,13 @@ module Webize
       when /304/                                            # origin unmodified
         fetchLocal if thru
       when /300|[45]\d\d/                                   # not allowed/available/found
-        env[:origin_status] = status
         head = headers e.io.meta
         body = HTTP.decompress(head, e.io.read).encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
         repository ||= RDF::Repository.new
+        repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) # HTTP status in RDF
         RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|repository << g} if head['Content-Type']&.index 'html'
         head['Content-Length'] = body.bytesize.to_s
         if path == '/favicon.ico' && status / 100 == 4 # set default icon
-          env.delete :origin_status
           storage.write HTML::SiteIcon
           fileResponse
         elsif !thru
@@ -368,6 +367,7 @@ module Webize
         elsif env[:notransform]
           [status, head, [body]] # static response data
         else
+          env[:origin_status] = status
           respond [repository] # dynamic/transformable response data
         end
       else
