@@ -183,10 +183,8 @@ module Webize
                  update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {}), "\n"]},
              (:🔌 if offline?),                                                                                      # denote offline mode
              {_: :span, class: :stats,
-              c: [([{_: :span,class: :bold, c: env[:origin_status]},
-                    "\n"] if env[:origin_status] && env[:origin_status] != 200),                                     # upstream status-code
-                  (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                 # ⏱️ elapsed time
-                   [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)]}]}
+              c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                 # ⏱️ elapsed time
+                  [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)}]}
       end
 
     end
