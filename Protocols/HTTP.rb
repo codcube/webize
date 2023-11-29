@@ -293,6 +293,7 @@ module Webize
 
           repository = (readRDF format, body).persist env, self         # read and cache graph
           repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) unless status==200 # HTTP status in RDF
+          repository << RDF::Statement.new(self, RDF::URI('#format'), format) # format
           repository << RDF::Statement.new(self, RDF::URI('#fetchDuration'), fetch_time - start_time) # fetch time
           repository << RDF::Statement.new(self, RDF::URI('#parseDuration'), Time.now - fetch_time)   # parse time
          #repository << RDF::Statement.new(self, RDF::URI(Date), timestamp.iso8601) # timestamp in RDF
