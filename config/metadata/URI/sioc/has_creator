@@ -25,6 +25,7 @@ author.name
 authorId
 authorName
 authorNames
+authorSlug
 authorUrl
 author_name
 author_url
