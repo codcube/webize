@@ -28,6 +28,7 @@ dangling realpaths http://l/news/prt/i/
 - systemd + openrc unit files
 - gems
 - tests
+- killfile for users (brandpoint in miltontimes/valleybreeze feeds, automod on reddit)
 
 # UI
 - down link on google for all results inlined
