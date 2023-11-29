@@ -98,6 +98,7 @@ http://purl.org/atom/ns#created
 http://purl.org/atom/ns#issued
 http://purl.org/atom/ns#modified
 http://purl.org/dc/elements/1.1/date
+http://purl.org/dc/elements/1.1/modified
 http://purl.org/dc/terms/created
 http://purl.org/dc/terms/date
 http://purl.org/rss/1.0/LastModified
