@@ -252,15 +252,15 @@ module Webize
       start_time = Time.now
       ::URI.open(uri, headers.merge({open_timeout: 8, read_timeout: 8, redirect: false})) do |response|
         fetch_time = Time.now
-        h = headers response.meta                           # response headera
-        case env[:origin_status] = response.status[0].to_i  # response status
-        when 204                                            # no content
+        h = headers response.meta                                      # response header
+        case status = response.status[0].to_i                          # response status
+        when 204                                                       # no content
           [204, {}, []]
-        when 206                                            # partial content
+        when 206                                                       # partial content
           h['Access-Control-Allow-Origin'] ||= origin
           [206, h, [response.read]]
-        else                                                # massage metadata, cache and return data
-          body = HTTP.decompress h, response.read           # decompress body
+        else                                                           # massage metadata, cache and return data
+          body = HTTP.decompress h, response.read                      # decompress body
 
           format = if (parts[0] == 'feed' || (Feed::Names.member? basename)) && adapt?
                      'application/atom+xml'                            # format defined on feed URI
@@ -291,10 +291,10 @@ module Webize
                         Time.now
                       end
 
-          repository = (readRDF format, body).persist env, self         # read and cache graph data
-          repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), response.status[0]) # HTTP status in RDF
-          repository << RDF::Statement.new(self, RDF::URI('#fetchDuration'), fetch_time - start_time)
-          repository << RDF::Statement.new(self, RDF::URI('#parseDuration'), Time.now - fetch_time)
+          repository = (readRDF format, body).persist env, self         # read and cache graph
+          repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) unless status==200 # HTTP status in RDF
+          repository << RDF::Statement.new(self, RDF::URI('#fetchDuration'), fetch_time - start_time) # fetch time
+          repository << RDF::Statement.new(self, RDF::URI('#parseDuration'), Time.now - fetch_time)   # parse time
          #repository << RDF::Statement.new(self, RDF::URI(Date), timestamp.iso8601) # timestamp in RDF
 
           unless thru                                                   # return data
