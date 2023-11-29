@@ -280,11 +280,26 @@ module Webize
           end
           charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset identifier
           body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
-          format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # detect HTML served w/ XML MIME
+
+          format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML
+
+          timestamp = if h['Last-Modified']                             # HTTP timestamp
+                        Time.httpdate h['Last-Modified'] rescue Time.now
+                      else
+                        Time.now
+                      end
+
           repository = (readRDF format, body).persist env, self         # read and cache graph data
-          (print MIME.format_icon format; return repository) if !thru   # return graph data, or
+          repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), response.status[0]) # HTTP status in RDF
+         #repository << RDF::Statement.new(self, RDF::URI(Date), timestamp.iso8601) # timestamp in RDF
+
+          unless thru                                                   # return data
+            print MIME.format_icon format
+            return repository
+          end
                                                                         # HTTP Response with graph or static/unmodified-upstream data
           doc = storage.document                                        # static cache
+
           if (formats = RDF::Format.content_types[format]) &&           # content type
              (extensions = formats.map(&:file_extension).flatten) &&    # suffixes for content type
              !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix in mapped set?
@@ -294,13 +309,8 @@ module Webize
 
           File.open(doc, 'w'){|f|                                       # update cache
             f << (format == 'text/html' ? (HTML.cachestamp body, self) : body) }
+          FileUtils.touch doc, mtime: timestamp                         # set timestamp on filesystem
 
-          if timestamp = h['Last-Modified']                             # HTTP timestamp?
-            if t = Time.httpdate(timestamp) rescue nil                  # parse timestamp
-              FileUtils.touch doc, mtime: t                             # set timestamp on filesystem
-              repository << RDF::Statement.new(self, RDF::URI(Date), t.iso8601) # set timestamp in RDF
-            end
-          end
           if env[:notransform] || format.match?(FixedFormat)
             staticResponse format, body                                 # response in upstream format
           else
