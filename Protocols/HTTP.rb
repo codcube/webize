@@ -234,7 +234,7 @@ module Webize
         env[:updates_only] = true # limit response to updates
         opts[:thru] = false       # craft our own HTTP response
         barrier = Async::Barrier.new
-	semaphore = Async::Semaphore.new(18, parent: barrier)
+	semaphore = Async::Semaphore.new(16, parent: barrier)
         repos = []
         nodes.map{|n|
           semaphore.async do

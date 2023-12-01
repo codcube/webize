@@ -79,6 +79,7 @@ cookieDomain
 csp-nonce
 csrf-param
 csrf-token
+curr_heat_score
 current-catalog-service-hash
 currentUserCanPush
 debug

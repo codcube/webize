@@ -14,6 +14,7 @@ dcterms.type
 displayType
 display_type
 document_type
+entity_type
 http://ogp.me/ns#type
 http://opengraphprotocol.org/schema/type
 http://purl.org/dc/elements/1.1/type
