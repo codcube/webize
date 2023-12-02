@@ -52,6 +52,7 @@ dangling realpaths http://l/news/prt/i/
 - backlink indexing and more indexing in general - frequently linked posts 'daily heat'
 - cache redirects. instantly syndicate these (t.co dereferences, tokens and icons) to peers) 🐕➡️  http://l/2021/09/29/11/*blogpost* →  //federalhillprov.com/favicon.ico  → https://federalhillprov.com/wp-content/uploads/2021/08/cropped-fed-hill-favicon-178px-32x32.png
 - du on directories
+- searching a month of posts is a bit slow. usualy like 20-30 seconds (including system grep calls plus parse/load/render time of results through the stack) for 50,000 files on cheapest netbook with minimal storage. collating each days posts into a file (previous daydirs stop updating right away) with one post per line and emitting the relative URL from grep etc should fix this
 
 # HTTP(S)
 - stop redir to blocked content: http://l/2021/09/27/21/*blogpost*?view=table&sort=date →  //link.mail.bloombergbusiness.com/favicon.ico  → https://cdn.sailthru.com/assets/images/favicon.ico
