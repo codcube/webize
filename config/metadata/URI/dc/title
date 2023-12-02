@@ -64,6 +64,7 @@ navLabel
 ob:title
 og:title
 ogTitle
+origFileName
 originalFilename
 pageTitle
 parsely-title
