@@ -61,20 +61,24 @@ class FilteredServer < Async::DNS::Server
   end
 end
 
-## Listener
+## Listening tricks
 
-# if binding isn't allowed, the minimalist solution is:
+# if binding isn't allowed, a minimalist solution is:
 
-# 1) use a high-port resolver specification in /etc/resolv.conf or your system resolver settings
+# 1) use a high-port resolver specification in /etc/resolv.conf or your system resolver settings (unsure of syntax or specifics, assuming this works some places)
 
-# or you can enable low-port binding on a linux-compatible OS by running:
+# enable low-port binding on a linux-compatible OS by running:
 
 # 2) sudo setcap 'cap_net_bind_service=+ep' /usr/bin/ruby
 
-# or change the below port to high (>1024) and,
+# change the below port to high (>1024) and,
 
-# 3) redirect port 53 to say 1053 or 5300 via kernel tables by running the <../low_ports> script, or
-# 4) redirect traffic in userspace with a 'sudo socat' instantiation
+# 3) redirect port 53 to say 1053 or 5300 via kernel tables by running the <../low_ports> script, or:
+# 4) redirect traffic in userspace with a 'sudo socat' instantiation (TODO fish one out of .bash_history)
+
+# move the priveleged-port starting-point:
+
+# 5) sudo sysctl -w net.ipv4.ip_unprivileged_port_start=80
 
 server = FilteredServer.new([[:udp, '127.0.0.1', 53],
                              [:tcp, '127.0.0.1', 53],
