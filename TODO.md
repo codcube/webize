@@ -18,6 +18,7 @@ hrefize text links in htML http://localhost:8000/com/ycombinator/news/user.19ef6
 @felt-data http://localhost:8000/https://felt.com/map/Dead-Co-Summer-Road-Trip-Guide-copy-OEZ0VtcCRMCKN5N2xMhuIC?loc=43.33,-106.066,5.7z
 http://localhost:8000/https://developer.mozilla.org/en-US/blog/introducing-the-mdn-playground/
 dangling realpaths http://l/news/prt/i/
+- quantserve img link leaking on http://l/https://chromeunboxed.com/upcoming-chromebook-tablet-ciri-being-tested-with-a-qhd-display/ . we still don't police RDF coming in from RDFa parsers etc nearly as well as from our own HTML triplr
 
 # Config/Setup
 - use ~/.config/webize instead of git dir for config
