@@ -20,6 +20,7 @@ http://localhost:8000/https://developer.mozilla.org/en-US/blog/introducing-the-m
 dangling realpaths http://l/news/prt/i/
 - quantserve img link leaking on http://l/https://chromeunboxed.com/upcoming-chromebook-tablet-ciri-being-tested-with-a-qhd-display/ hubspotusercontent on http://l/https://www.dataminr.com/#UI . we still don't police RDF coming in from RDFa parsers etc nearly as well as from our own HTML triplr
 - some SVGs not getting rendered http://l/io/littlebearlabs/services
+- https://dgraph.io/blog/post/serialized-roaring-bitmaps-golang/ closes <body> right away so the content is MIA. guess we'll just emit everything and start handling <body> like <noscript> and other stuff that we strip
 
 # Config/Setup
 - use ~/.config/webize instead of git dir for config
