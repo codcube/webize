@@ -175,6 +175,7 @@ publishedOn
 published_at
 releaseDate
 release_date
+render_timestamp
 revised
 sailthru.date
 sent
