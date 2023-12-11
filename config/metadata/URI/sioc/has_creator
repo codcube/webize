@@ -58,6 +58,7 @@ fromUser
 fullOrUserName
 full_name
 generator
+guest_author
 http://ogp.me/ns#article:author
 http://ogp.me/ns#author
 http://ogp.me/ns#first_name

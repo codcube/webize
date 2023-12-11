@@ -28,6 +28,7 @@ coverLarge
 coverMedium
 coverThumb
 customAvatar
+desktopImage
 facebook:image
 favicon
 featured_image
@@ -83,6 +84,7 @@ mask-icon
 mediaUrl
 media_url
 media_url_https
+mobileImage
 msapplication-TileImage
 msapplication-square150x150logo
 msapplication-square310x310logo

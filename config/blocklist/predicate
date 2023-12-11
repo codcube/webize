@@ -121,6 +121,7 @@ fb:page_id
 fb:pages
 fb:profile_id
 following
+fontSize
 format-detection
 friends_count
 fullPage
