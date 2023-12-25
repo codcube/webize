@@ -7,6 +7,7 @@ loop http://l/pub/mostr/users/de7ecd1e2976a6adb2ffa5f4db81a7d812c8bb6698aa00dcf1
 list render http://l/pub/mostr/users/de7ecd1e2976a6adb2ffa5f4db81a7d812c8bb6698aa00dcf1e76adb55efd645/followers
 http://l/https://possible.social/join#UI
 allow raw html in abstract http://l/pub/mostr/objects/5996c19eb87eb641db9826cc1c79d4cc905e7b073ffea328b6d98d34c687dca0 http://l/https://git.drupalcode.org/project/drupal/-/commits/11.x?format=atom
+github is giving us no content due to everything is inside some react-data attr on some random element. ugh but this is why our library exists..to get that sweet 1993 web experience back so TODO it is http://l/https://github.com/ruby/ruby/blob/a49643340eb6b8d65299912b640887ea18495909/shape.c#UI
 semiexorix image ptrs (wix JSONnonLD?) https://www.blacktimebelt.net/
 blank http://localhost:8000/http://redux-saga.js.org/docs/ExternalResources.html/#u24e988ec52be9f9deea3ff2fb168704facc9459c0af029558d5bee7949e87026
 css leak (multiple <body nodes) http://localhost:8000/https://theleap.org/ #ff3458a53a2c2de61a1609eec536a918c02779cbbdc45d7f6b0a1706d8b49f9b8 http://localhost:8000/fi/poutapilvi/www/index.html http://l/au/com/kidgredients/cheese-and-bacon-rolls-just-like-bakery-ones/ (we need to decide on node vs bodeset input to emitcontent) and this one is trickier, maybe coming in thru RDF::RDFa or some rouge/nokogiri cornercase w/ comments or idk PEBKAC. http://localhost:8000/https://www.cbsnews.com/news/rush-limbaugh-arrested-on-drug-charges/
