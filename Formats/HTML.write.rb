@@ -95,12 +95,12 @@ module Webize
     class Document
 
       def write graph = {}
-        bgcolor = if env[:deny]
+        bgcolor = if env[:deny]           # blocked
                     if HostColor.has_key? host       # host color
                       HostColor[host]
-                    elsif deny_domain?
+                    elsif deny_domain?    # domain block
                       '#f00'
-                    else
+                    else                  # pattern block
                       env[:warnings].push ['pattern block in URI<br>',
                                            "<span style='background-color: #ddd; font-size: .88em'>",
                                            uri.gsub(Webize::Gunk){|m|
