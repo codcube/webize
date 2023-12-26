@@ -102,7 +102,8 @@ module Webize
                       '#f00'
                     else
                       # = true
-                      env[:warnings].push ["<span style='background-color: #fff'>pattern block in URI:</span><br><span style='background-color: #ddd; font-size: .8em'>",
+                      env[:warnings].push ['pattern block in URI<br>',
+                                           "<span style='background-color: #ddd; font-size: .8em'>",
                                            uri.gsub(Webize::Gunk){|m|
                                              ['<b style="font-size:1.5em; background-color: #fff">', m, '</b>'].join },
                                            '</span>']
