@@ -47,8 +47,7 @@
 .toolbox {border-width: 0 1px 1px 1px; border-style: solid; border-color: #555; border-radius: 0 0 .7em .7em; padding-right: .125em}
 .toolbox, td, li {vertical-align: top}
 .video {border: 2px solid #444; border-radius: 1em; background-color: #282828; max-width: 100ex; margin: .2em}
-.warning span {background-color: #ff0; color: #000}
-.warning {border: 2px solid #ff0}
+.warning {background-color: #ff0; color: #000}
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px; max-width: 40em; overflow: hidden; vertical-align: top}
 a.blocked {border: 1px solid white}

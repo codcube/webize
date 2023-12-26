@@ -101,6 +101,11 @@ module Webize
                     elsif deny_domain?
                       '#f00'
                     else
+                      # = true
+                      env[:warnings].push ["<span style='background-color: #fff'>pattern block in URI:</span><br><span style='background-color: #ddd; font-size: .8em'>",
+                                           uri.gsub(Webize::Gunk){|m|
+                                             ['<b style="font-size:1.5em; background-color: #fff">', m, '</b>'].join },
+                                           '</span>']
                       '#f80'
                     end
                   elsif StatusColor.has_key? env[:origin_status]
@@ -138,19 +143,19 @@ module Webize
 
                                toolbar,
 
-                               ({class: :warning, c: env[:warnings]} if env.has_key?(:warnings) && !env[:warnings].empty?), # warning(s)
+                               (['<br>', {class: :warning, c: env[:warnings]}] unless env[:warnings].empty?), # warnings
 
                                link[:up,'&#9650;'],
 
-                               if updates = graph.delete('#updates') # updates at the top
+                               if updates = graph.delete('#updates') # updates
                                  HTML.markup updates, env
                                end,
 
-                               if datasets = graph.delete('#datasets') # datasets sidebar
+                               if datasets = graph.delete('#datasets') # datasets
                                  HTML.markup datasets, env
                                end,
 
-                               graph.values.map{|v| HTML.markup v, env }, # graph data
+                               graph.values.map{|v| HTML.markup v, env }, # data
 
                                link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
 
@@ -189,8 +194,13 @@ module Webize
 
     end
 
-    Markup = {}          # { URI -> λ -> markup for resource of type }
-    MarkupPredicate = {} # { URI -> λ -> markup for objects of predicate }
+    # markup-lambda tables
+
+    # {type URI -> λ (resource, env) -> markup for resource of type }
+    Markup = {}
+
+    # {predicate URI -> λ (objects, env) -> markup for objects of predicate }
+    MarkupPredicate = {}
 
     # markup lambdas for base types
 

@@ -409,10 +409,10 @@ module Webize
         logger.warn "⚠️ unsupported scheme #{uri}"          # unsupported scheme
         opts[:thru] == false ? nil : notfound
       end
-    rescue Exception => e                                   # warn on error
-      env[:warnings].push [{_: :span, c: e.class},
-                           {_: :a, href: href, c: uri},
-                           CGI.escapeHTML(e.message),
+    rescue Exception => e                                   # warn on exception
+      env[:warnings].push [e.class,                         # error class
+                           {_: :a, href: href, c: uri},     # error on URI
+                           CGI.escapeHTML(e.message),       # error message
                            {_: :b, c: [:⏱️, Time.now - start_time, :s]}, '<br>']
       puts [:⚠️, uri,
             e.class, e.message,
