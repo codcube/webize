@@ -101,7 +101,6 @@ module Webize
                     elsif deny_domain?
                       '#f00'
                     else
-                      # = true
                       env[:warnings].push ['pattern block in URI<br>',
                                            "<span style='background-color: #ddd; font-size: .8em'>",
                                            uri.gsub(Webize::Gunk){|m|
