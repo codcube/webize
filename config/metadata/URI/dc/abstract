@@ -26,7 +26,6 @@ article_keywords
 article_n2_codes
 audienceDek
 autoAltText
-bc:primarycategory
 bc:tags
 beat
 biography
@@ -35,7 +34,6 @@ cXenseParse:keywords
 cXenseParse:news_keywords
 calloutText
 caption
-category
 closeupUnifiedDescription
 column
 components
@@ -53,7 +51,6 @@ ext_alt_text
 fb:status
 firstParagraph
 firstWords
-five_hundred_pixels:category
 five_hundred_pixels:tags
 flattenedCaption
 fmSubsection
@@ -71,11 +68,9 @@ http://ogp.me/ns#image:alt
 http://ogp.me/ns#video:tag
 http://ogp.me/ns/article#tag
 http://purl.org/atom/ns#summary
-http://purl.org/rss/1.0/category
 http://schema.org/articleSection
 http://schema.org/genre
 http://schema.org/keywords
-http://www.w3.org/2005/Atom#displaycategories
 http://www.w3.org/2005/Atom#summary
 https://schema.org/keywords
 image:alt
@@ -87,7 +82,6 @@ image_description
 instapp:hashtags
 intro
 itunes:subtitle
-itunesCategory
 itunesKeywords
 keyword
 keywords
@@ -95,7 +89,6 @@ kwl
 label_name
 ledeCaption
 localizedCaption
-log_category
 message
 meta_description
 miniExcerpt
@@ -120,7 +113,6 @@ parsely-section
 parsely-tags
 podcastEpisodeDesc
 postLabel
-primaryCategory
 primaryTag
 primaryTopic
 promotionalSummary

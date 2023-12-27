@@ -95,6 +95,7 @@ post_author
 profile:first_name
 profile:last_name
 profile:username
+profileUrl
 sailthru.author
 screen_name
 smartbanner:author
