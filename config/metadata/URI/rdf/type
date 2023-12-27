@@ -55,4 +55,5 @@ type
 typeName
 typename
 urlType
+variation
 webPageType

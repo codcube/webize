@@ -15,6 +15,8 @@ STYLESHEET
 X-UA-Compatible
 _token
 action-cable-url
+adPositionIncrement
+adPositionIncremented
 ad_targeting_id
 advertiser_account_service_levels
 advertising
@@ -65,6 +67,7 @@ browser-errors-url
 browser-optimizely-client-errors-url
 browser-stats-url
 business_profile_state
+bybrowEligible
 bytedance-verification-code
 canHaveEpisodes
 can_edit
@@ -227,6 +230,7 @@ naver-site-verification
 newTab
 new_tab
 next-head-count
+nextItemOffset
 noopenner
 norton-safeweb-site-verification
 not_interested
@@ -317,6 +321,7 @@ taboola_lead
 targetNewWindow
 tec-api-origin
 tec-api-version
+theme
 theme-color
 tier
 token
