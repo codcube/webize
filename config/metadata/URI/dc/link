@@ -54,6 +54,7 @@ http://www.w3.org/2005/Atom#link
 http://www.w3.org/2005/Atom#self
 https://ogp.me/ns#url
 https://vocab.methodandstructure.com/content-inventory#mentions
+labelUrl
 link
 linkURL
 lnkd:url

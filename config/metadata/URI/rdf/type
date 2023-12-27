@@ -11,6 +11,7 @@ cXenseParse:pageClass
 cXenseParse:postType
 componentType
 content-type
+data-type
 dc.type
 dcterms.type
 displayType
@@ -21,6 +22,7 @@ http://ogp.me/ns#type
 http://opengraphprotocol.org/schema/type
 http://purl.org/dc/elements/1.1/type
 https://ogp.me/ns#type
+imageType
 image_type
 imdb:pageType
 imdb:subPageType
