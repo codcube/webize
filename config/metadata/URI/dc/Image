@@ -64,6 +64,9 @@ image1x
 image1x
 image:secure_url
 imageLarge
+imageLargeUrl
+imageMediumUrl
+imageSmallUrl
 imageSrc
 imageThumbnail
 imageTwitter

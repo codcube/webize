@@ -25,6 +25,7 @@ article_backend_channel_list
 article_keywords
 article_n2_codes
 audienceDek
+autoAltText
 bc:primarycategory
 bc:tags
 beat
@@ -35,12 +36,14 @@ cXenseParse:news_keywords
 calloutText
 caption
 category
+closeupUnifiedDescription
 column
 components
 dcterms.abstract
 definition
 dek
 des
+descriptionHtml
 domain
 dsc
 embedCaption
@@ -56,6 +59,7 @@ flattenedCaption
 fmSubsection
 genre
 genres
+gridDescription
 gs_cat
 heading
 highlightedText
