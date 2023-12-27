@@ -57,6 +57,7 @@ five_hundred_pixels:category
 five_hundred_pixels:tags
 flattenedCaption
 fmSubsection
+footnote
 genre
 genres
 gridDescription
@@ -135,6 +136,7 @@ section-name
 section-slug
 sections
 seoCaption
+seoDescription
 shareSnippet
 shareaholic:keywords
 short_description
@@ -152,6 +154,7 @@ subject
 subsection
 subtitle
 summary
+summaryHtml
 summaryText
 tab
 tag

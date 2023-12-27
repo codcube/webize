@@ -31,6 +31,7 @@ coverThumb
 customAvatar
 desktopImage
 facebook:image
+fallback
 favicon
 featured_image
 fluid-icon

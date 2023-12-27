@@ -11,6 +11,7 @@ cXenseParse:pageClass
 cXenseParse:postType
 componentType
 content-type
+data-image-type
 data-type
 dc.type
 dcterms.type

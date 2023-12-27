@@ -86,6 +86,7 @@ csrf-token
 curr_heat_score
 current-catalog-service-hash
 currentUserCanPush
+data-align
 debug
 default-theme
 defaultBranch
