@@ -52,6 +52,7 @@ articleid
 artifactId
 assetId
 authorization_endpoint
+autoplay
 baidu-site-verification
 baidu_union_verify
 bingbot
@@ -251,6 +252,7 @@ pinned_tweet_ids_str
 podcastUnpublish
 possibly_sensitive
 possibly_sensitive_editable
+premium
 private
 profile_background_color
 profile_background_tile

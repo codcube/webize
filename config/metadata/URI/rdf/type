@@ -1,8 +1,10 @@
 @type
 DC.Type
 DC.type
+__modelType
 __typename
 _type
+adType
 advertiser_account_type
 article.type
 cXenseParse:pageClass
@@ -48,6 +50,7 @@ subpageType
 targetType
 taxonomyType
 trackType
+trackingType
 type
 typeName
 typename

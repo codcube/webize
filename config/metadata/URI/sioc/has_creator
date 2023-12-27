@@ -50,6 +50,7 @@ dct:creator
 dcterms.creator
 designer
 displayAuthors
+facebookAccount
 firstName
 first_name
 five_hundred_pixels:author
@@ -116,3 +117,4 @@ user_id_str
 username
 video:director
 writer_composer
+youtubeAccount
