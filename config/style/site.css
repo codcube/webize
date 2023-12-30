@@ -77,7 +77,7 @@ hr {margin: 1px 0 1px 0}
 img, video, table, td {max-width: 100%; border-radius: .4em}
 li:nth-child(even) {background-color: #000; color: #fff}
 li:nth-child(odd) {background-color: #222; color: #fff}
-p {border-width: 1px; border-style: dotted; border-color: #111 #111 #444 #111; margin: 1px}
+p {border-width: 1px; border-style: dotted; border-color: #000 #222 #333 #222; margin: 2px}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, img {margin: 0}
 span.id {font-weight: normal; font-size: 0.83em; float: right}
