@@ -115,6 +115,8 @@ http://schema.org/uploadDate
 http://www.w3.org/2005/Atom#pubDate
 http://www.w3.org/2005/Atom#published
 http://www.w3.org/2005/Atom#updated
+https://ogp.me/ns#article:modified_time
+https://ogp.me/ns#article:published_time
 https://ogp.me/ns#updated_time
 https://ogp.me/ns/article#modified_time
 https://ogp.me/ns/article#published_time
