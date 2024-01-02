@@ -65,9 +65,7 @@ rss rss.xml
 
       def each_statement &fn
         map_predicates(:raw_triples){|s,p,o|
-          fn.call RDF::Statement.new((s = Webize::URI.new(s)), Webize::URI.new(p),
-                                     p == Content ? ((l = RDF::Literal(Webize::HTML.format o.to_s, @base)).datatype = RDF.HTML
-                                                     l) : o,
+          fn.call RDF::Statement.new((s = Webize::URI.new(s)), Webize::URI.new(p), o,
                                      graph_name: s)}
       end
 
@@ -96,6 +94,7 @@ rss rss.xml
 
         # (SG|X)ML element-patterns
         isCDATA = /^\s*<\!\[CDATA/m
+        isHTML = /<[^>]+>.*?<\/[^>]+>/m
         reCDATA = /^\s*<\!\[CDATA\[(.*?)\]\]>\s*$/m
         reElement = %r{<([a-z0-9]+:)?([a-z]+)([\s][^>]*)?>(.*?)</\1?\2>}mi
         reGroup = /<\/?media:group>/i
@@ -167,53 +166,31 @@ rss rss.xml
                 yield subject, p, o unless subject == o # emit link unless self-referential
               end}
 
-            # process XML elements
-            inner.gsub(reGroup,'').scan(reElement){|e|
-              p = (x[e[0] && e[0].chop]||RSS) + e[1] # expand node name to attribute URI
-              if [Atom+'id', RSS+'link', RSS+'guid', RSS+'Key', Atom+'link'].member? p
-              # subject URI element
-              elsif p == RSS + 'ETag'
-                yield subject, Title, subject.basename || subject.host
-              elsif [Atom+'author', RSS+'author', RSS+'creator', 'http://purl.org/dc/elements/1.1/creator'].member? p
-                # creators
-                crs = []
-                # XML name + URI
-                uri = e[3].match /<uri>([^<]+)</
-                name = e[3].match /<name>([^<]+)</
-                crs.push Webize::URI(uri[1]) if uri
-                crs.push name[1] if name && !(uri && (RDF::URI(uri[1]).path || '/').sub('/user/', '/u/') == name[1]) # dedupe between prefix /u & /user
-                unless name || uri
-                  crs.push e[3].yield_self{|o|
-                    case o
-                    when isURL
-                      Webize::URI(o)
-                    when isCDATA
-                      o.sub reCDATA, '\1'
-                    else
-                      o
-                    end}
-                end
-                # author(s) -> RDF
-                crs.map{|cr|yield subject, Creator, cr}
-              else # element -> RDF
-                yield subject, p, e[3].yield_self{|o| # unescape
-                  case o
-                  when isCDATA
+            inner.gsub(reGroup,'').scan(reElement){|e| # parse node to (prefix, name, content) tuple
+              p = (x[e[0] && e[0].chop] || RSS) + e[1] # map optionally-prefixed node name to attribute URI
+              o = e[3]                                 # node content
+
+              o = case o                               # unescape content
+                  when isCDATA                         # CDATA
                     o.sub reCDATA, '\1'
-                  when /</m
+                  when isHTML                          # raw HTML
                     o
-                  else
+                  else                                 # escaped HTML
                     CGI.unescapeHTML o
                   end
-                }.yield_self{|o|                      # map datatypes
-                  if o.match? isURL
-                    Webize::URI(o)
-                  elsif reddit && p == Atom+'title'
-                    o.sub /\/u\/\S+ on /, ''
+
+              o = case o                               # object datatype
+                  when isURL
+                    Webize::URI o
+                  when isHTML
+                    literal = RDF::Literal(Webize::HTML.format o, @base)
+                    literal.datatype = RDF.HTML
+                    literal 
                   else
                     o
-                  end}
-              end
+                  end
+
+              yield subject, p, o                      # map node to RDF triple
             }
           end}
       end

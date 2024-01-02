@@ -78,7 +78,7 @@ module Webize
       def highlight
 
         # FIX infinite loop at /usr/lib/ruby/gems/3.2.0/gems/rouge-4.1.3/lib/rouge/regex_lexer.rb:361
-        return if %w(static.cdninstagram.com/ www.youtube.com).member?(@base.host) || @doc.size > 1e6
+        return if %w(static.cdninstagram.com www.youtube.com).member?(@base.host) || @doc.size > 1e6
 
         lexer = Rouge::Lexers::Javascript.new
         Rouge::Formatters::HTMLPygments.new(Rouge::Formatters::HTML.new).format(lexer.lex(@doc))
