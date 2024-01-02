@@ -9,6 +9,7 @@ dc.identifier
 dcterms.identifier
 fragment
 guid
+http://purl.org/rss/1.0/guid
 id
 key
 nodeId

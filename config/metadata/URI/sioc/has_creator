@@ -67,6 +67,7 @@ http://ogp.me/ns#last_name
 http://ogp.me/ns#username
 http://ogp.me/ns/article#author
 http://purl.org/atom/ns#author
+http://purl.org/dc/elements/1.1/creator
 http://schema.org/author
 http://schema.org/byArtist
 http://schema.org/creator
