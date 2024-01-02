@@ -45,6 +45,7 @@ http://ogp.me/ns#see_also
 http://ogp.me/ns#url
 http://opengraphprotocol.org/schema/url
 http://purl.org/rss/1.0/comments
+http://purl.org/rss/1.0/link
 http://rdf.data-vocabulary.org/#url
 http://rssnamespace.org/feedburner/ext/1.0#origLink
 http://schema.org/url
