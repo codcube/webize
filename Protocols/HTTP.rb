@@ -170,7 +170,25 @@ module Webize
 
     def deny status = 200, type = nil
       env[:deny] = true 
-      return [301, {'Location' => Node(['//', host, path].join).href}, []] if query&.match? Gunk # drop query
+
+      if uri.match? Gunk
+        if query&.match? Gunk # drop query
+          env[:warnings].push ['pattern block in query<br>',
+                               "<span style='background-color: #ddd; font-size: .88em'>",
+                               {_: :a, href: Node(['//', host, path].join).href, c: [host, path]}, '?',
+                               query.gsub(Gunk){|m|
+                                 ['<b style="font-size:1.3em; background-color: #fff">', m, '</b>'].join },
+                               '</span>']
+
+        else
+          env[:warnings].push ['pattern block in URI<br>',
+                               "<span style='background-color: #ddd; font-size: .88em'>",
+                               uri.gsub(Gunk){|m|
+                                 ['<b style="font-size:1.3em; background-color: #fff">', m, '</b>'].join },
+                               '</span>']
+        end
+      end
+
       ext = File.extname basename if path
       type, content = if type == :stylesheet || ext == '.css'
                         ['text/css', '']
@@ -294,8 +312,8 @@ module Webize
           repository = (readRDF format, body).persist env, self         # read and cache graph
           repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) unless status==200 # HTTP status in RDF
           repository << RDF::Statement.new(self, RDF::URI('#format'), format) # format
-          repository << RDF::Statement.new(self, RDF::URI('#fetchDuration'), fetch_time - start_time) # fetch time
-          repository << RDF::Statement.new(self, RDF::URI('#parseDuration'), Time.now - fetch_time)   # parse time
+          repository << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch time (wall clock)
+          repository << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache time (wall clock)
          #repository << RDF::Statement.new(self, RDF::URI(Date), timestamp.iso8601) # timestamp in RDF
 
           unless thru                                                   # return data
