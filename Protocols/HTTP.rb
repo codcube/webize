@@ -1,6 +1,8 @@
 %w(async async/barrier async/semaphore brotli cgi digest/sha2 open-uri rack resolv).map{|_| require _}
 
 module Webize
+  InstanceKey = Digest::SHA2.hexdigest rand.to_s
+
   module HTTP
     Args = Webize.configList 'HTTP/arguments'            # permitted query arguments
     Methods = Webize.configList 'HTTP/methods'           # permitted HTTP methods
@@ -177,7 +179,7 @@ module Webize
         if query&.match? Gunk # drop query
           env[:warnings].push ['pattern block in query<br>',
                                "<span style='#{bg}; font-size: .88em'>",
-                               {_: :a, id: :noquery,
+                               {_: :a, id: :noquery, title: 'URI without query',
                                 href: Node(['//', host, path].join).href, c: [host, path], style: bg},
                                '?',
                                query.gsub(Gunk){|m|
