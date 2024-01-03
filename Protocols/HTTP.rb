@@ -172,17 +172,21 @@ module Webize
       env[:deny] = true 
 
       if uri.match? Gunk
+        bg = 'background-color: #ddd'
+
         if query&.match? Gunk # drop query
           env[:warnings].push ['pattern block in query<br>',
-                               "<span style='background-color: #ddd; font-size: .88em'>",
-                               {_: :a, href: Node(['//', host, path].join).href, c: [host, path]}, '?',
+                               "<span style='#{bg}; font-size: .88em'>",
+                               {_: :a, id: :noquery,
+                                href: Node(['//', host, path].join).href, c: [host, path], style: bg},
+                               '?',
                                query.gsub(Gunk){|m|
                                  ['<b style="font-size:1.3em; background-color: #fff">', m, '</b>'].join },
                                '</span>']
 
         else
           env[:warnings].push ['pattern block in URI<br>',
-                               "<span style='background-color: #ddd; font-size: .88em'>",
+                               "<span style='#{bg}; font-size: .88em'>",
                                uri.gsub(Gunk){|m|
                                  ['<b style="font-size:1.3em; background-color: #fff">', m, '</b>'].join },
                                '</span>']
