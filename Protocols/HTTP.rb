@@ -250,7 +250,7 @@ module Webize
     # fetch resource and cache upstream and derived data
     def fetchHTTP thru: true                                # graph data only or full HTTP response
       start_time = Time.now
-      ::URI.open(uri, headers.merge({open_timeout: 8, read_timeout: 8, redirect: false})) do |response|
+      ::URI.open(uri, headers.merge({open_timeout: 30, read_timeout: 30, redirect: false})) do |response|
         fetch_time = Time.now
         h = headers response.meta                                      # response header
         case status = response.status[0].to_i                          # response status
