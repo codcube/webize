@@ -170,6 +170,7 @@ module Webize
 
     def deny status = 200, type = nil
       env[:deny] = true 
+      env[:warnings].push({_: :a, id: :allow, title: 'allow temporarily', style: 'font-size: 3em', href: Node(['//', host, path, '?allow=', allow_key].join).href, c: :👁️})
 
       if uri.match? Gunk
         bg = 'background-color: #ddd'
@@ -189,9 +190,7 @@ module Webize
                                "<span style='#{bg}; font-size: .88em'>",
                                uri.gsub(Gunk){|m|
                                  ['<b style="font-size:1.3em; background-color: #fff">', m, '</b>'].join },
-                               '</span> ',
-                               {_: :a, id: :allow, title: 'allow temporarily', style: 'font-size: 3em',
-                                href: Node(['//', host, path, '?allow=', allow_key].join).href, c: :👁️}]
+                               '</span>']
         end
       end
 
