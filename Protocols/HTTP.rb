@@ -1,8 +1,6 @@
 %w(async async/barrier async/semaphore brotli cgi digest/sha2 open-uri rack resolv).map{|_| require _}
 
 module Webize
-  InstanceKey = Digest::SHA2.hexdigest rand.to_s
-
   module HTTP
     Args = Webize.configList 'HTTP/arguments'            # permitted query arguments
     Methods = Webize.configList 'HTTP/methods'           # permitted HTTP methods
@@ -191,7 +189,9 @@ module Webize
                                "<span style='#{bg}; font-size: .88em'>",
                                uri.gsub(Gunk){|m|
                                  ['<b style="font-size:1.3em; background-color: #fff">', m, '</b>'].join },
-                               '</span>']
+                               '</span> ',
+                               {_: :a, id: :allow, title: 'allow temporarily', style: 'font-size: 3em',
+                                href: Node(['//', host, path, '?allow=', allow_key].join).href, c: :👁️}]
         end
       end
 
