@@ -494,7 +494,7 @@ module Webize
 
     def head? = env['REQUEST_METHOD'] == 'HEAD'
 
-    # client<>proxy headers not reused on proxy<>origin connection
+    # client<>proxy or internal headers not reused on proxy<>origin connection
     SingleHopHeaders = Webize.configTokens 'blocklist/header'
 
     # extensive header massaging happens here,
@@ -518,7 +518,7 @@ module Webize
           head[key] = (v.class == Array && v.size == 1 && v[0] || v) unless SingleHopHeaders.member? key.downcase # set header
         end}
 
-      # accept graph data even if our client is oblivious. ?notransform disables this - useful to fetch upstream data-browser/UI code rather than graph data
+      # accept graph data even if our client is oblivious. ?notransform disables this, delivering upstream data-browser/UI code rather than graph data
       head['Accept'] = ['text/turtle', head['Accept']].join ',' unless env[:notransform] || head['Accept']&.match?(/text\/turtle/)
 
       head['Content-Type'] = 'application/json' if %w(api.mixcloud.com).member? host
