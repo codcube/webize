@@ -88,6 +88,11 @@ module Webize
        uri.head? ? [] : ["<html><body class='error'>#{HTML.render({_: :style, c: Webize::CSS::Site})}500</body></html>"]]
     end
 
+    def clientETags
+      return [] unless env.has_key? 'HTTP_IF_NONE_MATCH'
+      env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/
+    end
+
     def self.decompress head, body
       encoding = head.delete 'Content-Encoding'
       return body unless encoding
@@ -448,30 +453,11 @@ module Webize
     end
 
     def fileResponse
-      ##commented override of Rack ETags. we still override their MIME types
-
-      # eTags = if env.has_key? 'HTTP_IF_NONE_MATCH' # find etags specified by client
-      #           env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/
-      #         else
-      #           []
-      #         end
-
-      # if eTags.include?(eTag = fileETag)      # generate etag
-      #   return [304, {}, []]                  # cached at client
-      # end
-
       Rack::Files.new('.').serving(Rack::Request.new(env), storage.fsPath).yield_self{|s,h,b|
-        case s                                # status
-        when 200
-          s = env[:origin_status] if env[:origin_status]
-        when 304
-          return [304, {}, []]                # cached at client
-        end
-        format = fileMIME                     # file format
-        h['content-type'] = format
-        h['Expires'] = (Time.now + 3e7).httpdate if format.match? FixedFormat
-        h['Last-Modified'] ||= storage.mtime.httpdate
-       #h['ETag'] = eTag
+        return [s, h, b] if s == 304          # client cache is valid
+        format = fileMIME                     # find MIME type - Rack's extension-map may differ from ours, which takes into account upstream/origin HTTP headers
+        h['content-type'] = format            # override Rack MIME type specification
+        h['Expires'] = (Time.now + 3e7).httpdate if format.match? FixedFormat # immutable node
         [s, h, b]}
     end
  
@@ -704,8 +690,6 @@ module Webize
       dp = []    # datetime parts
       dp.push ps.shift.to_i while ps[0] && ps[0].match(/^[0-9]+$/)
 
-      q = (env['QUERY_STRING'] && !env['QUERY_STRING'].empty?) ? ('?'+env['QUERY_STRING']) : ''
-
       case dp.length
       when 1 # Y
         year = dp[0]
@@ -732,6 +716,9 @@ module Webize
       end
 
       # previous, next, parent pointers
+
+      q = (env['QUERY_STRING'] && !env['QUERY_STRING'].empty?) ? ('?'+env['QUERY_STRING']) : ''
+
       env[:links][:up] = [nil, dp[0..-2].map{|n| '%02d' % n}, '*', ps].join('/') + q if dp.length > 1 && ps[-1] != '*' && ps[-1]&.match?(GlobChars)
       env[:links][:prev] = [p, ps].join('/') + q + '#prev' if p
       env[:links][:next] = [n, ps].join('/') + q + '#next' if n
