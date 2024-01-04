@@ -132,8 +132,6 @@ module Webize
       [302, {'Location' => Node(['//', domain].join).href}, []]
     end
 
-    def cached_immutable? = storage.file? && fileMIME.match?(FixedFormat)
-
     def clientETags
       return [] unless env.has_key? 'HTTP_IF_NONE_MATCH'
       env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/
@@ -243,10 +241,10 @@ module Webize
 
     # fetch node(s) from local or remote host
     def fetch nodes = nil, **opts
-      return fetchLocal nodes if offline?      # local node(s) - offline cache
-      return fileResponse if cached_immutable? # local node - immutable cache
-      return fetchRemote unless nodes          # remote node
-      fetchAsync nodes                         # remote node(s) - async fetch
+      return fetchLocal nodes if offline? # local node(s) - offline cache
+      return fileResponse if immutable?   # local node - immutable cache
+      return fetchRemote unless nodes     # remote node
+      fetchAsync nodes                    # remote node(s) - async fetch
     end
 
     def fetchAsync
@@ -450,9 +448,9 @@ module Webize
     def fileResponse
       Rack::Files.new('.').serving(Rack::Request.new(env), storage.fsPath).yield_self{|s,h,b|
         return [s, h, b] if s == 304          # client cache is valid
-        format = fileMIME                     # find MIME type - Rack's extension-map may differ from ours, which preserves upstream/origin HTTP-header data
+        format = fileMIME                     # find MIME type - Rack's extension-map may differ from ours which preserves upstream/origin HTTP metadata
         h['content-type'] = format            # override Rack MIME type specification
-        h['Expires'] = (Time.now + 3e7).httpdate if format.match? FixedFormat # give immutable nodes a long expiry
+        h['Expires'] = (Time.now + 3e7).httpdate if immutable? # give immutable node a long expiry
         [s, h, b]}
     end
  
@@ -532,6 +530,8 @@ module Webize
       return deny if deny? # blocked node
       fetch                # remote node
     end
+
+    def immutable? = storage.file? && fileMIME.match?(FixedFormat)
 
     def linkHeader
       return unless env.has_key? :links
