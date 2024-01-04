@@ -397,19 +397,22 @@ module Webize
       end
     end
 
-    def fetchLocal nodes = nil                          # static response if single node and one of:
-      return fileResponse if !nodes && storage.file? && (format = fileMIME) &&
-                       (env[:notransform] ||            # (A → B) MIME transform disabled by client
-                        format.match?(MIME::FixedFormat) || # (A → B) transform disabled by server
-      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) reformat disabled
-      repos = (nodes || storage.nodes).map{|x|          # load node(s)
+    def fetchLocal nodes = nil
+      return fileResponse if !nodes && storage.file? && (format = fileMIME) && # static response if one node and one of:
+                       (env[:notransform] ||                               # (A → B) MIME transform disabled at client
+                        format.match?(MIME::FixedFormat) ||                # (A → B) MIME transform disabled at server
+      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) intra-MIME reformat disabled at server
+
+      repos = (nodes || storage.nodes).map{|x|          # node(s) to fetch
         if x.file?                                      # file?
-          x.file_triples x.readRDF                      # read file + filesystem metadata
+          x.file_triples x.readRDF                      # fetch filesystem metadata and file
         elsif x.directory?                              # directory?
-          x.dir_triples RDF::Repository.new             # read directory metadata
+          x.dir_triples RDF::Repository.new             # fetch directory metadata
         end}
+
       dirMeta                                           # 👉 container-adjacent nodes
       timeMeta unless host                              # 👉 timeslice-adjacent nodes
+
       respond repos                                     # response
     end
 
@@ -418,15 +421,13 @@ module Webize
       env[:fetched] = true                              # denote network-fetch for logger
       case scheme                                       # request scheme
       when 'gemini'
-        Gemini::Node.new(uri).env(env).fetch            # fetch w/ Gemini protocol
+        Gemini::Node.new(uri).env(env).fetch            # fetch w/ Gemini
       when /https?/
         if ENV.has_key?('http_proxy')
-          insecure.fetchHTTP **opts                     # fetch w/ HTTP - explicit proxy (environment variable)
+          insecure.fetchHTTP **opts                     # fetch w/ HTTP proxy
         else
           fetchHTTP **opts                              # fetch w/ HTTP(S)
         end
-      when 'spartan'                                    # fetch w/ Spartan
-        fetchSpartan
       else
         logger.warn "⚠️ unsupported scheme #{uri}"      # unsupported scheme
         opts[:thru] == false ? nil : notfound
@@ -440,6 +441,7 @@ module Webize
             e.class, e.message,
             e.backtrace.join("\n")
            ].join ' '
+
       opts[:thru] == false ? nil : notfound
     end
 
