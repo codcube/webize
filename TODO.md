@@ -7,6 +7,7 @@ loop http://l/pub/mostr/users/de7ecd1e2976a6adb2ffa5f4db81a7d812c8bb6698aa00dcf1
 list render http://l/pub/mostr/users/de7ecd1e2976a6adb2ffa5f4db81a7d812c8bb6698aa00dcf1e76adb55efd645/followers
 http://l/https://possible.social/join#UI
 allow raw html in abstract http://l/pub/mostr/objects/5996c19eb87eb641db9826cc1c79d4cc905e7b073ffea328b6d98d34c687dca0 http://l/https://git.drupalcode.org/project/drupal/-/commits/11.x?format=atom
+iframe in http://l/https://www.adriel.com/#UI
 github is giving us no content due to everything is inside some react-data attr on some random element. ugh but this is why our library exists..to get that sweet 1993 web experience back so TODO it is http://l/https://github.com/ruby/ruby/blob/a49643340eb6b8d65299912b640887ea18495909/shape.c#UI
 semiexorix image ptrs (wix JSONnonLD?) https://www.blacktimebelt.net/
 blank http://localhost:8000/http://redux-saga.js.org/docs/ExternalResources.html/#u24e988ec52be9f9deea3ff2fb168704facc9459c0af029558d5bee7949e87026
