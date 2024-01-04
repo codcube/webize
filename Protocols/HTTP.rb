@@ -88,11 +88,6 @@ module Webize
        uri.head? ? [] : ["<html><body class='error'>#{HTML.render({_: :style, c: Webize::CSS::Site})}500</body></html>"]]
     end
 
-    def clientETags
-      return [] unless env.has_key? 'HTTP_IF_NONE_MATCH'
-      env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/
-    end
-
     def self.decompress head, body
       encoding = head.delete 'Content-Encoding'
       return body unless encoding
@@ -133,6 +128,13 @@ module Webize
         list << domain << "\n"} # add to blocklist
       URI.blocklist             # read blocklist
       [302, {'Location' => Node(['//', domain].join).href}, []]
+    end
+
+    def cached_immutable? = storage.file? && fileMIME.match?(FixedFormat)
+
+    def clientETags
+      return [] unless env.has_key? 'HTTP_IF_NONE_MATCH'
+      env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/
     end
 
     # current (y)ear (m)onth (d)ay (h)our -> URI for timeslice
@@ -239,10 +241,10 @@ module Webize
 
     # fetch node(s) from local or remote host
     def fetch nodes = nil, **opts
-      return fetchLocal nodes if offline?                                  # cached offline node(s)
-      return fileResponse if storage.file? && fileMIME.match?(FixedFormat) # cached immutable node
-      return fetchRemote unless nodes                                      # remote node
-      fetchAsync nodes                                                     # remote node(s) - async fetch
+      return fetchLocal nodes if offline?      # local node(s) - offline cache
+      return fileResponse if cached_immutable? # local node - immutable cache
+      return fetchRemote unless nodes          # remote node
+      fetchAsync nodes                         # remote node(s) - async fetch
     end
 
     def fetchAsync
