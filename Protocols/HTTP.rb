@@ -394,9 +394,9 @@ module Webize
     def fetchLocal nodes = nil
       return fileResponse if !nodes && storage.file? &&                    # static response if one non-transformable node
                              (format = fileMIME                            # MIME type
-                              env[:notransform] ||                         # (A → B) MIME transform disabled at client
-                                format.match?(MIME::FixedFormat) ||        # (A → B) MIME transform disabled at server
-      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) intra-MIME reformat disabled at server
+                              env[:notransform] ||                         # (A → B) MIME transform and (A → A) intra-MIME reformat disabled by client
+                                format.match?(MIME::FixedFormat) ||        # (A → B) MIME transform disabled by server
+      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) intra-MIME reformat disabled by server
 
       repos = (nodes || storage.nodes).map{|x|          # node(s) to fetch
         if x.file?                                      # file?
