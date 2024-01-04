@@ -13,9 +13,8 @@ module Webize
   end
   module MIME
 
-    # formats we prefer to not (given conneg flexibility) or can not (unimplemented in format library,
-    # or negotiation-unaware clients accepting * but very confused if MIME changes) transform
-    FixedFormat = /archive|audio|css|image|octet|package|script|video|xz|zip/
+    # formats we prefer to not (content-negotiation) or can not (unimplemented) transform
+    FixedFormat = /audio|css|image|octet|script|video/
 
     # formats we transform even if MIME stays the same
     ReFormat = %w(text/html)

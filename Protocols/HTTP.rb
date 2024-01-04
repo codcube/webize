@@ -246,32 +246,28 @@ module Webize
     end
 
     # fetch node(s) from local or remote host
-    def fetch nodes=nil, **opts
-      return fetchLocal nodes if offline? # return cache
-      if storage.file?                    # cached node?
-        return fileResponse if fileMIME.match?(FixedFormat) && !basename.match?(/index/i) # return immutable node
-        cache = storage                   # cache reference
-      elsif storage.directory? && (🐢 = POSIX::Node join('index.🐢'), env).exist? # cached directory index?
-        cache = 🐢                        # cache reference
-      end
-      env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
-
-      if nodes # async fetch node(s)
-        env[:updates_only] = true # limit response to updates
-        opts[:thru] = false       # craft our own HTTP response
-        barrier = Async::Barrier.new
-	semaphore = Async::Semaphore.new(16, parent: barrier)
-        repos = []
-        nodes.map{|n|
-          semaphore.async do
-            repos << (Node(n).fetchRemote **opts)
-          end}
-        barrier.wait
-        respond repos
-      else # fetch node
-        fetchRemote
-      end
+    def fetch nodes = nil, **opts
+      return fetchLocal nodes if offline?                                  # cached offline node(s)
+      return fileResponse if storage.file? && fileMIME.match?(FixedFormat) # cached immutable node
+      return fetchRemote unless nodes                                      # remote node
+      fetchAsync nodes                                                     # remote node(s) - async fetch
     end
+
+    def fetchAsync
+      env[:updates_only] = true # response limited to updates
+      opts[:thru] = false       # upstream HTTP response headers not passed through to us
+      barrier = Async::Barrier.new
+      semaphore = Async::Semaphore.new(16, parent: barrier)
+      repos = []
+      nodes.map{|n|
+        semaphore.async do
+          repos << (Node(n).fetchRemote **opts)
+        end}
+      barrier.wait
+      respond repos
+    end
+
+    #      env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
 
     # fetch resource and cache upstream and derived data
     def fetchHTTP thru: true                                # graph data only or full HTTP response
@@ -401,7 +397,7 @@ module Webize
       end
     end
 
-    def fetchLocal nodes = nil                          # static response if one of:
+    def fetchLocal nodes = nil                          # static response if single node and one of:
       return fileResponse if !nodes && storage.file? && (format = fileMIME) &&
                        (env[:notransform] ||            # (A → B) MIME transform disabled by client
                         format.match?(MIME::FixedFormat) || # (A → B) transform disabled by server
