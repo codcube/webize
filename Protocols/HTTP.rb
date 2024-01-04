@@ -456,7 +456,7 @@ module Webize
  
     def GET
       return hostGET if host                  # remote node
-      ps = parts ; p = ps[0]                  # parse path
+      ps = parts; p = ps[0]                   # parse path
       return fetchLocal unless p              # local node - root or no path
       return unproxy.hostGET if p[-1] == ':' && ps.size > 1        # remote node - proxy URI with scheme
       return unproxy.hostGET if p.index('.') && p != 'favicon.ico' # remote node - proxy URI sans scheme
@@ -550,9 +550,8 @@ module Webize
       end
     end
 
-    def Node uri
-      (HTTP::Node.new uri).env env
-    end
+    # instantiate node in current environment
+    def Node(uri) = (HTTP::Node.new uri).env env
 
     def normalize_charset c
       c = case c
@@ -671,9 +670,7 @@ module Webize
       [200, head, [body]]                              # response
     end
 
-    def storage
-      POSIX::Node self, env
-    end
+    def storage = POSIX::Node self, env
 
     # URI -> HTTP headers
     def timeMeta
