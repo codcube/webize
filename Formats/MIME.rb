@@ -19,10 +19,7 @@ module Webize
     # formats we transform even if MIME stays the same
     ReFormat = %w(text/html)
 
-    # audio/video types as RDF URI
-    AV = [Audio, Video, 'RECTANGULAR', 'FORMAT_STREAM_TYPE_OTF']
-
-    # plaintext MIME hint for names without extensions, avoids FILE(1) call
+    # plaintext MIME hint for names without extensions, avoids FILE(1) call when there's no upstream Content-Type header cached
     TextFiles = %w(changelog copying license readme todo)
 
     # MIME -> ASCII color
