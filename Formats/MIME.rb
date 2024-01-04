@@ -19,7 +19,7 @@ module Webize
     # formats we transform even if MIME stays the same
     ReFormat = %w(text/html)
 
-    # plaintext MIME hint for names without extensions, avoids FILE(1) call when there's no upstream Content-Type header cached
+    # plaintext MIME hint for names without extensions, avoids FILE(1) call when there's no upstream Content-Type metadata cached
     TextFiles = %w(changelog copying license readme todo)
 
     # MIME -> ASCII color

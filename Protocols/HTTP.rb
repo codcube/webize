@@ -114,18 +114,10 @@ module Webize
     end
 
     # initialize environment structure
-    def self.env
-      {client_etags: [],
-       feeds: [],
-       links: {},
-       qs: {},
-       warnings: [],
-      }
-    end
+    def self.env = {feeds: [], links: {}, qs: {}, warnings: []}
 
-    def self.Node uri, env
-      Node.new(uri).env env
-    end
+    # instantiate a node
+    def self.Node(uri, env) = Node.new(uri).env env
 
   end
   class HTTP::Node < Resource
