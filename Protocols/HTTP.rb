@@ -24,8 +24,8 @@ module Webize
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
                                                        # scheme, host, path
       u = RDF::URI(isLocal ? '/' : [isPeer ? :http : :https, '://', env['HTTP_HOST']].join).join RDF::URI(env['REQUEST_PATH']).path
-      env[:base] = (Node u, env).freeze                # external URI - immutable
-             uri =  Node u, env                        # internal URI - mutable for refinement to specific concrete representation
+      env[:base] = (Node u, env).freeze                #    base URI - immutable
+             uri =  Node u, env                        # request URI - mutable for refinement to specific concrete representation
       uri.port = nil if [80,443,8000].member? uri.port # strip default port specifiers
 
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query?
@@ -36,9 +36,7 @@ module Webize
         uri.query_values = qs unless qs.empty?         # (🖥 <> ☁️) external args to request URI
       end
 
-      env[:client_tags] = env['HTTP_IF_NONE_MATCH'].   # parse entity-tags
-                            strip.split /\s*,\s*/ if env['HTTP_IF_NONE_MATCH']
-      env[:proxy_refs] = isPeer || isLocal             # proxy references on local or peer host
+      env[:proxy_refs] = isPeer || isLocal             # proxy references onto local or peer host
       env[:referer] = Node(env['HTTP_REFERER'], env) if env['HTTP_REFERER'] # referer
 
       URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist
@@ -398,44 +396,44 @@ module Webize
       end
     end
 
-    def fetchLocal nodes = nil
-      return fileResponse if !nodes && storage.file? && (format = fileMIME) && # file if cached and one of:
-                       (env[:notransform] ||                # (mimeA → mimeB) transform disabled by client
-                        format.match?(MIME::FixedFormat) || # (mimeA → mimeB) transform disabled by server
-      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (mimeA → mimeA) reformat disabled
-      repos = (nodes || storage.nodes).map{|x|              # load node(s)
-        if x.file?                                          # file?
-          x.file_triples x.readRDF                          # read file + filesystem metadata
-        elsif x.directory?                                  # directory?
-          x.dir_triples RDF::Repository.new                 # read directory metadata
+    def fetchLocal nodes = nil                          # static response if one of:
+      return fileResponse if !nodes && storage.file? && (format = fileMIME) &&
+                       (env[:notransform] ||            # (A → B) MIME transform disabled by client
+                        format.match?(MIME::FixedFormat) || # (A → B) transform disabled by server
+      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) reformat disabled
+      repos = (nodes || storage.nodes).map{|x|          # load node(s)
+        if x.file?                                      # file?
+          x.file_triples x.readRDF                      # read file + filesystem metadata
+        elsif x.directory?                              # directory?
+          x.dir_triples RDF::Repository.new             # read directory metadata
         end}
-      dirMeta                                               # 👉 container-adjacent nodes
-      timeMeta unless host                                  # 👉 timeslice-adjacent nodes
-      respond repos                                         # response
+      dirMeta                                           # 👉 container-adjacent nodes
+      timeMeta unless host                              # 👉 timeslice-adjacent nodes
+      respond repos                                     # response
     end
 
     def fetchRemote **opts
       start_time = Time.now
-      env[:fetched] = true                                  # denote network-fetch for logger
-      case scheme                                           # request scheme
+      env[:fetched] = true                              # denote network-fetch for logger
+      case scheme                                       # request scheme
       when 'gemini'
-        Gemini::Node.new(uri).env(env).fetch                # fetch w/ Gemini protocol
+        Gemini::Node.new(uri).env(env).fetch            # fetch w/ Gemini protocol
       when /https?/
         if ENV.has_key?('http_proxy')
-          insecure.fetchHTTP **opts                         # fetch w/ HTTP - explicit proxy (environment variable)
+          insecure.fetchHTTP **opts                     # fetch w/ HTTP - explicit proxy (environment variable)
         else
-          fetchHTTP **opts                                  # fetch w/ HTTP(S)
+          fetchHTTP **opts                              # fetch w/ HTTP(S)
         end
-      when 'spartan'                                        # fetch w/ Spartan
+      when 'spartan'                                    # fetch w/ Spartan
         fetchSpartan
       else
-        logger.warn "⚠️ unsupported scheme #{uri}"          # unsupported scheme
+        logger.warn "⚠️ unsupported scheme #{uri}"      # unsupported scheme
         opts[:thru] == false ? nil : notfound
       end
-    rescue Exception => e                                   # warn on exception
-      env[:warnings].push [e.class,                         # error class
-                           {_: :a, href: href, c: uri},     # error on URI
-                           CGI.escapeHTML(e.message),       # error message
+    rescue Exception => e                               # warn on exception
+      env[:warnings].push [e.class,                     # error class
+                           {_: :a, href: href, c: uri}, # error on URI
+                           CGI.escapeHTML(e.message),   # error message
                            {_: :b, c: [:⏱️, Time.now - start_time, :s]}, '<br>']
       puts [:⚠️, uri,
             e.class, e.message,
@@ -450,22 +448,30 @@ module Webize
     end
 
     def fileResponse
-      if env[:client_etags].include?(etag = fileETag)     # cached at client
-        return [304, {}, []]
-      end
+      ##commented override of Rack ETags. we still override their MIME types
+
+      # eTags = if env.has_key? 'HTTP_IF_NONE_MATCH' # find etags specified by client
+      #           env['HTTP_IF_NONE_MATCH'].strip.split /\s*,\s*/
+      #         else
+      #           []
+      #         end
+
+      # if eTags.include?(eTag = fileETag)      # generate etag
+      #   return [304, {}, []]                  # cached at client
+      # end
 
       Rack::Files.new('.').serving(Rack::Request.new(env), storage.fsPath).yield_self{|s,h,b|
-        case s                                            # status
+        case s                                # status
         when 200
-          s = env[:origin_status] if env[:origin_status]  # upstream status
+          s = env[:origin_status] if env[:origin_status]
         when 304
-          return [304, {}, []]                            # cached at client
+          return [304, {}, []]                # cached at client
         end
-        format = fileMIME                                 # file format
+        format = fileMIME                     # file format
         h['content-type'] = format
-        h['ETag'] = etag
         h['Expires'] = (Time.now + 3e7).httpdate if format.match? FixedFormat
         h['Last-Modified'] ||= storage.mtime.httpdate
+       #h['ETag'] = eTag
         [s, h, b]}
     end
  
