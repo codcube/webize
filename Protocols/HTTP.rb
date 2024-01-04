@@ -454,7 +454,7 @@ module Webize
     def GET
       return hostGET if host                  # remote node
       ps = parts ; p = ps[0]                  # parse path
-      return fetchLocal unless p              # local node - / or no path
+      return fetchLocal unless p              # local node - root or no path
       return unproxy.hostGET if p[-1] == ':' && ps.size > 1        # remote node - proxy URI with scheme
       return unproxy.hostGET if p.index('.') && p != 'favicon.ico' # remote node - proxy URI sans scheme
       return dateDir if %w{m d h y}.member? p # year/month/day/hour redirect
@@ -479,7 +479,7 @@ module Webize
     def headers raw = nil
       raw ||= env || {}                               # raw headers
       head = {}                                       # cleaned headers
-      logger.debug ["\e[7m🥩 ← 🗣 \e[0m #{uri}\n", HTTP.bwPrint(raw)].join if debug? # raw debug-prints
+      logger.debug ["\e[7m raw headers 🥩 ← 🗣 \e[0m #{uri}\n", HTTP.bwPrint(raw)].join if debug? # raw debug-prints
 
       raw.map{|k,v|                                   # (key, val) tuples
         unless k.class!=String || k.match?(/^(protocol|rack)\./i) # except rack/server-use fields
@@ -515,7 +515,7 @@ module Webize
 
       head['User-Agent'] = 'curl/7.82.0' if %w(po.st t.co).member? host # to prefer HTTP HEAD redirections e over procedural Javascript, advertise a basic user-agent
 
-      logger.debug ["\e[7m🧽 ← 🗣 \e[0m #{uri}\n", HTTP.bwPrint(head)].join if debug? # clean debug-prints
+      logger.debug ["\e[7m cleaned headers 🧽 ← 🗣 \e[0m #{uri}\n", HTTP.bwPrint(head)].join if debug? # clean debug-prints
 
       head
     end
