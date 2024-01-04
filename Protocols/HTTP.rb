@@ -455,9 +455,9 @@ module Webize
     def fileResponse
       Rack::Files.new('.').serving(Rack::Request.new(env), storage.fsPath).yield_self{|s,h,b|
         return [s, h, b] if s == 304          # client cache is valid
-        format = fileMIME                     # find MIME type - Rack's extension-map may differ from ours, which takes into account upstream/origin HTTP headers
+        format = fileMIME                     # find MIME type - Rack's extension-map may differ from ours, which preserves upstream/origin HTTP-header data
         h['content-type'] = format            # override Rack MIME type specification
-        h['Expires'] = (Time.now + 3e7).httpdate if format.match? FixedFormat # immutable node
+        h['Expires'] = (Time.now + 3e7).httpdate if format.match? FixedFormat # give immutable nodes a long expiry
         [s, h, b]}
     end
  
