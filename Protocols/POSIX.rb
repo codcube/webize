@@ -20,9 +20,9 @@ module Webize
     include MIME
     HomePage = 'bookmarks/{home.u,search.🐢}'
 
-    def dirname; node.dirname end
+    def dirname = node.dirname
 
-    def extension; File.extname realpath end
+    def extension = File.extname realpath
 
     # create containing dir(s) and return locator
     def document
@@ -125,17 +125,20 @@ module Webize
     end
 
     # URI -> boolean
-    def directory?; node.directory? end
-    def exist?; node.exist? end
-    def file?; node.file? end
-    def symlink?; node.symlink? end
+
+    def directory? = node.directory?
+    def exist? = node.exist?
+    def file? = node.file?
+    def symlink? = node.symlink?
 
     # URI -> [URI,URI..]
-    def find q; from_names pathFind q end
-    def glob; from_names pathGlob end
-    def grep; from_names pathGrep end
+
+    def find(q) = from_names pathFind q
+    def glob = from_names pathGlob
+    def grep = from_names pathGrep
 
     # [path, path..] -> [URI, URI..]
+
     def from_names ps
       base = host ? self : RDF::URI('/')
       pathbase = host ? host.size : 0
@@ -143,14 +146,18 @@ module Webize
         Node base.join p.to_s[pathbase..-1].gsub(':','%3A').gsub(' ','%20').gsub('#','%23')}
     end
 
-    def mtime; node.mtime end
+    def mtime = node.mtime
 
     # URI -> Pathname
-    def node; Pathname.new fsPath end
+
+    def node = Pathname.new fsPath
 
     # URI -> [path,path..]
-    def pathFind q; IO.popen(['find', fsPath, '-iname', q]).read.lines.map &:chomp rescue [] end
-    def pathGlob; Pathname.glob fsPath end
+
+    def pathFind(q) = (IO.popen(['find', fsPath, '-iname', q]).read.lines.map &:chomp rescue [])
+
+    def pathGlob = Pathname.glob fsPath
+
     def pathGrep files = nil
       files = [fsPath] if !files || files.empty?
       q = env[:qs]['q'].to_s
@@ -158,7 +165,7 @@ module Webize
       IO.popen(['grep', '-ril', q, *files]).read.lines.map &:chomp rescue []
     end
 
-    def size; node.size end
+    def size = node.size
 
   end
 end

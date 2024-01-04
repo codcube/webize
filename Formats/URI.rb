@@ -18,9 +18,9 @@ module Webize
       File.basename path, extname if path
     end
 
-    def dataURI?; scheme == 'data' end
+    def dataURI? = scheme == 'data'
 
-    def dirURI?; !path || path[-1] == '/' end
+    def dirURI? = !path || path[-1] == '/'
 
     def display_host
       return unless host
@@ -36,9 +36,9 @@ module Webize
       uri
     end
 
-    def domains; host.split('.').reverse end
+    def domains = host.split('.').reverse
 
-    def extname; File.extname path if path end
+    def extname = (File.extname path if path)
 
     def local_id
       if fragment && in_doc?
@@ -48,8 +48,8 @@ module Webize
       end
     end
 
-    def no_scheme; uri.split('//',2)[1] end
-    def parts; path ? (path.split('/') - ['']) : [] end
+    def no_scheme = uri.split('//',2)[1]
+    def parts = path ? (path.split('/') - ['']) : []
 
     # Hash → querystring
     def self.qs h
@@ -59,7 +59,7 @@ module Webize
       }.join("&")
     end
 
-    def query_hash; Digest::SHA2.hexdigest(query)[0..15] end
+    def query_hash = Digest::SHA2.hexdigest(query)[0..15]
 
     def slugs
       re = /[\W_]/

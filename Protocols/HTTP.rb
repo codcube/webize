@@ -492,14 +492,14 @@ module Webize
                           [s, h, []]} # header and status
     end
 
-    def head?; env['REQUEST_METHOD'] == 'HEAD' end
+    def head? = env['REQUEST_METHOD'] == 'HEAD'
 
-    # client<>proxy connection-specific/server-internal headers - not relevant to proxy<>origin connection
+    # client<>proxy headers not reused on proxy<>origin connection
     SingleHopHeaders = Webize.configTokens 'blocklist/header'
 
     # extensive header massaging happens here,
     # including restore HTTP RFC names from mangled CGI names
-    # PRs pending for rack/falcon, maybe we can finally remove that part soon
+    # PRs pending for rack/falcon, maybe we can finally remove that soon
     def headers raw = nil
       raw ||= env || {}                               # raw headers
       head = {}                                       # cleaned headers
@@ -660,34 +660,34 @@ module Webize
       [status, head, [body]]                      # response
     end
 
-    def selectFormat default = nil                          # default-format argument
-      default ||= 'text/html'                               # default when unspecified
-      return default unless env.has_key? 'HTTP_ACCEPT'      # no preference specified
-      category = (default.split('/')[0] || '*') + '/*'      # format-category wildcard symbol
-      all = '*/*'                                           # any-format wildcard symbol
+    def selectFormat default = nil                     # default-format argument
+      default ||= 'text/html'                          # default when unspecified
+      return default unless env.has_key? 'HTTP_ACCEPT' # no preference specified
+      category = (default.split('/')[0] || '*') + '/*' # format-category wildcard symbol
+      all = '*/*'                                      # any-format wildcard symbol
 
-      index = {}                                            # build (q-value → format) index
-      env['HTTP_ACCEPT'].split(/,/).map{|e|                 # header values
-        fmt, q = e.split /;/                                # (MIME, q-value) pair
-        i = q && q.split(/=/)[1].to_f || 1                  # default q-value
-        index[i] ||= []                                     # q-value entry
-        index[i].push fmt.strip}                            # insert format at q-value
+      index = {}                                       # build (q-value → format) index
+      env['HTTP_ACCEPT'].split(/,/).map{|e|            # header values
+        fmt, q = e.split /;/                           # (MIME, q-value) pair
+        i = q && q.split(/=/)[1].to_f || 1             # default q-value
+        index[i] ||= []                                # q-value entry
+        index[i].push fmt.strip}                       # insert format at q-value
 
-      index.sort.reverse.map{|_, accepted|                  # search in descending q-value order
-        return default if accepted.member? all              # anything accepted here
-        return default if accepted.member? category         # category accepted here
+      index.sort.reverse.map{|_, accepted|             # search in descending q-value order
+        return default if accepted.member? all         # anything accepted here
+        return default if accepted.member? category    # category accepted here
         accepted.map{|format|
           return format if RDF::Writer.for(:content_type => format) || # RDF writer available for format
              ['application/atom+xml','text/html'].member?(format)}}    # non-RDF writer available
-      default                                               # search failure, use default
+      default                                          # default format
     end
 
     def staticResponse format, body
-      head = {'Content-Type' => format,               # response header
+      head = {'Content-Type' => format,                # response header
               'Content-Length' => body.bytesize.to_s,
              'Expires' => (Time.now + 3e7).httpdate}
 
-      [200, head, [body]]                             # response
+      [200, head, [body]]                              # response
     end
 
     def storage
