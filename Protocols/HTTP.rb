@@ -242,8 +242,8 @@ module Webize
     # fetch node(s) from local or remote host
     def fetch nodes = nil
       return fetchLocal nodes if offline? # local node(s) - offline cache
-      return fileResponse if immutable?   # remote node - immutable cache
-      return fetchAsync nodes if nodes    # remote node(s) - async fetch
+      return fileResponse if immutable?   # local node - immutable cache
+      return fetchAsync nodes if nodes    # remote node(s)
              fetchRemote                  # remote node
     end
 
@@ -264,13 +264,19 @@ module Webize
     # and fixing erroneous MIMEs and file extensions that won't map back to the right MIME if stored at upstream-derived path, and dealing with
     # the slightly odd choice of Exception handling flow being used for common HTTP Response statuses, and supporting conneg aware or unaware,
     # and proxy-mode (thru) fetches vs data-only fetches for aggregation/merging scenarios. add some hints for the renderer and logger,
-    # and cache all the things. maybe we can split it all up somehow, especially so we can try other HTTP libraries more easily. (thought about it, never will be the lowest hanging fruit)
+    # and cache all the things. maybe we can split it all up somehow, especially so we can try other HTTP libraries more easily.
+    # (thought about it, never will be the lowest hanging fruit)
     def fetchHTTP thru: true                                           # thread origin HTTP response through to caller?
       start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
-      #      env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
+      doc = storage.document                                           # data cache locator
+      meta = [doc, '.meta'].join                                       # metadata cache locator
+      if File.exist? meta
+        puts "metadata cached at #{meta}"
+      end
       ::URI.open(uri, headers.merge({open_timeout: 8, read_timeout: 42, redirect: false})) do |response|
         fetch_time = Time.now                                          # fetch timing
         h = headers response.meta                                      # response header
+        File.open(meta, 'w'){|f| f << h.to_json }                      # cache metadata
         case status = response.status[0].to_i                          # response status
         when 204                                                       # no content
           [204, {}, []]
@@ -279,7 +285,6 @@ module Webize
           [206, h, [response.read]]
         else                                                           # massage metadata, cache and return data
           body = HTTP.decompress h, response.read                      # decompress body
-
           format = if (parts[0] == 'feed' || (Feed::Names.member? basename)) && adapt?
                      'application/atom+xml'                            # format defined on feed URI
                    elsif content_type = h['Content-Type']              # format defined in HTTP header
@@ -294,39 +299,30 @@ module Webize
                    else
                      'application/octet-stream'
                    end.downcase                                         # normalize format
-                                                                        # detect in-band charset definition
           if !charset && format.index('html') && metatag = body[0..4096].encode('UTF-8', undef: :replace, invalid: :replace).match(/<meta[^>]+charset=['"]?([^'">]+)/i)
-            charset = metatag[1]
+            charset = metatag[1]                                        # detect in-band charset definition
           end
           charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset identifier
           body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
-
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML - mainly XHTML people, a few exist!
-
           repository = (readRDF format, body).persist env, self         # read and cache graph
           repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) unless status==200 # HTTP status in RDF
           repository << RDF::Statement.new(self, RDF::URI('#format'), format) # format
           repository << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch time (wall clock)
           repository << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache time (wall clock)
-
           unless thru                                                   # return data
             print MIME.format_icon format
             return repository
           end
-
-          doc = storage.document                                        # static cache
-
           if (formats = RDF::Format.content_types[format]) &&           # content type
              (extensions = formats.map(&:file_extension).flatten) &&    # suffixes for content type
              !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix in mapped set?
             doc = [(link = doc), '.', extensions[0]].join               # append valid suffix. invalid path becomes link source for findability
             FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) || File.symlink?(link) # link upstream path to local path
           end
-
           File.open(doc, 'w'){|f|                                       # update cache
             f << (format == 'text/html' ? (HTML.cachestamp body, self) : body) } # set cache metadata in body if HTML
           FileUtils.touch doc, mtime: Time.httpdate(h['Last-Modified']) if h['Last-Modified'] # set timestamp on filesystem
-
           if env[:notransform] || format.match?(FixedFormat)
             staticResponse format, body                                 # response in upstream format
           else
