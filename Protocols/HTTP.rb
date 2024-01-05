@@ -261,7 +261,7 @@ module Webize
     #      env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
 
     # fetch resource and cache upstream/original and derived graph data
-    # yes this is huge, much of it to deal with the mess in the wild with MIME/charset data only inside the document,
+    # yes this is big, much of it to deal with the mess in the wild with MIME/charset data only inside the document,
     # rather than HTTP headers, requiring readahead sniffing. and normalizing name symbols to be what's in Ruby's list,
     # and fixing erroneous MIMEs and file extensions that won't map back to the right MIME if stored at upstream-derived path, and dealing with
     # the slightly odd choice of Exception handling flow being used for common HTTP Response statuses etc. maybe we can split
@@ -302,19 +302,12 @@ module Webize
           body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
 
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML
-          
-          timestamp = if h['Last-Modified']                             # HTTP timestamp
-                        Time.httpdate h['Last-Modified'] rescue Time.now
-                      else
-                        Time.now
-                      end
 
           repository = (readRDF format, body).persist env, self         # read and cache graph
           repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) unless status==200 # HTTP status in RDF
           repository << RDF::Statement.new(self, RDF::URI('#format'), format) # format
           repository << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch time (wall clock)
           repository << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache time (wall clock)
-         #repository << RDF::Statement.new(self, RDF::URI(Date), timestamp.iso8601) # timestamp in RDF
 
           unless thru                                                   # return data
             print MIME.format_icon format
@@ -331,8 +324,8 @@ module Webize
           end
 
           File.open(doc, 'w'){|f|                                       # update cache
-            f << (format == 'text/html' ? (HTML.cachestamp body, self) : body) }
-          FileUtils.touch doc, mtime: timestamp                         # set timestamp on filesystem
+            f << (format == 'text/html' ? (HTML.cachestamp body, self) : body) } # add cache metadata to body if HTML
+          FileUtils.touch doc, mtime: Time.httpdate h['Last-Modified'] if h['Last-Modified'] # set timestamp on filesystem
 
           if env[:notransform] || format.match?(FixedFormat)
             staticResponse format, body                                 # response in upstream format
