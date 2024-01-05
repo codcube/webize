@@ -263,8 +263,8 @@ module Webize
 
     #      env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
 
-    # fetch resource and cache upstream and derived data
-    def fetchHTTP thru: true                                # graph data only or full HTTP response
+    # fetch resource and cache upstream/original and derived graph data
+    def fetchHTTP thru: true                                # thread origin HTTP response through to caller?
       start_time = Time.now
       ::URI.open(uri, headers.merge({open_timeout: 8, read_timeout: 42, redirect: false})) do |response|
         fetch_time = Time.now
