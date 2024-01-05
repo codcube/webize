@@ -261,15 +261,15 @@ module Webize
     #      env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
 
     # fetch resource and cache upstream/original and derived graph data
-    # yes this is huge, much of it to deal with the mess in the wild with MIME/charset data only inside doc,
+    # yes this is huge, much of it to deal with the mess in the wild with MIME/charset data only inside the document,
     # rather than HTTP headers, requiring readahead sniffing. and normalizing name symbols to be what's in Ruby's list,
-    # and fixing erroneous MIMEs and file extensions that won't back to the right MIME before storage, and dealing with
-    # the slightly odd choice of Exception handling being used for common HTTP Response statuses etc. maybe we can split
+    # and fixing erroneous MIMEs and file extensions that won't map back to the right MIME if stored at upstream-derived path, and dealing with
+    # the slightly odd choice of Exception handling flow being used for common HTTP Response statuses etc. maybe we can split
     # it all up somehow, especially so we can use some other HTTP libraries more easily without losing our normalizing/caching fu
-    def fetchHTTP thru: true                                # thread origin HTTP response through to caller?
-      start_time = Time.now
+    def fetchHTTP thru: true                                           # thread origin HTTP response through to caller?
+      start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
       ::URI.open(uri, headers.merge({open_timeout: 8, read_timeout: 42, redirect: false})) do |response|
-        fetch_time = Time.now
+        fetch_time = Time.now                                          # fetch timing
         h = headers response.meta                                      # response header
         case status = response.status[0].to_i                          # response status
         when 204                                                       # no content
@@ -302,7 +302,7 @@ module Webize
           body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
 
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML
-
+          
           timestamp = if h['Last-Modified']                             # HTTP timestamp
                         Time.httpdate h['Last-Modified'] rescue Time.now
                       else
