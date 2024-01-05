@@ -258,8 +258,6 @@ module Webize
       respond repos
     end
 
-    #      env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
-
     # fetch resource and cache upstream/original and derived graph data
     # yes this is big, much of it to deal with the mess in the wild with MIME/charset data only inside the document,
     # rather than HTTP headers, requiring readahead sniffing. and normalizing name symbols to be what's in Ruby's list,
@@ -269,6 +267,7 @@ module Webize
     # and cache all the things. maybe we can split it all up somehow, especially so we can try other HTTP libraries more easily. (thought about it, never will be the lowest hanging fruit)
     def fetchHTTP thru: true                                           # thread origin HTTP response through to caller?
       start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
+      #      env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
       ::URI.open(uri, headers.merge({open_timeout: 8, read_timeout: 42, redirect: false})) do |response|
         fetch_time = Time.now                                          # fetch timing
         h = headers response.meta                                      # response header
@@ -302,7 +301,7 @@ module Webize
           charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset identifier
           body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
 
-          format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML
+          format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML - mainly XHTML people, a few exist!
 
           repository = (readRDF format, body).persist env, self         # read and cache graph
           repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) unless status==200 # HTTP status in RDF
@@ -314,7 +313,7 @@ module Webize
             print MIME.format_icon format
             return repository
           end
-                                                                        # HTTP Response with graph or static/unmodified-upstream data
+
           doc = storage.document                                        # static cache
 
           if (formats = RDF::Format.content_types[format]) &&           # content type
@@ -325,7 +324,7 @@ module Webize
           end
 
           File.open(doc, 'w'){|f|                                       # update cache
-            f << (format == 'text/html' ? (HTML.cachestamp body, self) : body) } # add cache metadata to body if HTML
+            f << (format == 'text/html' ? (HTML.cachestamp body, self) : body) } # set cache metadata in body if HTML
           FileUtils.touch doc, mtime: Time.httpdate(h['Last-Modified']) if h['Last-Modified'] # set timestamp on filesystem
 
           if env[:notransform] || format.match?(FixedFormat)
