@@ -267,11 +267,13 @@ module Webize
     # and cache all the things. maybe we can split it all up somehow, especially so we can try other HTTP libraries more easily.
     # (thought about it, never will be the lowest hanging fruit)
 
-    URI_OPEN_OPTS = {open_timeout: 6, read_timeout: 16, redirect: false}
+    URI_OPEN_OPTS = {open_timeout: 6,
+                     read_timeout: 16,
+                     redirect: false} # don't invisibly follow redirects. we need this data to populate relocation DB and make clients aware
 
     def fetchHTTP thru: true                                           # thread origin HTTP response through to caller?
       start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
-      doc = storage.document                                           # data cache locator
+      doc = storage.document                                           # static-data cache locator
       meta = [doc, '.meta'].join                                       # metadata cache locator
       cache_headers = {}
       if File.exist? meta
@@ -342,10 +344,8 @@ module Webize
     rescue Exception => e
       raise unless e.respond_to?(:io) && e.io.respond_to?(:status) # raise non-HTTP-response errors
       status = e.io.status[0].to_i                          # status
+      puts "exception on #{uri}: status #{status}"
       head = headers e.io.meta                              # headers
-
-      puts "exception thrown on #{URI}, status #{status}"
-
       case status.to_s
       when /30[12378]/                                      # redirect
         location = e.io.meta['location']
