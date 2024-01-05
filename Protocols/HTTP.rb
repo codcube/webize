@@ -266,14 +266,21 @@ module Webize
     # and proxy-mode (thru) fetches vs data-only fetches for aggregation/merging scenarios. add some hints for the renderer and logger,
     # and cache all the things. maybe we can split it all up somehow, especially so we can try other HTTP libraries more easily.
     # (thought about it, never will be the lowest hanging fruit)
+
+    URI_OPEN_OPTS = {open_timeout: 8, read_timeout: 42, redirect: false}
+
     def fetchHTTP thru: true                                           # thread origin HTTP response through to caller?
       start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
       doc = storage.document                                           # data cache locator
       meta = [doc, '.meta'].join                                       # metadata cache locator
+      cache_headers = {}
       if File.exist? meta
-        puts "metadata cached at #{meta}"
+        metadata = ::JSON.parse File.open(meta).read
+        cache_headers['If-None-Match'] = metadata['ETag'] if metadata['ETag']
+        cache_headers['If-Modified-Since'] = metadata['Last-Modified'] if metadata['Last-Modified']
+        puts cache_headers
       end
-      ::URI.open(uri, headers.merge({open_timeout: 8, read_timeout: 42, redirect: false})) do |response|
+      ::URI.open(uri, headers.merge(URI_OPEN_OPTS).merge(cache_headers)) do |response|
         fetch_time = Time.now                                          # fetch timing
         h = headers response.meta                                      # response header
         File.open(meta, 'w'){|f| f << h.to_json }                      # cache metadata
