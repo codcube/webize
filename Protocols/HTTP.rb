@@ -292,7 +292,7 @@ module Webize
           [206, h, [response.read]]
         else                                                           # massage metadata, cache and return data
           body = HTTP.decompress h, response.read                      # decompress body
-          sha2 = Digest::SHA2.hexdigest body
+          sha2 = Digest::SHA2.hexdigest body                           # hash body
           File.open(meta, 'w'){|f| f << h.merge({uri: uri, SHA2: sha2}).to_json} # cache metadata
           format = if (parts[0] == 'feed' || (Feed::Names.member? basename)) && adapt?
                      'application/atom+xml'                            # format defined on feed URI
@@ -345,6 +345,8 @@ module Webize
       raise unless e.respond_to?(:io) && e.io.respond_to?(:status) # raise non-HTTP-response errors
       status = e.io.status[0].to_i                          # status
       puts "exception on #{uri}: status #{status}"
+      repository ||= RDF::Repository.new
+      repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) # HTTP status in RDF
       head = headers e.io.meta                              # headers
       case status.to_s
       when /30[12378]/                                      # redirect
@@ -370,11 +372,9 @@ module Webize
           [status, {'Location' => dest.href}, []]
         end
       when /304/                                            # origin unmodified
-        fetchLocal if thru
+        thru ? fetchLocal : repository
       when /300|[45]\d\d/                                   # not allowed/available/found
         body = HTTP.decompress(head, e.io.read).encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
-        repository ||= RDF::Repository.new
-        repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) # HTTP status in RDF
         RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|repository << g} if head['Content-Type']&.index 'html'
         head['Content-Length'] = body.bytesize.to_s
         if path == '/favicon.ico' && status / 100 == 4 # set default icon
