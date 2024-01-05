@@ -443,7 +443,7 @@ module Webize
     end
 
     # unique identifier for file version. we want something that doesn't require reading and hashing the whole file,
-    # though eventually we may SHA256 every write and store in file or eattr. if we switch to git for versioning, use its identifier
+    # though we SHA256 every file now so maybe switch to that, or if we switch to git for versioning, use its identifier
     def fileETag = Digest::SHA2.hexdigest [self,
                                            storage.mtime,
                                            storage.size].join
