@@ -319,8 +319,8 @@ module Webize
           if (formats = RDF::Format.content_types[format]) &&           # content type
              (extensions = formats.map(&:file_extension).flatten) &&    # suffixes for content type
              !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix in mapped set?
-            doc = [(link = doc), '.', extensions[0]].join               # append valid suffix
-            FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) || File.symlink?(link) # link canonical name to storage name
+            doc = [(link = doc), '.', extensions[0]].join               # append valid suffix. invalid path becomes link source for findability
+            FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) || File.symlink?(link) # link upstream path to local path
           end
 
           File.open(doc, 'w'){|f|                                       # update cache
