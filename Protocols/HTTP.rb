@@ -269,12 +269,12 @@ module Webize
 
     URI_OPEN_OPTS = {open_timeout: 6,
                      read_timeout: 16,
-                     redirect: false} # don't invisibly follow redirects. we need this data to populate relocation DB and make clients aware
+                     redirect: false} # don't invisibly follow redirects. we need this data to make clients and servers/proxies (populate relocation DB) aware
 
     def fetchHTTP thru: true                                           # thread origin HTTP response through to caller?
       start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
-      doc = storage.document                                           # static-data cache locator
-      meta = [doc, '.meta'].join                                       # metadata cache locator
+      doc = storage.document                                           # cache locator
+      meta = [doc, '.meta'].join                                       # metadata locator
       cache_headers = {}
       if File.exist? meta
         metadata = ::JSON.parse File.open(meta).read
