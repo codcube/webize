@@ -10,7 +10,7 @@ module Webize
       children = node.children
       alpha_binning = children.size > 52
       graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI(Directory)) unless alpha_binning
-      graph << RDF::Statement.new(self, RDF::URI(Title), basename)
+      graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename
       children.select{|n|n.basename.to_s[0] != '.'}.map{|child| # 👉 contained nodes
         base = child.basename.to_s
         c = Node join base.gsub(' ','%20').gsub('#','%23')
