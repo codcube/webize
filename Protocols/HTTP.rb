@@ -393,7 +393,7 @@ module Webize
 
     def fetchLocal nodes = nil
       return fileResponse if !nodes && storage.file? &&                    # static response if one non-transformable node
-                             (format = fileMIME                            # MIME type
+                             (format = fileMIME                            # lookup MIME type
                               env[:notransform] ||                         # (A → B) MIME transform and (A → A) intra-MIME reformat disabled by client
                                 format.match?(MIME::FixedFormat) ||        # (A → B) MIME transform disabled by server
       (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) intra-MIME reformat disabled by server
@@ -473,12 +473,11 @@ module Webize
 
     def head? = env['REQUEST_METHOD'] == 'HEAD'
 
-    # client<>proxy or internal headers not reused on proxy<>origin connection
+    # client<>proxy and internal headers not reused on proxy<>origin connection
     SingleHopHeaders = Webize.configTokens 'blocklist/header'
 
     # extensive header massaging happens here,
-    # including restore HTTP RFC names from mangled CGI names
-    # PRs pending for rack/falcon, maybe we can finally remove that soon
+    # including restore HTTP RFC names from mangled CGI names - PRs pending for rack/falcon, maybe we can remove that part eventually
     def headers raw = nil
       raw ||= env || {}                               # raw headers
       head = {}                                       # cleaned headers
@@ -497,7 +496,8 @@ module Webize
           head[key] = (v.class == Array && v.size == 1 && v[0] || v) unless SingleHopHeaders.member? key.downcase # set header
         end}
 
-      # accept graph data even if our client is oblivious. ?notransform disables this, delivering upstream data-browser/UI code rather than graph data
+      # accept graph data even if our client is oblivious
+      #  ?notransform disables this, delivering upstream data-browser/UI code rather than graph data
       head['Accept'] = ['text/turtle', head['Accept']].join ',' unless env[:notransform] || head['Accept']&.match?(/text\/turtle/)
 
       head['Content-Type'] = 'application/json' if %w(api.mixcloud.com).member? host
