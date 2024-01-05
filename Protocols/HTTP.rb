@@ -264,8 +264,9 @@ module Webize
     # yes this is big, much of it to deal with the mess in the wild with MIME/charset data only inside the document,
     # rather than HTTP headers, requiring readahead sniffing. and normalizing name symbols to be what's in Ruby's list,
     # and fixing erroneous MIMEs and file extensions that won't map back to the right MIME if stored at upstream-derived path, and dealing with
-    # the slightly odd choice of Exception handling flow being used for common HTTP Response statuses etc. maybe we can split
-    # it all up somehow, especially so we can use some other HTTP libraries more easily without losing our normalizing/caching fu
+    # the slightly odd choice of Exception handling flow being used for common HTTP Response statuses, and supporting conneg aware or unaware,
+    # and proxy-mode (thru) fetches vs data-only fetches for aggregation/merging scenarios. add some hints for the renderer and logger,
+    # and cache all the things. maybe we can split it all up somehow, especially so we can try other HTTP libraries more easily. (thought about it, never will be the lowest hanging fruit)
     def fetchHTTP thru: true                                           # thread origin HTTP response through to caller?
       start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
       ::URI.open(uri, headers.merge({open_timeout: 8, read_timeout: 42, redirect: false})) do |response|
@@ -325,7 +326,7 @@ module Webize
 
           File.open(doc, 'w'){|f|                                       # update cache
             f << (format == 'text/html' ? (HTML.cachestamp body, self) : body) } # add cache metadata to body if HTML
-          FileUtils.touch doc, mtime: Time.httpdate h['Last-Modified'] if h['Last-Modified'] # set timestamp on filesystem
+          FileUtils.touch doc, mtime: Time.httpdate(h['Last-Modified']) if h['Last-Modified'] # set timestamp on filesystem
 
           if env[:notransform] || format.match?(FixedFormat)
             staticResponse format, body                                 # response in upstream format
