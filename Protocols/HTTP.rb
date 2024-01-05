@@ -248,7 +248,6 @@ module Webize
     end
 
     def fetchAsync nodes
-      env[:updates_only] ||= true # limit response to updates (usually wanted in feed/aggregation scenarios, which is main use of this function so far. any time we don't want this?)
       barrier = Async::Barrier.new
       semaphore = Async::Semaphore.new(16, parent: barrier)
       repos = []
@@ -438,10 +437,11 @@ module Webize
       opts[:thru] == false ? nil : notfound
     end
 
-    # URI -> ETag
-    def fileETag
-      Digest::SHA2.hexdigest [uri, storage.mtime, storage.size].join
-    end
+    # unique identifier for file version. we want something that doesn't require reading and hashing the whole file,
+    # though eventually we may SHA256 every write and store in file or eattr. if we switch to git for versioning, use its identifier
+    def fileETag = Digest::SHA2.hexdigest [self,
+                                           storage.mtime,
+                                           storage.size].join
 
     def fileResponse
       Rack::Files.new('.').serving(Rack::Request.new(env), storage.fsPath).yield_self{|s,h,b|
@@ -454,13 +454,17 @@ module Webize
  
     def GET
       return hostGET if host                  # remote node
-      ps = parts; p = ps[0]                   # parse path
+      ps = parts                              # parse path
+      p = ps[0]                               # first node in path
       return fetchLocal unless p              # local node - root or no path
       return unproxy.hostGET if p[-1] == ':' && ps.size > 1        # remote node - proxy URI with scheme
       return unproxy.hostGET if p.index('.') && p != 'favicon.ico' # remote node - proxy URI sans scheme
-      return dateDir if %w{m d h y}.member? p # year/month/day/hour redirect
-      return block parts[1] if p == 'block'   # block domain action
-      return fetch uris if extname == '.u' && query == 'fetch' # remote node(s)
+      return dateDir if %w{m d h y}.member? p # year/month/day/hour dir
+      return block parts[1] if p == 'block'   # block domain
+      if extname == '.u' && query == 'fetch'  # URI list and ?fetch
+        env[:updates_only] ||= true           # elide non-updates for news/feed/aggregation scenarios, which is main use of this feature so far. any time we don't want this?
+        return fetch uris                     # remote node(s)
+      end
       fetchLocal                              # local node
     end
 
@@ -523,7 +527,10 @@ module Webize
 
     def hostGET
       return [301, {'Location' => relocate.href}, []] if relocate? # relocated node
-      return fetch Feed::Subscriptions[host] if path == '/feed' && adapt? && Feed::Subscriptions[host] # aggregated feed node
+      if path == '/feed' && adapt? && Feed::Subscriptions[host]    # aggregate feed node - doesn't exist on origin server
+        env[:updates_only] ||= true
+        return fetch Feed::Subscriptions[host]
+      end
       dirMeta              # 👉 adjacent nodes
       return deny if deny? # blocked node
       fetch                # remote node
