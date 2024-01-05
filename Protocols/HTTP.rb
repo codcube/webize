@@ -340,8 +340,12 @@ module Webize
         end
       end
     rescue Exception => e
-      raise unless e.respond_to?(:io) && e.io.respond_to?(:status)
-      status = e.io.status[0].to_i                          # status raised to exception by HTTP library
+      raise unless e.respond_to?(:io) && e.io.respond_to?(:status) # raise non-HTTP-response errors
+      status = e.io.status[0].to_i                          # status
+      head = headers e.io.meta                              # headers
+
+      puts "exception thrown on #{URI}, status #{status}"
+
       case status.to_s
       when /30[12378]/                                      # redirect
         location = e.io.meta['location']
@@ -368,7 +372,6 @@ module Webize
       when /304/                                            # origin unmodified
         fetchLocal if thru
       when /300|[45]\d\d/                                   # not allowed/available/found
-        head = headers e.io.meta
         body = HTTP.decompress(head, e.io.read).encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
         repository ||= RDF::Repository.new
         repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) # HTTP status in RDF
