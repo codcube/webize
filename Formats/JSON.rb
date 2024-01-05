@@ -22,7 +22,7 @@ module Webize
 
     class Format < RDF::Format
       content_type 'application/json',
-                   extensions: [:json, :webmanifest],
+                   extensions: [:json, :meta, :webmanifest],
                    aliases: %w(
                    text/json
                    application/manifest+json;q=0.8

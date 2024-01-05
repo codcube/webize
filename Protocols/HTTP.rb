@@ -267,7 +267,7 @@ module Webize
     # and cache all the things. maybe we can split it all up somehow, especially so we can try other HTTP libraries more easily.
     # (thought about it, never will be the lowest hanging fruit)
 
-    URI_OPEN_OPTS = {open_timeout: 8, read_timeout: 42, redirect: false}
+    URI_OPEN_OPTS = {open_timeout: 6, read_timeout: 16, redirect: false}
 
     def fetchHTTP thru: true                                           # thread origin HTTP response through to caller?
       start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
@@ -278,12 +278,10 @@ module Webize
         metadata = ::JSON.parse File.open(meta).read
         cache_headers['If-None-Match'] = metadata['ETag'] if metadata['ETag']
         cache_headers['If-Modified-Since'] = metadata['Last-Modified'] if metadata['Last-Modified']
-        puts cache_headers
       end
       ::URI.open(uri, headers.merge(URI_OPEN_OPTS).merge(cache_headers)) do |response|
         fetch_time = Time.now                                          # fetch timing
         h = headers response.meta                                      # response header
-        File.open(meta, 'w'){|f| f << h.to_json }                      # cache metadata
         case status = response.status[0].to_i                          # response status
         when 204                                                       # no content
           [204, {}, []]
@@ -292,6 +290,8 @@ module Webize
           [206, h, [response.read]]
         else                                                           # massage metadata, cache and return data
           body = HTTP.decompress h, response.read                      # decompress body
+          sha2 = Digest::SHA2.hexdigest body
+          File.open(meta, 'w'){|f| f << h.merge({uri: uri, SHA2: sha2}).to_json} # cache metadata
           format = if (parts[0] == 'feed' || (Feed::Names.member? basename)) && adapt?
                      'application/atom+xml'                            # format defined on feed URI
                    elsif content_type = h['Content-Type']              # format defined in HTTP header
@@ -312,6 +312,7 @@ module Webize
           charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset identifier
           body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML - mainly XHTML people, a few exist!
+          puts "prior SHA #{cache_headers['SHA2']} current SHA #{sha2}" if cache_headers['SHA2']
           repository = (readRDF format, body).persist env, self         # read and cache graph
           repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) unless status==200 # HTTP status in RDF
           repository << RDF::Statement.new(self, RDF::URI('#format'), format) # format
