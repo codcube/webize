@@ -261,6 +261,11 @@ module Webize
     #      env['HTTP_IF_MODIFIED_SINCE'] = cache.mtime.httpdate if cache # timestamp for conditional fetch
 
     # fetch resource and cache upstream/original and derived graph data
+    # yes this is huge, much of it to deal with the mess in the wild with MIME/charset data only inside doc,
+    # rather than HTTP headers, requiring readahead sniffing. and normalizing name symbols to be what's in Ruby's list,
+    # and fixing erroneous MIMEs and file extensions that won't back to the right MIME before storage, and dealing with
+    # the slightly odd choice of Exception handling being used for common HTTP Response statuses etc. maybe we can split
+    # it all up somehow, especially so we can use some other HTTP libraries more easily without losing our normalizing/caching fu
     def fetchHTTP thru: true                                # thread origin HTTP response through to caller?
       start_time = Time.now
       ::URI.open(uri, headers.merge({open_timeout: 8, read_timeout: 42, redirect: false})) do |response|
