@@ -240,23 +240,21 @@ module Webize
     end
 
     # fetch node(s) from local or remote host
-    def fetch nodes = nil, **opts
+    def fetch nodes = nil
       return fetchLocal nodes if offline? # local node(s) - offline cache
-      return fileResponse if immutable?   # local node - immutable cache
-      return fetchRemote unless nodes     # remote node
-      fetchAsync nodes                    # remote node(s) - async fetch
+      return fileResponse if immutable?   # remote node - immutable cache
+      return fetchAsync nodes if nodes    # remote node(s) - async fetch
+             fetchRemote                  # remote node
     end
 
-    def fetchAsync
-      env[:updates_only] = true # response limited to updates
-      opts[:thru] = false       # upstream HTTP response headers not passed through to us
+    def fetchAsync nodes
+      env[:updates_only] ||= true # limit response to updates (usually wanted in feed/aggregation scenarios, which is main use of this function so far. any time we don't want this?)
       barrier = Async::Barrier.new
       semaphore = Async::Semaphore.new(16, parent: barrier)
       repos = []
       nodes.map{|n|
-        semaphore.async do
-          repos << (Node(n).fetchRemote **opts)
-        end}
+        semaphore.async{
+          repos << (Node(n).fetchRemote thru: false)}}
       barrier.wait
       respond repos
     end
@@ -496,7 +494,7 @@ module Webize
           head[key] = (v.class == Array && v.size == 1 && v[0] || v) unless SingleHopHeaders.member? key.downcase # set header
         end}
 
-      # accept graph data even if our client is oblivious
+      # accept graph data from origin even if client is oblivious
       #  ?notransform disables this, delivering upstream data-browser/UI code rather than graph data
       head['Accept'] = ['text/turtle', head['Accept']].join ',' unless env[:notransform] || head['Accept']&.match?(/text\/turtle/)
 
@@ -514,7 +512,7 @@ module Webize
 
       head['Referer'] = 'http://drudgereport.com/' if host&.match? /wsj\.com$/ # referer tweaks so stuff loads
       head['Referer'] = 'https://' + (host || env['HTTP_HOST']) + '/' if (path && %w(.gif .jpeg .jpg .png .svg .webp).member?(File.extname(path).downcase)) || parts.member?('embed')
-      head.delete 'Referer' if host == 'www.reddit.com' # existence of referer causes empty RSS feed
+      head.delete 'Referer' if host == 'www.reddit.com' # existence of referer causes empty RSS feed 
 
       head['User-Agent'] = 'curl/7.82.0' if %w(po.st t.co).member? host # to prefer HTTP HEAD redirections e over procedural Javascript, advertise a basic user-agent
 
