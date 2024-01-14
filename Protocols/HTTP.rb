@@ -9,6 +9,7 @@ module Webize
     StatusIcon.keys.map{|s|                              # status code (int) -> char
       StatusIcon[s.to_i] = StatusIcon[s]}
     Redirector = []                                      # runtime redirection cache
+    Referer = []                                         # runtime referer cache
 
     def self.bwPrint kv
       kv.map{|k,v|

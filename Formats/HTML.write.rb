@@ -159,7 +159,7 @@ module Webize
 
       def toolbar
         bc = '' # path breadcrumbs
-
+        puts HTTP::Redirector[env[:base]].class, HTTP::Redirector[env[:base]]
         {class: :toolbox,
          c: [{_: :a, id: :rootpath, href: Resource.new(env[:base].join('/')).env(env).href, c: '&nbsp;' * 3}, "\n",  # 👉 root node
              ({_: :a, id: :rehost, href: Webize::Resource(['//', ReHost[host], env[:base].path].join, env).href,
@@ -185,7 +185,8 @@ module Webize
              {_: :span, class: :stats,
               c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                 # ⏱️ elapsed time
                   [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)},
-             (['pointers: ', HTTP::Redirector[env[:base]]] unless HTTP::Redirector[env[:base]].empty?), # redirect sources
+             (['redirectors: ', HTTP::Redirector[env[:base]]] unless HTTP::Redirector[env[:base]].empty?),          # redirect sources
+             (['referers: ', HTTP::Referer[env[:base]]] unless HTTP::Referer[env[:base]].empty?),                   # referer sources
             ]}
       end
 
