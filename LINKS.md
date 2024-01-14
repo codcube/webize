@@ -41,7 +41,3 @@ it's [your data](https://www.youtube.com/watch?v=-RoINZt-0DQ), and finding what 
 # WHEN
 
 in theory, this project can go away once clients and servers are [privacy respecting](https://privacypatterns.org/patterns/) and standards compliant in read/write APIs and formats. in reality, we've seen the reduction in user agency and nixing of generic access modes ([protocols](https://venkatesh-rao.gitbook.io/summer-of-protocols/) and formats, not platforms and products) in favor of vendor-controlled mobile and web apps, backed by "exciting" tech on (almost always remote) servers cultivating rented access to a small handful of proprietary hosting/API-platforms. basic GET requests are swapped for site-specific GRAPHQL queries - often via non-HTTP protocols like gRPC lacking mature and ubiquitous proxy tooling - and site-specific binary wire-formats with protobuf definitions as proprietary code unavailable for inspection or 3rd-party client code generation, while we don't know the queries since theyre referred to with the shortcut of an opaque hash. proprietary platforms continue to iterate on the inscrutable black-box dumb-terminal model they've loved selling since the 1960s.
-
-# WHO
-
-IX or poka on EFNet/Rizon (eventually OFTC/Libera once our planned credential-capable IRC bridge exists) chat. msg on IRC to notify if you've emailed the git address or created a bug-report/issue/PR on an online git mirror as those accounts have solely been for public backups/clone-points so far
