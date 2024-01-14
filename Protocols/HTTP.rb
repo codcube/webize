@@ -370,7 +370,7 @@ module Webize
           end
         else                                                # redirect
           Redirector[dest] ||= []
-          Redirector[dest].push self
+          Redirector[dest].push env[:base]
           [status, {'Location' => dest.href}, []]
         end
       when /304/                                            # origin unmodified

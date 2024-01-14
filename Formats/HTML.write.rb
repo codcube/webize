@@ -138,7 +138,6 @@ module Webize
 
                                toolbar,
 
-                               (['pointers: ', HTTP::Redirectors[self]] unless HTTP::Redirectors[self].empty?), # redirect sources
                                (['<br>', {class: :warning, c: env[:warnings]}] unless env[:warnings].empty?), # warnings
 
                                link[:up,'&#9650;'],
@@ -185,7 +184,9 @@ module Webize
              (:🔌 if offline?),                                                                                      # denote offline mode
              {_: :span, class: :stats,
               c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                 # ⏱️ elapsed time
-                  [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)}]}
+                  [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)},
+             (['pointers: ', HTTP::Redirector[env[:base]]] unless HTTP::Redirector[env[:base]].empty?), # redirect sources
+            ]}
       end
 
     end
