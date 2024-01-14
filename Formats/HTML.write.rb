@@ -185,8 +185,8 @@ module Webize
              {_: :span, class: :stats,
               c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                 # ⏱️ elapsed time
                   [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)},
-             (['redirectors: ', HTTP::Redirector[env[:base]]] unless HTTP::Redirector[env[:base]].empty?),          # redirect sources
-             (['referers: ', HTTP::Referer[env[:base]]] unless HTTP::Referer[env[:base]].empty?),                   # referer sources
+             (['redirectors: ', HTTP::Redirector[env[:base]]] if HTTP::Redirector[env[:base]]),                     # redirect sources
+             (['referers: ', HTTP::Referer[env[:base]]] if HTTP::Referer[env[:base]]),                              # referer sources
             ]}
       end
 
