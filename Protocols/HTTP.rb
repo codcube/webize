@@ -16,30 +16,30 @@ module Webize
 
     # instantiate resource, call method and log response
     def self.call env
-      return [403, {}, []] unless Methods.member? env['REQUEST_METHOD']
-      env[:start_time] = Time.now                      # start timer
-      env['SERVER_NAME'].downcase!                     # normalize hostname
-      env.update HTTP.env                              # init environment storage
+      return [403,{},[]] unless Methods.member? env['REQUEST_METHOD'] # allow HTTP methods
+      env[:start_time] = Time.now                                   # start wall-clock timer
+      env['SERVER_NAME'].downcase!                                  # normalize hostname case
+      env.update HTTP.env                                           # init environment fields
 
-      isPeer = PeerHosts.has_key? env['SERVER_NAME']   # peer node?
+      isPeer = PeerHosts.has_key? env['SERVER_NAME']                # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
-      env[:proxy_refs] = isPeer || isLocal             # emit proxy references on local and peer hosts
+      env[:proxy_refs] = isPeer || isLocal                          # emit proxy refs on local and peer hosts
 
-      u = RDF::URI(isLocal ? '/' : [isPeer ? :http : :https, '://', env['HTTP_HOST']].join).
-            join RDF::URI(env['REQUEST_PATH']).path
+      env[:referer] = Node(env['HTTP_REFERER'], env) if env['HTTP_REFERER'] # referer node
 
-      env[:base] = (Node u, env).freeze                # base URI - immutable
-      uri = Node u, env                                # request URI - may be refined for specific concrete representation/variant
+      u = RDF::URI(isLocal ? '/' : [isPeer ? :http : :https, '://', env['HTTP_HOST']].join). # base URI
+            join RDF::URI(env['REQUEST_PATH']).path                 # enforce just path in REQUEST_PATH variable
 
-      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query?
+      env[:base] = (Node u, env).freeze                             # base node - immutable
+      uri = Node u, env                                             # request node - may change for specific representations/variants, relocations, 
+
+      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty?         # query?
         env[:qs] = RDF::URI('?' + env['QUERY_STRING']).query_values || {} # parse query and memoize
-        qs = env[:qs].dup                              # query args
-        Args.map{|k|                                   # (💻 <> 🖥) internal args to request environment
+        qs = env[:qs].dup                                           # query args
+        Args.map{|k|                                                # (💻 <> 🖥) internal args to request environment
          env[k.to_sym] = qs.delete(k) || true if qs.has_key? k}
-        uri.query_values = qs unless qs.empty?         # (🖥 <> ☁️) external args to request URI
+        uri.query_values = qs unless qs.empty?                      # (🖥 <> ☁️) external args to request URI
       end
-
-      env[:referer] = Node(env['HTTP_REFERER'], env) if env['HTTP_REFERER'] # referer
 
       URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist (ctrl-shift-R in client UI)
 
@@ -48,7 +48,7 @@ module Webize
         outFmt = MIME.format_icon head['Content-Type']              # output format
         color = env[:deny] ? '38;5;196' : (MIME::Color[outFmt]||0)  # format -> color
 
-        Console.logger.info [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil, # transport security
+        Console.logger.info [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil, # denote transport security
 
              if env[:deny]                                          # action taken:
                '🛑'                                                 # blocked
