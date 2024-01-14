@@ -8,6 +8,7 @@ module Webize
     StatusIcon = Webize.configHash 'style/icons/status'  # status code (string) -> char
     StatusIcon.keys.map{|s|                              # status code (int) -> char
       StatusIcon[s.to_i] = StatusIcon[s]}
+    Redirector = []                                      # runtime redirection cache
 
     def self.bwPrint kv
       kv.map{|k,v|
@@ -31,7 +32,7 @@ module Webize
             join RDF::URI(env['REQUEST_PATH']).path                 # enforce just path in REQUEST_PATH variable
 
       env[:base] = (Node u, env).freeze                             # base node - immutable
-      uri = Node u, env                                             # request node - may change for specific representations/variants, relocations, 
+      uri = Node u, env                                             # request node - may update for concrete-representations/variants or relocations
 
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty?         # query?
         env[:qs] = RDF::URI('?' + env['QUERY_STRING']).query_values || {} # parse query and memoize
@@ -349,19 +350,18 @@ module Webize
       repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) # HTTP status in RDF
       head = headers e.io.meta                              # headers
       case status.to_s
-      when /30[12378]/                                      # redirect
+      when /30[12378]/                                      # redirects
         location = e.io.meta['location']
         dest = Node join location
-        if !thru # location not returned to caller, notify on stderr/warning-bar new location
+        if !thru                                            # notify on console and warnings-bar of new location
           logger.warn "➡️ #{uri} → #{location}"
-          env[:warnings].push [{_: :a, href: href, c: uri},
-                               '➡️',
+          env[:warnings].push [{_: :a, href: href, c: uri}, '➡️',
                                {_: :a, href: dest.href, c: dest.uri}, '<br>']
         elsif no_scheme == dest.no_scheme
-          if scheme == 'https' && dest.scheme == 'http'     # 🔒downgrade
+          if scheme == 'https' && dest.scheme == 'http'     # 🔒downgrade redirect
             logger.warn "🛑 downgrade redirect #{dest}"
             fetchLocal if thru
-          elsif scheme == 'http' && dest.scheme == 'https'  # 🔒upgrade
+          elsif scheme == 'http' && dest.scheme == 'https'  # 🔒upgrade redirect
             logger.debug "🔒 upgrade redirect #{dest}"
             dest.fetchHTTP
           else                                              # redirect loop or non-HTTP protocol
@@ -369,6 +369,8 @@ module Webize
             fetchLocal if thru
           end
         else                                                # redirect
+          Redirector[dest] ||= []
+          Redirector[dest].push self
           [status, {'Location' => dest.href}, []]
         end
       when /304/                                            # origin unmodified
@@ -523,7 +525,7 @@ module Webize
       head['Referer'] = 'https://' + (host || env['HTTP_HOST']) + '/' if (path && %w(.gif .jpeg .jpg .png .svg .webp).member?(File.extname(path).downcase)) || parts.member?('embed')
       head.delete 'Referer' if host == 'www.reddit.com' # existence of referer causes empty RSS feed 
 
-      head['User-Agent'] = 'curl/7.82.0' if %w(po.st t.co).member? host # to prefer HTTP HEAD redirections e over procedural Javascript, advertise a basic user-agent
+      head['User-Agent'] = 'curl/7.82.0' if %w(po.st t.co).member? host # prefer HTTP (HEAD) redirects over procedural Javascript - advertise a basic user-agent
 
       logger.debug ["\e[7m clean headers 🧽🗣 \e[0m #{uri}\n", HTTP.bwPrint(head)].join if debug? # clean debug-prints
 

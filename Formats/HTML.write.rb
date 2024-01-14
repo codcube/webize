@@ -138,6 +138,7 @@ module Webize
 
                                toolbar,
 
+                               (['pointers: ', HTTP::Redirectors[self]] unless HTTP::Redirectors[self].empty?), # redirect sources
                                (['<br>', {class: :warning, c: env[:warnings]}] unless env[:warnings].empty?), # warnings
 
                                link[:up,'&#9650;'],
