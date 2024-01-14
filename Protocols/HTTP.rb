@@ -20,15 +20,16 @@ module Webize
       env[:start_time] = Time.now                      # start timer
       env['SERVER_NAME'].downcase!                     # normalize hostname
       env.update HTTP.env                              # init environment storage
+
       isPeer = PeerHosts.has_key? env['SERVER_NAME']   # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
-                                                       # request URI
-      u = RDF::URI(isLocal ? '/' : [isPeer ? :http : :https, '://', env['HTTP_HOST']].join).join RDF::URI(env['REQUEST_PATH']).path
+      env[:proxy_refs] = isPeer || isLocal             # emit proxy references on local and peer hosts
+
+      u = RDF::URI(isLocal ? '/' : [isPeer ? :http : :https, '://', env['HTTP_HOST']].join).
+            join RDF::URI(env['REQUEST_PATH']).path
 
       env[:base] = (Node u, env).freeze                # base URI - immutable
-      uri = Node u, env                                # request instance - URI may be refined to specific concrete representation/variant
-
-     #uri.port = nil if [80,443,8000].member? uri.port # strip default port specifier
+      uri = Node u, env                                # request URI - may be refined for specific concrete representation/variant
 
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty? # query?
         env[:qs] = RDF::URI('?' + env['QUERY_STRING']).query_values || {} # parse query and memoize
@@ -38,10 +39,9 @@ module Webize
         uri.query_values = qs unless qs.empty?         # (🖥 <> ☁️) external args to request URI
       end
 
-      env[:proxy_refs] = isPeer || isLocal             # proxy references onto local or peer host
       env[:referer] = Node(env['HTTP_REFERER'], env) if env['HTTP_REFERER'] # referer
 
-      URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist (ctrl-shift-R via client UI)
+      URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist (ctrl-shift-R in client UI)
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status,head,body| # call request and log response
         inFmt = MIME.format_icon env[:origin_format]                # input format
