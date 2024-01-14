@@ -8,8 +8,8 @@ module Webize
     StatusIcon = Webize.configHash 'style/icons/status'  # status code (string) -> char
     StatusIcon.keys.map{|s|                              # status code (int) -> char
       StatusIcon[s.to_i] = StatusIcon[s]}
-    Redirector = []                                      # runtime redirection cache
-    Referer = []                                         # runtime referer cache
+    Redirector = {}                                      # runtime redirection cache
+    Referer = {}                                         # runtime referer cache
 
     def self.bwPrint kv
       kv.map{|k,v|
@@ -27,8 +27,6 @@ module Webize
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
       env[:proxy_refs] = isPeer || isLocal                          # emit proxy refs on local and peer hosts
 
-      env[:referer] = Node(env['HTTP_REFERER'], env) if env['HTTP_REFERER'] # referer node
-
       u = RDF::URI(isLocal ? '/' : [isPeer ? :http : :https, '://', env['HTTP_HOST']].join). # base URI
             join RDF::URI(env['REQUEST_PATH']).path                 # enforce just path in REQUEST_PATH variable
 
@@ -41,6 +39,12 @@ module Webize
         Args.map{|k|                                                # (💻 <> 🖥) internal args to request environment
          env[k.to_sym] = qs.delete(k) || true if qs.has_key? k}
         uri.query_values = qs unless qs.empty?                      # (🖥 <> ☁️) external args to request URI
+      end
+
+      if env['HTTP_REFERER']
+        env[:referer] = Node(env['HTTP_REFERER'], env)              # referer node
+        Referer[env[:base]] ||= []
+        Referer[env[:base]].push env[:referer] unless Referer[env[:base]].member? env[:referer]
       end
 
       URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist (ctrl-shift-R in client UI)
@@ -371,7 +375,7 @@ module Webize
           end
         else                                                # redirect
           Redirector[dest] ||= []
-          Redirector[dest].push env[:base]
+          Redirector[dest].push env[:base] unless Redirector[dest].member? env[:base]
           [status, {'Location' => dest.href}, []]
         end
       when /304/                                            # origin unmodified
