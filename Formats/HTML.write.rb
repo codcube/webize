@@ -140,6 +140,11 @@ module Webize
 
                                (['<br>', {class: :warning, c: env[:warnings]}] unless env[:warnings].empty?), # warnings
 
+                               if HTTP::Redirector[env[:base]] || HTTP::Referer[env[:base]]
+                                 {c: [(['redirectors: ', HTTP::Redirector[env[:base]]] if HTTP::Redirector[env[:base]]),# redirect sources
+                                      (['referers: ', HTTP::Referer[env[:base]]] if HTTP::Referer[env[:base]])]}        # referer sources
+                               end,
+
                                link[:up,'&#9650;'],
 
                                if updates = graph.delete('#updates') # updates
@@ -159,7 +164,7 @@ module Webize
 
       def toolbar
         bc = '' # path breadcrumbs
-        puts HTTP::Redirector[env[:base]].class, HTTP::Redirector[env[:base]]
+
         {class: :toolbox,
          c: [{_: :a, id: :rootpath, href: Resource.new(env[:base].join('/')).env(env).href, c: '&nbsp;' * 3}, "\n",  # 👉 root node
              ({_: :a, id: :rehost, href: Webize::Resource(['//', ReHost[host], env[:base].path].join, env).href,
@@ -184,9 +189,7 @@ module Webize
              (:🔌 if offline?),                                                                                      # denote offline mode
              {_: :span, class: :stats,
               c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                 # ⏱️ elapsed time
-                  [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)},
-             (['redirectors: ', HTTP::Redirector[env[:base]]] if HTTP::Redirector[env[:base]]),                     # redirect sources
-             (['referers: ', HTTP::Referer[env[:base]]] if HTTP::Referer[env[:base]]),                              # referer sources
+                  [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)}
             ]}
       end
 

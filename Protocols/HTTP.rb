@@ -373,10 +373,10 @@ module Webize
             logger.warn "🛑 not following #{uri} → #{dest} redirect"
             fetchLocal if thru
           end
-        else                                                # redirect
-          Redirector[dest] ||= []
-          Redirector[dest].push env[:base] unless Redirector[dest].member? env[:base]
-          [status, {'Location' => dest.href}, []]
+        else
+          HTTP::Redirector[dest] ||= []                     # update redirection cache
+          HTTP::Redirector[dest].push env[:base] unless HTTP::Redirector[dest].member? env[:base]
+          [status, {'Location' => dest.href}, []]           # redirect
         end
       when /304/                                            # origin unmodified
         thru ? fetchLocal : repository
