@@ -190,7 +190,7 @@ module Webize
     class Document < Resource
 
       def grep graph
-        qs = query_values || {}
+        qs = query_hash
         q = qs['Q'] || qs['q']
         return unless graph && q
 

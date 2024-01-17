@@ -93,7 +93,7 @@ module Webize
            hash = Digest::SHA2.hexdigest uri   # huge name, hash and shard
            [hash[0..1], hash[2..-1]]
          else                                  # query hash to basename in sibling file or directory child
-           (query ? Node(join dirURI? ? query_hash : [basename, query_hash, extname].join('.')) : self).parts.map{|part|
+           (query ? Node(join dirURI? ? query_digest : [basename, query_digest, extname].join('.')) : self).parts.map{|part|
              Rack::Utils.unescape_path part}   # path map
          end,
          (dirURI? && !query) ? '' : nil].      # preserve trailing slash on directory name

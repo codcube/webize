@@ -36,7 +36,7 @@ module Webize
         d.empty? }                # named leaf exists in tree?
     end
 
-    def temp_allow? = (query_values || {})['allow'] == allow_key
+    def temp_allow? = query_hash['allow'] == allow_key
 
   end
 end

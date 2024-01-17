@@ -30,7 +30,7 @@ module Webize
     def display_name
       return uri.split(',')[0] if dataURI?
       return fragment if fragment && !fragment.empty?                     # fragment
-      return query_values['id'] if query_values&.has_key? 'id' rescue nil # query
+     #return query_hash['id'] if query_hash.has_key? 'id'                 # query
       return basename if path && basename && !['','/'].member?(basename)  # basename
       return display_host if host                                         # hostname
       uri
@@ -59,7 +59,9 @@ module Webize
       }.join("&")
     end
 
-    def query_hash = Digest::SHA2.hexdigest(query)[0..15]
+    def query_digest = Digest::SHA2.hexdigest(query)[0..15]
+
+    def query_hash = query_values || {}
 
     def slugs
       re = /[\W_]/

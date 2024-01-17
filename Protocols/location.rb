@@ -22,7 +22,7 @@ module Webize
 
     def relocate
       Webize::URI(if URL_host?
-                  q = query_values || {}
+                  q = query_hash
                   q['url'] || q['u'] || q['q'] || self
                  elsif FWD_hosts.member? host
                    ['//', FWD_hosts[host], path, query ? ['?', query] : nil].join
@@ -30,7 +30,7 @@ module Webize
                    ['//', host, path.sub(/\/$/,''), '.rss'].join
                  elsif YT_hosts.member? host
                    ['//www.youtube.com/watch?v=',
-                    (query_values || {})['v'] || path[1..-1]].join
+                    query_hash['v'] || path[1..-1]].join
                  elsif CDN_available?
                    ['//', CDN_host, ':', CDN_port, '/', host, path, query ? ['?', query] : nil].join
                  else
@@ -39,8 +39,8 @@ module Webize
     end
 
     def URL_host?
-      URL_hosts.member?(host) ||                               # explicit URL rehoster
-        (host&.match?(CDN_hosts) && (query_values||{}).has_key?('url')) # URL rehost on CDN host
+      URL_hosts.member?(host) ||                                # explicit URL rehoster
+        (host&.match?(CDN_hosts) && query_hash.has_key?('url')) # URL rehost on CDN host
     end
 
   end

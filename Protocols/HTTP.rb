@@ -34,7 +34,7 @@ module Webize
       uri = Node u, env                                             # request node - may update for concrete-representations/variants or relocations
 
       if env['QUERY_STRING'] && !env['QUERY_STRING'].empty?         # query?
-        env[:qs] = RDF::URI('?' + env['QUERY_STRING']).query_values || {} # parse query and memoize
+        env[:qs] = Webize::URI('?'+env['QUERY_STRING']).query_hash  # parse and memoize query
         qs = env[:qs].dup                                           # query args
         Args.map{|k|                                                # (💻 <> 🖥) internal args to request environment
          env[k.to_sym] = qs.delete(k) || true if qs.has_key? k}
