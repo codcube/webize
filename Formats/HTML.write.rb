@@ -143,8 +143,15 @@ module Webize
 
                                (['<br>', {class: :warning, c: env[:warnings]}] unless env[:warnings].empty?), # warnings
 
-                               ({c: [:➡️, HTML.markup(HTTP::Redirector[env[:base]], env)]} if HTTP::Redirector[env[:base]]), # redirect sources
-                               ({c: [:👉, HTML.markup(HTTP::Referer[env[:base]], env)]} if HTTP::Referer[env[:base]]),       # referer sources
+                               ({class: :redirectors,
+                                 c: [:➡️, {_: :table,
+                                          c: HTTP::Redirector[env[:base]].map{|r|
+                                            {_: :tr,
+                                             c: [{_: :td, c: HTML.markup(r, env)},
+                                                 {_: :td, c: ({_: :a, href: '/block/' + r.host.sub(/^www\./,''), class: :dimmed, c: :🛑} unless r.deny_domain?)}]}}}]} if HTTP::Redirector[env[:base]]), # redirect sources
+
+                               ({class: :referers,
+                                 c: [:👉, HTML.markup(HTTP::Referer[env[:base]], env)]} if HTTP::Referer[env[:base]]),       # referer sources
 
                                link[:up,'&#9650;'],
 
