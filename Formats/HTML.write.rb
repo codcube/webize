@@ -140,10 +140,8 @@ module Webize
 
                                (['<br>', {class: :warning, c: env[:warnings]}] unless env[:warnings].empty?), # warnings
 
-                               if HTTP::Redirector[env[:base]] || HTTP::Referer[env[:base]]
-                                 {c: [(['redirectors: ', HTTP::Redirector[env[:base]]] if HTTP::Redirector[env[:base]]),# redirect sources
-                                      (['referers: ', HTTP::Referer[env[:base]]] if HTTP::Referer[env[:base]])]}        # referer sources
-                               end,
+                               #(['redirectors: ', HTTP::Redirector[env[:base]]] if HTTP::Redirector[env[:base]]),# redirect sources
+                               #(['referers: ', HTTP::Referer[env[:base]]] if HTTP::Referer[env[:base]])]}        # referer sources
 
                                link[:up,'&#9650;'],
 

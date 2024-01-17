@@ -8,7 +8,7 @@ module Webize
     StatusIcon = Webize.configHash 'style/icons/status'  # status code (string) -> char
     StatusIcon.keys.map{|s|                              # status code (int) -> char
       StatusIcon[s.to_i] = StatusIcon[s]}
-    Redirector = {}                                      # runtime redirection cache
+    Redirector = {}                                      # runtime redirection cache - NOTE we're going to switch to a per-process RDF::Repository, probably, rather than proliferate these constants
     Referer = {}                                         # runtime referer cache
 
     def self.bwPrint kv
