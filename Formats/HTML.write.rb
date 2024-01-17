@@ -147,8 +147,8 @@ module Webize
                                  c: [:➡️, {_: :table,
                                           c: HTTP::Redirector[env[:base]].map{|r|
                                             {_: :tr,
-                                             c: [{_: :td, c: HTML.markup(r, env)},
-                                                 {_: :td, c: ({_: :a, href: '/block/' + r.host.sub(/^www\./,''), class: :dimmed, c: :🛑} unless r.deny_domain?)}]}}}]} if HTTP::Redirector[env[:base]]), # redirect sources
+                                             c: [{_: :td, c: {_: :a, href: r.href, c: r.host}},
+                                                 {_: :td, c: ({_: :a, href: '/block/' + r.host.sub(/^(www|xml)\./,''), class: :dimmed, c: :🛑} unless r.deny_domain?)}]}}}]} if HTTP::Redirector[env[:base]]), # redirect sources
 
                                ({class: :referers,
                                  c: [:👉, HTML.markup(HTTP::Referer[env[:base]], env)]} if HTTP::Referer[env[:base]]),       # referer sources
@@ -179,7 +179,7 @@ module Webize
                c: {_: :img, src: ['//', ReHost[host], '/favicon.ico'].join}} if ReHost.has_key? host),
              {_: :a, id: :UI, href: host ? env[:base] : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, "\n", # 👉 origin UI
              {_: :a, id: :cache, href: '/' + POSIX::Node(self).fsPath, c: :📦}, "\n",                                # 👉 archive
-             ({_: :a, id: :block, href: '/block/' + host.sub(/^www\./,''), class: :dimmed,                           # 👉 block domain action
+             ({_: :a, id: :block, href: '/block/' + host.sub(/^(www|xml)\./,''), class: :dimmed,                           # 👉 block domain action
                c: :🛑} if host && !deny_domain?), "\n",
              {_: :span, class: :path, c: env[:base].parts.map{|p|
                 bc += '/' + p                                                                                        # 👉 path breadcrumbs
