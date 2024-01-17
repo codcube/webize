@@ -65,7 +65,10 @@ module Webize
       when Webize::URI        # URI
         o = Resource.new(o).env env
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
+      when Array              # Array
+        o.map{|n| markup n, env}
       else                    # default
+        puts "markup undefined for #{o.class}"
         {_: :span, c: CGI.escapeHTML(o.to_s)}
       end
     end
@@ -140,8 +143,8 @@ module Webize
 
                                (['<br>', {class: :warning, c: env[:warnings]}] unless env[:warnings].empty?), # warnings
 
-                               #(['redirectors: ', HTTP::Redirector[env[:base]]] if HTTP::Redirector[env[:base]]),# redirect sources
-                               #(['referers: ', HTTP::Referer[env[:base]]] if HTTP::Referer[env[:base]])]}        # referer sources
+                               ({c: [:➡️, HTML.markup(HTTP::Redirector[env[:base]], env)]} if HTTP::Redirector[env[:base]]), # redirect sources
+                               ({c: [:👉, HTML.markup(HTTP::Referer[env[:base]], env)]} if HTTP::Referer[env[:base]]),       # referer sources
 
                                link[:up,'&#9650;'],
 
