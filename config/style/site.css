@@ -27,7 +27,7 @@
 .preembed {position: relative; vertical-align: top}
 .quote > .quote > .quote {background-color: #777}
 .quote > .quote {background-color: #aaa}
-.redirectors, .referers {border: 1px solid #eee, border-radius: .8em}
+.redirectors, .referers {border: 1px solid #eee; border-radius: .8em}
 .resource .title {background-color: #fff; color: #000; border-radius: .5em 0 .2em 0; margin: 0; max-width: 80ex; float: left}
 .resource .to {float: right; margin: 0}
 .resource a.pointer {margin: 0; padding: 0; background-color: #000; border-radius: .5em; font-weight: normal; float: right}
