@@ -273,8 +273,8 @@ module Webize
     # and cache all the things. maybe we can split it all up somehow, especially so we can try other HTTP libraries more easily.
     # (thought about it, never will be the lowest hanging fruit)
 
-    URI_OPEN_OPTS = {open_timeout: 6,
-                     read_timeout: 16,
+    URI_OPEN_OPTS = {open_timeout: 16,
+                     read_timeout: 32,
                      redirect: false} # don't invisibly follow redirects. we need this data to make clients and servers/proxies (populate relocation DB) aware
 
     def fetchHTTP thru: true                                           # thread origin HTTP response through to caller?
