@@ -338,7 +338,10 @@ module Webize
           end
           File.open(doc, 'w'){|f|                                       # update cache
             f << (format == 'text/html' ? (HTML.cachestamp body, self) : body) } # set cache metadata in body if HTML
-          FileUtils.touch doc, mtime: Time.httpdate(h['Last-Modified']) if h['Last-Modified'] # set timestamp on filesystem
+          if h['Last-Modified']                                         # set timestamp on filesystem
+            mtime = Time.httpdate h['Last-Modified'] rescue nil
+            FileUtils.touch doc, mtime: mtime if mtime
+          end
           if env[:notransform] || format.match?(FixedFormat)
             staticResponse format, body                                 # response in upstream format
           else
