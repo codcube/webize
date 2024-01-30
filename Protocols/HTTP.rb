@@ -173,7 +173,12 @@ module Webize
 
     def deny status = 200, type = nil
       env[:deny] = true 
-      env[:warnings].push({_: :a, id: :allow, title: 'allow temporarily', style: 'font-size: 3em', href: Node(['//', host, path, '?allow=', allow_key].join).href, c: :👁️})
+      env[:warnings].push({_: :a,
+                           id: :allow,
+                           title: 'allow temporarily',
+                           style: 'font-size: 3em',
+                           href: Node(['//', host, path, '?allow=', allow_key].join).href,
+                           c: :👁️})
 
       if uri.match? Gunk
         bg = 'background-color: #ddd'
@@ -181,8 +186,11 @@ module Webize
         if query&.match? Gunk # drop query
           env[:warnings].push ['pattern block in query<br>',
                                "<span style='#{bg}; font-size: .88em'>",
-                               {_: :a, id: :noquery, title: 'URI without query',
-                                href: Node(['//', host, path].join).href, c: [host, path], style: bg},
+                               {_: :a,
+                                id: :noquery,
+                                title: 'URI without query',
+                                href: Node(['//', host, path].join).href,
+                                c: [host, path], style: bg},
                                '?',
                                query.gsub(Gunk){|m|
                                  ['<b style="font-size:1.3em; background-color: #fff">', m, '</b>'].join },
