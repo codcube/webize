@@ -27,6 +27,8 @@ article:post_date
 article:post_modified
 article:published
 article:published_time
+article_date_original
+article_date_updated
 bt:modDate
 bt:pubDate
 cXenseParse:modified_time

@@ -89,6 +89,7 @@ kwl
 label_name
 ledeCaption
 localizedCaption
+machine_tags
 message
 meta_description
 miniExcerpt
@@ -145,6 +146,7 @@ subheading
 subheadline
 subject
 subsection
+subsections
 subtitle
 summary
 summaryHtml

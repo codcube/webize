@@ -315,6 +315,7 @@ station_urn
 statuses_count
 streamable
 style-nonce
+subscriber_only
 super_follow_eligible
 super_followed_by
 super_following
@@ -334,6 +335,7 @@ truncated
 turbo-body-classes
 turbo-cache-control
 turbo-visit-control
+twitter-site-verification
 twitter:app:country
 twitter:app:id:googleplay
 twitter:app:id:ipad
