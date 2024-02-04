@@ -7,6 +7,14 @@ module Webize
   RSS_hosts = Webize.configList 'hosts/rss'
   YT_hosts = Webize.configList 'hosts/youtube'
 
+  # addresses
+  LocalAddrs = Socket.ip_address_list.map &:ip_address # local addresses
+  PeerHosts = Hash[*File.open([ENV['PREFIX'],'/etc/hosts'].join).readlines.map(&:chomp).grep_v(/^#/).map{|l|
+                     addr, *names = l.split
+                     names.map{|host|
+                       [host, addr]}}.flatten]         # peer host -> peer addr map
+  PeerAddrs = PeerHosts.invert                         # peer addr -> peer host map
+
   class URI
 
     def relocate?

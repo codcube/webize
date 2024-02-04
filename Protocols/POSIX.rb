@@ -2,14 +2,6 @@
 %w(fileutils pathname shellwords).map{|d| require d }
 module Webize
 
-  # addresses valid for all network protocols
-  LocalAddrs = Socket.ip_address_list.map &:ip_address # local addresses
-  PeerHosts = Hash[*File.open([ENV['PREFIX'],'/etc/hosts'].join).readlines.map(&:chomp).map{|l|
-                     addr, *names = l.split
-                     names.map{|host|
-                       [host, addr]}}.flatten]         # peer host -> peer addr map
-  PeerAddrs = PeerHosts.invert                         # peer addr -> peer host map
-
   module POSIX
     def self.Node uri, env=nil
       env ? Node.new(uri).env(env) : Node.new(uri)
