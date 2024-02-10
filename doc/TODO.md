@@ -11,6 +11,7 @@ iframe in http://l/https://www.adriel.com/#UI
 github is giving us no content due to everything is inside some react-data attr on some random element. ugh but this is why our library exists..to get that sweet 1993 web experience back so TODO it is http://l/https://github.com/ruby/ruby/blob/a49643340eb6b8d65299912b640887ea18495909/shape.c#UI
 semiexorix image ptrs (wix JSONnonLD?) https://www.blacktimebelt.net/
 blank http://localhost:8000/http://redux-saga.js.org/docs/ExternalResources.html/#u24e988ec52be9f9deea3ff2fb168704facc9459c0af029558d5bee7949e87026
+title <div> http://l/https://nlnet.nl/feed.atom#UI
 css leak (multiple <body nodes) http://localhost:8000/https://theleap.org/ #ff3458a53a2c2de61a1609eec536a918c02779cbbdc45d7f6b0a1706d8b49f9b8 http://localhost:8000/fi/poutapilvi/www/index.html http://l/au/com/kidgredients/cheese-and-bacon-rolls-just-like-bakery-ones/ (we need to decide on node vs bodeset input to emitcontent) and this one is trickier, maybe coming in thru RDF::RDFa or some rouge/nokogiri cornercase w/ comments or idk PEBKAC. http://localhost:8000/https://www.cbsnews.com/news/rush-limbaugh-arrested-on-drug-charges/
 subj URI collision http://localhost:8000/coop/agaric/blog/feed
 new JSON Extractor . http://l/com/blastradio/ronnieloko
