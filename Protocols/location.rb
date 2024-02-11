@@ -46,11 +46,12 @@ module Webize
   end
   class Resource
 
-    # reference in current context
+    # reference located in current request context
     def href
-      return '#' + fragment if in_doc? && fragment              # relativized fragment reference
-      return uri unless host && env[:proxy_refs] && !proxy_ref? # URI (identifier) as URL (locator)
-      ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join # proxy reference
+      return '#' + fragment if in_doc? && fragment        # fragment
+      return uri unless host                              # path
+      return proxy_ref if env[:proxy_refs] && !proxy_ref? # proxy location
+      uri                                                 # identifier URI as locator URL
     end
 
     # set scheme to HTTP for fetch method/library protocol selection for peer nodes on private/local networks
@@ -73,10 +74,9 @@ module Webize
       ENV.has_key? 'OFFLINE'
     end
 
-    def proxy_ref?
-      [CDN_host,
-       env['SERVER_NAME']].member? host
-    end
+    def proxy_ref = ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join
+
+    def proxy_ref? = env['SERVER_NAME'] == host
 
     def relocate
       Resource super

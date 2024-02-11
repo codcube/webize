@@ -26,7 +26,6 @@ module Webize
       isPeer = PeerHosts.has_key? env['SERVER_NAME']                # peer node?
       isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
       env[:proxy_refs] = isPeer || isLocal                          # emit proxy refs on local and peer hosts
-     #puts "peer? #{isPeer} local? #{isLocal}"
 
       u = RDF::URI(isLocal ? '/' : [isPeer ? :http : :https, '://', env['HTTP_HOST']].join). # base URI
             join RDF::URI(env['REQUEST_PATH']).path                 # enforce just path in REQUEST_PATH variable
