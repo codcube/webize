@@ -1,3 +1,5 @@
+require 'linkeddata'
+
 {Formats: %w(
 Config
 URI

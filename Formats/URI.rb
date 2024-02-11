@@ -1,6 +1,4 @@
 # coding: utf-8
-require 'linkeddata'
-
 module Webize
 
   BasicSlugs = [nil, '', *Webize.configTokens('blocklist/slug')]

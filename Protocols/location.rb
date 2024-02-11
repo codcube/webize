@@ -48,10 +48,10 @@ module Webize
 
     # reference located in current request context
     def href
-      return '#' + fragment if in_doc? && fragment        # fragment
+      return '#' + fragment if fragment && in_doc?        # relativized fragment
       return uri unless host                              # path
       return proxy_ref if env[:proxy_refs] && !proxy_ref? # proxy location
-      uri                                                 # identifier URI as locator URL
+      uri                                                 # identifier URI as locator URL (defult)
     end
 
     # set scheme to HTTP for fetch method/library protocol selection for peer nodes on private/local networks
