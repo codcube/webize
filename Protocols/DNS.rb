@@ -65,7 +65,7 @@ class FilteredServer < Async::DNS::Server
   end
 end
 
-# if binding port 53 is throwing an error:
+# if binding port 53 is not available:
 
 # enable low-port binding on linux-compatible OS,
 
@@ -73,9 +73,9 @@ end
 
 # move the priveleged-port start point,
 
-# 5) sudo sysctl -w net.ipv4.ip_unprivileged_port_start=80
+# 2) sudo sysctl -w net.ipv4.ip_unprivileged_port_start=80
 
-# or change the below port to high (>1024) and,
+# or change the binding port to high (>1024) and,
 
 # 3) use a high-port resolver specification in /etc/resolv.conf or other system resolver settings if supported:
 # echo nameserver 127.0.0.1:1053 | sudo tee /etc/resolv.conf
