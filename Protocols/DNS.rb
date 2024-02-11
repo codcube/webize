@@ -63,9 +63,11 @@ end
 
 ## Listening tricks
 
-# if binding isn't allowed, a minimalist solution is:
+# if binding port 53 isn't allowed:
 
-# 1) use a high-port resolver specification in /etc/resolv.conf or your system resolver settings (unsure of syntax or specifics, assuming this works some places)
+# 1) use a high-port resolver specification in /etc/resolv.conf or other system resolver settings, if supported:
+
+# echo nameserver 127.0.0.1:1053 | sudo tee /etc/resolv.conf
 
 # enable low-port binding on a linux-compatible OS by running:
 
