@@ -65,26 +65,24 @@ class FilteredServer < Async::DNS::Server
   end
 end
 
-## Listening tricks
+# if binding port 53 is throwing an error:
 
-# if binding port 53 isn't allowed:
+# enable low-port binding on linux-compatible OS,
 
-# 1) use a high-port resolver specification in /etc/resolv.conf or other system resolver settings, if supported:
+# 1) sudo setcap 'cap_net_bind_service=+ep' /usr/bin/ruby
 
-# echo nameserver 127.0.0.1:1053 | sudo tee /etc/resolv.conf
-
-# enable low-port binding on a linux-compatible OS by running:
-
-# 2) sudo setcap 'cap_net_bind_service=+ep' /usr/bin/ruby
-
-# change the below port to high (>1024) and,
-
-# 3) redirect port 53 to say 1053 or 5300 via kernel tables by running the <../low_ports> script, or:
-# 4) redirect traffic in userspace with a 'sudo socat' instantiation (TODO fish one out of .bash_history)
-
-# move the priveleged-port starting-point:
+# move the priveleged-port start point,
 
 # 5) sudo sysctl -w net.ipv4.ip_unprivileged_port_start=80
+
+# or change the below port to high (>1024) and,
+
+# 3) use a high-port resolver specification in /etc/resolv.conf or other system resolver settings if supported:
+# echo nameserver 127.0.0.1:1053 | sudo tee /etc/resolv.conf
+
+# 4) redirect port 53 to a high port in kernel routing tables with the <../low_ports> script
+
+# 5) redirect traffic in userspace with netcat/socat
 
 server = FilteredServer.new([[:udp, '127.0.0.1', 53],
                              [:tcp, '127.0.0.1', 53],
