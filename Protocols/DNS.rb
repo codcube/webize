@@ -52,7 +52,11 @@ class FilteredServer < Async::DNS::Server
     if resource.deny?
       color = "\e[38;5;#{resource.deny_domain? ? 196 : 202};7m"
       Log[name, color, v6]
-      transaction.respond! v6 ? '::1' : DefaultAddr
+      if ENV.has_key? 'DIRTY'
+        transaction.passthrough! @resolver
+      else
+        transaction.respond! v6 ? '::1' : DefaultAddr
+      end
     else
       color = name.index('www.') == 0 ? nil : "\e[38;5;51m"
       Log[name, color, v6]
