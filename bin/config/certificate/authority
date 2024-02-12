@@ -6,7 +6,6 @@
 # just browse localhost over port 80 HTTP using the proxy_refs feature
 
 
-## create certificate
 certbase=/etc/ssl/certs
 certdir=$(realpath ~/.ssl)
 cert=$certdir/CA.pem
@@ -14,9 +13,7 @@ cert=$certdir/CA.pem
 [ -e $cert ] || openssl req -new -newkey rsa:2048 -sha256 -days 365 -nodes -x509 -extensions v3_ca -keyout $certdir/myCA.pem -out $cert
 hash=$(openssl x509 -inform PEM -subject_hash_old -in $cert -noout)
 
-## system-specific tweaks
-
-uid=$(id -u)
+## system-specific installation
 
 # Android
 if [ -x "$(command -v pkg)" ]; then
@@ -33,6 +30,6 @@ sudo update-ca-certificates
 # p11-kit-trust
 command -v trust && sudo trust anchor --store $cert
 
-## install certificate
+## generic installation
 sudo cp $cert $certbase/$hash.0
 sudo chmod 644 $certbase/$hash.0
