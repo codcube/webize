@@ -46,15 +46,15 @@ module Webize
   end
   class Resource
 
-    # reference located in current request context
+    # resolve reference to current request context
     def href
       return '#' + fragment if fragment && in_doc?        # relativized fragment
-      return uri unless host                              # path
-      return proxy_ref if env[:proxy_refs] && !proxy_ref? # proxy location
-      uri                                                 # identifier URI as locator URL (defult)
+      return uri unless host                              # relative path
+      return proxy_ref if env[:proxy_refs] && !proxy_ref? # proxied locator
+      uri                                                 # identifier URI as locator URL (default)
     end
 
-    # set scheme to HTTP for fetch method/library protocol selection for peer nodes on private/local networks
+    # set scheme to HTTP for peer nodes on private/VPN networks
     def insecure
       return self if scheme == 'http'
       _ = dup.env env
