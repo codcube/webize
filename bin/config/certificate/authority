@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# create a certificate authority and import it into the system store,
+# and use our CA to sign a cert for falcon. the https://github.com/socketry/localhost gem may end up replacing some or most of this 
+
+
 ## create certificate
 certbase=/etc/ssl/certs
 certdir=$(realpath ~/.ssl)
