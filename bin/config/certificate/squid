@@ -1,5 +1,5 @@
 #!/bin/sh
-# distros tend to either not configure the squid cert stuff at all, or in some cases there's a directory owned by a user named 'squid' that you can't login as so i'm not sure how you run the certgen script etc. we just do this until figuring out what you're "supposed" to do and whether or or not distro stuff needs patching/bugfixing or not . i mean we dont even use most of these distros or squid anymore it was just a product of our distro-hopping phase before falcon/HTTPS came along so idk whatever just in case anyone uses squid..
+# distros tend to either not configure the squid cert stuff at all, or in some cases there's a directory owned by a user named 'squid' that you can't login as so i'm not sure how you run the certgen script (maybe some su invocation with it specified instead of the useless $SHELL ?). we just do this until figuring out what you're "supposed" to do on these distros and whether or or not distro stuff needs patching/bugfixing or not. i mean we dont even use most of these distros or squid anymore it was just a product of our distro-hopping phase and before falcon/HTTPS came along so idk whatever just in case anyone uses squid you might need to run this..
 
 uid=$(id -u)
 
