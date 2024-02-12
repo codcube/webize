@@ -5,10 +5,10 @@
 # browsing localhost over port 80 HTTP using the proxy_refs feature
 
 certbase=/etc/ssl/certs
-certdir=$(realpath ~/.ssl)
+certdir=$(realpath ~/.localhost)
 cert=$certdir/CA.pem
 [ -e $certdir ] || mkdir $certdir
-[ -e $cert ] || openssl req -new -newkey rsa:2048 -sha256 -days 365 -nodes -x509 -extensions v3_ca -keyout $certdir/myCA.pem -out $cert
+[ -e $cert ] || openssl req -new -newkey rsa:2048 -sha256 -days 365 -nodes -x509 -extensions v3_ca -keyout $certdir/CA.key -out $cert
 hash=$(openssl x509 -inform PEM -subject_hash_old -in $cert -noout)
 
 ## system-specific installation
