@@ -1,7 +1,9 @@
 #!/bin/sh
 
-# create a certificate authority and import it into the system store,
-# and use our CA to sign a cert for falcon. the https://github.com/socketry/localhost gem may end up replacing some or most of this 
+# create a certificate authority and import it into the system store, and use it to sign a cert for falcon
+# the https://github.com/socketry/localhost gem may replace some or most of this.
+# this script dates to when we had to do this for Squid, but we tend to avoid HTTPS MITMing altogether, and
+# just browse localhost over port 80 HTTP using the proxy_refs feature
 
 
 ## create certificate
