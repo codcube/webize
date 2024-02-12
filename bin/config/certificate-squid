@@ -1,0 +1,13 @@
+#!/bin/sh
+# distros tend to either not configure the squid cert stuff at all, or in some cases there's a directory owned by a user named 'squid' that you can't login as so i'm not sure how you run the certgen script etc. we just do this until figuring out what you're "supposed" to do and whether or or not distro stuff needs patching/bugfixing or not . i mean we dont even use most of these distros or squid anymore it was just a product of our distro-hopping phase before falcon/HTTPS came along so idk whatever just in case anyone uses squid..
+
+uid=$(id -u)
+
+# Alpine
+command -v apk && sudo /usr/lib/squid/security_file_certgen -c -s /var/cache/squid/ssl_db -M 4MB && sudo chown -R $uid:$uid /var/cache/squid
+
+# Arch
+command -v pacman && sudo /usr/lib/squid/security_file_certgen -c -s /var/cache/squid/ssl_db -M 4MB && sudo chown -R $uid:$uid /var/cache/squid
+
+# Void
+command -v xbps-install && sudo /usr/libexec/squid/security_file_certgen -c -s /var/cache/squid/ssl_db -M 4MB
