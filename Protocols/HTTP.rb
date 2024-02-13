@@ -11,10 +11,7 @@ module Webize
     Redirector = {}                                      # runtime redirection cache - NOTE we're going to switch to a per-process RDF::Repository, probably, rather than proliferate these constants
     Referer = {}                                         # runtime referer cache
 
-    def self.bwPrint kv
-      kv.map{|k,v|
-        "\e[38;5;7;7m#{k}\e[0m#{v}\n" }
-    end
+    def self.bwPrint kv = kv.map{|k,v| "\e[38;5;7;7m#{k}\e[0m#{v}\n"}
 
     # instantiate resource, call method and log response
     def self.call env
@@ -127,9 +124,7 @@ module Webize
     include MIME
 
     # host adaptation only runs on last proxy in chain
-    def adapt?
-      !ENV.has_key?('http_proxy')
-    end
+    def adapt? = !ENV.has_key?('http_proxy')
 
     def block domain
       File.open([Webize::ConfigPath, :blocklist, :domain].join('/'), 'a'){|list|
@@ -167,9 +162,7 @@ module Webize
       [302,{'Location' => [loc, pattern, qs].join},[]] # redirect to date-dir
     end
 
-    def debug?
-      ENV['CONSOLE_LEVEL'] == 'debug'
-    end
+    def debug? = ENV['CONSOLE_LEVEL'] == 'debug'
 
     def deny status = 200, type = nil
       env[:deny] = true 
@@ -279,7 +272,6 @@ module Webize
     # the slightly odd choice of Exception handling flow being used for common HTTP Response statuses, and supporting conneg aware or unaware,
     # and proxy-mode (thru) fetches vs data-only fetches for aggregation/merging scenarios. add some hints for the renderer and logger,
     # and cache all the things. maybe we can split it all up somehow, especially so we can try other HTTP libraries more easily.
-    # (thought about it, never will be the lowest hanging fruit)
 
     URI_OPEN_OPTS = {open_timeout: 16,
                      read_timeout: 32,
@@ -327,7 +319,7 @@ module Webize
           end
           charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset identifier
           body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
-          format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML - mainly XHTML people, a few exist!
+          format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML
           puts "prior SHA #{cache_headers['SHA2']} current SHA #{sha2}" if cache_headers['SHA2']
           repository = (readRDF format, body).persist env, self         # read and cache graph
           repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) unless status==200 # HTTP status in RDF
@@ -361,7 +353,6 @@ module Webize
     rescue Exception => e
       raise unless e.respond_to?(:io) && e.io.respond_to?(:status) # raise non-HTTP-response errors
       status = e.io.status[0].to_i                          # status
-      #puts "exception on #{uri}: status #{status}"
       repository ||= RDF::Repository.new
       repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) # HTTP status in RDF
       head = headers e.io.meta                              # headers
@@ -466,14 +457,12 @@ module Webize
                                            storage.mtime,
                                            storage.size].join
 
-    def fileResponse
-      Rack::Files.new('.').serving(Rack::Request.new(env), storage.fsPath).yield_self{|s,h,b|
-        return [s, h, b] if s == 304          # client cache is valid
-        format = fileMIME                     # find MIME type - Rack's extension-map may differ from ours which preserves upstream/origin HTTP metadata
-        h['content-type'] = format            # override Rack MIME type specification
-        h['Expires'] = (Time.now + 3e7).httpdate if immutable? # give immutable node a long expiry
-        [s, h, b]}
-    end
+    def fileResponse = Rack::Files.new('.').serving(Rack::Request.new(env), storage.fsPath).yield_self{|s,h,b|
+      return [s, h, b] if s == 304          # client cache is valid
+      format = fileMIME                     # find MIME type - Rack's extension-map may differ from ours which preserves upstream/origin HTTP metadata
+      h['content-type'] = format            # override Rack MIME type specification
+      h['Expires'] = (Time.now + 3e7).httpdate if immutable? # give immutable node a long expiry
+      [s, h, b]}
  
     def GET
       return hostGET if host                  # remote node
@@ -491,10 +480,8 @@ module Webize
       fetchLocal                              # local node
     end
 
-    def HEAD
-      self.GET.yield_self{|s, h, _|
-                          [s, h, []]} # header and status
-    end
+    def HEAD = self.GET.yield_self{|s, h, _|
+                                   [s, h, []]} # status + header only
 
     def head? = env['REQUEST_METHOD'] == 'HEAD'
 
