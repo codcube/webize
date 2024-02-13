@@ -14,4 +14,5 @@ log_category
 namespace
 parent
 parentID
+parentId
 primaryCategory
