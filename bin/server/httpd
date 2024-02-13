@@ -2,4 +2,4 @@
 WEB=$HOME/web
 test -d $WEB || mkdir $WEB
 cd $WEB
-falcon -c ~/src/webize/Protocols/HTTP.rack.ru -n 1 --bind http://localhost
+falcon -c ~/src/webize/Protocols/HTTP.ru -n 1 --bind http://localhost
