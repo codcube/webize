@@ -17,10 +17,9 @@ module Webize
 
   class URI
 
-    def relocate?
-      URL_host? || RSS_available? ||
-        [FWD_hosts, YT_hosts].find{|_| _.member? host}
-    end
+    def filter? = deny_domain? && CDN_doc? && port != 8000
+
+    def relocate? = URL_host? || RSS_available? || [FWD_hosts, YT_hosts].find{|_| _.member? host} || filter?
 
     def relocate
       Webize::URI(if URL_host?
@@ -33,14 +32,16 @@ module Webize
                  elsif YT_hosts.member? host
                    ['//www.youtube.com/watch?v=',
                     query_hash['v'] || path[1..-1]].join
+                 elsif filter?                         # relocate to egress node for filtering/rewriting
+                   ['//localhost:8000/', host, path, query ? ['?', query] : nil].join
                  else
                    self
                   end)
     end
 
     def URL_host?
-      URL_hosts.member?(host) ||                                # explicit URL rehoster
-        (host&.match?(CDN_hosts) && query_hash.has_key?('url')) # URL rehost on CDN host
+      URL_hosts.member?(host) ||                       # explicit URL rehost domain
+        (host&.match?(CDN_hosts) && query_hash.has_key?('url')) # URL rehost on CDN domain
     end
 
   end
@@ -48,10 +49,10 @@ module Webize
 
     # resolve reference to current request context
     def href
-      return '#' + fragment if fragment && in_doc?        # relativized fragment
-      return uri unless host                              # relative path
+      return '#' + fragment if fragment && in_doc?     # relativized fragment
+      return uri unless host                           # relative path
       return proxy_ref if env[:proxy_refs] && !proxy_ref? # proxied locator
-      uri                                                 # identifier URI as locator URL (default)
+      uri                                              # identifier URI as locator URL (default)
     end
 
     # set scheme to HTTP for peer nodes on private/VPN networks
