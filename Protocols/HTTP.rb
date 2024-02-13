@@ -324,32 +324,36 @@ module Webize
           charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset identifier
           body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML
+
           puts "prior SHA #{cache_headers['SHA2']} current SHA #{sha2}" if cache_headers['SHA2']
-          repository = (readRDF format, body).persist env, self         # read and cache graph
-          repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) unless status==200 # HTTP status in RDF
-          repository << RDF::Statement.new(self, RDF::URI('#format'), format) # format
-          repository << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch time (wall clock)
-          repository << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache time (wall clock)
-          unless thru                                                   # return data
-            print MIME.format_icon format
-            return repository
-          end
           if (formats = RDF::Format.content_types[format]) &&           # content type
              (extensions = formats.map(&:file_extension).flatten) &&    # suffixes for content type
              !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix in mapped set?
             doc = [(link = doc), '.', extensions[0]].join               # append valid suffix. invalid path becomes link source for findability
             FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) || File.symlink?(link) # link upstream path to local path
           end
+
           File.open(doc, 'w'){|f|                                       # update cache
             f << (format == 'text/html' ? (HTML.cachestamp body, self) : body) } # set cache metadata in body if HTML
+
           if h['Last-Modified']                                         # set timestamp on filesystem
             mtime = Time.httpdate h['Last-Modified'] rescue nil
             FileUtils.touch doc, mtime: mtime if mtime
           end
-          if env[:notransform] || format.match?(FixedFormat)
+
+          repository = (readRDF format, body).persist env, self         # read and cache graph
+          repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) unless status==200 # HTTP status in RDF
+          repository << RDF::Statement.new(self, RDF::URI('#format'), format) # format
+          repository << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch time (wall clock)
+          repository << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache time (wall clock)
+
+          if !thru
+            print MIME.format_icon format
+            repository                                                  # response graph w/o HTTP wrapping
+          elsif env[:notransform] || format.match?(FixedFormat)
             staticResponse format, body                                 # response in upstream format
           else
-            env[:origin_format] = format                                # upstream format
+            env[:origin_format] = format                                # note original format for logging / stats
             respond [repository], format                                # response in content-negotiated format
           end
         end
