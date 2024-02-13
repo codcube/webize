@@ -41,6 +41,8 @@ module Webize
         d.empty? }                # named leaf exists in tree?
     end
 
+    def filter_allow? = deny_domain? && CDN_doc? && ![8000, '8000'].member?(env['SERVER_PORT'])
+
     def temp_allow? = query_hash['allow'] == allow_key
 
   end
