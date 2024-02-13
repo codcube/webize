@@ -45,9 +45,7 @@ module Webize
 
     def temp_allow? = query_hash['allow'] == allow_key
 
-    def unfiltered? = ENV.has_key?('UNFILTERED') ||
-                      [443, '443', 8000, '8000'].member?(env['SERVER_PORT']) ||
-                      env['rack.url_scheme'] == 'https' || env['SERVER_PROTOCOL'] == 'HTTP/2'
+    def unfiltered? = ENV.has_key? 'UNFILTERED'
 
   end
 end
