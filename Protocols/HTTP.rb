@@ -351,10 +351,10 @@ module Webize
             print MIME.format_icon format
             repository                                                  # response graph w/o HTTP wrapping
           elsif env[:notransform] || format.match?(FixedFormat)
-            staticResponse format, body                                 # response in upstream format
+            staticResponse format, body                                 # HTTP response in upstream format
           else
-            env[:origin_format] = format                                # note original format for logging / stats
-            respond [repository], format                                # response in content-negotiated format
+            env[:origin_format] = format                                # note original format for logging/stats
+            respond [repository], format                                # HTTP response in content-negotiated format
           end
         end
       end
