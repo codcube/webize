@@ -11,7 +11,7 @@ module Webize
     Redirector = {}                                      # runtime redirection cache - NOTE we're going to switch to a per-process RDF::Repository, probably, rather than proliferate these constants
     Referer = {}                                         # runtime referer cache
 
-    def self.bwPrint kv = kv.map{|k,v| "\e[38;5;7;7m#{k}\e[0m#{v}\n"}
+    def self.bwPrint(kv) = kv.map{|k,v| "\e[38;5;7;7m#{k}\e[0m#{v}\n"}
 
     # instantiate resource, call method and log response
     def self.call env
