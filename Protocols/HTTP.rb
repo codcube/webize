@@ -45,7 +45,7 @@ module Webize
       end
 
       Console.logger.debug ["\e[7m HEAD \e[0m #{uri}\n", HTTP.bwPrint(env)].join if debug?
-puts env['protocol.http.request'].methods - Object.new.methods
+
       URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist (ctrl-shift-R in client UI)
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status,head,body| # call request and log response
