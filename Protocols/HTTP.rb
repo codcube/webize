@@ -44,6 +44,8 @@ module Webize
         Referer[env[:base]].push env[:referer] unless Referer[env[:base]].member? env[:referer]
       end
 
+      Console.logger.debug ["\e[7m HEAD \e[0m #{uri}\n", HTTP.bwPrint(env)].join if debug?
+puts env['protocol.http.request'].methods - Object.new.methods
       URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist (ctrl-shift-R in client UI)
 
       uri.send(env['REQUEST_METHOD']).yield_self{|status,head,body| # call request and log response
@@ -92,6 +94,8 @@ module Webize
       [500, {'Content-Type' => 'text/html; charset=utf-8'},
        uri.head? ? [] : ["<html><body class='error'>#{HTML.render({_: :style, c: Webize::CSS::Site})}500</body></html>"]]
     end
+
+    def self.debug? = ENV['CONSOLE_LEVEL'] == 'debug'
 
     def self.decompress head, body
       encoding = head.delete 'Content-Encoding'

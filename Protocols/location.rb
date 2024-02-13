@@ -17,7 +17,7 @@ module Webize
 
   class URI
 
-    def relocate? = URL_host? || RSS_available? || [FWD_hosts, YT_hosts].find{|_| _.member? host} || filter_allow?
+    def relocate? = URL_host? || RSS_available? || [FWD_hosts, YT_hosts].find{|_| _.member? host} || filtered_allow?
 
     def relocate
       Webize::URI(if URL_host?
@@ -30,7 +30,7 @@ module Webize
                  elsif YT_hosts.member? host
                    ['//www.youtube.com/watch?v=',
                     query_hash['v'] || path[1..-1]].join
-                 elsif filter_allow? # filtered domain. relocate to unfiltered node for selective egress
+                 elsif filtered_allow? # forward to unfiltered node for selective egress
                    ['//localhost:8000/', host, path, query ? ['?', query] : nil].join
                  else
                    self
