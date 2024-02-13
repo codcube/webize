@@ -17,7 +17,7 @@ module Webize
 
   class URI
 
-    def filter? = deny_domain? && CDN_doc? && port != 8000
+    def filter? = deny_domain? && CDN_doc? && env['SERVER_PORT'] != '8000'
 
     def relocate? = URL_host? || RSS_available? || [FWD_hosts, YT_hosts].find{|_| _.member? host} || filter?
 
