@@ -15,7 +15,7 @@ check out [../bin/](../bin/). we use the allow/block/follow utils for quick bloc
 
     ADDR=10.10.10.1 dnsd
 
-send all traffic to a proxy with **http_proxy** set at the client or server (for chained-proxy topologies). go without env vars or system resolver/proxy settings by using a split routing scheme for HTTP and DNS, see [proxy_routes](../bin/proxy_routes). this is the recommended approach for untrusted apps which may ignore system proxy and DNS preferences. this requires uid separation between apps and proxy, which Android has in its app-sandbox uids. traditional distros may already have a proxy user configured if you've installed Squid, Varnish, etc.
+send all traffic to a proxy with **http_proxy** set at the client or server (for chained-proxy topologies). go without env vars or system resolver/proxy settings by using a [split routing scheme](../bin/config/network/force_proxy) for HTTP and DNS. this is the recommended approach for untrusted apps which may ignore system proxy and DNS preferences. this requires uid separation between apps and proxy, which Android has in its app-sandbox uids. traditional distros may already have a proxy user configured if you've installed Squid, Varnish, etc.
 
 when **OFFLINE** is set, requests are serviced from local cache. for offline-mode with verbose logging launch the server with:
 
