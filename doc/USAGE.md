@@ -6,12 +6,12 @@ cd bin/server
 ```
 ## path
 
-check out [../bin/](../bin/). we use the allow/block/follow util for quick blocklist or subscription maintenance without opening up an editor. you might want to add some or all of these directories to your $PATH depending on what you're using, for example to enable the dnsd/httpd command below:
+check out [../bin/](../bin/). we use the allow/block/follow utils for quick blocklist or subscription maintenance without opening up an editor. you might want to add some or all of these directories to your $PATH depending on what you're using, for example to enable the dnsd/httpd command below:
 
     export PATH=$HOME/src/webize/bin/server:$PATH
 
 ## environment
-**ADDR** is the address DNS server returns for names in the blocklist - useful to send traffic to a proxy for rewrites/substitutions. for example if you have a centrally-configured egress server as expanded upon below,
+**ADDR** is the address DNS server returns for names in the blocklist - useful to send traffic to a proxy for rewrites/substitutions. if you have a centrally-configured egress server as expanded upon below:
 
     ADDR=10.10.10.1 dnsd
 
