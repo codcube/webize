@@ -1,2 +1,0 @@
-#!/bin/sh
-UNFILTERED=1 dnsd
