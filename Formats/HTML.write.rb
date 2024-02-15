@@ -279,6 +279,10 @@ module Webize
        c: [{_: :span, class: :type, c: icon},
            {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
 
+    Markup['#DOM_node'] = -> re, env {
+      re['#name']
+    }
+
     Markup[BasicResource] = -> re, env {
       env[:last] ||= {}                                 # previous resource
 

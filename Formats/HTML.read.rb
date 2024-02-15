@@ -119,6 +119,15 @@ module Webize
                       RDF::Node.new
                     end
 
+          yield subject, Type, RDF::URI('#DOM_node')
+
+          if n.text?
+            yield subject, Type, RDF::URI('#text')
+            yield subject, Content, n.inner_text
+          else
+            yield subject, '#name', n.name
+          end
+
           if c = n.child
             yield subject, '#first_child', scan_node[c]
           end
