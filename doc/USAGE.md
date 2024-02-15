@@ -4,13 +4,12 @@ cd bin/server
 ./dnsd   # DNS service
 ./httpd  # HTTP service
 ```
-## path
 
-check out [../bin/](../bin/). we use the allow/block/follow utils for quick blocklist or subscription maintenance without opening up an editor. you might want to add some or all of these directories to your $PATH depending on what you're using, for example to enable the dnsd/httpd command below:
+## environment
+check out [../bin/](../bin/). we use the allow/block/follow utils for quick blocklist or subscription maintenance without opening up an editor. you might want to add some or all of these directories to **PATH** depending on what you're using, for example to enable the dnsd/httpd command below:
 
     export PATH=$HOME/src/webize/bin/server:$PATH
 
-## environment
 **ADDR** is the address DNS server returns for names in the blocklist - useful to send traffic to a proxy for rewrites/substitutions. if you have a centrally-configured egress server as expanded upon below:
 
     ADDR=10.10.10.1 dnsd
@@ -21,7 +20,7 @@ when **OFFLINE** is set, requests are serviced from local cache. for offline-mod
 
     CONSOLE_LEVEL=debug OFFLINE=1 httpd
 
-for simplicity sake and full visibility into DNS and HTTP logs without packet sniffing tools, we like system DNS and HTTP proxy settings pointing to our daemons, themselves accepting the stock system settings provided by the system environment / libc. this poses a mild dilemma when we want to bypass this configuration for features like 'temporarily unblock' or to do some Bing/DDG/Google searching but keep the domains blocked in DNS (because otherwise the browser (on a low-end ARM/MIPS/RISC-V tablet device, in its stock configuration which usually we're subject to due to browser-hopping or dotfile-wiping) becomes bogged down and slow due to all the autocomplete gunk on the URL-bar, to say nothing of the privacy/tracking implications of sending every keystroke to Google or Microsoft). in a severely RAM-constrained environment, you could use Ruby's [resolv-replace](https://github.com/ruby/resolv-replace) right on the primary daemon, but you'd lose DNS visibility and control on the bulk of the traffic, and we've encountered situations where it didn't work or threw errors during configuration (especially when say, being slightly exotic by using musl's resolver when most developers and early-adopters are using something that involves systemd-resolved or Apple's OSes somehow, so real-world testing is slim. and now we've got gethostbyname under active rewriting by Ruby gods for better Fiber/Ractor concurrency and performance, potentially throwing brief new temporary wrenches into the works). it's not worth adding to the fragility of the main request path over this niche use case of 'temporary allow'. so we've introduced an environment var named **UNFILTERED** to turn those features on. run it on the DNS, and it will let everything through, but still highlight new domains in the log as usual. this is one way to find new 'cookieless targeting' companies if you're looking for a job or want to add to the blocklist. similarly running **UNFILTERED** httpd will let you access sites in the DNS filter:
+set **UNFILTERED** for DNS and it will let everything through, but still highlight new domains in the log as usual. this is one way to find new 'cookieless targeting' companies if you're looking for a job or want to add to the blocklist. similarly running **UNFILTERED** httpd will let you access sites in the DNS filter:
 
     UNFILTERED=1 falcon -c ~/src/webize/Protocols/HTTP.ru -n 1 --bind http://localhost:8000
 
