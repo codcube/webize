@@ -111,16 +111,25 @@ module Webize
 
 
         scan_node = -> n {
-          puts n.name
-          if c = n.child
-            scan_node[c]
-          end
-          if s = n.next_sibling
-            scan_node[s]
-          end
-        }
 
-        scan_node[@doc]
+          # node identifier or blank node
+          subject = if n['id']
+                      RDF::URI '#' + (CGI.escape n['id'])
+                    else
+                      RDF::Node.new
+                    end
+
+          if c = n.child
+            yield subject, '#first_child', scan_node[c]
+          end
+
+          if s = n.next_sibling
+            yield subject, '#next_sibling', scan_node[s]
+          end
+
+          subject}
+
+        yield @base, '#first_child', scan_node[@doc]
       end
     end
   end
