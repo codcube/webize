@@ -281,13 +281,16 @@ module Webize
 
     Markup['#doc_node'] = -> n, env {
       [{class: :node,
-        c: [({_: :span, class: :name, c: n['#name']} if n.has_key? '#name'),
-
-            (n[Content].map{|c|
-               CGI.escapeHTML c.to_s
-             } if n.has_key? Content),
+        c: [if n.has_key? Content
+              n[Content].map{|c|
+                CGI.escapeHTML c.to_s
+              }
+            else
+              {_: :span, class: :name, c: n['#name']}
+            end,
 
             (MarkupPredicate[Image][n[Image],env] if n.has_key? Image),
+            (MarkupPredicate[Link][n[Link],env] if n.has_key? Link),
 
             (n['#child_node'].map{|child|
                Markup['#doc_node'][child, env]

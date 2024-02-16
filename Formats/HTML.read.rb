@@ -126,6 +126,8 @@ module Webize
 
           yield subject, Image, RDF::URI(node['src']) if name == 'img' && node['src']
 
+          yield subject, Link, RDF::URI(node['href']) if name == 'a' && node['href']
+
           if child = node.child
             yield subject, '#child_node', scan_node[child]
           end
