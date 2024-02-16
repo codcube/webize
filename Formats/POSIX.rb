@@ -52,15 +52,9 @@ module Webize
     TabularLayout = [Directory,
                      'http://rdfs.org/sioc/ns#ChatLog']
 
-    MarkupPredicate[Contains] = -> contents, env {
-      env[:contained] ||= {} # TODO make loop-detection less crude somehow? perhaps scoped to parent containe(r) rather than entire request
-      contents.map{|v|
-        unless env[:contained].has_key? v['uri']
-          env[:contained][v['uri']] = true
-          markup v, env
-        end
-      }
-    }
+    MarkupPredicate['#child_node'] = -> children, env {
+      children.map{|child|
+        markup child, env}}
 
     Markup[Container] = -> dir, env {
       uri = dir['uri']

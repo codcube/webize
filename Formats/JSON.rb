@@ -121,9 +121,11 @@ module Webize
       end
     end
 
-    # [RDF::Repository] -> JSON tree {subject -> predicate -> object}. input data-structure for render methods
-    InlinedStatements = [Contains, '#first_child', '#next_sibling']
 
+    # inline objects of predicate during treeization:
+    InlinedObjects = [Contains, '#child_node', '#next_sibling']
+
+    # graph -> tree (subject -> predicate -> object) data-structure for render methods
     def self.fromGraph repositories
       tree = {}                        # output tree
       inlined = []                     # inlined nodes
@@ -133,7 +135,7 @@ module Webize
             s = subj.to_s                # subject URI
             p = pred.to_s                # predicate URI
             blank = obj.class==RDF::Node # bnode?
-            if blank || InlinedStatements.member?(p) # inlined node?
+            if blank || InlinedObjects.member?(p) # inlined  node?
               o = obj.to_s               # object URI
               inlined.push o             # inline object
               obj = tree[o] ||= blank ? {} : {'uri' => o}

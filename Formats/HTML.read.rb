@@ -122,7 +122,6 @@ module Webize
           yield subject, Type, RDF::URI('#DOM_node')
 
           if n.text?
-            yield subject, Type, RDF::URI('#text')
             yield subject, Content, n.inner_text
           else
             yield subject, '#name', n.name
@@ -130,7 +129,7 @@ module Webize
           end
 
           if c = n.child
-            yield subject, '#first_child', scan_node[c]
+            yield subject, '#child_node', scan_node[c]
           end
 
           if s = n.next_sibling
@@ -139,7 +138,7 @@ module Webize
 
           subject}
 
-        yield @base, '#first_child', scan_node[@doc]
+        yield @base, '#child_node', scan_node[@doc]
       end
     end
   end
