@@ -117,13 +117,13 @@ module Webize
 
           print subject.class == RDF::URI ? subject : '.'
 
-          yield subject, Type, RDF::URI('#doc_node')
+          name = node.name
 
-          if node.text?
-            yield subject, Content, node.inner_text
-          else
-            yield subject, '#name', node.name
-          end
+          yield subject, Type, RDF::URI('#doc_node')
+          yield subject, '#name', name
+
+          yield subject, Content, node.inner_text  if node.text?
+          yield subject, Type, RDF::URI(Image) if name == 'img'
 
           if child = node.child
             yield subject, '#child_node', scan_node[child]
