@@ -52,10 +52,6 @@ module Webize
     TabularLayout = [Directory,
                      'http://rdfs.org/sioc/ns#ChatLog']
 
-    MarkupPredicate['#child_node'] = -> children, env {
-      children.map{|child|
-        markup child, env}}
-
     Markup[Container] = -> dir, env {
       uri = dir['uri']
       id = RDF::URI(uri).fragment if uri

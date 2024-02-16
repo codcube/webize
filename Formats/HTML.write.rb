@@ -279,9 +279,13 @@ module Webize
        c: [{_: :span, class: :type, c: icon},
            {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
 
-    Markup['#DOM_node'] = -> re, env {
-      re['#name']
-    }
+#    Markup['#DOM_node'] = -> re, env {
+#
+#    }
+
+    MarkupPredicate['#child_node'] = -> children, env {
+      children.map{|child|
+        markup child, env}}
 
     Markup[BasicResource] = -> re, env {
       env[:last] ||= {}                                 # previous resource

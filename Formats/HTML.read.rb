@@ -106,28 +106,28 @@ module Webize
           #     yield subject, Video, @base.join(v.attr('src')), graph}}
 
 
-        scan_node = -> n {
+        scan_node = -> node {
 
-          # node identifier or blank node
-          subject = if n['id']
-                      RDF::URI '#' + (CGI.escape n['id'])
+          # identified or 'blank' DOM-node
+          subject = if node['id']
+                      RDF::URI '#' + (CGI.escape node['id'])
                     else
                       RDF::Node.new
                     end
 
           yield subject, Type, RDF::URI('#DOM_node')
 
-          if n.text?
-            yield subject, Content, n.inner_text
+          if node.text?
+            yield subject, Content, node.inner_text
           else
-            yield subject, Title, n.name
+            yield subject, Title, node.name
           end
 
-          if child = n.child
+          if child = node.child
             yield subject, '#child_node', scan_node[child]
           end
 
-          if sibling = n.next_sibling
+          if sibling = node.next_sibling
             yield subject, '#next_sibling', scan_node[sibling]
           end
 
