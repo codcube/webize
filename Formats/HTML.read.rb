@@ -126,6 +126,7 @@ module Webize
             yield subject, Content, n.inner_text
           else
             yield subject, '#name', n.name
+            yield subject, Title, n.name
           end
 
           if c = n.child
