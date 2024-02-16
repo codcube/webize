@@ -279,17 +279,20 @@ module Webize
        c: [{_: :span, class: :type, c: icon},
            {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
 
-    Markup['#DOM_node'] = -> re, env {
+    Markup['#DOM_node'] = -> n, env {
       [{class: :node,
-        c: [re[Title], re[Content],
+        c: [n[Title],
+            (n[Content].map{|c|
+               CGI.escapeHTML c.to_s
+             } if n.has_key? Content),
 
-            (re['#child_node'].map{|child|
+            (n['#child_node'].map{|child|
                Markup['#DOM_node'][child, env]
-             } if re.has_key? '#child_node')]},
+             } if n.has_key? '#child_node')]},
 
-       (re['#next_sibling'].map{|sibling|
+       (n['#next_sibling'].map{|sibling|
           Markup['#DOM_node'][sibling, env]
-        } if re.has_key? '#next_sibling')]}
+        } if n.has_key? '#next_sibling')]}
 
     Markup[BasicResource] = -> re, env {
       env[:last] ||= {}                                 # previous resource
