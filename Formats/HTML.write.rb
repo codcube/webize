@@ -280,13 +280,14 @@ module Webize
            {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
 
     Markup['#doc_node'] = -> n, env {
-      (n['#name'] || []).map{|g| puts g.class,g}
       [{class: :node,
         c: [({_: :span, class: :name, c: n['#name']} if n.has_key? '#name'),
+
             (n[Content].map{|c|
                CGI.escapeHTML c.to_s
              } if n.has_key? Content),
-            (Markup[Image][n,env] if (n['#name']||[]).member?('img')),
+
+            (MarkupPredicate[Image][n[Image],env] if n.has_key? Image),
 
             (n['#child_node'].map{|child|
                Markup['#doc_node'][child, env]

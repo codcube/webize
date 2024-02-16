@@ -123,7 +123,8 @@ module Webize
           yield subject, '#name', name
 
           yield subject, Content, node.inner_text  if node.text?
-          yield subject, Type, RDF::URI(Image) if name == 'img'
+
+          yield subject, Image, RDF::URI(node['src']) if name == 'img' && node['src']
 
           if child = node.child
             yield subject, '#child_node', scan_node[child]
