@@ -22,8 +22,8 @@
 .interactionCount .type {border-radius: .38em 0 0 .38em}
 .interactionCount span {background-color: #fff; color: #000; padding: .1em}
 .interactionCount {white-space: nowrap; margin: .06em}
-.node {border: 1px dotted #888; border-radius: 0}
-.node > .name {background-color: #888; color: #000}
+.node {border: 1px solid #555; border-radius: 0; vertical-align: top; padding: 0}
+.node > .name {background-color: #888; color: #000; font-size: .8em; vertical-align: top}
 .post {max-width: 82.6ex}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}
@@ -37,7 +37,7 @@
 .resource article div, .resource section div, .resource div > span, .resource > span {background-color: #000}
 .resource div.abstract {border-radius: .5em .5em 0 0; display: block; background-color: #bbb; color: #000}
 .resource {border: .12em solid #555; margin: 1px}
-.resource, .resource div, pre {border-radius: .5em}
+.resource, pre {border-radius: .5em}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title > .identifier {color: #000; background-color: #929292; border-radius: .3em}
