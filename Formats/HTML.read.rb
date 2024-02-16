@@ -32,11 +32,7 @@ module Webize
 
       def each_statement &fn
         scanContent{|s,p,o,g=nil|
-          o = Webize.date o if p.to_s == Date # normalize date formats
-          fn.call RDF::Statement.new(Webize::URI.new(s),
-                                     Webize::URI.new(p),
-                                     p == Content ? ((l = RDF::Literal o).datatype = RDF.HTML
-                                                     l) : o,
+          fn.call RDF::Statement.new(s, Webize::URI.new(p), o,
                                      graph_name: g ? Webize::URI.new(g) : @base) if s && p && o}
       end
 
@@ -124,16 +120,15 @@ module Webize
           if n.text?
             yield subject, Content, n.inner_text
           else
-            yield subject, '#name', n.name
             yield subject, Title, n.name
           end
 
-          if c = n.child
-            yield subject, '#child_node', scan_node[c]
+          if child = n.child
+            yield subject, '#child_node', scan_node[child]
           end
 
-          if s = n.next_sibling
-            yield subject, '#next_sibling', scan_node[s]
+          if sibling = n.next_sibling
+            yield subject, '#next_sibling', scan_node[sibling]
           end
 
           subject}
