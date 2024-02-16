@@ -279,19 +279,19 @@ module Webize
        c: [{_: :span, class: :type, c: icon},
            {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
 
-    Markup['#DOM_node'] = -> n, env {
+    Markup['#doc_node'] = -> n, env {
       [{class: :node,
-        c: [n[Title],
+        c: [({_: :span, class: :name, c: n['#name']} if n.has_key? '#name'),
             (n[Content].map{|c|
                CGI.escapeHTML c.to_s
              } if n.has_key? Content),
 
             (n['#child_node'].map{|child|
-               Markup['#DOM_node'][child, env]
+               Markup['#doc_node'][child, env]
              } if n.has_key? '#child_node')]},
 
        (n['#next_sibling'].map{|sibling|
-          Markup['#DOM_node'][sibling, env]
+          Markup['#doc_node'][sibling, env]
         } if n.has_key? '#next_sibling')]}
 
     Markup[BasicResource] = -> re, env {

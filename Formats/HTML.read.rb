@@ -108,19 +108,21 @@ module Webize
 
         scan_node = -> node {
 
-          # identified or 'blank' DOM-node
+          # identified or 'blank' node
           subject = if node['id']
                       RDF::URI '#' + (CGI.escape node['id'])
                     else
                       RDF::Node.new
                     end
 
-          yield subject, Type, RDF::URI('#DOM_node')
+          print subject.class == RDF::URI ? subject : '.'
+
+          yield subject, Type, RDF::URI('#doc_node')
 
           if node.text?
             yield subject, Content, node.inner_text
           else
-            yield subject, Title, node.name
+            yield subject, '#name', node.name
           end
 
           if child = node.child
