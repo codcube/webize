@@ -121,7 +121,7 @@ module Webize
 
           yield subject, Type, RDF::URI(DOMnode)
           yield subject, 'http://mw.logbook.am/webize#name', name
-          yield subject, Content, node.inner_text  if node.text?
+          yield subject, Content, node.inner_text  if node.text? && node.inner_text != "\n"
           yield subject, Image, RDF::URI(node['src']) if name == 'img' && node['src']
           yield subject, Link, RDF::URI(node['href']) if name == 'a' && node['href']
           yield subject, 'http://mw.logbook.am/webize#child', scan_node[node.child] if node.child

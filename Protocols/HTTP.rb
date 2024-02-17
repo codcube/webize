@@ -653,7 +653,7 @@ module Webize
                if writer = RDF::Writer.for(content_type: format)
                  out = RDF::Repository.new
                  repositories.map{|r| out << r }
-                 out.dump writer.to_sym, base_uri: self
+                 out.dump writer.to_sym, base_uri: self, prefixes: {w: 'http://mw.logbook.am/webize#'}
                else
                  logger.warn "⚠️  RDF::Writer undefined for #{format}" ; ''
                end
