@@ -121,23 +121,15 @@ module Webize
 
           yield subject, Type, RDF::URI('#doc_node')
           yield subject, '#name', name
-
           yield subject, Content, node.inner_text  if node.text?
-
           yield subject, Image, RDF::URI(node['src']) if name == 'img' && node['src']
-
           yield subject, Link, RDF::URI(node['href']) if name == 'a' && node['href']
-
-          if child = node.child
-            yield subject, '#child_node', scan_node[child]
-          end
-
-          if sibling = node.next_sibling
-            yield subject, '#next_sibling', scan_node[sibling]
-          end
+          yield subject, '#child_node', scan_node[node.child] if node.child
+          yield subject, '#next_sibling', scan_node[node.next_sibling] if node.next_sibling
 
           subject}
 
+        yield @base, Type, RDF::URI('#doc_node')
         yield @base, '#child_node', scan_node[@doc]
       end
     end
