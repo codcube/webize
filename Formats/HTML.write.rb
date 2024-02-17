@@ -280,6 +280,7 @@ module Webize
            {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
 
     Markup[DOMnode] = -> n, env {
+      print n['uri'] ? n['uri'] : '_'
       [{class: :node,
         c: [if n.has_key? Content
               n[Content].map{|c|
