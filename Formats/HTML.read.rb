@@ -135,7 +135,7 @@ module Webize
           if node.text?
             yield subject, Content, node.inner_text unless node.inner_text.chomp.empty?
           else
-            yield subject, 'http://mw.logbook.am/webize#name', name
+            yield subject, 'http://mw.logbook.am/webize#name', name unless name == 'div'
           end
 
           yield subject, Image, RDF::URI(node['src']) if name == 'img' && node['src']
