@@ -143,7 +143,7 @@ module Webize
 
           if node.child
             if OpaqueNode.member? name
-              yield subject, Content, RDF::Literal(node.inner_html, datatype: RDF.HTML)
+              yield subject, Content, RDF::Literal(node.to_html, datatype: RDF.HTML)
             else
               yield subject, 'http://mw.logbook.am/webize#child', scan_node[node.child]
             end

@@ -283,9 +283,7 @@ module Webize
       print n['uri'] ? n['uri'] : '_'
       [{class: :node,
         c: [if n.has_key? Content
-              n[Content].map{|c|
-                CGI.escapeHTML c.to_s
-              }
+              n[Content].map{|c| markup c, env }
             else
               {_: :span, class: :name, c: n['http://mw.logbook.am/webize#name']}
             end,

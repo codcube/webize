@@ -5,7 +5,7 @@ module Webize
     DropNodes = Webize.configList 'blocklist/node'
     DropPrefix = /^(aria|data|js|[Oo][Nn])|react/
     QuotePrefix = /^\s*&gt;\s*/
-    StripTags = /<\/?(font|noscript|span|wbr)[^>]*>/i
+    StripTags = /<\/?(br|em|font|noscript|span|wbr)[^>]*>/i
 
     def self.cachestamp html, baseURI              # input doc, base-URI
       doc = Nokogiri::HTML.parse html              # parse doc
