@@ -280,12 +280,14 @@ module Webize
            {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
 
     Markup[DOMnode] = -> n, env {
+
       print n['uri'] ? n['uri'] : '_'
+
       [{class: :node,
         c: [if n.has_key? Content
               n[Content].map{|c| markup c, env }
             else
-              {_: :span, class: :name, c: n['http://mw.logbook.am/webize#name']}
+              {_: :span, class: :name, c: n['http://mw.logbook.am/webize#name']} if n.has_key? 'http://mw.logbook.am/webize#name'
             end,
 
             (MarkupPredicate[Image][n[Image],env] if n.has_key? Image),
