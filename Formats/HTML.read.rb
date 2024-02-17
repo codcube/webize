@@ -105,6 +105,16 @@ module Webize
           #   fragment.css(vsel).map{|v|
           #     yield subject, Video, @base.join(v.attr('src')), graph}}
 
+        nodes = {}
+        @doc.css('[id]').map{|node|
+          id = node['id']
+          if nodes[id]
+            puts "duplicate node ID #{id}"
+            node.remove_attribute 'id'
+          else
+            nodes[id] = true
+          end
+        }
 
         scan_node = -> node {
 
