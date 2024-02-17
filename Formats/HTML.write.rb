@@ -292,13 +292,9 @@ module Webize
             (MarkupPredicate[Image][n[Image],env] if n.has_key? Image),
             (MarkupPredicate[Link][n[Link],env] if n.has_key? Link),
 
-            (n['#child_node'].map{|child|
-               Markup['#doc_node'][child, env]
-             } if n.has_key? '#child_node')]},
+            (n['#child_node'].map{|child| Markup['#doc_node'][child, env]} if n.has_key? '#child_node')]},
 
-       (n['#next_sibling'].map{|sibling|
-          Markup['#doc_node'][sibling, env]
-        } if n.has_key? '#next_sibling')]}
+       (n['#next_sibling'].map{|sibling| Markup['#doc_node'][sibling, env]} if n.has_key? '#next_sibling')]}
 
     Markup[BasicResource] = -> re, env {
       env[:last] ||= {}                                 # previous resource
