@@ -119,7 +119,7 @@ module Webize
 
           name = node.name
 
-          yield subject, Type, RDF::URI('#doc_node')
+          yield subject, Type, RDF::URI(DOMnode)
           yield subject, '#name', name
           yield subject, Content, node.inner_text  if node.text?
           yield subject, Image, RDF::URI(node['src']) if name == 'img' && node['src']
@@ -129,7 +129,7 @@ module Webize
 
           subject}
 
-        yield @base, Type, RDF::URI('#doc_node')
+        yield @base, Type, RDF::URI(DOMnode)
         yield @base, '#child_node', scan_node[@doc]
       end
     end
