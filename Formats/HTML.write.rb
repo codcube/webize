@@ -280,23 +280,21 @@ module Webize
            {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
 
     Markup[DOMnode] = -> n, env {
-#      puts n['#child_node']
-#      puts n['#next_sibling']
       [{class: :node,
         c: [if n.has_key? Content
               n[Content].map{|c|
                 CGI.escapeHTML c.to_s
               }
             else
-              {_: :span, class: :name, c: n['#name']}
+              {_: :span, class: :name, c: n['http://mw.logbook.am/webize#name']}
             end,
 
             (MarkupPredicate[Image][n[Image],env] if n.has_key? Image),
             (MarkupPredicate[Link][n[Link],env] if n.has_key? Link),
 
-            (n['#child_node'].map{|child| Markup[DOMnode][child, env]} if n.has_key? '#child_node')]},
+            (n['http://mw.logbook.am/webize#child'].map{|child| Markup[DOMnode][child, env]} if n.has_key? 'http://mw.logbook.am/webize#child')]},
 
-       (n['#next_sibling'].map{|sibling| Markup[DOMnode][sibling, env]} if n.has_key? '#next_sibling')]}
+       (n['http://mw.logbook.am/webize#sibling'].map{|sibling| Markup[DOMnode][sibling, env]} if n.has_key? 'http://mw.logbook.am/webize#sibling')]}
 
     Markup[BasicResource] = -> re, env {
       env[:last] ||= {}                                 # previous resource
