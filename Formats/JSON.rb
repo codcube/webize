@@ -123,7 +123,7 @@ module Webize
 
 
     # inline objects of predicate during treeization:
-    InlinedObjects = [Contains, '#child_node', '#next_sibling']
+    InlinedObjects = [Contains, 'http://mw.logbook.am/webize#child', 'http://mw.logbook.am/webize#sibling']
 
     # graph -> tree (subject -> predicate -> object) data-structure for render methods
     def self.fromGraph repositories
