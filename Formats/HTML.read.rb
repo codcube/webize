@@ -13,6 +13,7 @@ module Webize
     class Reader < RDF::Reader
 
       format Format
+      OpaqueNode = %w(svg)
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
@@ -130,11 +131,24 @@ module Webize
           name = node.name
 
           yield subject, Type, RDF::URI(DOMnode)
-          yield subject, 'http://mw.logbook.am/webize#name', name
-          yield subject, Content, node.inner_text  if node.text? && node.inner_text != "\n"
+
+          if node.text?
+            yield subject, Content, node.inner_text unless node.inner_text.chomp.empty?
+          else
+            yield subject, 'http://mw.logbook.am/webize#name', name
+          end
+
           yield subject, Image, RDF::URI(node['src']) if name == 'img' && node['src']
           yield subject, Link, RDF::URI(node['href']) if name == 'a' && node['href']
-          yield subject, 'http://mw.logbook.am/webize#child', scan_node[node.child] if node.child
+
+          if node.child
+            if OpaqueNode.member? name
+              yield subject, Content, RDF::Literal(node.inner_html, datatype: RDF.HTML)
+            else
+              yield subject, 'http://mw.logbook.am/webize#child', scan_node[node.child]
+            end
+          end
+
           yield subject, 'http://mw.logbook.am/webize#sibling', scan_node[node.next_sibling] if node.next_sibling
 
           subject}
