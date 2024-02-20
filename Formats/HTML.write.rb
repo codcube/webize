@@ -338,7 +338,7 @@ module Webize
                update(cache_ref || {}) if titled
       rest = {}                                         # remaining data
       re.map{|k,v|                                      # populate remaining attrs for key/val renderer
-        rest[k] = re[k] unless [Abstract, Content, Creator, Date, From, Link, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
+        rest[k] = re[k] unless [Abstract, Content, Creator, Date, From, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
 
       env[:last] = re                                   # last resource pointer TODO group by title since that's all we're deduping run-to-run?
 
@@ -350,7 +350,6 @@ module Webize
            date,                                        # timestamp
            [Content, SIOC+'richContent'].map{|p|
              (re[p]||[]).map{|o|markup o,env}},         # body
-           p[Link],                                     # untyped links
            (HTML.keyval(rest, env) unless rest.empty?), # key/val view of remaining data
            origin_ref,                                  # origin pointer
           ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(45deg, #{color}, #{color} 1px, transparent 1px, transparent 8px); border-color: #{color}"} : {})}
