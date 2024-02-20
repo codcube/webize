@@ -219,12 +219,6 @@ module Webize
          href: env ? Webize::Resource(uri, env).href : uri,
          id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}}
 
-    MarkupPredicate[Link] = -> links, env {
-      tabular links.map{|link|
-        link = Webize::URI link
-        {'uri' => link.uri,
-         Title => [MIME.format_icon(MIME.fromSuffix link.extname), link.host, link.basename]}}}
-
     MarkupPredicate[Type] = -> types, env {
       types.map{|t|
         t = Webize::Resource t, env
@@ -279,6 +273,10 @@ module Webize
        c: [{_: :span, class: :type, c: icon},
            {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
 
+    Markup[Link] = -> link, env {
+#      MIME.format_icon(MIME.fromSuffix link.extname)
+    }
+
     Markup[DOMnode] = -> n, env {
 
       print n['uri'] ? n['uri'] : '_'
@@ -291,7 +289,7 @@ module Webize
             end,
 
             (MarkupPredicate[Image][n[Image],env] if n.has_key? Image),
-            (MarkupPredicate[Link][n[Link],env] if n.has_key? Link),
+            (n[Link].map{|link| Markup[Link][link,env]} if n.has_key? Link),
 
             (n['http://mw.logbook.am/webize#child'].map{|child| Markup[DOMnode][child, env]} if n.has_key? 'http://mw.logbook.am/webize#child')]},
 
