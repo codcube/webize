@@ -119,8 +119,8 @@ module Webize
 
         scan_node = -> node {
           # drop empty text node
-          if node.text? && node.inner_text.match?(/^[\n\t\s]+$/) && node.next_sibling
-            scan_node[node.next_sibling]
+          if node.text? && node.inner_text.match?(/^[\n\t\s]+$/)
+            scan_node[node.next_sibling] if node.next_sibling
           else
             # DOM node -> identified or blank RDF node
             subject = if node['id']
@@ -147,12 +147,16 @@ module Webize
             if node.child
               if OpaqueNode.member? name
                 yield subject, Content, RDF::Literal(node.to_html, datatype: RDF.HTML)
-              else
-                yield subject, 'http://mw.logbook.am/webize#child', scan_node[node.child]
+              elsif child = scan_node[node.child]
+                yield subject, 'http://mw.logbook.am/webize#child', child
               end
             end
 
-            yield subject, 'http://mw.logbook.am/webize#sibling', scan_node[node.next_sibling] if node.next_sibling
+            if node.next_sibling
+              if sibling = scan_node[node.next_sibling]
+                yield subject, 'http://mw.logbook.am/webize#sibling', sibling
+              end
+            end
 
             subject
           end}
