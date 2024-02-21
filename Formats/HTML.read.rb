@@ -118,40 +118,44 @@ module Webize
         }
 
         scan_node = -> node {
-
-          # identified or 'blank' node
-          subject = if node['id']
-                      RDF::URI '#' + (CGI.escape node['id'])
-                    else
-                      RDF::Node.new
-                    end
-
-          print subject.class == RDF::URI ? subject : '.'
-
-          name = node.name
-
-          yield subject, Type, RDF::URI(DOMnode)
-
-          if node.text?
-            yield subject, Content, node.inner_text unless node.inner_text.match? /^[\n\t\s]+$/
+          # drop empty text node
+          if node.text? && node.inner_text.match?(/^[\n\t\s]+$/) && node.next_sibling
+            scan_node[node.next_sibling]
           else
-            yield subject, 'http://mw.logbook.am/webize#name', name unless name == 'div'
-          end
+            # DOM node -> identified or blank RDF node
+            subject = if node['id']
+                        RDF::URI '#' + (CGI.escape node['id'])
+                      else
+                        RDF::Node.new
+                      end
 
-          yield subject, Image, RDF::URI(node['src']) if name == 'img' && node['src']
-          yield subject, Link, RDF::URI(node['href']) if name == 'a' && node['href']
+            print subject.class == RDF::URI ? subject : '.'
 
-          if node.child
-            if OpaqueNode.member? name
-              yield subject, Content, RDF::Literal(node.to_html, datatype: RDF.HTML)
+            name = node.name
+
+            yield subject, Type, RDF::URI(DOMnode)
+
+            if node.text?
+              yield subject, Content, node.inner_text
             else
-              yield subject, 'http://mw.logbook.am/webize#child', scan_node[node.child]
+              yield subject, 'http://mw.logbook.am/webize#name', name unless name == 'div'
             end
-          end
 
-          yield subject, 'http://mw.logbook.am/webize#sibling', scan_node[node.next_sibling] if node.next_sibling
+            yield subject, Image, RDF::URI(node['src']) if name == 'img' && node['src']
+            yield subject, Link, RDF::URI(node['href']) if name == 'a' && node['href']
 
-          subject}
+            if node.child
+              if OpaqueNode.member? name
+                yield subject, Content, RDF::Literal(node.to_html, datatype: RDF.HTML)
+              else
+                yield subject, 'http://mw.logbook.am/webize#child', scan_node[node.child]
+              end
+            end
+
+            yield subject, 'http://mw.logbook.am/webize#sibling', scan_node[node.next_sibling] if node.next_sibling
+
+            subject
+          end}
 
         yield @base, Type, RDF::URI(DOMnode)
         yield @base, 'http://mw.logbook.am/webize#child', scan_node[@doc]
