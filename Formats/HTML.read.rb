@@ -133,7 +133,7 @@ module Webize
           yield subject, Type, RDF::URI(DOMnode)
 
           if node.text?
-            yield subject, Content, node.inner_text unless node.inner_text.chomp.empty?
+            yield subject, Content, node.inner_text unless node.inner_text.match? /^[\n\t\s]+$/
           else
             yield subject, 'http://mw.logbook.am/webize#name', name unless name == 'div'
           end
