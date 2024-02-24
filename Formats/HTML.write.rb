@@ -77,7 +77,9 @@ module Webize
     def self.render x
       case x
       when Array
-        x.map{|n|render n}.join
+        x.map{|n|
+          render n
+        }.join
       when Hash
         void = [:img, :input, :link, :meta].member? x[:_]
         '<' + (x[:_] || 'div').to_s +                        # open tag
