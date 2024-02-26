@@ -147,7 +147,7 @@ module Webize
           puts "graph->tree triples unavailable for #{repository.class}", repository
         end}
       inlined.map{|n| tree.delete n} # sweep inlined nodes from toplevel index
-      tree                           # treeized graph
+      tree                           # tree
     end
   end
 
