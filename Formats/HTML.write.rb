@@ -61,6 +61,7 @@ module Webize
       when TrueClass          # booleam
         {_: :input, type: :checkbox, checked: true}
       when Webize::Resource   # Resource
+
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       when Webize::URI        # URI
         o = Resource.new(o).env env
@@ -77,9 +78,11 @@ module Webize
     def self.render x
       case x
       when Array
-        x.map{|n|
-          render n
-        }.join
+        if x.empty?
+          ''
+        else
+          render(x.first) + render(x[1..-1])
+        end
       when Hash
         void = [:img, :input, :link, :meta].member? x[:_]
         '<' + (x[:_] || 'div').to_s +                        # open tag
