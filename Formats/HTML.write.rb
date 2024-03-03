@@ -81,16 +81,19 @@ module Webize
         if x.empty?
           ''
         else
-          render(x.first) + render(x[1..-1])
+          render(x.first) + render(x.rest)
         end
       when Hash
+
         void = [:img, :input, :link, :meta].member? x[:_]
+
         '<' + (x[:_] || 'div').to_s +                        # open tag
           (x.keys - [:_,:c]).map{|a|                         # attr name
           ' ' + a.to_s + '=' + "'" + x[a].to_s.chars.map{|c| # attr value
             {"'"=>'%27', '>'=>'%3E', '<'=>'%3C'}[c]||c}.join + "'"}.join +
           (void ? '/' : '') + '>' + (render x[:c]) +         # child nodes
           (void ? '' : ('</'+(x[:_]||'div').to_s+'>'))       # close
+
       when NilClass
         ''
       when String

@@ -37,3 +37,7 @@ POSIX
   map{|category, components|
   components.map{|component|
     require_relative "#{category}/#{component}"}}
+
+class Array
+  def rest = self[1..-1]
+end
