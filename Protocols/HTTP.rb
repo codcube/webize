@@ -98,8 +98,10 @@ module Webize
     def self.debug? = ENV['CONSOLE_LEVEL'] == 'debug'
 
     def self.decompress head, body
+
       encoding = head.delete 'Content-Encoding'
       return body unless encoding
+
       case encoding.to_s
       when /^br(otli)?$/i
         Brotli.inflate body
@@ -111,7 +113,8 @@ module Webize
         head['Content-Encoding'] = encoding
         body
       end
-      rescue Exception => e
+
+    rescue Exception => e
       Console.logger.failure head, e
       head['Content-Encoding'] = encoding
       body
@@ -157,6 +160,8 @@ module Webize
                                   else
                                   end)
       globbed = ps[1]&.match? GlobChars
+
+      # convert search term to glob pattern
       pattern = ['*/' * hdepth,                       # glob less-significant (sub)slices in slice
                  globbed ? nil : '*', ps[1],          # globify slug if bare
                  globbed ? nil : '*'] if ps.size == 2 # .. if slug provided
