@@ -10,7 +10,7 @@ module Webize
     end
 
     class Format < RDF::Format
-      content_type 'text/markdown', :extensions => [:markdown, :md]
+      content_type 'text/markdown', :extensions => [:markdown, :md, :MD]
       content_encoding 'utf-8'
       reader { Reader }
     end
