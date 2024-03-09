@@ -32,9 +32,8 @@ module Webize
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        scanContent{|s,p,o,g=nil|
-          fn.call RDF::Statement.new(s, Webize::URI.new(p), o,
-                                     graph_name: g ? Webize::URI.new(g) : @base) if s && p && o}
+        scanContent{|s, p, o, g=nil|
+          fn.call RDF::Statement.new(s, Webize::URI.new(p), o, graph_name: (Webize::URI.new g if g))}
       end
 
       def scanContent &f
