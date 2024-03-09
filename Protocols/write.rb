@@ -64,7 +64,9 @@ module Webize
           end
           Console.logger.info log.join ' ' unless log.empty?
         else
-          puts "default graph #{env[:base]} #{graph.size} triples"
+          # if for some formats, converting non-RDF to RDF is slow, we could cache turtle at canonical location,
+          # by minting a graph URI if nil/empty/default above
+          #puts "default graph #{env[:base]} #{graph.size} triples"
         end}
 
       # graph stats
