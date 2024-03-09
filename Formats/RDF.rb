@@ -1,9 +1,13 @@
 # coding: utf-8
-RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl] # add 🐢 suffix for turtle files
+
+# add 🐢 suffix map for turtle format
+RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl]
 
 module Webize
-  MetaMap = {}
-  VocabPath = %w(metadata URI)
+
+  MetaMap = {} # {String -> URI} metadata mapping table
+
+  VocabPath = %w(metadata URI) # path to vocab mapping files
 
   # load metadata map
   Dir.children([ConfigPath, VocabPath].join '/').map{|vocab|                # find vocab
@@ -19,6 +23,7 @@ module Webize
   configList('blocklist/predicate').map{|p|MetaMap[p] = :drop}              # load predicate blocklist
 
   module Graph
+    # namespace for util methods for RDF Graph/Repository instances
   end
 
 end
