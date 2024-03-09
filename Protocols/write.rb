@@ -63,6 +63,8 @@ module Webize
             end
           end
           Console.logger.info log.join ' ' unless log.empty?
+        else
+          puts "default graph #{env[:base]} #{graph.size} triples"
         end}
 
       # graph stats

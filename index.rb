@@ -29,6 +29,8 @@ Video),
  Protocols: %w(
 access
 location
+read
+write
 Gemini
 HTTP
 POSIX
