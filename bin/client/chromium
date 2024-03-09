@@ -1,2 +1,5 @@
 #!/bin/sh
-flatpak run com.github.Eloston.UngoogledChromium --ozone-platform=wayland "http://localhost/$1"
+
+chromium-browser  "http://localhost/$1"
+
+#flatpak run com.github.Eloston.UngoogledChromium --ozone-platform=wayland "http://localhost/$1"
