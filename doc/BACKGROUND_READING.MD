@@ -1,6 +1,6 @@
 # WHAT
 
-some suggest we abandon the web, due to its hijacking by industries like adtech or surveillance. we firmly believe this "problem" with the web is rather a distaste with how it's used than an issue with its technical underpinnings. we're creating the [web we want](https://webwewant.org/) in a process of "fix the web in post-production" as we can't control what other people do with their sites but can control how we interact with them. this involves format and protocol bridging to tools of the desired capabilities, facilitating low-dependency data discovery and low/no-code data integration, remixing, sharing, and archiving.
+some suggest we abandon the web, due to its hijacking by industries like adtech or surveillance. we firmly believe this "problem" with the web is rather a distaste with how it's used than an issue with its technical underpinnings. we're creating the [web we want](https://webwewant.org/) in a process of "fix the web in post-production" as we can't control what other people do with their sites but can control how we interact with them. this involves format and protocol bridging to tools of the desired capabilities, facilitating low-dependency data discovery, integration, remixing, sharing, and archiving.
 
 # WHY
 
