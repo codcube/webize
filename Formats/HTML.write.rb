@@ -15,7 +15,7 @@ module Webize
 
     Child, Name, Node, Sibling = [Schema + 'child',
                                   Schema + 'name',
-                                  Schema + 'Node'
+                                  Schema + 'Node',
                                   Schema + 'sibling']
 
     # RDF resource -> Markup

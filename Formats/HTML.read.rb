@@ -140,7 +140,7 @@ module Webize
             end
 
             node.attribute_nodes.map{|attr|
-              puts [attr, node[attr]].join ' '
+              puts [attr.name, attr.value].join ' '
             } if node.respond_to? :attribute_nodes
 
             if node.child
