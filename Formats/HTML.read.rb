@@ -113,8 +113,7 @@ module Webize
             node.remove_attribute 'id'
           else
             nodes[id] = true
-          end
-        }
+          end}
 
         scan_node = -> node {
 
@@ -123,24 +122,29 @@ module Webize
             scan_node[node.next_sibling] if node.next_sibling
           else
 
+            # node identity
             subject = if node['id']
                         RDF::URI '#' + (CGI.escape node['id'])
                       else
                         RDF::Node.new
                       end
 
+            # node type
             name = node.name
-
             yield subject, Type, RDF::URI(Node)
 
+            # node content
             if node.text?
               yield subject, Content, node.inner_text
             elsif name != 'div'
               yield subject, Name, name
             end
 
+            # node attributes
             node.attribute_nodes.map{|attr|
-              puts [attr.name, attr.value].join ' '
+              p = MetaMap[attr.name] || attr.name
+              logger.warn ["predicate URI unmapped for \e[7m", p, "\e[0m ", attr.value].join unless p.match? /^(drop|http)/
+              yield subject, p, attr.value unless p == :drop
             } if node.respond_to? :attribute_nodes
 
             if node.child
