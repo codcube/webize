@@ -132,12 +132,12 @@ module Webize
 
             name = node.name
 
-            yield subject, Type, RDF::URI(DOMnode)
+            yield subject, Type, RDF::URI(Node)
 
             if node.text?
               yield subject, Content, node.inner_text
             else
-              yield subject, 'http://mw.logbook.am/webize#name', name unless name == 'div'
+              yield subject, Name, name unless name == 'div'
             end
 
             yield subject, Image, RDF::URI(node['src']) if name == 'img' && node['src']
@@ -147,21 +147,21 @@ module Webize
               if OpaqueNode.member? name
                 yield subject, Content, RDF::Literal(node.to_html, datatype: RDF.HTML)
               elsif child = scan_node[node.child]
-                yield subject, 'http://mw.logbook.am/webize#child', child
+                yield subject, Child, child
               end
             end
 
             if node.next_sibling
               if sibling = scan_node[node.next_sibling]
-                yield subject, 'http://mw.logbook.am/webize#sibling', sibling
+                yield subject, Sibling, sibling
               end
             end
 
             subject
           end}
 
-        yield @base, Type, RDF::URI(DOMnode)
-        yield @base, 'http://mw.logbook.am/webize#child', scan_node[@doc]
+        yield @base, Type, RDF::URI(Node)
+        yield @base, Child, scan_node[@doc]
       end
     end
   end

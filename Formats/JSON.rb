@@ -122,8 +122,8 @@ module Webize
     end
 
 
-    # inline objects of predicate during treeization:
-    InlinedObjects = [Contains, 'http://mw.logbook.am/webize#child', 'http://mw.logbook.am/webize#sibling']
+    # inline objects of these predicates in #fromGraph graph->tree conversion 
+    InlinedObjects = [Contains, HTML::Child, HTML::Sibling]
 
     # graph -> tree (subject -> predicate -> object) data-structure for render methods
     def self.fromGraph repositories

@@ -11,6 +11,13 @@ module Webize
     StatusColor.keys.map{|s|
       StatusColor[s.to_i] = StatusColor[s]}
 
+    Schema = 'http://mw.logbook.am/webize#'
+
+    Child, Name, Node, Sibling = [Schema + 'child',
+                                  Schema + 'name',
+                                  Schema + 'Node'
+                                  Schema + 'sibling']
+
     # RDF resource -> Markup
     def self.keyval t, env
       ["\n",
@@ -285,10 +292,7 @@ module Webize
 #      MIME.format_icon(MIME.fromSuffix link.extname)
     }
 
-    Child, Name, Sibling = ['http://mw.logbook.am/webize#child',
-                            'http://mw.logbook.am/webize#name',
-                            'http://mw.logbook.am/webize#sibling']
-    Markup[DOMnode] = -> n, env {
+    Markup[Node] = -> n, env {
 
       print n['uri'] ? n['uri'] : '_'
       name = n[Name].first if n.has_key? Name
@@ -305,10 +309,10 @@ module Webize
             (n[Link].map{|link| Markup[Link][link,env]} if n.has_key? Link),
 
             (n[Child].map{|child|
-               Markup[DOMnode][child, env]} if n.has_key? Child)]},
+               Markup[Node][child, env]} if n.has_key? Child)]},
 
        (n[Sibling].map{|sibling|
-          Markup[DOMnode][sibling, env]} if n.has_key? Sibling)]}
+          Markup[Node][sibling, env]} if n.has_key? Sibling)]}
 
     Markup[BasicResource] = -> re, env {
       env[:last] ||= {}                                 # previous resource

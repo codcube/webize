@@ -10,8 +10,6 @@ module Webize
   configHash('metadata/constants').map{|symbol, uri|
     const_set symbol, uri }
 
-  DOMnode = 'http://mw.logbook.am/webize#DOMnode'
-
   class URI < RDF::URI
 
     def basename
