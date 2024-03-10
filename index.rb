@@ -3,7 +3,10 @@ require 'linkeddata'
 {Formats: %w(
 Config
 URI
-HTML.read HTML.massage HTML.write
+HTML.read
+HTML.massage
+HTML.write
+HTML.write.templates
 MIME
 POSIX
 RDF
