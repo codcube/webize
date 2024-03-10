@@ -285,23 +285,30 @@ module Webize
 #      MIME.format_icon(MIME.fromSuffix link.extname)
     }
 
+    Child, Name, Sibling = ['http://mw.logbook.am/webize#child',
+                            'http://mw.logbook.am/webize#name',
+                            'http://mw.logbook.am/webize#sibling']
     Markup[DOMnode] = -> n, env {
 
       print n['uri'] ? n['uri'] : '_'
+      name = n[Name].first if n.has_key? Name
 
-      [{class: :node,
+      [{_: name || :div,
+        class: :node,
         c: [if n.has_key? Content
               n[Content].map{|c| markup c, env }
             else
-              {_: :span, class: :name, c: n['http://mw.logbook.am/webize#name']} if n.has_key? 'http://mw.logbook.am/webize#name'
+              {_: :span, class: :name, c: name} if name
             end,
 
             (MarkupPredicate[Image][n[Image],env] if n.has_key? Image),
             (n[Link].map{|link| Markup[Link][link,env]} if n.has_key? Link),
 
-            (n['http://mw.logbook.am/webize#child'].map{|child| Markup[DOMnode][child, env]} if n.has_key? 'http://mw.logbook.am/webize#child')]},
+            (n[Child].map{|child|
+               Markup[DOMnode][child, env]} if n.has_key? Child)]},
 
-       (n['http://mw.logbook.am/webize#sibling'].map{|sibling| Markup[DOMnode][sibling, env]} if n.has_key? 'http://mw.logbook.am/webize#sibling')]}
+       (n[Sibling].map{|sibling|
+          Markup[DOMnode][sibling, env]} if n.has_key? Sibling)]}
 
     Markup[BasicResource] = -> re, env {
       env[:last] ||= {}                                 # previous resource
