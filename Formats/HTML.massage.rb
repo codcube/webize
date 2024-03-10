@@ -1,6 +1,12 @@
 module Webize
   module HTML
 
+    # this whole file is likely to go away once we replace calls to #format with 
+    # the 'new' way of parse to RDF model of HTML doc, then serialize per our preference,
+    # rather than parse to Nokogiri, do in-situ Nokogiri-facilitated massaging and output to RDF::HTML datatyped string
+
+    # full HTML docs already use the new methods but sometimes we get HTML inside other stuff like RSS and JSON that ends up going through here
+
     DropAttrs = Webize.configList 'blocklist/attr'
     DropNodes = Webize.configList 'blocklist/node'
     DropPrefix = /^(aria|data|js|[Oo][Nn])|react/
