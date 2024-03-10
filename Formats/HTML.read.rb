@@ -117,18 +117,17 @@ module Webize
         }
 
         scan_node = -> node {
-          # drop empty text node
+
+          # drop empty text nodes
           if node.text? && node.inner_text.match?(/^[\n\t\s]+$/)
             scan_node[node.next_sibling] if node.next_sibling
           else
-            # DOM node -> identified or blank RDF node
+
             subject = if node['id']
                         RDF::URI '#' + (CGI.escape node['id'])
                       else
                         RDF::Node.new
                       end
-
-            print subject.class == RDF::URI ? subject : '.'
 
             name = node.name
 
@@ -136,12 +135,13 @@ module Webize
 
             if node.text?
               yield subject, Content, node.inner_text
-            else
-              yield subject, Name, name unless name == 'div'
+            elsif name != 'div'
+              yield subject, Name, name
             end
 
-            yield subject, Image, RDF::URI(node['src']) if name == 'img' && node['src']
-            yield subject, Link, RDF::URI(node['href']) if name == 'a' && node['href']
+            node.attribute_nodes.map{|attr|
+              puts [attr, node[attr]].join ' '
+            } if node.respond_to? :attribute_nodes
 
             if node.child
               if OpaqueNode.member? name
