@@ -87,6 +87,9 @@ curr_heat_score
 current-catalog-service-hash
 currentUserCanPush
 data-align
+data-async-context-required
+data-async-type
+data-ved
 debug
 default-theme
 defaultBranch
@@ -203,6 +206,9 @@ is_translation_enabled
 is_translator
 is_try_file
 isrc
+jsaction
+jscontroller
+jsname
 landingPageInMobile
 layout
 layoutTemplate
@@ -232,6 +238,7 @@ newTab
 new_tab
 next-head-count
 nextItemOffset
+nonce
 noopenner
 norton-safeweb-site-verification
 not_interested
@@ -314,6 +321,7 @@ station_permalink
 station_urn
 statuses_count
 streamable
+style
 style-nonce
 subscriber_only
 super_follow_eligible
