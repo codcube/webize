@@ -78,9 +78,11 @@ module Webize
     Markup[Node] = -> n, env {
 
       name = n[Name].first if n.has_key? Name
+
+      # attrs for key/val renderer
       rest = {}
-      n.map{|k,v| # attrs for key/val renderer
-        rest[k] = n[k] unless [Content, Child, Sibling].member? k}
+      n.map{|k,v|
+        rest[k] = n[k] unless [Child, Content, Name, Sibling].member? k}
 
       [{_: name || :div,
         class: :node,
@@ -89,7 +91,7 @@ module Webize
            else
              {_: :span, class: :name, c: name} if name
             end,
-            HTML.keyval(n, env),
+            HTML.keyval(rest, env),
 
             # child node(s)
             (n[Child].map{|child|
