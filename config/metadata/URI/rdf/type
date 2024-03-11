@@ -9,6 +9,7 @@ advertiser_account_type
 article.type
 cXenseParse:pageClass
 cXenseParse:postType
+class
 componentType
 content-type
 data-image-type

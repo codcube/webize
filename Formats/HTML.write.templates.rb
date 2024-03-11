@@ -77,7 +77,6 @@ module Webize
 
     Markup[Node] = -> n, env {
 
-      print n['uri'] ? n['uri'] : '_'
       name = n[Name].first if n.has_key? Name
 
       [{_: name || :div,

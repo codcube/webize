@@ -9,6 +9,7 @@ alias
 alternateName
 analyticsName
 application-name
+aria-label
 article.headline
 article.origheadline
 article:title

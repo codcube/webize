@@ -89,6 +89,10 @@ currentUserCanPush
 data-align
 data-async-context-required
 data-async-type
+data-hveid
+data-snc
+data-sncf
+data-sstk
 data-ved
 debug
 default-theme
@@ -208,6 +212,7 @@ is_try_file
 isrc
 jsaction
 jscontroller
+jsdata
 jsname
 landingPageInMobile
 layout
