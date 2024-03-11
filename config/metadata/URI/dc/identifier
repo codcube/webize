@@ -4,6 +4,8 @@ DC.identifier
 ID
 bmmrId
 contentId
+data-docid
+data-entityid
 data-id
 dc.identifier
 dcterms.identifier

@@ -14,6 +14,7 @@ componentType
 content-type
 data-image-type
 data-type
+data-view-type
 dc.type
 dcterms.type
 displayType

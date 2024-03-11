@@ -48,6 +48,7 @@ apple-touch-fullscreen
 applicationId
 applicationServerKey
 archived
+aria-atomic
 aria-current
 aria-hidden
 aria-level
@@ -97,6 +98,7 @@ data-async-type
 data-biboe
 data-bsextraheight
 data-dccl
+data-deferred
 data-dismiss
 data-eas
 data-efaql
@@ -116,6 +118,7 @@ data-smqc
 data-snc
 data-sncf
 data-snf
+data-snhf
 data-sstk
 data-ulkwtsb
 data-ved

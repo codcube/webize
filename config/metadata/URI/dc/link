@@ -20,6 +20,7 @@ ci:mentions
 completeUrl
 cover_link
 custom_link
+data-lpage
 dataHref
 dct:references
 dns-prefetch
