@@ -9,7 +9,7 @@ module Webize
     # {predicate URI -> λ (objects, env) -> markup for objects of predicate }
     MarkupPredicate = {}
 
-    # markup lambdas for base types
+    # templates for base types
 
     MarkupPredicate['uri'] = -> us, env=nil {
       (us.class == Array ? us : [us]).map{|uri|
@@ -71,13 +71,16 @@ module Webize
        c: [{_: :span, class: :type, c: icon},
            {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
 
-    Markup[Link] = -> link, env {
-      #      MIME.format_icon(MIME.fromSuffix link.extname)
-    }
+    # MIME.format_icon(MIME.fromSuffix link.extname)
+    # (MarkupPredicate[Image][n[Image],env] if n.has_key? Image),
 
+    # eventually we'll probably merge this with BasicResource, below
     Markup[Node] = -> n, env {
 
       name = n[Name].first if n.has_key? Name
+      rest = {}
+      n.map{|k,v| # attrs for key/val renderer
+        rest[k] = n[k] unless [Content, Child, Sibling].member? k}
 
       [{_: name || :div,
         class: :node,
@@ -86,13 +89,13 @@ module Webize
            else
              {_: :span, class: :name, c: name} if name
             end,
+            HTML.keyval(n, env),
 
-            (MarkupPredicate[Image][n[Image],env] if n.has_key? Image),
-            (n[Link].map{|link| Markup[Link][link,env]} if n.has_key? Link),
-
+            # child node(s)
             (n[Child].map{|child|
                Markup[Node][child, env]} if n.has_key? Child)]},
 
+       # sibling node(s)
        (n[Sibling].map{|sibling|
           Markup[Node][sibling, env]} if n.has_key? Sibling)]}
 
