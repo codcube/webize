@@ -1,6 +1,7 @@
 DC.format
 contentType
 content_type
+data-preferred-mime-type
 dcterms.format
 filetype
 http://ogp.me/ns#audio:type
