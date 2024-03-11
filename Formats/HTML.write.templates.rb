@@ -79,10 +79,15 @@ module Webize
 
       name = n[Name].first if n.has_key? Name
 
+      n[Type] -= [Node]
+      n.delete Type if n[Type].empty?
+
       # attrs for key/val renderer
       rest = {}
       n.map{|k,v|
         rest[k] = n[k] unless [Child, Content, Name, Sibling].member? k}
+
+      puts rest unless rest.empty?
 
       [{_: name || :div,
         class: :node,
@@ -91,7 +96,8 @@ module Webize
            else
              {_: :span, class: :name, c: name} if name
             end,
-            HTML.keyval(rest, env),
+
+            (HTML.keyval(rest, env) unless rest.empty?),
 
             # child node(s)
             (n[Child].map{|child|
