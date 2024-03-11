@@ -20,7 +20,10 @@ ci:mentions
 completeUrl
 cover_link
 custom_link
+data-base-lens-url
+data-cssl
 data-lpage
+data-psl
 dataHref
 dct:references
 dns-prefetch
