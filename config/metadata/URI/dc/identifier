@@ -10,6 +10,7 @@ data-id
 data-ref-docid
 dc.identifier
 dcterms.identifier
+eid
 fragment
 guid
 http://purl.org/rss/1.0/guid
