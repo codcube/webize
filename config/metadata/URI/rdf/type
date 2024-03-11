@@ -47,6 +47,7 @@ preset
 projectionType
 resource-type
 resourceType
+role
 sailthru.doctype
 set_type
 subType
