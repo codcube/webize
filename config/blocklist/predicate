@@ -55,6 +55,7 @@ aria-expanded
 aria-haspopup
 aria-hidden
 aria-level
+aria-live
 article:content_tier
 articleid
 artifactId
@@ -95,6 +96,7 @@ csrf-token
 curr_heat_score
 current-catalog-service-hash
 currentUserCanPush
+data-abe
 data-align
 data-async-context-required
 data-async-fc
@@ -111,12 +113,14 @@ data-dccl
 data-deferred
 data-dic
 data-dismiss
+data-dt
 data-eas
 data-efaql
 data-eif
 data-escd
 data-fhs
 data-g
+data-graft-type
 data-hp
 data-hpmde
 data-hveid
@@ -128,6 +132,7 @@ data-ispaa
 data-iu
 data-jiis
 data-kulima
+data-l
 data-lk
 data-mnr
 data-mof
@@ -154,6 +159,7 @@ data-sz
 data-triggering-tag
 data-ulkwtsb
 data-ullb
+data-ve-view
 data-ved
 data-viewer-entrypoint
 data-viewer-group

@@ -12,6 +12,7 @@ cXenseParse:postType
 class
 componentType
 content-type
+data-async-rclass
 data-image-type
 data-type
 data-view-type
