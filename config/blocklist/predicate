@@ -88,8 +88,12 @@ current-catalog-service-hash
 currentUserCanPush
 data-align
 data-async-context-required
+data-async-fc
+data-async-fcv
+data-async-ons
 data-async-type
 data-hveid
+data-sgrd
 data-snc
 data-sncf
 data-sstk
@@ -132,6 +136,7 @@ fb:app_id
 fb:page_id
 fb:pages
 fb:profile_id
+focusable
 following
 fontSize
 format-detection
@@ -213,6 +218,7 @@ isrc
 jsaction
 jscontroller
 jsdata
+jsmodel
 jsname
 landingPageInMobile
 layout
@@ -377,6 +383,7 @@ user_sorting
 uuid
 verified
 verify-v1
+viewbox
 viewer_export_restricted
 viewport
 visibility
