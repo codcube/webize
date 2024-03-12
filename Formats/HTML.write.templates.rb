@@ -79,7 +79,8 @@ module Webize
 
       name = n[Name].first if n.has_key? Name
 
-      n[Type] -= [Node]
+      # consume typetag and cleanup empty field
+      n[Type] -= [RDF::URI(Node)]
       n.delete Type if n[Type].empty?
 
       # attrs for key/val renderer

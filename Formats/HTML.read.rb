@@ -124,7 +124,7 @@ module Webize
 
             # node identity
             subject = if node['id']
-                        RDF::URI '#' + (CGI.escape node['id'])
+                        RDF::URI '#' + CGI.escape(node.remove_attribute('id').value)
                       else
                         RDF::Node.new
                       end
