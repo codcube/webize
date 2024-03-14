@@ -143,8 +143,10 @@ module Webize
             # node attributes
             node.attribute_nodes.map{|attr|
               p = MetaMap[attr.name] || attr.name
+              o = attr.value
+              o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)
               logger.warn ["predicate URI unmapped for \e[7m", p, "\e[0m ", attr.value].join unless p.match? /^(drop|http)/
-              yield subject, p, attr.value unless p == :drop
+              yield subject, p, o unless p == :drop
             } if node.respond_to? :attribute_nodes
 
             if node.child
