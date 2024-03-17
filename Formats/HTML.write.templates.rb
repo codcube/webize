@@ -1,4 +1,4 @@
-module Webize
+uts restmodule Webize
   module HTML
 
     # markup-lambda tables
@@ -87,8 +87,6 @@ module Webize
       rest = {}
       n.map{|k,v|
         rest[k] = n[k] unless [Child, Content, Name, Sibling].member? k}
-
-      puts rest unless rest.empty?
 
       [{_: name || :div,
         class: :node,
