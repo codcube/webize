@@ -1,4 +1,4 @@
-uts restmodule Webize
+module Webize
   module HTML
 
     # markup-lambda tables
