@@ -99,8 +99,8 @@ module Webize
              [ # thumbnail node
                {_: :a, id: 'preembed' + Digest::SHA2.hexdigest(rand.to_s),
                class: :preembed,
-               href: player,
-               onclick: "inlineplayer(\"##{player}\",\"#{id}\"); this.remove()",
+               onclick: "inlineplayer(\"##{player}\",\"#{id}\"); this.remove()", # load player when selected
+               href: '#' + player,                                               # focus player when selected
                c: [{_: :img,
                     src: Webize::Resource("https://i.ytimg.com/vi_webp/#{id}/sddefault.webp", env).href},
                    {class: :icon, c: '&#9654;'}]},
