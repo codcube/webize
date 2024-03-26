@@ -92,15 +92,21 @@ module Webize
            (MarkupPredicate[Title][video.delete(Title), env] if video.has_key? Title),
            HTML.keyval(video, env), '<br>',
            if v.uri.match? /youtu/ # YouTube
+
              id = v.query_hash['v'] || v.parts[-1]
              player = 'yt' + Digest::SHA2.hexdigest(rand.to_s)
-             [{_: :a, id: 'preembed' + Digest::SHA2.hexdigest(rand.to_s), # placeholder element
+
+             [ # thumbnail node
+               {_: :a, id: 'preembed' + Digest::SHA2.hexdigest(rand.to_s),
                class: :preembed,
+               href: player,
                onclick: "inlineplayer(\"##{player}\",\"#{id}\"); this.remove()",
                c: [{_: :img,
                     src: Webize::Resource("https://i.ytimg.com/vi_webp/#{id}/sddefault.webp", env).href},
                    {class: :icon, c: '&#9654;'}]},
-              {id: player}] # empty player node
+
+               # player node
+              {id: player}]
           else                     # video tag
             [{_: :video, src: v.uri, controls: :true}, '<br>',
              {_: :a, href: v.uri, c: v.display_name}]
