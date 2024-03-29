@@ -30,8 +30,8 @@ module Webize
                  elsif YT_hosts.member? host
                    ['//www.youtube.com/watch?v=',
                     query_hash['v'] || path[1..-1]].join
-                 elsif filtered_allow? # forward to unfiltered node for selective egress
-                   ['//localhost:8000/', host, path, query ? ['?', query] : nil].join
+                 elsif filtered_allow? # redirect to egress port
+                   ['//', env['SERVER_NAME'], ':8000/', host, path, query ? ['?', query] : nil].join
                  else
                    self
                   end)
@@ -45,15 +45,15 @@ module Webize
   end
   class Resource
 
-    # resolve reference to current request context
+    # resolve reference for current browsing context
     def href
-      return '#' + fragment if fragment && in_doc?     # relativized fragment
-      return uri unless host                           # relative path
-      return proxy_ref if env[:proxy_refs] && !proxy_ref? # proxied locator
-      uri                                              # identifier URI as locator URL (default)
+      return '#' + fragment if fragment && in_doc?        # relative fragment
+      return uri unless host                              # relative path
+      return proxy_ref if env[:proxy_refs] && !proxy_ref? # proxy locator
+      uri                                                 # identifier URI as locator URL (default)
     end
 
-    # set scheme to HTTP for peer nodes on private/VPN networks
+    # set scheme to HTTP. only advised for peer nodes on local/private/VPN networks
     def insecure
       return self if scheme == 'http'
       _ = dup.env env
@@ -61,7 +61,7 @@ module Webize
        _.env[:base] = _
     end
 
-    def in_doc?  # is URI in request graph?
+    def in_doc? # is URI in request graph?
       on_host? && env[:base].path == path
     end
 
@@ -73,8 +73,10 @@ module Webize
       ENV.has_key? 'OFFLINE'
     end
 
+    # relocate reference to proxy host
     def proxy_ref = ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join
 
+    # is reference located on proxy?
     def proxy_ref? = env['SERVER_NAME'] == host
 
     def relocate
