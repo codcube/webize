@@ -36,7 +36,13 @@ module Webize
           fn.call RDF::Statement.new(s, Webize::URI.new(p), o, graph_name: (Webize::URI.new g if g))}
       end
 
+      def scanBookmarks
+      end
+
       def scanContent &f
+
+        # doctype-specific triplrs
+        return scanBookmarks &f if @doc.doctype.name == 'NETSCAPE-Bookmark-file-1'
 
         # resolve base URI
         if base = @doc.css('head base')[0]
