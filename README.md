@@ -1,7 +1,7 @@
 # webize
 
-[INSTALL](INSTALL.sh)
+[INSTALL](INSTALL.sh) dependencies
 
-[USAGE](doc/USAGE.md)
+[USAGE](doc/USAGE.md) tips
 
 [DOC](doc/)
