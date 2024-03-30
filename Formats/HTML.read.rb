@@ -37,6 +37,12 @@ module Webize
       end
 
       def scanBookmarks
+        @doc.css('a').map{|bookmark|
+          puts bookmark
+          subject = bookmark['href']
+          yield subject, Title, bookmark.inner_text
+          yield subject, Date, bookmark['add_date']
+        }
       end
 
       def scanContent &f
