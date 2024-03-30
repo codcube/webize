@@ -43,16 +43,18 @@ module Webize
         @doc.css('a').map{|bookmark|
           subject = RDF::URI bookmark['href']
 
-          # TLD container
-          tld = RDF::URI '#' + subject.host.split('.')[-1]
-          tlds[tld] ||= yield tld, Type, RDF::URI(Container)
+          if subject.host
+            # TLD container
+            tld = RDF::URI '#' + subject.host.split('.')[-1]
+            tlds[tld] ||= yield tld, Type, RDF::URI(Container)
 
-          # hostname container
-          host = RDF::URI '#' + subject.host
-          domains[host] ||= (yield tld, Contains, host
-                             yield host, Type, RDF::URI(Container))
+            # hostname container
+            host = RDF::URI '#' + subject.host
+            domains[host] ||= (yield tld, Contains, host
+                               yield host, Type, RDF::URI(Container))
 
-          yield host, Contains subject
+            yield host, Contains, subject
+          end
 
           yield subject, Title, bookmark.inner_text
           yield subject, Date, bookmark['add_date']
