@@ -37,6 +37,7 @@ al:web:should_fallback
 alexaVerifyID
 align
 alignment
+allowfullscreen
 amphtml
 animation
 apple-app-site-association
@@ -262,6 +263,7 @@ focusable
 following
 fontSize
 format-detection
+frameborder
 friends_count
 fullPage
 generated
@@ -362,6 +364,7 @@ menuPosition
 mobile-web-app-capable
 monetization
 monetization_model
+mozallowfullscreen
 msapplication-TileColor
 msapplication-config
 msapplication-navbutton-color
@@ -432,6 +435,7 @@ rows
 sailthru.type
 schema.DC
 scriptUrl
+scrolling
 selected
 sensitive
 seznam-wmt
@@ -522,6 +526,7 @@ visible_in_picker
 visitor-hmac
 visitor-payload
 webgains-site-verification
+webkitallowfullscreen
 wlwmanifest
 wot-verification
 x-ua-compatible
