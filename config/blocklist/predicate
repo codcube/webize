@@ -312,6 +312,7 @@ isLogoVisible
 isNoticesTabEnabled
 isOrgOwned
 isPlaceholder
+isPrint
 isRedBullMusic
 isRedBullPowertrains
 isRedBullRacing
@@ -321,6 +322,7 @@ isShareButtonEnabled
 isShareLinksEnabled
 isSource
 isStarred
+isTrial
 isVenmoEnabled
 isVisible
 isVisibleMobile

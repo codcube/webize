@@ -20,6 +20,8 @@ ci:canonical
 ci:mentions
 completeUrl
 cover_link
+creativeUrl
+ctaUrl
 custom_link
 data-base-lens-url
 data-cssl

@@ -8,6 +8,7 @@ data-docid
 data-entityid
 data-id
 data-ref-docid
+data-testid
 dc.identifier
 dcterms.identifier
 eid
