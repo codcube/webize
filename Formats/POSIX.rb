@@ -56,7 +56,7 @@ module Webize
       uri = dir['uri']
       id = RDF::URI(uri).fragment if uri
       content = dir.delete(Contains) || []
-      tabular = (dir[Type] || []).find{|type| TabularLayout.member? type} && content.size > 1
+      tabular = (dir[Type] || []).find{|type| TabularLayout.member? type}
       dir.delete Type
       dir.delete Date
       if title = dir.delete(Title)
