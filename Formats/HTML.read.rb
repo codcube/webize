@@ -37,10 +37,11 @@ module Webize
       end
 
       def scanBookmarks
-        tlds = {}
-        domains = {}
+        linkCount, tlds, domains = 0, {}, {}
+        links = RDF::URI '#links'
 
         @doc.css('a').map{|bookmark|
+          linkCount += 1
           subject = RDF::URI bookmark['href']
 
           if subject.host
@@ -48,6 +49,7 @@ module Webize
             tldname = subject.host.split('.')[-1]
             tld = RDF::URI '#' + tldname
             tlds[tld] ||= (
+              yield links, Contains, tld
               yield tld, Type, RDF::URI(Container)
               yield tld, Title, tldname)
 
@@ -68,6 +70,8 @@ module Webize
             yield subject, Image, RDF::URI(icon)
           end
         }
+
+        yield links, Size, linkCount
       end
 
       def scanContent &f
