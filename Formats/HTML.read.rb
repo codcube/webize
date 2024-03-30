@@ -38,10 +38,12 @@ module Webize
 
       def scanBookmarks
         @doc.css('a').map{|bookmark|
-          puts bookmark
-          subject = bookmark['href']
+          subject = RDF::URI bookmark['href']
           yield subject, Title, bookmark.inner_text
           yield subject, Date, bookmark['add_date']
+          if icon = bookmark['icon']
+            yield subject, Image, RDF::URI(icon)
+          end
         }
       end
 
