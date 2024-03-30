@@ -40,9 +40,13 @@ module Webize
         linkCount, tlds, domains = 0, {}, {}
         links = RDF::URI '#links'
 
+        # links container
+        yield links, Type, RDF::URI(Container)
+
         @doc.css('a').map{|bookmark|
           linkCount += 1
           subject = RDF::URI bookmark['href']
+          #puts subject
 
           if subject.host
             # TLD container
