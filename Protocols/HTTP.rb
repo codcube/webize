@@ -196,7 +196,8 @@ module Webize
                                '?',
                                query.gsub(Gunk){|m|
                                  ['<b style="font-size:1.3em; background-color: #fff">', m, '</b>'].join },
-                               '</span>']
+                               '</span><br>',
+                               HTML.keyval(query_values, env)]
 
         else
           env[:warnings].push ['pattern block in URI<br>',
