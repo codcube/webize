@@ -45,19 +45,25 @@ module Webize
 
           if subject.host
             # TLD container
-            tld = RDF::URI '#' + subject.host.split('.')[-1]
-            tlds[tld] ||= yield tld, Type, RDF::URI(Container)
+            tldname = subject.host.split('.')[-1]
+            tld = RDF::URI '#' + tldname
+            tlds[tld] ||= (
+              yield tld, Type, RDF::URI(Container)
+              yield tld, Title, tldname)
 
             # hostname container
             host = RDF::URI '#' + subject.host
-            domains[host] ||= (yield tld, Contains, host
-                               yield host, Type, RDF::URI(Container))
+            domains[host] ||= (
+              yield tld, Contains, host
+              yield host, Title, subject.host
+              yield host, Type, RDF::URI(Container)
+              yield host, Type, RDF::URI(Directory))
 
             yield host, Contains, subject
           end
 
           yield subject, Title, bookmark.inner_text
-          yield subject, Date, bookmark['add_date']
+          yield subject, Date, Webize.date(bookmark['add_date'])
           if icon = bookmark['icon']
             yield subject, Image, RDF::URI(icon)
           end
