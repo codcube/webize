@@ -28,6 +28,9 @@ data-cssl
 data-lpage
 data-psl
 data-spl
+data-surl
+data-url
+data-vurl
 dataHref
 dct:references
 dns-prefetch

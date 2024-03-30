@@ -99,6 +99,7 @@ currentUserCanPush
 data-abe
 data-align
 data-anim
+data-ar
 data-async-context-required
 data-async-fc
 data-async-fcv
@@ -128,7 +129,9 @@ data-eas
 data-eb
 data-efaql
 data-eif
+data-eiv
 data-escd
+data-esrvl
 data-essb
 data-fcss
 data-fhs
@@ -147,6 +150,7 @@ data-index
 data-is-images-mode
 data-isdesktop
 data-ispaa
+data-issv
 data-iu
 data-jiis
 data-kulima
@@ -156,6 +160,7 @@ data-lel
 data-li
 data-lk
 data-mcl
+data-md
 data-mid
 data-mnr
 data-mof

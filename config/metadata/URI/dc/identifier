@@ -9,6 +9,8 @@ data-entityid
 data-id
 data-ref-docid
 data-testid
+data-tpvid
+data-vid
 dc.identifier
 dcterms.identifier
 eid
