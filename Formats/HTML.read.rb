@@ -52,14 +52,14 @@ module Webize
           if subject.host
             # TLD container
             tldname = subject.host.split('.')[-1]
-            tld = RDF::URI '#' + tldname
+            tld = RDF::URI '#TLD_' + tldname
             tlds[tld] ||= (
               yield links, Contains, tld
               yield tld, Type, RDF::URI(Container)
               yield tld, Title, tldname)
 
             # hostname container
-            host = RDF::URI '#' + subject.host
+            host = RDF::URI '#host_' + subject.host
             domains[host] ||= (
               yield tld, Contains, host
               yield host, Title, subject.host
