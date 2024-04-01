@@ -44,10 +44,10 @@ module Webize
         yield links, Type, RDF::URI(Container)
 
         @in.lines.grep(/<A/).map{|line|
-          bookmark = Nokogiri::HTML.fragment line
+          bookmark = Nokogiri::HTML.fragment(line).css('a')[0]
+
           linkCount += 1
           subject = RDF::URI bookmark['href']
-          #puts subject
 
           if subject.host
             # TLD container
@@ -70,6 +70,7 @@ module Webize
           end
 
           yield subject, Title, bookmark.inner_text
+
           yield subject, Date, Webize.date(bookmark['add_date'])
           if icon = bookmark['icon']
             yield subject, Image, RDF::URI(icon)
