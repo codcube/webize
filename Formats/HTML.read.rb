@@ -43,11 +43,14 @@ module Webize
         # links container
         yield links, Type, RDF::URI(Container)
 
-        @in.lines.grep(/<A/).map{|line|
-          bookmark = Nokogiri::HTML.fragment(line).css('a')[0]
-
+        @in.lines.grep(/<A/).map{|a|
           linkCount += 1
-          subject = RDF::URI bookmark['href']
+
+          #bookmark = Nokogiri::HTML.fragment(a).css('a')[0]
+          #subject = RDF::URI bookmark['href']
+          subject = RDF::URI CGI.unescapeHTML a.match(/href=["']?([^'">\s]+)/i)[1]
+
+          subject = HTTP::Node(subject,{}).unproxyURI if %w(l localhost x).member? subject.host
 
           if subject.host
             # TLD container
@@ -69,11 +72,16 @@ module Webize
             yield host, Contains, subject
           end
 
-          yield subject, Title, bookmark.inner_text
+          #yield subject, Title, bookmark.inner_text
+          yield subject, Title, CGI.unescapeHTML(a.match(/<a[^>]+>([^<]*)/i)[1]).sub(/^localhost\//,'')
 
-          yield subject, Date, Webize.date(bookmark['add_date'])
-          if icon = bookmark['icon']
-            yield subject, Image, RDF::URI(icon)
+          #yield subject, Date, Webize.date(bookmark['add_date'])
+          yield subject, Date, Webize.date(a.match(/add_date=["']?([^'">\s]+)/i)[1])
+
+          #if icon = bookmark['icon']
+          if icon = a.match(/icon=["']?([^'">\s]+)/i)
+            #yield subject, Image, RDF::URI(icon)
+            yield subject, Image, RDF::URI(CGI.unescapeHTML icon[1])
           end
         }
 
