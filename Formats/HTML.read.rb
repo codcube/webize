@@ -18,7 +18,7 @@ module Webize
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
         @env = @base.respond_to?(:env) ? @base.env : HTTP.env
-        @doc = Nokogiri::HTML.parse (input.respond_to?(:read) ? input.read : input.to_s).gsub(StripTags, '')
+        @in = input.respond_to?(:read) ? input.read : input.to_s
 
         if block_given?
           case block.arity
@@ -43,7 +43,8 @@ module Webize
         # links container
         yield links, Type, RDF::URI(Container)
 
-        @doc.css('a').map{|bookmark|
+        @in.lines.grep(/<A/).map{|line|
+          bookmark = Nokogiri::HTML.fragment line
           linkCount += 1
           subject = RDF::URI bookmark['href']
           #puts subject
@@ -81,7 +82,9 @@ module Webize
       def scanContent &f
 
         # doctype-specific triplrs
-        return scanBookmarks &f if @doc.doctype.name == 'NETSCAPE-Bookmark-file-1'
+        return scanBookmarks &f if @in.index('<!DOCTYPE NETSCAPE-Bookmark-file-1') == 0
+
+        @doc = Nokogiri::HTML.parse @in.gsub(StripTags, '')
 
         # resolve base URI
         if base = @doc.css('head base')[0]
