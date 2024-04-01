@@ -198,7 +198,8 @@ module Webize
                                  ['<b style="font-size:1.3em; background-color: #fff">', m, '</b>'].join },
                                '</span><br>',
                                HTML.keyval(Hash[query_values.map{|k,v|
-                                                  [k, v.match(/^http/) ? (RDF::URI v) : v]}],
+                                                  [k,
+                                                   v&.match(/^http/) ? (RDF::URI v) : v]}],
                                            env)]
 
         else
