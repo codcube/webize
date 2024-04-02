@@ -61,17 +61,13 @@ module Webize
        _.env[:base] = _
     end
 
-    def in_doc? # is URI in request graph?
-      on_host? && env[:base].path == path
-    end
+    # is URI in request graph?
+    def in_doc? = on_host? && env[:base].path == path
 
-    def on_host? # is URI on request host?
-      env[:base].host == host
-    end
+    # is URI on request host?
+    def on_host? = env[:base].host == host
 
-    def offline?
-      ENV.has_key? 'OFFLINE'
-    end
+    def offline? = ENV.has_key? 'OFFLINE'
 
     # relocate reference to proxy host
     def proxy_ref = ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join
@@ -79,9 +75,8 @@ module Webize
     # is reference located on proxy?
     def proxy_ref? = env['SERVER_NAME'] == host
 
-    def relocate
-      Resource super
-    end
+    # relocate preserving environment of Resource instance
+    def relocate = Resource super
 
   end
 end
