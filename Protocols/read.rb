@@ -22,9 +22,9 @@ module Webize
         repository << RDF::Statement.new(self, RDF::URI(Title), basename)
       else
         if reader ||= RDF::Reader.for(content_type: format)       # find reader
-          reader.new(content, base_uri: self){|_|repository << _} # read RDF
+          r = reader.new(content, base_uri: self){|_|repository << _} # read RDF
 
-          if format == 'text/html' && reader != RDF::RDFa::Reader # read RDFa
+          if r.respond_to?(:read_RDFa?) && r.read_RDFa? # read RDFa
             begin
               RDF::RDFa::Reader.new(content, base_uri: self){|g|
                 g.each_statement{|statement|

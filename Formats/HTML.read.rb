@@ -20,6 +20,8 @@ module Webize
         @env = @base.respond_to?(:env) ? @base.env : HTTP.env
         @in = input.respond_to?(:read) ? input.read : input.to_s
 
+        @isBookmarks = @in.index('<!DOCTYPE NETSCAPE-Bookmark-file-1') == 0
+
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -32,11 +34,11 @@ module Webize
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        scanContent{|s, p, o, g=nil|
+        send(@isBookmarks ? :bookmarks : :scanContent){|s, p, o, g=nil|
           fn.call RDF::Statement.new(s, Webize::URI.new(p), o, graph_name: (Webize::URI.new g if g))}
       end
 
-      def scanBookmarks
+      def bookmarks
         linkCount, tlds, domains = 0, {}, {}
         links = RDF::URI '#links'
 
@@ -91,10 +93,9 @@ module Webize
         yield links, Size, linkCount
       end
 
-      def scanContent &f
+      def read_RDFa? = !@isBookmarks
 
-        # doctype-specific triplrs
-        return scanBookmarks &f if @in.index('<!DOCTYPE NETSCAPE-Bookmark-file-1') == 0
+      def scanContent &f
 
         @doc = Nokogiri::HTML.parse @in.gsub(StripTags, '')
 
