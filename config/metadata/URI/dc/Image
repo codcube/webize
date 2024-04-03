@@ -47,7 +47,6 @@ data-native-src
 data-original
 data-raw-src
 data-src
-data-src
 data-url
 desktopImage
 facebook:image
@@ -83,7 +82,6 @@ icon_url
 image
 image-src
 image1x
-image1x
 image:secure_url
 imageLarge
 imageLargeUrl
@@ -117,7 +115,6 @@ msapplication-square310x310logo
 msapplication-square70x70logo
 msapplication-tileimage
 msapplication-wide310x150logo
-og:image
 og:image
 og:image:secure_url
 og:image:url
