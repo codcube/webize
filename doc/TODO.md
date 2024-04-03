@@ -1,4 +1,5 @@
 these should fix themselves once the HTML/JSON-triplr reworks are done. test corpus:
+escaped abstract http://l/org/cnxus/comments/feed/
 missing content http://localhost:8000/com/danielbachhuber/working-at-automattic/#f18efa4a785aeb87dabda0954ae72685914b72905a644498043ef39f1dc762aa8 http://l/gov/nsf/new/funding/opportunities/cyberinfrastructure-sustained-scientific
 fucky deflate issue http://l/https://plume.deuxfleurs.fr/#cache
 comments/posts http://localhost:8000/org/bryanalexander/technology/digg-is-going-to-kill-digg-reader-what-should-we-do-now/index.html http://l/com/reddit/old/user/squeakywipers.e84e319f01a80ba2. http://l/https://www.codeforsociety.org/news http://localhost:8000/https://www.worldwidedx.com/forums/#amateur-radio-related.64
@@ -69,6 +70,7 @@ dangling realpaths http://l/news/prt/i/
 - drop specific query keys - less destructive than total qs strip - de-utmize and other gunk
 - implement ioquatix 'trenni' etc streaming templates for earlier first byte on multi/merge-GET - basically required for 500-blog subscription list or we get gateway/rack/server 60s timeouts
 - notification/update mesh - pick a protocol or create one (NNTP-inspired flood/gossipsub atop Solid notifications/inboxes, most likely)
+- use rdf schema in http metadata cache
 
 # Format
 - mboxes, gunzipped https://www.redhat.com/archives/dm-devel/2020-November.txt.gz
