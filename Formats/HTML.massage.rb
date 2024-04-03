@@ -68,7 +68,6 @@ module Webize
       html.traverse{|e|
         e.respond_to?(:attribute_nodes) && e.attribute_nodes.map{|a| # inspect attributes
           attr = a.name                                              # attribute name
-          e.set_attribute 'src', a.value if SRCnotSRC.member? attr   # map alternative src attributes to @src
           e.set_attribute 'srcset', a.value if SRCSET.member? attr   # map alternative srcset attributes to @srcset
           a.unlink if DropAttrs.member?(attr) ||                     # drop attributes
                       attr.match?(DropPrefix) ||                     # drop prefixes            allow CSS classes

@@ -34,8 +34,7 @@ module Webize
   end
   module HTML
 
-    # load alternate names for src and srcset attributes
-    SRCnotSRC = Webize.configList 'formats/image/src'
+    # load alternate names for srcset attribute
     SRCSET = Webize.configList 'formats/image/srcset'
     SrcSetRegex = /\s*(\S+)\s+([^,]+),*/
 
