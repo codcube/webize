@@ -85,8 +85,9 @@ module Webize
 
       # attrs for key/val renderer
       rest = {}
-      n.map{|k,v|
-        rest[k] = n[k] unless [Child, Content, Name, Sibling].member? k}
+      n.map{|k, v|
+        rest[k] = v unless [Child, Sibling,
+                            Content, Name].member? k}
 
       [{_: name || :div,
         class: :node,

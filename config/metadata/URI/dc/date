@@ -164,6 +164,7 @@ parsely-pub-date
 pdate
 post_date
 post_date_gmt
+posted-on
 pubDate
 pub_date
 pubdate
