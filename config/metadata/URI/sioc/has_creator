@@ -44,6 +44,8 @@ crdt
 creator
 creator_id
 credit
+data-artist
+data-artistid
 dc.creator
 dc.source
 dct:creator

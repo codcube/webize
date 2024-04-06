@@ -1,5 +1,6 @@
 audioUrl
 audio_url
+data-audiourl
 http://ogp.me/ns#audio
 http://ogp.me/ns#audio:secure_url
 http://ogp.me/ns#audio:url
