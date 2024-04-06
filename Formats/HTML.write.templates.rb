@@ -128,6 +128,7 @@ module Webize
                  {_: :script, c: Code::SiteJS}]}]}]}
 
     Markup[Schema + 'DocumentToolbar'] = -> document, env {
+
       bc = '' # path breadcrumbs
 
       {class: :toolbox,
@@ -136,7 +137,7 @@ module Webize
              c: {_: :img, src: ['//', ReHost[host], '/favicon.ico'].join}} if ReHost.has_key? host),
            {_: :a, id: :UI, href: host ? env[:base] : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, "\n", # 👉 origin UI
            {_: :a, id: :cache, href: '/' + POSIX::Node(self).fsPath, c: :📦}, "\n",                                # 👉 archive
-           ({_: :a, id: :block, href: '/block/' + host.sub(/^(www|xml)\./,''), class: :dimmed,                           # 👉 block domain action
+           ({_: :a, id: :block, href: '/block/' + host.sub(/^(www|xml)\./,''), class: :dimmed,                     # 👉 block domain
              c: :🛑} if host && !deny_domain?), "\n",
            {_: :span, class: :path, c: env[:base].parts.map{|p|
               bc += '/' + p                                                                                        # 👉 path breadcrumbs
@@ -145,15 +146,15 @@ module Webize
                      c: CGI.escapeHTML(Webize::URI(Rack::Utils.unescape p).basename || '')}]}},
            "\n",
            ([{_: :form, c: env[:qs].map{|k,v|                                                                      # searchbox
-                {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}},                          # invisible search parameters
+                {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}},                          # preserve hidden search parameters
              "\n"] if env[:qs].has_key? 'q'),
            env[:feeds].uniq.map{|feed|                                                                             # 👉 feed(s)
              feed = Resource.new(feed).env env
-             [{_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'f' + Digest::SHA2.hexdigest(feed.uri)}. # 👉 host feed
+             [{_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'f' + Digest::SHA2.hexdigest(feed.uri)}. # 👉 feed
                 update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {}), "\n"]},
            (:🔌 if offline?),                                                                                      # denote offline mode
            {_: :span, class: :stats,
-            c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                 # ⏱️ elapsed time
+            c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                  # ⏱️ elapsed time
                 [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)}]}}
 
     Markup[Schema + 'InteractionCounter'] = -> counter, env {
