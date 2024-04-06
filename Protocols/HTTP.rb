@@ -120,17 +120,20 @@ module Webize
       body
     end
 
-    # initialize environment structure
-    def self.env = {feeds: [], links: {}, qs: {}, warnings: []}
+    # initial environment struct
+    def self.env = {feeds: [],
+                    links: {},
+                    qs: {},
+                    warnings: []}
 
-    # instantiate a node
+    # Node constructor method
     def self.Node(uri, env) = Node.new(uri).env env
 
   end
   class HTTP::Node < Resource
     include MIME
 
-    # host adaptation only runs on last proxy in chain
+    # host adaptation runs on last (origin facing) proxy in chain
     def adapt? = !ENV.has_key?('http_proxy')
 
     def block domain
