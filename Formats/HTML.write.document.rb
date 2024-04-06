@@ -71,19 +71,11 @@ module Webize
                                ({class: :referers,
                                  c: [:👉, HTML.markup(HTTP::Referer[env[:base]], env)]} if HTTP::Referer[env[:base]]),       # referer sources
 
-                               link[:up,'&#9650;'],
+                               link[:up,'&#9650;'],                                                 # link to parent node
 
-                               if updates = graph.delete('#updates') # updates
-                                 HTML.markup updates, env
-                               end,
+                               graph.values.map{|v| HTML.markup v, env },                           # graph data
 
-                               if datasets = graph.delete('#datasets') # datasets
-                                 HTML.markup datasets, env
-                               end,
-
-                               graph.values.map{|v| HTML.markup v, env }, # data
-
-                               link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
+                               link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'], # link to previous, child, next node(s)
 
                                {_: :script, c: Code::SiteJS}]}]}]
       end
