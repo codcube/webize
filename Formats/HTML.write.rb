@@ -18,7 +18,19 @@ module Webize
                                   Schema + 'Node',
                                   Schema + 'sibling']
 
-    # value -> Markup
+    # resource -> Markup
+    def self.keyval t, env
+      ["\n",
+       {_: :table, class: :kv,
+        c: t.map{|k,vs|
+          vs = (vs.class == Array ? vs : [vs]).compact
+          [{_: :tr,
+            c: [{_: :td, class: 'k', c: MarkupPredicate[Type][[k], env]},
+                {_: :td, class: 'v',
+                 c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][vs, env] : vs.map{|v|markup v, env}}]}, "\n"]}}]
+    end
+
+    # Ruby value -> Markup
     def self.markup o, env
       case o
       when FalseClass         # booleam

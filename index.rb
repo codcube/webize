@@ -6,7 +6,6 @@ URI
 HTML.read
 HTML.massage
 HTML.write
-HTML.write.document
 HTML.write.templates
 MIME
 POSIX
