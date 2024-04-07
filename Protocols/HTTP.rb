@@ -609,16 +609,8 @@ module Webize
     end
 
     def notfound
-      format = selectFormat
-
-      body = case format
-             when /html/
-               HTML::Document.new(uri).env(env).write
-             when /atom|rss|xml/
-               Feed::Document.new(uri).env(env).write
-             end
-
-      [404, {'Content-Type' => format}, head? ? nil : [body ? body : '']]
+      env[:origin_status] = 404
+      respond [RDF::Repository.new]
     end
 
     def origin
@@ -656,9 +648,6 @@ module Webize
       return [status, head, nil] if head?  # header-only response
 
       body = case format                   # response body
-             when /html/                   # serialize HTML
-               link_icon
-               HTML::Document.new(uri).env(env).write JSON.fromGraph repositories
              when /atom|rss|xml/           # serialize Atom/RSS
                Feed::Document.new(uri).env(env).write JSON.fromGraph repositories
              else                          # serialize RDF

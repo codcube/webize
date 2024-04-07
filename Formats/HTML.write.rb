@@ -21,16 +21,13 @@ module Webize
     class Writer < RDF::Writer
 
       format Format
+
       def initialize(output = $stdout, **options, &block)
+
         @graph = RDF::Graph.new
+
         super do
-          reset
-          if block_given?
-            case block.arity
-            when 0 then instance_eval(&block)
-            else block.call(self)
-            end
-          end
+          block.call(self) if block_given?
         end
       end
 
