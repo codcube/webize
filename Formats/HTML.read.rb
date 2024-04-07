@@ -2,7 +2,7 @@ module Webize
   module HTML
     class Format < RDF::Format
 
-      content_type 'text/html',
+      content_type 'text/html;q=0.8',
                    aliases: %w(application/xhtml+xml),
                    extensions: [:htm, :html, :xhtml]
       content_encoding 'utf-8'
