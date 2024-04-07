@@ -105,7 +105,7 @@ module Webize
              c: [({_: :img, class: :favicon,
                    src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href} if env[:links].has_key? :icon),
 
-                 toolbar,
+                 Markup[Schema + 'DocumentToolbar'](document, env),
 
                  (['<br>', {class: :warning, c: env[:warnings]}] unless env[:warnings].empty?), # warnings
 
@@ -121,7 +121,7 @@ module Webize
 
                  link[:up,'&#9650;'],                                                 # link to parent node
 
-                 graph.values.map{|v| HTML.markup v, env },                           # graph data
+                 (document[Contains].map{|v| HTML.markup v, env } if document.has_key? Contains), # child nodes
 
                  link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'], # link to previous, child, next node(s)
 
