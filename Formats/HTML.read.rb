@@ -7,6 +7,7 @@ module Webize
                    extensions: [:htm, :html, :xhtml]
       content_encoding 'utf-8'
       reader { Reader }
+      writer { Writer }
 
     end
 
