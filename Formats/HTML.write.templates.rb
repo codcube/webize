@@ -105,7 +105,7 @@ module Webize
              c: [({_: :img, class: :favicon,
                    src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href} if env[:links].has_key? :icon),
 
-                 Markup[Schema + 'DocumentToolbar'](document, env),
+                 Markup[Schema + 'DocumentToolbar'][document, env],
 
                  (['<br>', {class: :warning, c: env[:warnings]}] unless env[:warnings].empty?), # warnings
 

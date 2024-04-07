@@ -91,3 +91,4 @@ td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-color:
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
 td[property="http://purl.org/dc/terms/title"] {background-color: #000; color: #fff}
 td[property="http://rdfs.org/sioc/ns#addressed_to"] > a {white-space: nowrap}
+td[property="http://rdfs.org/sioc/ns#has_creator"] {text-align: right}
