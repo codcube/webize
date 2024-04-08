@@ -89,7 +89,8 @@ module Webize
         c: [{_: :head,
              c: [{_: :meta, charset: 'utf-8'},
 
-                 ({_: :title, c: CGI.escapeHTML(graph[uri][Title].join ' ')} if graph.has_key?(uri) && graph[uri].has_key?(Title)),
+                 ({_: :title, c: CGI.escapeHTML(graph[env[:base].uri][Title].join ' ')} if graph.has_key?(env[:base].uri) &&
+                                                                                           graph[env[:base].uri].has_key?(Title)),
 
                  {_: :style,
                   c: [CSS::Site,
@@ -128,7 +129,8 @@ module Webize
 
     Markup[Schema + 'DocumentToolbar'] = -> document, env {
 
-      bc = '' # path breadcrumbs
+      bc = String.new        # breadcrumb path
+      host = env[:base].host # hostname
 
       {class: :toolbox,
        c: [{_: :a, id: :rootpath, href: Resource.new(env[:base].join('/')).env(env).href, c: '&nbsp;' * 3}, "\n",  # 👉 root node
@@ -137,7 +139,7 @@ module Webize
            {_: :a, id: :UI, href: host ? env[:base] : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, "\n", # 👉 origin UI
            {_: :a, id: :cache, href: '/' + POSIX::Node(self).fsPath, c: :📦}, "\n",                                # 👉 archive
            ({_: :a, id: :block, href: '/block/' + host.sub(/^(www|xml)\./,''), class: :dimmed,                     # 👉 block domain
-             c: :🛑} if host && !deny_domain?), "\n",
+             c: :🛑} if host && !env[:base].deny_domain?), "\n",
            {_: :span, class: :path, c: env[:base].parts.map{|p|
               bc += '/' + p                                                                                        # 👉 path breadcrumbs
               ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
