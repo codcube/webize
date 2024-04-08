@@ -25,7 +25,7 @@ module Webize
       def initialize(output = $stdout, **options, &block)
 
         @graph = RDF::Graph.new
-        puts options
+        @base = RDF::URI(options[:base_uri]) if options[:base_uri]
 
         super do
           block.call(self) if block_given?
@@ -38,7 +38,7 @@ module Webize
       end
 
       def write_epilogue
-        @output.write HTML.render Markup[Schema + 'Document'][JSON.fromGraph(@graph), env]
+        @output.write HTML.render Markup[Schema + 'Document'][JSON.fromGraph(@graph), @base.env]
       end
 
     end
