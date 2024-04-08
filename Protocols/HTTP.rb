@@ -636,32 +636,28 @@ module Webize
              'Access-Control-Allow-Origin' => origin}, []]
     end
 
-    # default response - serialize graph per content-negotiation preference
+    # return graph in requested format
     def respond repositories, defaultFormat = 'text/html'
-      status = env[:origin_status] || 200  # response status
-      format = selectFormat defaultFormat  # response format
+      format = selectFormat defaultFormat
       format += '; charset=utf-8' if %w{text/html text/turtle}.member? format
-      head = {'Access-Control-Allow-Origin' => origin,
-              'Content-Type' => format,
-              'Last-Modified' => Time.now.httpdate,
-              'Link' => linkHeader}        # response header
-      return [status, head, nil] if head?  # header-only response
 
-      body = case format                   # response body
-             when /atom|rss|xml/           # serialize Atom/RSS
-               Feed::Document.new(uri).env(env).write JSON.fromGraph repositories
-             else                          # serialize RDF
-               if writer = RDF::Writer.for(content_type: format)
-                 writer.buffer(base_uri: self, prefixes: {w: HTML::Schema}) do |w|
-                   repositories.map{|r| w << r }
-                 end
-               else
-                 logger.warn "⚠️  RDF::Writer undefined for #{format}" ; ''
-               end
-             end
+      # status code
+      [env[:origin_status] || 200,
 
-      head['Content-Length'] = body.bytesize.to_s # response size
-      [status, head, [body]]                      # response
+       # header
+       {'Access-Control-Allow-Origin' => origin,
+        'Content-Type' => format,
+        'Last-Modified' => Time.now.httpdate,
+        'Link' => linkHeader},
+
+       # body
+       head? ? nil : [if writer = RDF::Writer.for(content_type: format)
+                      writer.buffer(base_uri: self, prefixes: {w: HTML::Schema}) do |w|
+                        repositories.map{|r| w << r }
+                      end
+                     else
+                       logger.warn "⚠️  RDF::Writer undefined for #{format}" ; ''
+                      end]]
     end
 
     def selectFormat default = nil                     # default-format argument
