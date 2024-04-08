@@ -87,7 +87,6 @@ dangling realpaths http://l/news/prt/i/
 - redo JSON triplr too topofdoc https://radio.montezpress.com/api/archive/
 - next/prev links in HTML not lifted to HTTP metadata and/or collide with proxy-added #next/#prev http://techrights.org/2021/11/30/freedom-respecting-internet/ http://www.w3.org/1999/xhtml/vocab#role
 - link gemini posts to timeline - use current timestamp if server doesn't provide
-- make HTML/RSS renderers genuine RSS:Writer instances. 
 - ruby-net-text (gemtext) is failing on URI parse errors all the time - it shouldn't even parse the body - write a Gemini parser? do we/you use Gemini still? also TWTXT etc
 - chat view
 - re-parsing PDFs when offline http://www.midnightnotes.org/pdfnewenc9.pdf?view=table&sort=date (remove @path), images missing http://localhost:8000/https://www.bc.edu/content/dam/bc1/schools/carroll/Centers/corcoran-center/Gallivan%20Boulevard%20Concept%20Final%20-%20Spreads.pdf

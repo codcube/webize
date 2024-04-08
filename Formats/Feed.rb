@@ -37,6 +37,7 @@ rss rss.xml
       content_encoding 'utf-8'
 
       reader { Reader }
+      writer { Writer }
 
       def self.symbols
         [:atom, :feed, :rss]
@@ -195,23 +196,37 @@ rss rss.xml
           end}
       end
     end
-    class Document < Resource
-      def write graph={}
-        HTML.render ['<?xml version="1.0" encoding="utf-8"?>',
-                     {_: :feed,xmlns: 'http://www.w3.org/2005/Atom',
-                      c: [{_: :id, c: uri},
-                          {_: :title, c: uri},
-                          {_: :link, rel: :self, href: uri},
-                          {_: :updated, c: Time.now.iso8601},
-                          graph.map{|u,d|
-                            {_: :entry,
-                             c: [{_: :id, c: u}, {_: :link, href: u},
-                                 d[Date] ? {_: :updated, c: d[Date][0]} : nil,
-                                 d[Title] ? {_: :title, c: d[Title]} : nil,
-                                 d[Creator] ? {_: :author, c: d[Creator][0]} : nil,
-                                 {_: :content, type: :xhtml,
-                                  c: {xmlns:"http://www.w3.org/1999/xhtml",
-                                      c: d[Content]}}]}}]}]
+    class Writer < RDF::Writer
+
+      format Format
+
+      def initialize(output = $stdout, **options, &block)
+        @graph = RDF::Graph.new
+        super do
+          block.call(self) if block_given?
+        end
+      end
+
+      def write_triple(subject, predicate, object)
+        @graph.insert RDF::Statement.new(subject, predicate, object)
+      end
+
+      def write_epilogue
+        @output.write HTML.render ['<?xml version="1.0" encoding="utf-8"?>',
+                                   {_: :feed,xmlns: 'http://www.w3.org/2005/Atom',
+                                    c: [{_: :id, c: uri},
+                                        {_: :title, c: uri},
+                                        {_: :link, rel: :self, href: uri},
+                                        {_: :updated, c: Time.now.iso8601},
+                                        JSON.fromGraph(@graph).map{|u,d|
+                                          {_: :entry,
+                                           c: [{_: :id, c: u}, {_: :link, href: u},
+                                               d[Date] ? {_: :updated, c: d[Date][0]} : nil,
+                                               d[Title] ? {_: :title, c: d[Title]} : nil,
+                                               d[Creator] ? {_: :author, c: d[Creator][0]} : nil,
+                                               {_: :content, type: :xhtml,
+                                                c: {xmlns:"http://www.w3.org/1999/xhtml",
+                                                    c: d[Content]}}]}}]}]
       end
     end
   end

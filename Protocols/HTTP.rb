@@ -656,7 +656,7 @@ module Webize
                         repositories.map{|r| w << r }
                       end
                      else
-                       logger.warn "⚠️  RDF::Writer undefined for #{format}" ; ''
+                       logger.warn "⚠️ Writer unavailable for #{format}" ; ''
                       end]]
     end
 
