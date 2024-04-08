@@ -652,9 +652,9 @@ module Webize
                Feed::Document.new(uri).env(env).write JSON.fromGraph repositories
              else                          # serialize RDF
                if writer = RDF::Writer.for(content_type: format)
-                 out = RDF::Repository.new
-                 repositories.map{|r| out << r }
-                 out.dump writer.to_sym, base_uri: self, prefixes: {w: HTML::Schema}
+                 writer.buffer(base_uri: self, prefixes: {w: HTML::Schema}) do |w|
+                   repositories.map{|r| w << r }
+                 end
                else
                  logger.warn "⚠️  RDF::Writer undefined for #{format}" ; ''
                end
