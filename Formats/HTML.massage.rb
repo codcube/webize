@@ -191,46 +191,5 @@ module Webize
         line
       end
     end
-
-    class Document < Resource
-
-      def grep graph
-        qs = query_hash
-        q = qs['Q'] || qs['q']
-        return unless graph && q
-
-        wordIndex = {}                                             # init word-index
-        args = (q.shellsplit rescue q.split(/\W/)).map{|arg|arg.gsub RegexChars,''}.select{|arg| arg.size > 1}
-        args.each_with_index{|arg,i|                               # populate word-index
-          wordIndex[arg.downcase] = i }
-        pattern = Regexp.new args.join('|'), Regexp::IGNORECASE    # query pattern
-
-        graph.map{|uri, resource|                                  # visit resource
-          if resource.to_s.match? pattern                          # matching resource?
-            if resource.has_key? Content                           # resource has content?
-              resource[Content].map!{|c|                           # visit content
-                if c.class == RDF::Literal && c.datatype==RDF.HTML # HTML content?
-                  html = Nokogiri::HTML.fragment c.to_s            # parse HTML
-                  html.traverse{|n|                                # visit nodes
-                    if n.text? && n.to_s.match?(pattern)           # matching text?
-                      n.add_next_sibling n.to_s.gsub(pattern){|g|  # highlight match
-                        HTML.render({_: :span, class: "w#{wordIndex[g.downcase]}", c: g})}
-                      n.remove
-                    end}
-                  (c = RDF::Literal html.to_html).datatype = RDF.HTML
-                end
-                c}
-            end
-          else
-            graph.delete uri unless host                           # drop local resources not in results
-          end}
-
-        css = RDF::Literal(HTML.render({_: :style,                 # highlighting CSS
-                                        c: wordIndex.map{|word,i|
-                                          ".post span.w#{i} {background-color: #{'#%06x' % (rand 16777216)}; color: white} /* #{word} */\n"}}))
-        css.datatype = RDF.HTML
-        graph['#searchCSS'] = {Content => [css]}
-      end
-    end
   end
 end

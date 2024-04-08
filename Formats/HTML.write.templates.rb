@@ -78,8 +78,6 @@ module Webize
                   '#000'
                 end
 
-      grep graph                             # markup grep results
-
       link = -> key, content {               # lambda -> Link markup
         if url = env[:links] && env[:links][key]
           [{_: :a, href: Resource.new(url).env(env).href, id: key, class: :icon, c: content},
