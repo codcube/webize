@@ -122,30 +122,27 @@ module Webize
     end
 
 
-    # inline objects of these predicates in #fromGraph graph->tree conversion 
+    # inline objects of these predicates during graph->tree conversion 
     InlinedObjects = [Contains, HTML::Child, HTML::Sibling]
 
     # graph -> tree (subject -> predicate -> object) data-structure for render methods
-    def self.fromGraph repositories
-      tree = {}                        # output tree
-      inlined = []                     # inlined nodes
-      repositories.compact.map{|repository|
-        if repository.respond_to? :each_triple
-          repository.each_triple{|subj,pred,obj|
-            s = subj.to_s                # subject URI
-            p = pred.to_s                # predicate URI
-            blank = obj.class==RDF::Node # bnode?
-            if blank || InlinedObjects.member?(p) # inlined  node?
-              o = obj.to_s               # object URI
-              inlined.push o             # inline object
-              obj = tree[o] ||= blank ? {} : {'uri' => o}
-            end
-            tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
-            tree[s][p] ||= []                                       # predicate
-            tree[s][p].push obj}                                    # object
-        else
-          puts "graph->tree triples unavailable for #{repository.class}", repository
-        end}
+    def self.fromGraph graph
+      tree = {}                         # output tree
+      inlined = []                      # inlined nodes
+
+      graph.each_triple{|subj,pred,obj| # visit graph
+        s = subj.to_s                   # subject
+        p = pred.to_s                   # predicate
+        blank = obj.class==RDF::Node    # bnode?
+        if blank || InlinedObjects.member?(p) # inlined object?
+          o = obj.to_s                  # object
+          inlined.push o                # inline object
+          obj = tree[o] ||= blank ? {} : {'uri' => o}
+        end
+        tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
+        tree[s][p] ||= []                                       # predicate
+        tree[s][p].push obj}                                    # object
+
       inlined.map{|n| tree.delete n} # sweep inlined nodes from toplevel index
       tree                           # tree
     end

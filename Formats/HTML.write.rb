@@ -25,6 +25,7 @@ module Webize
       def initialize(output = $stdout, **options, &block)
 
         @graph = RDF::Graph.new
+        puts options
 
         super do
           block.call(self) if block_given?
