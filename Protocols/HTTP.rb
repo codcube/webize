@@ -226,7 +226,7 @@ module Webize
                       elsif type == :JSON || ext == '.json'
                         ['application/json','{}']
                       else
-                        ['text/html; charset=utf-8', RDF::Repository.new.dump :html, base_uri: self]
+                        ['text/html; charset=utf-8', RDF::Repository.new.dump(:html, base_uri: self)]
                       end
       [status,
        {'Access-Control-Allow-Credentials' => 'true',
