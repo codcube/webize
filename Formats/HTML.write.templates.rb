@@ -153,7 +153,7 @@ module Webize
              feed = Resource.new(feed).env env
              [{_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'f' + Digest::SHA2.hexdigest(feed.uri)}. # 👉 feed
                 update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {}), "\n"]},
-           (:🔌 if offline?),                                                                                      # denote offline mode
+           (:🔌 if env[:base].offline?),                                                                           # denote offline mode
            {_: :span, class: :stats,
             c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                  # ⏱️ elapsed time
                 [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)}]}}
