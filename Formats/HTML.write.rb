@@ -36,6 +36,10 @@ module Webize
         @graph.insert(statement)
       end
 
+      def write_epilogue
+        @output.write HTML.render Markup[Schema + 'Document'][JSON.fromGraph(@graph), env]
+      end
+
     end
 
     # resource -> Markup

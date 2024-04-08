@@ -176,7 +176,7 @@ module Webize
 
     def debug? = ENV['CONSOLE_LEVEL'] == 'debug'
 
-    def deny status = 200, type = nil
+    def deny status = 403, type = nil
       env[:deny] = true 
       env[:warnings].push({_: :a,
                            id: :allow,
