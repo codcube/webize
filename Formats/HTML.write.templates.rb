@@ -65,9 +65,7 @@ module Webize
     Markup[Schema + 'Document'] = -> graph, env {
 
       bgcolor = if env[:deny]                # blocked?
-                  if HostColor.has_key? host # host color
-                    HostColor[host]
-                  elsif deny_domain?         # domain-block color
+                  if env[:base].deny_domain? # domain-block color
                     '#f00'
                   else                       # pattern-block color
                     '#f80'
