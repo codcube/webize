@@ -6,7 +6,7 @@ URI
 HTML.read
 HTML.massage
 HTML.write
-HTML.write.templates
+HTML.templates
 MIME
 POSIX
 RDF
