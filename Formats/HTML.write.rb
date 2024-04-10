@@ -43,22 +43,12 @@ module Webize
 
     end
 
-    # resource -> Markup
-    def self.keyval t, env
-      ["\n",
-       {_: :table, class: :kv,
-        c: t.map{|k,vs|
-          vs = (vs.class == Array ? vs : [vs]).compact
-          [{_: :tr,
-            c: [{_: :td, class: 'k', c: MarkupPredicate[Type][[k], env]},
-                {_: :td, class: 'v',
-                 c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][vs, env] : vs.map{|v|markup v, env}}]}, "\n"]}}]
-    end
-
     # Ruby value -> Markup
     def self.markup o, env
       case o
-      when FalseClass         # booleam
+      when Array              # Array
+        o.map{|n| markup n, env}
+      when FalseClass         # boolean
         {_: :input, type: :checkbox}
       when Hash               # Hash
         return if o.empty?
@@ -90,16 +80,13 @@ module Webize
         CGI.escapeHTML o
       when Time               # Time
         Markup[Date][o, env]
-      when TrueClass          # booleam
+      when TrueClass          # boolean
         {_: :input, type: :checkbox, checked: true}
       when Webize::Resource   # Resource
-
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       when Webize::URI        # URI
         o = Resource.new(o).env env
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
-      when Array              # Array
-        o.map{|n| markup n, env}
       else                    # default
         puts "markup undefined for #{o.class}"
         {_: :span, c: CGI.escapeHTML(o.to_s)}
