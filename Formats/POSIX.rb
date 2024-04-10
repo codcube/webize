@@ -52,6 +52,7 @@ module Webize
     TabularLayout = [Directory,
                      'http://rdfs.org/sioc/ns#ChatLog']
 
+    # TODO merge w/ basicres/node 
     Markup[Container] = -> dir, env {
       uri = dir['uri']
       id = RDF::URI(uri).fragment if uri
@@ -81,16 +82,6 @@ module Webize
              update(id ? {id: id} : {}).
              update(color ? {class: 'contents columns',
                              style: "background: repeating-linear-gradient(315deg, #{color}, #{color} 1px, transparent 1px, transparent 16px); border-color: #{color}; "} : {})]}}
-
-    Markup['http://www.w3.org/ns/posix/stat#File'] = -> file, env {
-      file.delete Type
-      {class: :file,
-       c: [{_: :a, href: file['uri'], class: :icon,
-            c: Icons['http://www.w3.org/ns/posix/stat#File']},
-           {_: :dl,
-            c: file.map{|k, v| # key/val view of file metadata
-              [{_: :dt, c: MarkupPredicate[Type][[k], env]},
-               {_: :dd, c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][v, env] : markup(v, env)}]}}]}}
 
   end
 end
