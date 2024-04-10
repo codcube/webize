@@ -93,7 +93,6 @@ module Webize
 
                  ({_: :title, c: CGI.escapeHTML(graph[env[:base].uri][Title].join ' ')} if graph.has_key?(env[:base].uri) &&
                                                                                            graph[env[:base].uri].has_key?(Title)),
-
                  {_: :style,
                   c: [CSS::Site,
                       "body {background-color: #{bgcolor}}",
