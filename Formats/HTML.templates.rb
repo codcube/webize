@@ -64,6 +64,10 @@ module Webize
 
     Markup[Schema + 'Document'] = -> graph, env {
 
+      bc = String.new        # breadcrumb path
+
+      host = env[:base].host # hostname
+
       bgcolor = if env[:deny]                # blocked?
                   if env[:base].deny_domain? # domain-block color
                     '#f00'
@@ -102,7 +106,30 @@ module Webize
              c: [({_: :img, class: :favicon,
                    src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href} if env[:links].has_key? :icon),
 
-                 Markup[Schema + 'DocumentToolbar'][graph, env],
+                 {class: :toolbox,
+                  c: [{_: :a, id: :rootpath, href: Resource.new(env[:base].join('/')).env(env).href, c: '&nbsp;' * 3}, "\n",  # 👉 root node
+                      ({_: :a, id: :rehost, href: Webize::Resource(['//', ReHost[host], env[:base].path].join, env).href,
+                        c: {_: :img, src: ['//', ReHost[host], '/favicon.ico'].join}} if ReHost.has_key? host),
+                      {_: :a, id: :UI, href: host ? env[:base] : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, "\n", # 👉 origin UI
+                      {_: :a, id: :cache, href: '/' + POSIX::Node(env[:base]).fsPath, c: :📦}, "\n",                          # 👉 cache location
+                      ({_: :a, id: :block, href: '/block/' + host.sub(/^(www|xml)\./,''), class: :dimmed,                     # 👉 block domain
+                        c: :🛑} if host && !env[:base].deny_domain?), "\n",
+                      {_: :span, class: :path, c: env[:base].parts.map{|p|
+                         bc += '/' + p                                                                                        # 👉 path breadcrumbs
+                         ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
+                                href: Resource.new(env[:base].join(bc)).env(env).href,
+                                c: CGI.escapeHTML(Webize::URI(Rack::Utils.unescape p).basename || '')}]}}, "\n",
+                      ([{_: :form, c: env[:qs].map{|k,v|                                                                      # searchbox
+                           {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}},                          # preserve hidden search parameters
+                        "\n"] if env[:qs].has_key? 'q'),
+                      env[:feeds].uniq.map{|feed|                                                                             # 👉 feed(s)
+                        feed = Resource.new(feed).env env
+                        [{_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'f' + Digest::SHA2.hexdigest(feed.uri)}. # 👉 feed
+                           update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {}), "\n"]},
+                      (:🔌 if env[:base].offline?),                                                                           # denote offline mode
+                      {_: :span, class: :stats,
+                       c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                  # ⏱️ elapsed time
+                           [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)}]},
 
                  (['<br>', {class: :warning, c: env[:warnings]}] unless env[:warnings].empty?), # warnings
 
@@ -125,36 +152,6 @@ module Webize
 
                  {_: :script, c: Code::SiteJS}]}]}]}
 
-    Markup[Schema + 'DocumentToolbar'] = -> document, env {
-
-      bc = String.new        # breadcrumb path
-      host = env[:base].host # hostname
-
-      {class: :toolbox,
-       c: [{_: :a, id: :rootpath, href: Resource.new(env[:base].join('/')).env(env).href, c: '&nbsp;' * 3}, "\n",  # 👉 root node
-           ({_: :a, id: :rehost, href: Webize::Resource(['//', ReHost[host], env[:base].path].join, env).href,
-             c: {_: :img, src: ['//', ReHost[host], '/favicon.ico'].join}} if ReHost.has_key? host),
-           {_: :a, id: :UI, href: host ? env[:base] : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, "\n", # 👉 origin UI
-           {_: :a, id: :cache, href: '/' + POSIX::Node(self).fsPath, c: :📦}, "\n",                                # 👉 archive
-           ({_: :a, id: :block, href: '/block/' + host.sub(/^(www|xml)\./,''), class: :dimmed,                     # 👉 block domain
-             c: :🛑} if host && !env[:base].deny_domain?), "\n",
-           {_: :span, class: :path, c: env[:base].parts.map{|p|
-              bc += '/' + p                                                                                        # 👉 path breadcrumbs
-              ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
-                     href: Resource.new(env[:base].join(bc)).env(env).href,
-                     c: CGI.escapeHTML(Webize::URI(Rack::Utils.unescape p).basename || '')}]}},
-           "\n",
-           ([{_: :form, c: env[:qs].map{|k,v|                                                                      # searchbox
-                {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}},                          # preserve hidden search parameters
-             "\n"] if env[:qs].has_key? 'q'),
-           env[:feeds].uniq.map{|feed|                                                                             # 👉 feed(s)
-             feed = Resource.new(feed).env env
-             [{_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'f' + Digest::SHA2.hexdigest(feed.uri)}. # 👉 feed
-                update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {}), "\n"]},
-           (:🔌 if env[:base].offline?),                                                                           # denote offline mode
-           {_: :span, class: :stats,
-            c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                                  # ⏱️ elapsed time
-                [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)}]}}
 
     Markup[Schema + 'InteractionCounter'] = -> counter, env {
       if type = counter[Schema+'interactionType']
