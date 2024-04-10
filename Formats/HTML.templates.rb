@@ -202,8 +202,6 @@ module Webize
           Markup[Node][sibling, env]} if n.has_key? Sibling)]}
 
     Markup[BasicResource] = -> re, env {
-      env[:last] ||= {}                                 # previous resource
-
       types = (re[Type]||[]).map{|t|                    # RDF type(s)
         MetaMap[t.to_s] || t.to_s}
 
@@ -212,9 +210,6 @@ module Webize
 
       p = -> a {                                        # predicate renderer
         MarkupPredicate[a][re[a],env] if re.has_key? a}
-
-      titled = re.has_key?(Title) &&                    # has updated title?
-               env[:last][Title]!=re[Title]
 
       if uri = re['uri']                                # unless blank node:
         uri = Webize::Resource.new(uri).env env         # full URI
@@ -241,12 +236,10 @@ module Webize
 
       date = p[Date]                                    # date
       link = {class: :title, c: p[Title]}.              # title
-               update(cache_ref || {}) if titled
+               update(cache_ref || {}) if re.has_key?(Title)
       rest = {}                                         # remaining data
       re.map{|k,v|                                      # populate remaining attrs for key/val renderer
-        rest[k] = re[k] unless [Abstract, Content, Creator, Date, From, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
-
-      env[:last] = re                                   # last resource pointer TODO group by title since that's all we're deduping run-to-run?
+        rest[k] = v.class == Array ? v : [v] unless [Abstract, Content, Creator, Date, From, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
 
       {class: classes.join(' '),                        # resource
        c: [link,                                        # title
@@ -257,9 +250,11 @@ module Webize
            [Content, SIOC+'richContent'].map{|p|
              (re[p]||[]).map{|o|markup o,env}},         # body
            ({_: :dl,
-             c: rest.map{|k, v|                         # key/val view of other fields
+             c: rest.map{|k, vs|                        # key/val view of other fields
                [{_: :dt, c: MarkupPredicate[Type][[k], env]},
-                {_: :dd, c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][v, env] : markup(v, env)}]
+                {_: :dd,
+                 c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][vs, env] : vs.map{|v|
+                   markup(v, env)}}]
              }} unless rest.empty?),
            origin_ref,                                  # origin pointer
           ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(45deg, #{color}, #{color} 1px, transparent 1px, transparent 8px); border-color: #{color}"} : {})}
