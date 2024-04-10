@@ -187,7 +187,11 @@ module Webize
              {_: :span, class: :name, c: name} if name
             end,
 
-            (HTML.keyval(rest, env) unless rest.empty?),
+            ({_: :dl,
+             c: rest.map{|k, v|                         # key/val view of metadata
+               [{_: :dt, c: MarkupPredicate[Type][[k], env]},
+                {_: :dd, c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][v, env] : markup(v, env)}]
+             }} unless rest.empty?),
 
             # child node(s)
             (n[Child].map{|child|
