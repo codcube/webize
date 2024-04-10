@@ -200,11 +200,10 @@ module Webize
                                query.gsub(Gunk){|m|
                                  ['<b style="font-size:1.3em; background-color: #fff">', m, '</b>'].join },
                                '</span><br>',
-                               HTML.keyval(Hash[query_values.map{|k,v|
-                                                  [k,
-                                                   v&.match(/^http/) ? (RDF::URI v) : v]}],
-                                           env)]
-
+                               {_: :dl,
+                                c: query_values.map{|k, v| # key/val view of query args
+                                  [{_: :dt, c: MarkupPredicate[Type][[k], env]},
+                                   {_: :dd, c: markup(v&.match(/^http/) ? (RDF::URI v) : v, env)}]}}]
         else
           env[:warnings].push ['pattern block in URI<br>',
                                "<span style='#{bg}; font-size: .88em'>",

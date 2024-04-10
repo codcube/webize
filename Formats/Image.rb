@@ -61,7 +61,11 @@ module Webize
                c: image[Abstract].map{|a|
                  [(markup a,env),' ']}}] if image.has_key? Abstract),
             ([Abstract,Image,Type,'uri'].map{|p| image.delete p }
-             HTML.keyval(image, env) unless image.empty?)]}, ' ']}
+             {_: :dl,
+              c: image.map{|k, v|                         # key/val view of other fields
+                [{_: :dt, c: MarkupPredicate[Type][[k], env]},
+                 {_: :dd, c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][v, env] : markup(v, env)}]
+              }} unless image.empty?)]}, ' ']}
 
   end
   module JPEG

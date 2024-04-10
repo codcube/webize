@@ -72,7 +72,12 @@ module Webize
                else
                  content.map{|c|markup(c, env)}
                 end,
-                (['<hr>', keyval(dir, env)] unless dir.keys.empty? || dir.keys == %w(uri))]}. # key/val render of remaining triples
+                (['<hr>',
+                  {_: :dl,
+                   c: dir.map{|k, v| # key/val view of other directory metadata
+                     [{_: :dt, c: MarkupPredicate[Type][[k], env]},
+                      {_: :dd, c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][v, env] : markup(v, env)}]
+                   }}] unless dir.keys.empty? || dir.keys == %w(uri))]}.
              update(id ? {id: id} : {}).
              update(color ? {class: 'contents columns',
                              style: "background: repeating-linear-gradient(315deg, #{color}, #{color} 1px, transparent 1px, transparent 16px); border-color: #{color}; "} : {})]}}
@@ -82,7 +87,10 @@ module Webize
       {class: :file,
        c: [{_: :a, href: file['uri'], class: :icon,
             c: Icons['http://www.w3.org/ns/posix/stat#File']},
-           (HTML.keyval file, env)]}}
+           {_: :dl,
+            c: file.map{|k, v| # key/val view of file metadata
+              [{_: :dt, c: MarkupPredicate[Type][[k], env]},
+               {_: :dd, c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][v, env] : markup(v, env)}]}}]}}
 
   end
 end

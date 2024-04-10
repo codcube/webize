@@ -90,7 +90,11 @@ module Webize
       {class: :video,
        c: [{_: :span, style: 'font-size: 4.2em', c: :🎞},
            (MarkupPredicate[Title][video.delete(Title), env] if video.has_key? Title),
-           HTML.keyval(video, env), '<br>',
+           {_: :dl,
+            c: video.map{|k, v|                         # key/val view of other fields
+              [{_: :dt, c: MarkupPredicate[Type][[k], env]},
+               {_: :dd, c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][v, env] : markup(v, env)}]
+            }}, '<br>',
            if v.uri.match? /youtu/ # YouTube
 
              id = v.query_hash['v'] || v.parts[-1]
