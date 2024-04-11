@@ -180,7 +180,6 @@ module Webize
                             Content, Name].member? k}
 
       [{_: name || :div,
-        class: :node,
         c: [if n.has_key? Content
             n[Content].map{|c| markup c, env }
            else
