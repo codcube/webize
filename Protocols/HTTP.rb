@@ -186,6 +186,7 @@ module Webize
                            c: :👁️})
 
       if uri.match? Gunk
+        hilite = '<b style="font-size:1.3em; background-color: #f00; color: #fff">'
         if query&.match? Gunk # drop query
           env[:warnings].push ['pattern block in query<br>',
                                {_: :a,
@@ -195,7 +196,7 @@ module Webize
                                 c: [host, path], style: 'background-color: #000; color: #fff'},
                                '?',
                                query.gsub(Gunk){|m|
-                                 ['<b style="font-size:1.1em; background-color: #f00; color: #fff">', m, '</b>'].join },
+                                 [hilite, m, '</span>'].join },
                                {_: :dl,
                                 c: query_values.map{|k, v| # key/val view of query args
                                   [{_: :dt, c: HTML.markup(k, env)},
@@ -203,7 +204,7 @@ module Webize
         else
           env[:warnings].push ['pattern block in URI<br>',
                                uri.gsub(Gunk){|m|
-                                 ['<b style="font-size:1.3em; background-color: #f00; color: #fff">', m, '</b>'].join}]
+                                 [hilite, m, '</span>'].join}]
         end
       end
 
