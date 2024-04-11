@@ -187,7 +187,7 @@ module Webize
 
       if uri.match? Gunk
 
-        hilite = '<span style="font-size:1.3em; background-color: #f00; color: #fff">'
+        hilite = '<span style="font-size:1.2em; font-weight: bold; background-color: #f00; color: #fff">'
         unhilite = '</span>'
 
         if query&.match? Gunk # drop query
