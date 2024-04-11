@@ -76,7 +76,8 @@ body.error {background: #f00; font-weight: bold}
 code {color: #000; background-color: #eee; padding: .1em}
 dd {float: right}
 div, form, table {display: inline-block}
-dt {float: left}
+dl {display: inline-block}
+dt {float: left; clear: both}
 h1, h2, h3, h4, h5, h6 {border-radius: .4em}
 hr {margin: 1px 0 1px 0}
 img, video, table, td {max-width: 100%; border-radius: .4em}
