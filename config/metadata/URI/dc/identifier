@@ -10,6 +10,7 @@ data-id
 data-ref-docid
 data-testid
 data-tpvid
+data-unique-identifier
 data-vid
 dc.identifier
 dcterms.identifier

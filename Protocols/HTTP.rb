@@ -190,7 +190,7 @@ module Webize
 
         if query&.match? Gunk # drop query
           env[:warnings].push ['pattern block in query<br>',
-                               "<span style='#{bg}; font-size: .88em'>",
+                               "<span style='#{bg}'>",
                                {_: :a,
                                 id: :noquery,
                                 title: 'URI without query',
@@ -198,12 +198,12 @@ module Webize
                                 c: [host, path], style: bg},
                                '?',
                                query.gsub(Gunk){|m|
-                                 ['<b style="font-size:1.3em; background-color: #fff">', m, '</b>'].join },
+                                 ['<b style="font-size:1.1em; background-color: #fff">', m, '</b>'].join },
                                '</span><br>',
                                {_: :dl,
                                 c: query_values.map{|k, v| # key/val view of query args
-                                  [{_: :dt, c: MarkupPredicate[Type][[k], env]},
-                                   {_: :dd, c: markup(v&.match(/^http/) ? (RDF::URI v) : v, env)}]}}]
+                                  [{_: :dt, c: k},
+                                   {_: :dd, c: v&.match(/^http/) ? (RDF::URI v) : v}]}}]
         else
           env[:warnings].push ['pattern block in URI<br>',
                                "<span style='#{bg}; font-size: .88em'>",
