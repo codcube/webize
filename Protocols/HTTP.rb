@@ -186,30 +186,24 @@ module Webize
                            c: :👁️})
 
       if uri.match? Gunk
-        bg = 'background-color: #ddd'
-
         if query&.match? Gunk # drop query
           env[:warnings].push ['pattern block in query<br>',
-                               "<span style='#{bg}'>",
                                {_: :a,
                                 id: :noquery,
                                 title: 'URI without query',
                                 href: Node(['//', host, path].join).href,
-                                c: [host, path], style: bg},
+                                c: [host, path], style: 'background-color: #000; color: #fff'},
                                '?',
                                query.gsub(Gunk){|m|
-                                 ['<b style="font-size:1.1em; background-color: #fff">', m, '</b>'].join },
-                               '</span><br>',
+                                 ['<b style="font-size:1.1em; background-color: #f00; color: #fff">', m, '</b>'].join },
                                {_: :dl,
                                 c: query_values.map{|k, v| # key/val view of query args
-                                  [{_: :dt, c: k},
-                                   {_: :dd, c: v&.match(/^http/) ? (RDF::URI v) : v}]}}]
+                                  [{_: :dt, c: HTML.markup(k, env)},
+                                   {_: :dd, c: HTML.markup(v&.match(/^http/) ? RDF::URI(v) : v, env)}]}}]
         else
           env[:warnings].push ['pattern block in URI<br>',
-                               "<span style='#{bg}; font-size: .88em'>",
                                uri.gsub(Gunk){|m|
-                                 ['<b style="font-size:1.3em; background-color: #fff">', m, '</b>'].join },
-                               '</span>']
+                                 ['<b style="font-size:1.3em; background-color: #f00; color: #fff">', m, '</b>'].join}]
         end
       end
 
