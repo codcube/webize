@@ -186,9 +186,12 @@ module Webize
                            c: :👁️})
 
       if uri.match? Gunk
-        hilite = '<b style="font-size:1.3em; background-color: #f00; color: #fff">'
+
+        hilite = '<span style="font-size:1.3em; background-color: #f00; color: #fff">'
+        unhilite = '</span>'
+
         if query&.match? Gunk # drop query
-          env[:warnings].push ['pattern block in query<br>',
+          env[:warnings].push ['pattern block in query:<br>',
                                {_: :a,
                                 id: :noquery,
                                 title: 'URI without query',
@@ -196,15 +199,15 @@ module Webize
                                 c: [host, path], style: 'background-color: #000; color: #fff'},
                                '?',
                                query.gsub(Gunk){|m|
-                                 [hilite, m, '</span>'].join },
+                                 [hilite, m, unhilite].join },
                                {_: :dl,
                                 c: query_values.map{|k, v| # key/val view of query args
                                   [{_: :dt, c: HTML.markup(k, env)},
                                    {_: :dd, c: HTML.markup(v&.match(/^http/) ? RDF::URI(v) : v, env)}]}}]
         else
-          env[:warnings].push ['pattern block in URI<br>',
+          env[:warnings].push ['pattern block in URI:<br>',
                                uri.gsub(Gunk){|m|
-                                 [hilite, m, '</span>'].join}]
+                                 [hilite, m, unhilite].join}]
         end
       end
 
