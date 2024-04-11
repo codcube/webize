@@ -199,16 +199,17 @@ module Webize
                                 c: [host, path], style: 'background-color: #000; color: #fff'},
                                '?',
                                query.gsub(Gunk){|m|
-                                 [hilite, m, unhilite].join },
-                               {_: :dl,
-                                c: query_values.map{|k, v| # key/val view of query args
-                                  [{_: :dt, c: HTML.markup(k, env)},
-                                   {_: :dd, c: HTML.markup(v&.match(/^http/) ? RDF::URI(v) : v, env)}]}}]
+                                 [hilite, m, unhilite].join }]
         else
           env[:warnings].push ['pattern block in URI:<br>',
                                uri.gsub(Gunk){|m|
                                  [hilite, m, unhilite].join}]
         end
+
+        env[:warnings].push({_: :dl, # key/val view of query args
+                             c: query_values.map{|k, v|
+                               [{_: :dt, c: HTML.markup(k, env)},
+                                {_: :dd, c: HTML.markup(v&.match(/^http/) ? RDF::URI(v) : v, env)}]}}) if query
       end
 
       ext = File.extname basename if path
