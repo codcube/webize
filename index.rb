@@ -3,7 +3,7 @@ require 'linkeddata'
 {Formats: %w(
 Config
 URI
-HTML.read
+HTML.read Bookmarks
 HTML.massage
 HTML.write
 HTML.templates
