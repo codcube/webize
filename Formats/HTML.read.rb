@@ -128,7 +128,7 @@ module Webize
           #     end}}
 
 
-        # remove duplicate IDs so we don't get cycles during treeization. if we want addressibility we could mint a new ID but for now just turn into a blank node
+        # remove duplicate IDs so we don't get cycles in tree/linked-list DSes. if we want addressibility we could mint a new ID but for now just turn into a blank node
         nodes = {}
         @doc.css('[id]').map{|node|
           id = node['id']
@@ -139,32 +139,30 @@ module Webize
             nodes[id] = true
           end}
 
+        # recursive node reader. familiar DOM "next sibling" and "first child" properties are enough to reconstruct and preserve order in RDF
         scan_node = -> node {
 
-          # drop empty text nodes
+          # drop empty text content
           if node.text? && node.inner_text.match?(/^[\n\t\s]+$/)
             scan_node[node.next_sibling] if node.next_sibling
           else
 
-            # node identity
+            # identity
             subject = if node['id']
                         RDF::URI '#' + CGI.escape(node.remove_attribute('id').value)
                       else
-                        RDF::Node.new
+                        RDF::Node.new # blank node
                       end
 
-            # node type
+            # type
             name = node.name
             yield subject, Type, RDF::URI(Node)
+            yield subject, Name, name
 
-            # node content
-            if node.text?
-              yield subject, Content, node.inner_text
-            elsif name != 'div'
-              yield subject, Name, name
-            end
+            # content
+            yield subject, Content, node.inner_text if node.text?
 
-            # node attributes
+            # attributes
             node.attribute_nodes.map{|attr|
               p = MetaMap[attr.name] || attr.name
               o = attr.value
@@ -174,6 +172,7 @@ module Webize
             } if node.respond_to? :attribute_nodes
 
             if node.child
+              # no recursion into opaque nodes. emit as HTML literal
               if OpaqueNode.member? name
                 yield subject, Content, RDF::Literal(node.to_html, datatype: RDF.HTML)
               elsif child = scan_node[node.child]
