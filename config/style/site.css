@@ -74,6 +74,7 @@ body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
 code {color: #000; background-color: #eee; padding: .1em}
 dd {float: right}
+div {border: 1px solid #555; border-radius: 0; vertical-align: top; padding: 0}
 div, form, table {display: inline-block}
 dl {display: inline-block}
 dt {float: left; border-width: 0 0 1px 0; border-style: dotted; border-color: #888; clear: both}
