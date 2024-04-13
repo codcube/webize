@@ -52,6 +52,32 @@ module Webize
           end
         end
 
+        # <meta>
+        @doc.css('meta').map{|m|
+          if k = (m.attr('name') || m.attr('property'))  # predicate
+            if v = (m.attr('content') || m.attr('href')) # object
+              k = MetaMap[k] || k                        # map property-names
+              case k
+              when Abstract
+                v = v.hrefs
+              when /lytics/
+                k = :drop
+              else
+                v = @base.join v if v.match? /^(http|\/)\S+$/
+              end
+              logger.warn ["no URI for <meta> attribute \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
+              yield @base, k, v unless k == :drop
+            end
+          elsif m['http-equiv'] == 'refresh'
+            if u = m['content'].split('url=')[-1]
+              yield @base, Link, RDF::URI(u)
+            end
+          end}
+
+        # <title>
+        @doc.css('title').map{|title|
+          yield @base, Title, title.inner_text unless title.inner_text.empty?}
+
         # v = HTTP::Node @base.join(m.attr 'href'), @base.env # @href object
         # @env[:feeds].push v if Feed::Names.member?(v.basename) || Feed::Extensions.member?(v.extname)
         # if rel = m.attr('rel')       # @rel predicate
@@ -76,42 +102,33 @@ module Webize
         #     @env[:links][:prev] ||= @base.join ref
         #   end}
 
-        # <meta>
-        @doc.css('meta').map{|m|
-          if k = (m.attr('name') || m.attr('property'))  # predicate
-            if v = (m.attr('content') || m.attr('href')) # object
-              k = MetaMap[k] || k                        # map property-names
-              case k
-              when Abstract
-                v = v.hrefs
-              when /lytics/
-                k = :drop
-              else
-                v = @base.join v if v.match? /^(http|\/)\S+$/
-              end
-              logger.warn ["no property URI for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
-              yield @base, k, v unless k == :drop
-            end
-          elsif m['http-equiv'] == 'refresh'
-            if u = m['content'].split('url=')[-1]
-              yield @base, Link, RDF::URI(u)
-            end
-          end}
-
-        # <title>
-        @doc.css('title').map{|title|
-          yield @base, Title, title.inner_text unless title.inner_text.empty?}
-
         # JSON
 #        @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
 #          JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 #              unless n.text?
         #                  yield fragID, Contains, (URI '#' + CGI.escape(n['id']))
-          # <video>
+#        @doc.css('[src]').map{|e|
+ #         yield @base, Link, @base.join(e.attr('src')) unless %w(img style video).member? e.name}
+        # <video>
           # ['video[src]', 'video > source[src]'].map{|vsel|
           #   fragment.css(vsel).map{|v|
           #     yield subject, Video, @base.join(v.attr('src')), graph}}
+          # <datetime>
+#          fragment.css(MsgCSS[:date]).map{|d| # search on ISO8601 and UNIX timestamp selectors
+#            yield subject, Date, d[DateAttr.find{|a| d.has_attribute? a }] || d.inner_text, graph
+#            d.remove}
+          #  <img>
+          # fragment.css('img[src][alt], img[src][title]').map{|img|
+          #   image = @base.join img['src']
+          #   yield subject, Contains, image, graph
+          #   yield image, Type, RDF::URI(Image), graph
+          #   %w(alt title).map{|attr|
+          #     if val = img[attr]
+          #       yield image, Abstract, val, graph
+          #     end}}
 
+
+        # remove duplicate IDs so we don't get cycles during treeization. if we want addressibility we could mint a new ID but for now just turn into a blank node
         nodes = {}
         @doc.css('[id]').map{|node|
           id = node['id']
