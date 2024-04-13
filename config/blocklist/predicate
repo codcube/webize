@@ -61,6 +61,7 @@ article:content_tier
 articleid
 artifactId
 assetId
+async
 authorization_endpoint
 autocapitalize
 autocomplete
@@ -70,6 +71,7 @@ baidu-site-verification
 baidu_union_verify
 bingbot
 blurhash
+border
 bot
 botify-site-verification
 brightspot.cached
@@ -84,6 +86,8 @@ canHaveEpisodes
 can_edit
 can_edit_canvas
 can_manage
+cellpadding
+cellspacing
 chrome-webstore-item
 colType
 color-scheme
@@ -114,6 +118,7 @@ data-bs
 data-bsextraheight
 data-cav
 data-cf-beacon
+data-cf-settings
 data-cid
 data-cmh
 data-count
@@ -121,6 +126,7 @@ data-d
 data-dccl
 data-deferred
 data-dic
+data-dir
 data-dismiss
 data-dl
 data-dmd
@@ -175,6 +181,9 @@ data-nvshe
 data-nvshk
 data-nvshp
 data-o
+data-ogsr-alt
+data-ogsr-fb
+data-ogsr-up
 data-oid
 data-oslsid
 data-osmid
@@ -189,6 +198,7 @@ data-pvo
 data-pvt
 data-qc
 data-rds
+data-react-helmet
 data-rlp
 data-rppaabc
 data-rsi
@@ -196,6 +206,7 @@ data-sgrd
 data-shbg
 data-sico
 data-slct
+data-sm
 data-smqc
 data-snc
 data-sncf
@@ -207,6 +218,7 @@ data-ssc
 data-sstk
 data-st-cnt
 data-st-tgt
+data-stfc
 data-storemid
 data-sz
 data-tfr
@@ -219,6 +231,7 @@ data-ve-view
 data-ved
 data-viewer-entrypoint
 data-viewer-group
+data-vll
 data-vsc
 data-wcn
 debug
@@ -517,6 +530,7 @@ useSignupLink
 user-login
 user_sorting
 uuid
+valign
 verified
 verify-v1
 viewbox
@@ -534,15 +548,3 @@ x-ua-compatible
 y_key
 yandex-verification
 yelp-biz-id
-cellpadding
-cellspacing
-valign
-border
-data-react-helmet
-data-ogsr-fb
-data-ogsr-up
-data-ogsr-alt
-data-sm
-data-stfc
-data-dir
-data-vll

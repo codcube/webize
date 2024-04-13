@@ -15,6 +15,8 @@ content_html
 content_text
 contents
 cooked
+data-content-text
+data-full-content
 data-image-description
 data-initq
 data-maindata
