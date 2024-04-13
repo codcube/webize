@@ -18,6 +18,7 @@ citation_title
 content_title
 data-albumtitle
 data-image-title
+data-tooltip-top
 dc.subject
 dc.title
 dcterms.Subject
@@ -62,6 +63,7 @@ label
 metaTitle
 meta_title
 mobileTitle
+msapplication-tooltip
 name
 navLabel
 ob:title
@@ -95,6 +97,7 @@ taboola:headline
 textHeadline
 title
 title_slug
+tooltip
 topicName
 track_title
 tweetmeme-title
