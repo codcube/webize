@@ -208,8 +208,11 @@ module Webize
 
         env[:warnings].push({_: :dl, # key/val view of query args
                              c: query_values.map{|k, v|
+                               vs = v.class == Array ? v : [v]
                                [{_: :dt, c: HTML.markup(k, env)},
-                                {_: :dd, c: HTML.markup(v&.match(/^http/) ? RDF::URI(v) : v, env)}]}}) if query
+                                vs.map{|v|
+                                  {_: :dd, c: HTML.markup(v.match(/^http/) ? RDF::URI(v) : v, env)} if v
+                                }]}}) if query
       end
 
       ext = File.extname basename if path

@@ -63,6 +63,8 @@ module Webize
          (Markup[BasicResource][o, env] unless seen)]
       when Integer
         o
+      when NilClass
+        o
       when RDF::Literal
         if [RDF.HTML, RDF.XMLLiteral].member? o.datatype
           if env[:proxy_refs] # proxy references
