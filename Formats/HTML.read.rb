@@ -15,7 +15,7 @@ module Webize
 
       format Format
       OpaqueNode = %w(svg)
-      MaxDepth = 128
+      MaxDepth = 36
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
