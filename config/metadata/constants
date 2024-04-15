@@ -2,7 +2,7 @@ Abstract http://purl.org/dc/terms/abstract
 Audio    http://purl.org/dc/terms/Audio
 BasicResource	http://www.w3.org/2000/01/rdf-schema#Resource
 Container http://www.w3.org/ns/ldp#Container
-Contains http://www.w3.org/ns/ldp#contains
+Contains http://mw.logbook.am/webize/Node/contains
 Content  http://rdfs.org/sioc/ns#content
 Creator  http://rdfs.org/sioc/ns#has_creator
 DC       http://purl.org/dc/terms/

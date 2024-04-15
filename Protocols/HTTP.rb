@@ -658,7 +658,7 @@ module Webize
                                                rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
                                                schema: Schema,
                                                sioc: SIOC,
-                                               w: HTML::Schema}) do |w|
+                                               n: HTML::Node}) do |w|
                         repositories.map{|r| w << r }
                       end
                      else
