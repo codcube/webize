@@ -161,38 +161,6 @@ module Webize
        c: [{_: :span, class: :type, c: icon},
            {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
 
-    # MIME.format_icon(MIME.fromSuffix link.extname)
-    # (MarkupPredicate[Image][n[Image],env] if n.has_key? Image),
-
-    # eventually we'll probably merge this with the BasicResource renderer
-    Markup[Node + 'div'] = -> n, env {
-
-      # node type
-      types = n.delete(Type) || []
-      name = (types.first || RDF::URI(Node + 'div')).fragment
-
-      # attrs for key/val renderer
-      rest = {}
-      n.map{|k, v|
-        rest[k] = v unless [Contains, Content].member? k}
-
-      {_: name,
-       c: [if n.has_key? Content
-           n[Content].map{|c| markup c, env }
-          else
-            {_: :span, class: :name, c: name} if name
-           end,
-
-           ({_: :dl,
-             c: rest.map{|k, v|                 # key/val view of metadata
-               [{_: :dt, c: MarkupPredicate[Type][[k], env]},
-                {_: :dd, c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][v, env] : markup(v, env)}]
-             }} unless rest.empty?),
-
-           # child node(s)
-           (n[Contains].map{|child|
-              Markup[Node + 'div'][child, env]} if n.has_key? Contains)]}}
-
     Markup[BasicResource] = -> re, env {
       types = (re[Type]||[]).map{|t|            # RDF type(s)
         MetaMap[t.to_s] || t.to_s}
