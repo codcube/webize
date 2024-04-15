@@ -171,17 +171,16 @@ module Webize
             o = attr.value
             o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)
             logger.warn ["predicate URI unmapped for \e[7m", p, "\e[0m ", attr.value].join unless p.match? /^(drop|http)/
-            yield subject, p, o unless p == :drop
-          } if node.respond_to? :attribute_nodes
+            yield subject, p, o unless p == :drop}
 
-          if depth > 28 || node.name == 'svg'
+          if depth > 32 || node.name == 'svg'
             yield subject, Content, RDF::Literal(node.inner_html, datatype: RDF.HTML) # emit children as opaque HTML literal
-          else                                                                        # emit children as RDF nodes
+          else
             node.children.map{|child|
               if child.text?
                 yield subject, Content, child unless child.inner_text.match?(EmptyText)
               else
-                yield subject, Contains, scan_node[child, depth + 1]
+                yield subject, Contains, scan_node[child, depth + 1]                  # emit children as RDF nodes
               end}
           end
 
