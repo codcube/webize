@@ -154,7 +154,7 @@ module Webize
           end}
 
         # node scanner
-        scan_node = -> node, depth=0 {
+        scan_node = -> node, depth = 0 {
 
           # identifier
           subject = if node['id']
@@ -175,7 +175,7 @@ module Webize
             yield subject, p, o unless p == :drop} if node.respond_to? :attribute_nodes
 
           # child nodes
-          if depth > 32 || node.name == 'svg'
+          if depth > 30 || node.name == 'svg'
             yield subject, Content, RDF::Literal(node.inner_html, datatype: RDF.HTML) # emit children as opaque HTML literal
           else
             node.children.map{|child|
