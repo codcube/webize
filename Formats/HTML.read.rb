@@ -64,14 +64,7 @@ module Webize
           if k = (m.attr('name') || m.attr('property'))  # predicate
             if v = (m.attr('content') || m.attr('href')) # object
               k = MetaMap[k] || k                        # map property-names
-              case k
-              when Abstract
-                v = v.hrefs
-              when /lytics/
-                k = :drop
-              else
-                v = @base.join v if v.match? /^(http|\/)\S+$/
-              end
+              v = @base.join v if v.match? /^(http|\/)\S+$/
               logger.warn ["no URI for <meta> attribute \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
               yield @base, k, v unless k == :drop
             end
@@ -79,7 +72,8 @@ module Webize
             if u = m['content'].split('url=')[-1]
               yield @base, Link, RDF::URI(u)
             end
-          end}
+          end
+          m.remove}
 
         # <title>
         @doc.css('title').map{|title|

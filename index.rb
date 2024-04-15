@@ -4,7 +4,6 @@ require 'linkeddata'
 Config
 URI
 HTML.read Bookmarks
-HTML.massage
 HTML.write
 HTML.templates
 MIME
