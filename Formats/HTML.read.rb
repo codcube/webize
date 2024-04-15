@@ -17,7 +17,6 @@ module Webize
 
       EmptyText = /^[\n\t\s]+$/
       DropAttrs = Webize.configList 'blocklist/attr'
-      OpaqueNode = %w(svg)
       StripTags = /<\/?(b|br|em|font|hr|nobr|noscript|span|wbr)[^>]*>/i
 
       def initialize(input = $stdin, options = {}, &block)
@@ -181,9 +180,8 @@ module Webize
               yield subject, p, o unless p == :drop
             } if node.respond_to? :attribute_nodes
 
-            if OpaqueNode.member?(name) || depth > 24                                   # opaque[0] node?
+            if depth > 28
               yield subject, Content, RDF::Literal(node.inner_html, datatype: RDF.HTML) # emit children as opaque HTML literal
-            # [0] one opaque node is SVG. say you have SVG that is D3.js input and want data extraction, adjust the OpaqueNodes constant
             else
               node.children.map{|child|
                 if c = scan_node[child, depth + 1]                                      # emit children as RDF nodes
