@@ -78,10 +78,10 @@ module Webize
         # <link>
         @doc.css('link[rel][href]').map{|m|
 
-          # @href -> statement object
+          # href -> object
           v = HTTP::Node @base.join(m.attr 'href'), @env
 
-          # @rel -> statement predicate
+          # rel -> predicate
           m.attr('rel').split(/[\s,]+/).map{|k|
             @env[:links][:prev] ||= v if k.match? /prev(ious)?/i
             @env[:links][:next] ||= v if k.downcase == 'next'

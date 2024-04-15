@@ -653,7 +653,11 @@ module Webize
 
        # body
        head? ? nil : [if writer = RDF::Writer.for(content_type: format)
-                      writer.buffer(base_uri: self, prefixes: {w: HTML::Schema}) do |w|
+                      writer.buffer(base_uri: self,
+                                    prefixes: {dc: DC,
+                                               schema: Schema,
+                                               sioc: SIOC,
+                                               w: HTML::Schema}) do |w|
                         repositories.map{|r| w << r }
                       end
                      else
