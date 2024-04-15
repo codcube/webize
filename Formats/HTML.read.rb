@@ -153,8 +153,9 @@ module Webize
             nodes[id] = true
           end}
 
-        # recursive node scanner
+        # node scanner
         scan_node = -> node, depth=0 {
+
           # identifier
           subject = if node['id']
                       RDF::URI '#' + CGI.escape(node.remove_attribute('id').value)
@@ -171,8 +172,9 @@ module Webize
             o = attr.value
             o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)
             logger.warn ["predicate URI unmapped for \e[7m", p, "\e[0m ", attr.value].join unless p.match? /^(drop|http)/
-            yield subject, p, o unless p == :drop}
+            yield subject, p, o unless p == :drop} if node.respond_to? :attribute_nodes
 
+          # child nodes
           if depth > 32 || node.name == 'svg'
             yield subject, Content, RDF::Literal(node.inner_html, datatype: RDF.HTML) # emit children as opaque HTML literal
           else
