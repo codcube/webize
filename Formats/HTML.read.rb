@@ -142,15 +142,14 @@ module Webize
 #          JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
 
-        # remove duplicate IDs so we don't get cycles in tree/linked-list DSes. if we want addressibility we could mint a new ID but for now just turn into a blank node
+        # fix @id collisions so there aren't cycles in our tree/linked-list datastructures
         nodes = {}
         @doc.css('[id]').map{|node|
-          id = node['id']
-          if nodes[id]
-            puts "duplicate node ID #{id}"
-            node.remove_attribute 'id'
+          id = node['id']              # identifier
+          if nodes[id]                 # repeated identifier?
+            node.remove_attribute 'id' # turn into blank node
           else
-            nodes[id] = true
+            nodes[id] = true           # mark first occurrence
           end}
 
         # node scanner
