@@ -655,6 +655,7 @@ module Webize
        head? ? nil : [if writer = RDF::Writer.for(content_type: format)
                       writer.buffer(base_uri: self,
                                     prefixes: {dc: DC,
+                                               rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
                                                schema: Schema,
                                                sioc: SIOC,
                                                w: HTML::Schema}) do |w|

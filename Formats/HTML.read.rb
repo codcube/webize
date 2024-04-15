@@ -99,6 +99,8 @@ module Webize
           yield @base, Title, title.inner_text unless title.inner_text.empty?
           title.remove}
 
+        @doc.css('head').remove
+
         # @doc.css('#next, #nextPage, a.next, .show-more > a').map{|nextPage|
         #   if ref = nextPage.attr('href')
         #     @env[:links][:next] ||= @base.join ref

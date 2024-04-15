@@ -102,6 +102,9 @@ curr_heat_score
 current-catalog-service-hash
 currentUserCanPush
 data-abe
+data-ad-client
+data-ad-format
+data-ad-slot
 data-align
 data-anim
 data-ar
@@ -119,6 +122,7 @@ data-bsextraheight
 data-cav
 data-cf-beacon
 data-cf-settings
+data-cfasync
 data-cid
 data-cmh
 data-count
@@ -145,6 +149,7 @@ data-fcss
 data-fhs
 data-fnhc
 data-focus
+data-full-width-responsive
 data-g
 data-gid
 data-graft-type
@@ -243,6 +248,7 @@ default_profile_image
 derivedScore
 directScore
 direction
+disable-upgrade
 discogsId
 discourse/config/environment
 discourse_current_homepage
@@ -420,6 +426,7 @@ podcastUnpublish
 possibly_sensitive
 possibly_sensitive_editable
 premium
+preserveaspectratio
 private
 profile_background_color
 profile_background_tile
@@ -548,8 +555,3 @@ x-ua-compatible
 y_key
 yandex-verification
 yelp-biz-id
-data-ad-client
-data-ad-slot
-data-ad-format
-data-full-width-responsive
-data-cfasync
