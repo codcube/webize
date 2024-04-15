@@ -57,11 +57,11 @@ module Webize
         end
 
         # strip upstream UI gunk
-        @doc.css('style').remove
+        @doc.css('style').remove                                         # drop stylesheets
         @doc.traverse{|e|
-          e.respond_to?(:attribute_nodes) && e.attribute_nodes.map{|a|  # inspect attributes
-            attr = a.name                                               # attribute name
-            a.unlink if DropAttrs.member?(attr) || attr.match?(/^on/i)} # drop attribute
+          e.respond_to?(:attribute_nodes) && e.attribute_nodes.map{|a|   # inspect attributes
+            attr = a.name                                                # name
+            a.unlink if DropAttrs.member?(attr) || attr.match?(/^on/i)}} # drop attribute
 
         # <meta>
         @doc.css('meta').map{|m|
