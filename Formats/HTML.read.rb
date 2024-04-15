@@ -155,43 +155,37 @@ module Webize
 
         # recursive node scanner
         scan_node = -> node, depth=0 {
+          # identifier
+          subject = if node['id']
+                      RDF::URI '#' + CGI.escape(node.remove_attribute('id').value)
+                    else
+                      RDF::Node.new # blank node
+                    end
 
-          # drop blank text fields
-          unless node.text? && node.inner_text.match?(EmptyText)
+          # type
+          yield subject, Type, RDF::URI(Node + node.name)
 
-            # identifier
-            subject = if node['id']
-                        RDF::URI '#' + CGI.escape(node.remove_attribute('id').value)
-                      else
-                        RDF::Node.new # blank node
-                      end
+          # attributes
+          node.attribute_nodes.map{|attr|
+            p = MetaMap[attr.name] || attr.name
+            o = attr.value
+            o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)
+            logger.warn ["predicate URI unmapped for \e[7m", p, "\e[0m ", attr.value].join unless p.match? /^(drop|http)/
+            yield subject, p, o unless p == :drop
+          } if node.respond_to? :attribute_nodes
 
-            # type
-            yield subject, Type, RDF::URI(Node + node.name)
+          if depth > 28 || node.name == 'svg'
+            yield subject, Content, RDF::Literal(node.inner_html, datatype: RDF.HTML) # emit children as opaque HTML literal
+          else                                                                        # emit children as RDF nodes
+            node.children.map{|child|
+              if child.text?
+                yield subject, Content, child unless child.inner_text.match?(EmptyText)
+              else
+                yield subject, Contains, scan_node[child, depth + 1]
+              end}
+          end
 
-            # content
-            yield subject, Content, node.inner_text if node.text?
-
-            # attributes
-            node.attribute_nodes.map{|attr|
-              p = MetaMap[attr.name] || attr.name
-              o = attr.value
-              o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)
-              logger.warn ["predicate URI unmapped for \e[7m", p, "\e[0m ", attr.value].join unless p.match? /^(drop|http)/
-              yield subject, p, o unless p == :drop
-            } if node.respond_to? :attribute_nodes
-
-            if depth > 28 || node.name == 'svg'
-              yield subject, Content, RDF::Literal(node.inner_html, datatype: RDF.HTML) # emit children as opaque HTML literal
-            else
-              node.children.map{|child|
-                if c = scan_node[child, depth + 1]                                      # emit children as RDF nodes
-                  yield subject, Contains, c
-                end}
-            end
-
-            subject # send node to caller for parent/child relationship triples
-          end}
+          subject} # send node to caller for parent/child relationship triples
 
         yield @base, Contains, scan_node[@doc]
       end
