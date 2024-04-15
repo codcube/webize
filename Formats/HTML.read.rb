@@ -57,7 +57,7 @@ module Webize
         end
 
         # strip upstream UX
-        @doc.css('script style').remove
+        @doc.css('script, style').remove
 
         # <meta>
         @doc.css('meta').map{|m|
@@ -75,23 +75,29 @@ module Webize
           end
           m.remove}
 
+        # <link>
+        @doc.css('link[rel][href]').map{|m|
+
+          # @href -> statement object
+          v = HTTP::Node @base.join(m.attr 'href'), @env
+
+          # @rel -> statement predicate
+          m.attr('rel').split(/[\s,]+/).map{|k|
+            @env[:links][:prev] ||= v if k.match? /prev(ious)?/i
+            @env[:links][:next] ||= v if k.downcase == 'next'
+            @env[:links][:icon] ||= v if k.match? /^(fav)?icon?$/i
+            @env[:feeds].push v if k == 'alternate' && ((m['type']&.match?(/atom|feed|rss/)) || (v.path&.match?(/^\/feed\/?$/)))
+            k = MetaMap[k] || k
+            logger.warn ["no URI for <link> attribute \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
+            yield @base, k, v unless k == :drop || v.deny?}
+
+          @env[:feeds].push v if Feed::Names.member?(v.basename) || Feed::Extensions.member?(v.extname)
+          m.remove}
+
         # <title>
         @doc.css('title').map{|title|
-          yield @base, Title, title.inner_text unless title.inner_text.empty?}
-
-        # v = HTTP::Node @base.join(m.attr 'href'), @base.env # @href object
-        # @env[:feeds].push v if Feed::Names.member?(v.basename) || Feed::Extensions.member?(v.extname)
-        # if rel = m.attr('rel')       # @rel predicate
-        #   rel.split(/[\s,]+/).map{|k|
-        #     @env[:links][:prev] ||= v if k.match? /prev(ious)?/i
-        #     @env[:links][:next] ||= v if k.downcase == 'next'
-        #     @env[:links][:icon] ||= v if k.match? /^(fav)?icon?$/i
-        #     @env[:feeds].push v if k == 'alternate' && ((m['type']&.match?(/atom|rss/)) || (v.path&.match?(/^\/feed\/?$/)))
-        #     k = MetaMap[k] || k
-        #     logger.warn ["predicate URI unmapped for \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
-        #     yield @base, k, v unless k == :drop || v.deny?}            yield @base, Link, v
-        # end
-
+          yield @base, Title, title.inner_text unless title.inner_text.empty?
+          title.remove}
 
         # @doc.css('#next, #nextPage, a.next, .show-more > a').map{|nextPage|
         #   if ref = nextPage.attr('href')
