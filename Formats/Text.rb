@@ -151,10 +151,10 @@ module Webize
           chat_triples &f
         else
           yield @base, Content,
-          Webize::HTML.format(HTML.render({_: :pre,
-                                                        c: @doc.lines.map{|line|
-                                                          line.hrefs{|p,o|
-                                                            yield @base, p, o}}}), @base)
+                HTML.render({_: :pre,
+                             c: @doc.lines.map{|line|
+                               line.hrefs{|p,o|
+                                 yield @base, p, o}}})
         end
       end
     end
