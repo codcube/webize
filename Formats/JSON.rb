@@ -121,10 +121,6 @@ module Webize
       end
     end
 
-
-    # inline objects of these predicates during graph->tree conversion 
-    InlinedObjects = [Contains, HTML::Child]
-
     # graph -> tree (subject -> predicate -> object) data-structure for render methods
     def self.fromGraph graph
       tree = {}                         # output tree
@@ -133,8 +129,8 @@ module Webize
       graph.each_triple{|subj,pred,obj| # visit graph
         s = subj.to_s                   # subject
         p = pred.to_s                   # predicate
-        blank = obj.class==RDF::Node    # bnode?
-        if blank || InlinedObjects.member?(p) # inlined object?
+        blank = obj.class == RDF::Node  # bnode?
+        if blank || Contains == p       # inlined object?
           o = obj.to_s                  # object
           inlined.push o                # inline object
           obj = tree[o] ||= blank ? {} : {'uri' => o}

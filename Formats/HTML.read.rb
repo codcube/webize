@@ -1,9 +1,7 @@
 module Webize
   module HTML
 
-    Schema = 'http://mw.logbook.am/webize/'
-
-    Child, Node = [Schema + 'child', Schema + 'Node#']
+    Node = 'http://mw.logbook.am/webize/Node/' # URI constant for node schema
 
     class Format < RDF::Format
 
@@ -188,7 +186,7 @@ module Webize
             else
               node.children.map{|child|
                 if c = scan_node[child, depth + 1]                                      # emit children as RDF nodes
-                  yield subject, Child, c
+                  yield subject, Contains, c
                 end}
             end
 

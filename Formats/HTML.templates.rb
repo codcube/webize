@@ -164,7 +164,7 @@ module Webize
     # MIME.format_icon(MIME.fromSuffix link.extname)
     # (MarkupPredicate[Image][n[Image],env] if n.has_key? Image),
 
-    # eventually we'll probably merge this with BasicResource, below
+    # eventually we'll probably merge this with the BasicResource renderer
     Markup[Node + 'div'] = -> n, env {
 
       # node type
@@ -174,7 +174,7 @@ module Webize
       # attrs for key/val renderer
       rest = {}
       n.map{|k, v|
-        rest[k] = v unless [Child, Content].member? k}
+        rest[k] = v unless [Contains, Content].member? k}
 
       {_: name,
        c: [if n.has_key? Content
@@ -184,71 +184,71 @@ module Webize
            end,
 
            ({_: :dl,
-             c: rest.map{|k, v|                         # key/val view of metadata
+             c: rest.map{|k, v|                 # key/val view of metadata
                [{_: :dt, c: MarkupPredicate[Type][[k], env]},
                 {_: :dd, c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][v, env] : markup(v, env)}]
              }} unless rest.empty?),
 
            # child node(s)
-           (n[Child].map{|child|
-              Markup[Node + 'div'][child, env]} if n.has_key? Child)]}}
+           (n[Contains].map{|child|
+              Markup[Node + 'div'][child, env]} if n.has_key? Contains)]}}
 
     Markup[BasicResource] = -> re, env {
-      types = (re[Type]||[]).map{|t|                    # RDF type(s)
+      types = (re[Type]||[]).map{|t|            # RDF type(s)
         MetaMap[t.to_s] || t.to_s}
 
-      classes = %w(resource)                            # CSS class(es)
+      classes = %w(resource)                    # CSS class(es)
       classes.push :post if types.member? Post
 
-      p = -> a {                                        # predicate renderer
+      p = -> a {                                # predicate renderer
         MarkupPredicate[a][re[a],env] if re.has_key? a}
 
-      if uri = re['uri']                                # unless blank node:
-        uri = Webize::Resource.new(uri).env env         # full URI
-        id = uri.local_id                               # fragment identifier
-        origin_ref = {_: :a, class: :pointer,           # origin pointer
+      if uri = re['uri']                        # unless blank node:
+        uri = Webize::Resource.new(uri).env env # full URI
+        id = uri.local_id                       # fragment identifier
+        origin_ref = {_: :a, class: :pointer,   # origin pointer
                       href: uri, c: :🔗}
-        cache_ref = {_: :a, href: uri.href,             # cache pointer
+        cache_ref = {_: :a, href: uri.href,     # cache pointer
                      id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}
-        color = if HostColor.has_key? uri.host          # color
+        color = if HostColor.has_key? uri.host  # color
                   HostColor[uri.host]
                 elsif uri.deny?
                   :red
                 end
       end
 
-      from = p[Creator]                                 # sender
+      from = p[Creator]                         # sender
 
-      if re.has_key? To                                 # receiver
+      if re.has_key? To                         # receiver
         if re[To].size == 1 && [Webize::URI, Webize::Resource, RDF::URI].member?(re[To][0].class)
           color = '#' + Digest::SHA2.hexdigest(Webize::URI.new(re[To][0]).display_name)[0..5]
         end
         to = p[To]
       end
 
-      date = p[Date]                                    # date
-      link = {class: :title, c: p[Title]}.              # title
+      date = p[Date]                            # date
+      link = {class: :title, c: p[Title]}.      # title
                update(cache_ref || {}) if re.has_key?(Title)
-      rest = {}                                         # remaining data
-      re.map{|k,v|                                      # populate remaining attrs for key/val renderer
+      rest = {}                                 # remaining data
+      re.map{|k,v|                              # populate remaining attrs for key/val renderer
         rest[k] = v.class == Array ? v : [v] unless [Abstract, Content, Creator, Date, From, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
 
-      {class: classes.join(' '),                        # resource
-       c: [link,                                        # title
-           p[Abstract],                                 # abstract
-           to,                                          # destination
-           from,                                        # source
-           date,                                        # timestamp
+      {class: classes.join(' '),                # resource
+       c: [link,                                # title
+           p[Abstract],                         # abstract
+           to,                                  # destination
+           from,                                # source
+           date,                                # timestamp
            [Content, SIOC+'richContent'].map{|p|
-             (re[p]||[]).map{|o|markup o,env}},         # body
+             (re[p]||[]).map{|o|markup o,env}}, # body
            ({_: :dl,
-             c: rest.map{|k, vs|                        # key/val view of other fields
+             c: rest.map{|k, vs|                # key/val view of other fields
                [{_: :dt, c: MarkupPredicate[Type][[k], env]},
                 {_: :dd,
                  c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][vs, env] : vs.map{|v|
                    markup(v, env)}}]
              }} unless rest.empty?),
-           origin_ref,                                  # origin pointer
+           origin_ref,                          # origin pointer
           ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(45deg, #{color}, #{color} 1px, transparent 1px, transparent 8px); border-color: #{color}"} : {})}
 
   end
