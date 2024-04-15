@@ -1,5 +1,6 @@
-data-file-width
 data-big-photo-width
+data-file-width
+data-w
 http://ogp.me/ns#image:width
 http://ogp.me/ns#video:width
 https://ogp.me/ns#image:width
