@@ -11,12 +11,6 @@ module Webize
     StatusColor.keys.map{|s|
       StatusColor[s.to_i] = StatusColor[s]}
 
-    Schema = 'http://mw.logbook.am/webize#'
-
-    Child, Name, Node = [Schema + 'child',
-                         Schema + 'name',
-                         Schema + 'Node']
-
     class Writer < RDF::Writer
 
       format Format

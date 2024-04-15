@@ -1,5 +1,10 @@
 module Webize
   module HTML
+
+    Schema = 'http://mw.logbook.am/webize/'
+
+    Child, Node = [Schema + 'child', Schema + 'Node#']
+
     class Format < RDF::Format
 
       content_type 'text/html;q=0.8',
@@ -164,9 +169,7 @@ module Webize
                       end
 
             # type
-            name = node.name
-            yield subject, Type, RDF::URI(Node)
-            yield subject, Name, name
+            yield subject, Type, RDF::URI(Node + node.name)
 
             # content
             yield subject, Content, node.inner_text if node.text?
@@ -180,7 +183,7 @@ module Webize
               yield subject, p, o unless p == :drop
             } if node.respond_to? :attribute_nodes
 
-            if depth > 28
+            if depth > 28 || node.name == 'svg'
               yield subject, Content, RDF::Literal(node.inner_html, datatype: RDF.HTML) # emit children as opaque HTML literal
             else
               node.children.map{|child|

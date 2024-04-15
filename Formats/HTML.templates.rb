@@ -165,20 +165,18 @@ module Webize
     # (MarkupPredicate[Image][n[Image],env] if n.has_key? Image),
 
     # eventually we'll probably merge this with BasicResource, below
-    Markup[Node] = -> n, env {
+    Markup[Node + 'div'] = -> n, env {
 
-      name = n[Name].first if n.has_key? Name
-
-      # consume typetag and cleanup empty field
-      n[Type] -= [RDF::URI(Node)]
-      n.delete Type if n[Type].empty?
+      # node type
+      types = n.delete(Type) || []
+      name = (types.first || RDF::URI(Node + 'div')).fragment
 
       # attrs for key/val renderer
       rest = {}
       n.map{|k, v|
-        rest[k] = v unless [Child, Content, Name].member? k}
+        rest[k] = v unless [Child, Content].member? k}
 
-      {_: name || :div,
+      {_: name,
        c: [if n.has_key? Content
            n[Content].map{|c| markup c, env }
           else
@@ -193,7 +191,7 @@ module Webize
 
            # child node(s)
            (n[Child].map{|child|
-              Markup[Node][child, env]} if n.has_key? Child)]}}
+              Markup[Node + 'div'][child, env]} if n.has_key? Child)]}}
 
     Markup[BasicResource] = -> re, env {
       types = (re[Type]||[]).map{|t|                    # RDF type(s)
