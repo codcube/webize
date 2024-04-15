@@ -195,8 +195,7 @@ module Webize
             subject # send node to caller for parent/child relationship triples
           end}
 
-        yield @base, Type, RDF::URI(Node)
-        yield @base, Child, scan_node[@doc]
+        yield @base, Contains, scan_node[@doc]
       end
     end
   end
