@@ -13,10 +13,9 @@ module Webize
 
     Schema = 'http://mw.logbook.am/webize#'
 
-    Child, Name, Node, Sibling = [Schema + 'child',
-                                  Schema + 'name',
-                                  Schema + 'Node',
-                                  Schema + 'sibling']
+    Child, Name, Node = [Schema + 'child',
+                         Schema + 'name',
+                         Schema + 'Node']
 
     class Writer < RDF::Writer
 

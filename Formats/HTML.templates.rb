@@ -176,29 +176,24 @@ module Webize
       # attrs for key/val renderer
       rest = {}
       n.map{|k, v|
-        rest[k] = v unless [Child, Sibling,
-                            Content, Name].member? k}
+        rest[k] = v unless [Child, Content, Name].member? k}
 
-      [{_: name || :div,
-        c: [if n.has_key? Content
-            n[Content].map{|c| markup c, env }
-           else
-             {_: :span, class: :name, c: name} if name
-            end,
+      {_: name || :div,
+       c: [if n.has_key? Content
+           n[Content].map{|c| markup c, env }
+          else
+            {_: :span, class: :name, c: name} if name
+           end,
 
-            ({_: :dl,
+           ({_: :dl,
              c: rest.map{|k, v|                         # key/val view of metadata
                [{_: :dt, c: MarkupPredicate[Type][[k], env]},
                 {_: :dd, c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][v, env] : markup(v, env)}]
              }} unless rest.empty?),
 
-            # child node(s)
-            (n[Child].map{|child|
-               Markup[Node][child, env]} if n.has_key? Child)]},
-
-       # sibling node(s)
-       (n[Sibling].map{|sibling|
-          Markup[Node][sibling, env]} if n.has_key? Sibling)]}
+           # child node(s)
+           (n[Child].map{|child|
+              Markup[Node][child, env]} if n.has_key? Child)]}}
 
     Markup[BasicResource] = -> re, env {
       types = (re[Type]||[]).map{|t|                    # RDF type(s)

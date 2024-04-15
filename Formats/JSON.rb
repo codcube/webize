@@ -123,7 +123,7 @@ module Webize
 
 
     # inline objects of these predicates during graph->tree conversion 
-    InlinedObjects = [Contains, HTML::Child, HTML::Sibling]
+    InlinedObjects = [Contains, HTML::Child]
 
     # graph -> tree (subject -> predicate -> object) data-structure for render methods
     def self.fromGraph graph
