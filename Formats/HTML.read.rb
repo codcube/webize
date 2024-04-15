@@ -14,8 +14,11 @@ module Webize
     class Reader < RDF::Reader
 
       format Format
+
+      DropAttrs = Webize.configList 'blocklist/attr'
       OpaqueNode = %w(svg)
       MaxDepth = 36
+      StripTags = /<\/?(b|br|em|font|hr|nobr|noscript|span|wbr)[^>]*>/i
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
@@ -52,6 +55,9 @@ module Webize
             @base = HTTP::Node @base.join(baseHref), @env
           end
         end
+
+        # strip upstream UX
+        @doc.css('script style').remove
 
         # <meta>
         @doc.css('meta').map{|m|
@@ -102,6 +108,99 @@ module Webize
         #   if ref = prevPage.attr('href')
         #     @env[:links][:prev] ||= @base.join ref
         #   end}
+      # # <img> mapping
+      # html.css('[style*="background-image"]').map{|node|
+      #   node['style'].match(CSS::URL).yield_self{|url|            # CSS background-image
+      #     node.add_child "<img src=\"#{url[1]}\">" if url}}
+      # html.css('amp-img').map{|amp|                               # amp-img
+      #   amp.add_child "<img src=\"#{amp['src']}\">"}
+      # html.css("div[class*='image'][data-src]").map{|div|         # div[data-src]
+      #   div.add_child "<img src=\"#{div['data-src']}\">"}
+      # html.css("figure[itemid]").map{|fig|                        # figure[itemid]
+      #   fig.add_child "<img src=\"#{fig['itemid']}\">"}
+      # html.css("figure > a[href]").map{|a|                        # figure > a[href]
+      #   a.add_child "<img src=\"#{a['href']}\">"}
+      # html.css("slide").map{|s|                                   # slide
+      #   s.add_child "<img src=\"#{s['original']}\" alt=\"#{s['caption']}\">"}
+      #   srcset = i['srcset'].scan(SrcSetRegex).map{|ref, size|
+      #     [Webize::Resource(ref, env).href,
+      #      size].join ' '
+      #   }.join(', ')
+
+        # @href
+        #          origRef = Resource.new base.join e['href']              # resolve reference
+#          ref = origRef.relocate                                  # optionally relocate reference
+
+        #   blocked = ref.deny?
+        #   offsite = ref.host != base.host
+
+        #   if color = if HTML::HostColor.has_key? ref.host         # host-specific reference style
+        #                HTML::HostColor[ref.host]
+        #              elsif ref.scheme == 'mailto'
+        #                '#48f'
+        #              end
+        #     e['style'] = "border: 1px solid #{color}; color: #{color}"
+        #     e['class'] = 'host'
+        #   elsif blocked
+        #     e['class'] = 'blocked host'
+        #   else
+        #     e['class'] = offsite ? 'global' : 'local'             # local or global reference style
+        #   end
+
+        #   e.inner_html = [
+        #     if ref.imgURI? && e.css('img').empty?
+        #       ['<img src="', ref.uri, '">']
+        #     else
+        #       case ref.scheme
+        #       when 'data'
+        #         :🧱
+        #       when 'mailto'
+        #         :📭
+        #       when 'gemini'
+        #         :🚀
+        #       else
+        #         if offsite && !blocked
+        #           ['<img src="//', ref.host, '/favicon.ico">']
+        #         end
+        #       end
+        #     end,
+        #     [origRef.to_s, # strip inner HTML if it's just the URL which we'll be displaying our way
+        #      origRef.to_s.sub(/^https?:\/\//,'')].member?(e.inner_html) ? nil : e.inner_html,
+        #     if ref.dataURI?                                       # inline data?
+        #       ['<pre>',
+        #        if ref.path.index('text/plain,') == 0              # show text content
+        #          CGI.escapeHTML(Rack::Utils.unescape ref.to_s[16..-1])
+        #        else
+        #          ref.path.split(',',2)[0]                         # show content-type
+        #        end,
+        #        '</pre>'].join
+        #     else                                                  # show identifier
+        #       [' ', '<span class="id">',
+        #        CGI.escapeHTML((if offsite
+        #                        ref.uri.sub /^https?:..(www.)?/, ''
+        #                       elsif ref.fragment
+        #                         '#' + ref.fragment
+        #                       else
+        #                         [ref.path, ref.query ? ['?', ref.query] : nil].join
+        #                        end)[0..127]),
+        #        '</span>', ' ']
+        #     end].join
+        # end}
+
+        # # load alternate names for srcset attribute
+    # SRCSET = Webize.configList 'formats/image/srcset'
+    # SrcSetRegex = /\s*(\S+)\s+([^,]+),*/
+
+    # # resolve @srcset refs
+    # def self.srcset node, base
+    #   srcset = node['srcset'].scan(SrcSetRegex).map{|url, size|
+    #     [(base.join url), size].join ' '
+    #   }.join(', ')
+    #   srcset = base.join node['srcset'] if srcset.empty? # resolve singleton URL in srcset attribute. eithere there's lots of spec violators or this is allowed. we allow it 
+    #   node['srcset'] = srcset
+    # end
+
+      #   srcset = Webize::Resource(i['srcset'], env).href if srcset.empty?
 
         # JSON
 #        @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
@@ -187,6 +286,8 @@ module Webize
             # [1] we haven't encountered depth issues in our reader on any of the gnarly stuff the web has for it to gnaw on,
             # but RDF writers hit stack limits with Ruby indirection/generics resulting in ~8 frames per node synergizing with the pathologically-deep autogenerated structures out there
             # you can bump up the stack size but who's gonna know you can do that or remember the env-var without looking it up? recursion wizards only
+
+            # eventually we'll maybe come up with some fragment-caching strategy (or steal one from Intertwingler) or figure out tail-recursion tricks compatible with our datastructures and do away with the depth limits. or maybe just port everything to Haskell again
 
             if node.next_sibling
               if sibling = scan_node[node.next_sibling, depth + 1]                     # emit sibling as RDF node

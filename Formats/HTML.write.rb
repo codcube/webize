@@ -65,14 +65,10 @@ module Webize
         o
       when NilClass
         o
-      when RDF::Literal
+      when RDF::Literal       # RDF literal
         if [RDF.HTML, RDF.XMLLiteral].member? o.datatype
-          if env[:proxy_refs] # proxy references
-            resolve_hrefs o.to_s, env
-          else
-            o.to_s            # HTML literal
-          end
-        else                  # String literal
+          o.to_s              # HTML
+        else                  # String
           CGI.escapeHTML o.to_s
         end
       when RDF::URI           # RDF::URI
