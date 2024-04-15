@@ -152,7 +152,7 @@ module Webize
           end}
 
         # recursive node scanner
-        scan_node = -> node {
+        scan_node = -> node, depth=0 {
 
           # drop blank text fields
           unless node.text? && node.inner_text.match?(EmptyText)
@@ -181,18 +181,17 @@ module Webize
               yield subject, p, o unless p == :drop
             } if node.respond_to? :attribute_nodes
 
-            if OpaqueNode.member? name                                                  # opaque[0] node?
+            if OpaqueNode.member?(name) || depth > 24                                   # opaque[0] node?
               yield subject, Content, RDF::Literal(node.inner_html, datatype: RDF.HTML) # emit children as opaque HTML literal
             # [0] one opaque node is SVG. say you have SVG that is D3.js input and want data extraction, adjust the OpaqueNodes constant
             else
-              node.children do |child|
-                if c = scan_node[child]                                                 # emit children as RDF nodes
+              node.children.map{|child|
+                if c = scan_node[child, depth + 1]                                      # emit children as RDF nodes
                   yield subject, Child, c
-                end
-              end
+                end}
             end
 
-            subject                                                                    # emit node to caller for parent/child relationship triples
+            subject # send node to caller for parent/child relationship triples
           end}
 
         yield @base, Type, RDF::URI(Node)
