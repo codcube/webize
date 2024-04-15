@@ -180,6 +180,7 @@ module Webize
             node.children.map{|child|
               if child.text?
                 yield subject, Content, child unless child.inner_text.match?(EmptyText)
+              elsif child.cdata?
               else
                 yield subject, Contains, scan_node[child, depth + 1]                  # emit children as RDF nodes
               end}
@@ -187,7 +188,7 @@ module Webize
 
           subject} # send node to caller for parent/child relationship triples
 
-        yield @base, Contains, scan_node[@doc]
+        yield @base, Contains, scan_node[@doc.children[1]] # scan doc, skipping DOCTYPE element
       end
     end
   end
