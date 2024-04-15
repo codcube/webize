@@ -56,8 +56,12 @@ module Webize
           end
         end
 
-        # strip upstream UX
-        @doc.css('script, style').remove
+        # strip upstream UI gunk
+        @doc.css('style').remove
+        @doc.traverse{|e|
+          e.respond_to?(:attribute_nodes) && e.attribute_nodes.map{|a|  # inspect attributes
+            attr = a.name                                               # attribute name
+            a.unlink if DropAttrs.member?(attr) || attr.match?(/^on/i)} # drop attribute
 
         # <meta>
         @doc.css('meta').map{|m|
@@ -110,124 +114,30 @@ module Webize
         #   if ref = prevPage.attr('href')
         #     @env[:links][:prev] ||= @base.join ref
         #   end}
-      # # <img> mapping
-      # html.css('[style*="background-image"]').map{|node|
-      #   node['style'].match(CSS::URL).yield_self{|url|            # CSS background-image
-      #     node.add_child "<img src=\"#{url[1]}\">" if url}}
-      # html.css('amp-img').map{|amp|                               # amp-img
-      #   amp.add_child "<img src=\"#{amp['src']}\">"}
-      # html.css("div[class*='image'][data-src]").map{|div|         # div[data-src]
-      #   div.add_child "<img src=\"#{div['data-src']}\">"}
-      # html.css("figure[itemid]").map{|fig|                        # figure[itemid]
-      #   fig.add_child "<img src=\"#{fig['itemid']}\">"}
-      # html.css("figure > a[href]").map{|a|                        # figure > a[href]
-      #   a.add_child "<img src=\"#{a['href']}\">"}
-      # html.css("slide").map{|s|                                   # slide
-      #   s.add_child "<img src=\"#{s['original']}\" alt=\"#{s['caption']}\">"}
-      #   srcset = i['srcset'].scan(SrcSetRegex).map{|ref, size|
-      #     [Webize::Resource(ref, env).href,
-      #      size].join ' '
-      #   }.join(', ')
 
-        # @href
         #          origRef = Resource.new base.join e['href']              # resolve reference
 #          ref = origRef.relocate                                  # optionally relocate reference
-
         #   blocked = ref.deny?
         #   offsite = ref.host != base.host
-
         #   if color = if HTML::HostColor.has_key? ref.host         # host-specific reference style
         #                HTML::HostColor[ref.host]
         #              elsif ref.scheme == 'mailto'
         #                '#48f'
         #              end
-        #     e['style'] = "border: 1px solid #{color}; color: #{color}"
         #     e['class'] = 'host'
         #   elsif blocked
         #     e['class'] = 'blocked host'
         #   else
         #     e['class'] = offsite ? 'global' : 'local'             # local or global reference style
-        #   end
 
-        #   e.inner_html = [
-        #     if ref.imgURI? && e.css('img').empty?
-        #       ['<img src="', ref.uri, '">']
-        #     else
-        #       case ref.scheme
-        #       when 'data'
-        #         :🧱
-        #       when 'mailto'
-        #         :📭
-        #       when 'gemini'
-        #         :🚀
-        #       else
-        #         if offsite && !blocked
-        #           ['<img src="//', ref.host, '/favicon.ico">']
-        #         end
-        #       end
-        #     end,
-        #     [origRef.to_s, # strip inner HTML if it's just the URL which we'll be displaying our way
-        #      origRef.to_s.sub(/^https?:\/\//,'')].member?(e.inner_html) ? nil : e.inner_html,
-        #     if ref.dataURI?                                       # inline data?
-        #       ['<pre>',
-        #        if ref.path.index('text/plain,') == 0              # show text content
-        #          CGI.escapeHTML(Rack::Utils.unescape ref.to_s[16..-1])
-        #        else
-        #          ref.path.split(',',2)[0]                         # show content-type
-        #        end,
-        #        '</pre>'].join
-        #     else                                                  # show identifier
-        #       [' ', '<span class="id">',
-        #        CGI.escapeHTML((if offsite
-        #                        ref.uri.sub /^https?:..(www.)?/, ''
-        #                       elsif ref.fragment
-        #                         '#' + ref.fragment
-        #                       else
-        #                         [ref.path, ref.query ? ['?', ref.query] : nil].join
-        #                        end)[0..127]),
-        #        '</span>', ' ']
-        #     end].join
-        # end}
-
-        # # load alternate names for srcset attribute
-    # SRCSET = Webize.configList 'formats/image/srcset'
-    # SrcSetRegex = /\s*(\S+)\s+([^,]+),*/
-
-    # # resolve @srcset refs
-    # def self.srcset node, base
+        # SrcSetRegex = /\s*(\S+)\s+([^,]+),*/
     #   srcset = node['srcset'].scan(SrcSetRegex).map{|url, size|
     #     [(base.join url), size].join ' '
     #   }.join(', ')
-    #   srcset = base.join node['srcset'] if srcset.empty? # resolve singleton URL in srcset attribute. eithere there's lots of spec violators or this is allowed. we allow it 
-    #   node['srcset'] = srcset
-    # end
+    #   srcset = base.join node['srcset'] if srcset.empty?
 
-      #   srcset = Webize::Resource(i['srcset'], env).href if srcset.empty?
-
-        # JSON
-#        @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
+        #        @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
 #          JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
-#              unless n.text?
-        #                  yield fragID, Contains, (URI '#' + CGI.escape(n['id']))
-#        @doc.css('[src]').map{|e|
- #         yield @base, Link, @base.join(e.attr('src')) unless %w(img style video).member? e.name}
-        # <video>
-          # ['video[src]', 'video > source[src]'].map{|vsel|
-          #   fragment.css(vsel).map{|v|
-          #     yield subject, Video, @base.join(v.attr('src')), graph}}
-          # <datetime>
-#          fragment.css(MsgCSS[:date]).map{|d| # search on ISO8601 and UNIX timestamp selectors
-#            yield subject, Date, d[DateAttr.find{|a| d.has_attribute? a }] || d.inner_text, graph
-#            d.remove}
-          #  <img>
-          # fragment.css('img[src][alt], img[src][title]').map{|img|
-          #   image = @base.join img['src']
-          #   yield subject, Contains, image, graph
-          #   yield image, Type, RDF::URI(Image), graph
-          #   %w(alt title).map{|attr|
-          #     if val = img[attr]
-          #       yield image, Abstract, val, graph
-          #     end}}
 
 
         # remove duplicate IDs so we don't get cycles in tree/linked-list DSes. if we want addressibility we could mint a new ID but for now just turn into a blank node
