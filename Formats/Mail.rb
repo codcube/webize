@@ -62,21 +62,20 @@ module Webize
             ::Mail::Encodings.defined?(p.body.encoding)    # decodable?
         }.map{|p|
           yield mail, Content,
-                HTML.format(
-                  HTML.render(
-                    p.decoded.lines.to_a.map{|l| # split lines
-                      l = l.chomp # strip any remaining [\n\r]
-                      if qp = l.match(/^(\s*[>|][>|\s]*)(.*)/) # quoted line
-                        if qp[2].empty? # drop blank quoted-lines
-                          nil
-                        else # quote
-                          {_: :span, class: :quote,
-                           c: [qp[1].gsub('>','&gt;'), qp[2].hrefs{|p,o|
-                                 yield mail, p, o, graph }]}
-                        end
-                      else # fresh line
-                        l.hrefs{|p, o| yield mail, p, o, graph }
-                      end}.map{|line| [line, "<br>\n"]}), @base), graph}
+                HTML.render(
+                  p.decoded.lines.to_a.map{|l| # split lines
+                    l = l.chomp # strip any remaining [\n\r]
+                    if qp = l.match(/^(\s*[>|][>|\s]*)(.*)/) # quoted line
+                      if qp[2].empty? # drop blank quoted-lines
+                        nil
+                      else # quote
+                        {_: :span, class: :quote,
+                         c: [qp[1].gsub('>','&gt;'), qp[2].hrefs{|p,o|
+                               yield mail, p, o, graph }]}
+                      end
+                    else # fresh line
+                      l.hrefs{|p, o| yield mail, p, o, graph}
+                    end}.map{|line| [line, "<br>\n"]}), graph}
 
         # recursively contained messages: digests, forwards, archives
         parts.select{|p|p.mime_type=='message/rfc822'}.map{|m|

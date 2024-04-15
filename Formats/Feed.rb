@@ -184,9 +184,7 @@ rss rss.xml
                   when isURL
                     Webize::URI o
                   when isHTML
-                    literal = RDF::Literal(Webize::HTML.format o, @base)
-                    literal.datatype = RDF.HTML
-                    literal 
+                    RDF::Literal o, datatype: RDF.HTML
                   else
                     o
                   end

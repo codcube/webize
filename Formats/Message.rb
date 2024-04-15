@@ -68,7 +68,7 @@ module Webize
           subject = graph.join '#msg'
           yield subject, Type, RDF::URI(Post), graph
           yield subject, Date, date, graph
-          yield subject, Content, Webize::HTML.format(msg.hrefs, @base), graph if msg
+          yield subject, Content, msg.hrefs, graph if msg
           yield subject, Creator, (@base.host + dirname).split(/\W/).join('.'), graph
           yield subject, To, @base, graph
         }
