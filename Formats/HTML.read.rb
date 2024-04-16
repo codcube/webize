@@ -78,8 +78,7 @@ module Webize
             if u = m['content'].split('url=')[-1]
               yield @base, Link, RDF::URI(u)
             end
-          end
-          m.remove}
+          end}
 
         # <link>
         @doc.css('link[rel][href]').map{|m|
@@ -97,15 +96,11 @@ module Webize
             logger.warn ["no URI for <link> attribute \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
             yield @base, k, v unless k == :drop || v.deny?}
 
-          @env[:feeds].push v if Feed::Names.member?(v.basename) || Feed::Extensions.member?(v.extname)
-          m.remove}
+          @env[:feeds].push v if Feed::Names.member?(v.basename) || Feed::Extensions.member?(v.extname)}
 
         # <title>
         @doc.css('title').map{|title|
-          yield @base, Title, title.inner_text unless title.inner_text.empty?
-          title.remove}
-
-        @doc.css('head').remove
+          yield @base, Title, title.inner_text unless title.inner_text.empty?}
 
         # @doc.css('#next, #nextPage, a.next, .show-more > a').map{|nextPage|
         #   if ref = nextPage.attr('href')
@@ -188,7 +183,8 @@ module Webize
 
           subject} # send node to caller for parent/child relationship triples
 
-        yield @base, Contains, scan_node[@doc.children[1]] # scan doc, skipping DOCTYPE element
+        @doc.css('body').map{|body| # emit <body> nodes
+          yield @base, Contains, scan_node[body]}
       end
     end
   end
