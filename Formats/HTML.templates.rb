@@ -9,7 +9,7 @@ module Webize
     # {predicate URI -> λ (objects, env) -> markup for objects of predicate }
     MarkupPredicate = {}
 
-    # templates for base types
+    # templates for base RDF types
 
     MarkupPredicate['uri'] = -> us, env=nil {
       (us.class == Array ? us : [us]).map{|uri|
@@ -61,6 +61,12 @@ module Webize
         else
           markup r, env
         end}}
+
+    Markup[Node + 'script'] = -> script, env {
+      {class: :script,
+       c: [{_: :span,
+            style: 'font-size: 2em',
+            c: :📜}]}}
 
     Markup[Schema + 'Document'] = -> graph, env {
 
