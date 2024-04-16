@@ -209,13 +209,15 @@ module Webize
            date,                                # timestamp
            [Content, SIOC+'richContent'].map{|p|
              (re[p]||[]).map{|o|markup o,env}}, # body
-           ({_: :dl,
-             c: rest.map{|k, vs|                # key/val view of other fields
-               [{_: :dt, c: MarkupPredicate[Type][[k], env]},
-                {_: :dd,
-                 c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][vs, env] : vs.map{|v|
-                   markup(v, env)}}]
-             }} unless rest.empty?),
+           (["\n",
+             {_: :dl,
+              c: rest.map{|k, vs|               # key/val view of other fields
+                ["\n",
+                 {_: :dt, c: MarkupPredicate[Type][[k], env]}, "\n",
+                 {_: :dd,
+                  c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][vs, env] : vs.map{|v|
+                    markup(v, env)}}]
+              }}, "\n"] unless rest.empty?),
            origin_ref,                          # origin pointer
           ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(45deg, #{color}, #{color} 1px, transparent 1px, transparent 8px); border-color: #{color}"} : {})}
 

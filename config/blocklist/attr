@@ -1,7 +1,9 @@
 bgcolor
 border
 color
+colspan
 face
+rowspan
 size
 style
 target
