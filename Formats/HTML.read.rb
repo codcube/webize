@@ -18,7 +18,7 @@ module Webize
 
       format Format
 
-      EmptyText = /^[\n\t\s]+$/
+      EmptyText = /\A[\n\t\s]+\Z/
       DropAttrs = Webize.configList 'blocklist/attr'
       StripTags = /<\/?(b|br|em|font|hr|nobr|noscript|span|wbr)[^>]*>/i
 
@@ -149,7 +149,6 @@ module Webize
 
         # node scanner
         scan_node = -> node, depth = 0 {
-
           # subject identity
           subject = if node['id']   # identified node
                       RDF::URI '#' + CGI.escape(node.remove_attribute('id').value)
@@ -174,8 +173,7 @@ module Webize
           else
             node.children.map{|child|
               if child.text? || child.cdata?
-                puts subject, Content, child unless child.inner_text.match? EmptyText
-                yield subject, Content, child unless child.inner_text.match? EmptyText
+                yield subject, Content, child.inner_text.strip unless child.inner_text.match? EmptyText
               else
                 yield subject, Contains, scan_node[child, depth + 1]                  # emit children as RDF nodes
               end}
