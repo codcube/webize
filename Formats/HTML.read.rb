@@ -20,7 +20,7 @@ module Webize
 
       EmptyText = /\A[\n\t\s]+\Z/
       DropAttrs = Webize.configList 'blocklist/attr'
-      StripTags = /<\/?(b|br|em|font|hr|nobr|noscript|span|wbr)[^>]*>/i
+      StripTags = /<\/?(br|em|font|hr|nobr|noscript|span|wbr)[^>]*>/i
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
