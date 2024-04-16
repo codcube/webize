@@ -137,9 +137,9 @@ module Webize
 #          JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
 
-        # fix @id collisions so there aren't cycles in our tree/linked-list datastructures
+        # fix id-collisions to prevent unwanted cycles in tree/linked-list datastructures
         nodes = {}
-        @doc.css('[id]').map{|node|
+        @doc.css('[id]').map{|node|    # identified node
           id = node['id']              # identifier
           if nodes[id]                 # repeated identifier?
             node.remove_attribute 'id' # turn into blank node
@@ -150,8 +150,8 @@ module Webize
         # node scanner
         scan_node = -> node, depth = 0 {
 
-          # identifier
-          subject = if node['id']
+          # subject identity
+          subject = if node['id']   # identified node
                       RDF::URI '#' + CGI.escape(node.remove_attribute('id').value)
                     else
                       RDF::Node.new # blank node
@@ -173,9 +173,9 @@ module Webize
             yield subject, Content, RDF::Literal(node.inner_html, datatype: RDF.HTML) # emit children as opaque HTML literal
           else
             node.children.map{|child|
-              if child.text?
-                yield subject, Content, child unless child.inner_text.match?(EmptyText)
-              elsif child.cdata?
+              if child.text? || child.cdata?
+                puts subject, Content, child unless child.inner_text.match? EmptyText
+                yield subject, Content, child unless child.inner_text.match? EmptyText
               else
                 yield subject, Contains, scan_node[child, depth + 1]                  # emit children as RDF nodes
               end}
