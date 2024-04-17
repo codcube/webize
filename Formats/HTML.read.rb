@@ -58,7 +58,7 @@ module Webize
           end
         end
 
-        # strip upstream UI gunk
+        # strip upstream UI
         @doc.css('style').remove                                         # drop stylesheets
         @doc.traverse{|e|
           e.respond_to?(:attribute_nodes) && e.attribute_nodes.map{|a|   # inspect attributes
@@ -83,10 +83,10 @@ module Webize
         # <link>
         @doc.css('link[rel][href]').map{|m|
 
-          # href -> object
+          # @href -> object
           v = HTTP::Node @base.join(m.attr 'href'), @env
 
-          # rel -> predicate
+          # @rel -> predicate
           m.attr('rel').split(/[\s,]+/).map{|k|
             @env[:links][:prev] ||= v if k.match? /prev(ious)?/i
             @env[:links][:next] ||= v if k.downcase == 'next'
