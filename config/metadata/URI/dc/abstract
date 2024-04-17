@@ -38,6 +38,7 @@ closeupUnifiedDescription
 column
 components
 data-alt
+data-description
 data-image-caption
 dcterms.abstract
 definition
@@ -113,6 +114,7 @@ page:primary_channel
 page:topic
 parsely-section
 parsely-tags
+placeholder
 podcastEpisodeDesc
 postLabel
 primaryTag
@@ -183,4 +185,3 @@ vf:topic
 video:tag
 wordpressSlug
 wssTags
-placeholder
