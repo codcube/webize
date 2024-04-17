@@ -174,16 +174,21 @@ module Webize
             case p
             when 'srcset'
               puts :SRCSET
-            else # default attribute handler
+            else # generic attribute emitter
 
               # apply predicate map
               p = MetaMap[p] if MetaMap.has_key? p
 
-              unless p == :drop
-                # warn on unmapped names
-                logger.warn ["predicate URI unmapped for \e[7m", p, "\e[0m ", o].join unless p.match? /^https?:/
+              if p == :drop
 
-                # cast relative URI string values to RDF::URI
+                # add data to junk graph
+                yield subject, p, o, '#junk'
+              else
+
+                # warn on unmapped predicates
+                logger.warn ["node attribute has no URI: \e[7m", p, "\e[0m ", o].join unless p.match? /^https?:/
+
+                # cast relative URI string values to RDF URIs
                 o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)
 
                 yield subject, p, o

@@ -1,3 +1,10 @@
+data-border-radii
+data-animation
+data-fluid-engine-section
+data-fluid-engine
+data-blend-mode
+data-animation-role
+data-alignment
 360-site-verification
 Distribution
 EditURI
@@ -89,7 +96,6 @@ can_manage
 cellpadding
 cellspacing
 chrome-webstore-item
-colType
 color-scheme
 commentable
 contains_music
@@ -113,7 +119,6 @@ data-async-fc
 data-async-fcv
 data-async-ons
 data-async-trigger
-data-async-type
 data-beid
 data-biboe
 data-bla
@@ -152,7 +157,6 @@ data-focus
 data-full-width-responsive
 data-g
 data-gid
-data-graft-type
 data-hp
 data-hpmde
 data-hveid
@@ -258,7 +262,6 @@ display_text_range
 distribution
 donationsActive
 downloadable
-editor_type
 edituri
 embeddable_by
 enableNewTagCreationWarning
@@ -453,7 +456,6 @@ revisit-after
 robots
 rootVe
 rows
-sailthru.type
 schema.DC
 scriptUrl
 scrolling
@@ -505,7 +507,6 @@ token
 token_endpoint
 track_format
 trackingParams
-translator_type
 truncated
 turbo-body-classes
 turbo-cache-control

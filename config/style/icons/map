@@ -23,6 +23,7 @@ http://rdfs.org/sioc/ns#UserAccount 👤
 http://rdfs.org/sioc/ns#addressed_to ☇
 http://rdfs.org/sioc/ns#attachment ✉
 http://rdfs.org/sioc/ns#content 📝
+http://rdfs.org/sioc/ns#has_container 📂
 http://rdfs.org/sioc/ns#has_creator 🗣
 http://rdfs.org/sioc/ns#has_discussion 🗨️
 http://rdfs.org/sioc/ns#reply_of ↩
