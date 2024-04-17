@@ -167,11 +167,32 @@ module Webize
 
           # attributes
           node.attribute_nodes.map{|attr|
-            p = MetaMap[attr.name] || attr.name
+
+            p = attr.name
             o = attr.value
-            o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)
-            logger.warn ["predicate URI unmapped for \e[7m", p, "\e[0m ", attr.value].join unless p.match? /^(drop|http)/
-            yield subject, p, o unless p == :drop} if node.respond_to? :attribute_nodes
+
+            case p
+            when 'srcset'
+              puts :SRCSET
+            else # default attribute handler
+
+              # apply predicate map and warn on unmapped names
+              p = MetaMap[p] if MetaMap.has_key? p
+              logger.warn ["predicate URI unmapped for \e[7m", p, "\e[0m ", o].join unless p.match? /^(drop|http)/
+
+              unless p == :drop
+
+                # cast relative URI strings to RDF::URI
+                o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)
+
+                yield subject, p, o
+              end
+            end
+
+
+
+
+          } if node.respond_to? :attribute_nodes
 
           # child nodes
           if depth > 30 || node.name == 'svg'
