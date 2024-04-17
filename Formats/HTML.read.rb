@@ -176,13 +176,14 @@ module Webize
               puts :SRCSET
             else # default attribute handler
 
-              # apply predicate map and warn on unmapped names
+              # apply predicate map
               p = MetaMap[p] if MetaMap.has_key? p
-              logger.warn ["predicate URI unmapped for \e[7m", p, "\e[0m ", o].join unless p.match? /^(drop|http)/
 
               unless p == :drop
+                # warn on unmapped names
+                logger.warn ["predicate URI unmapped for \e[7m", p, "\e[0m ", o].join unless p.match? /^https?:/
 
-                # cast relative URI strings to RDF::URI
+                # cast relative URI string values to RDF::URI
                 o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)
 
                 yield subject, p, o
