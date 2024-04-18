@@ -21,6 +21,7 @@ module Webize
       DropAttrs = Webize.configList 'blocklist/attr'
       EmptyText = /\A[\n\t\s]+\Z/
       HTTPURI = /^https?:/
+      RelURI = /^(http|\/)\S+$/
       StripTags = /<\/?(br|em|font|hr|nobr|noscript|span|wbr)[^>]*>/i
 
       def initialize(input = $stdin, options = {}, &block)
@@ -191,12 +192,12 @@ module Webize
                   if p.match? /type/i
                     p = Type
                   else
-                    logger.warn ["no URI for \e[7m@", p, "\e[0m ", o].join
+                    logger.warn ["no URI for \e[7m@ ", p, "\e[0m ", o].join
                   end
                 end
 
                 # cast relative URI string values to RDF URIs
-                o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)
+                o = @base.join o if o.class == String && o.match?(RelURI)
 
                 yield subject, p, o
               end
