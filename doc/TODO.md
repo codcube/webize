@@ -1,3 +1,4 @@
+data as JSON inside HTML node attrs http://l/com/wavecollectivespace/gallery-line-up
 these should fix themselves once the HTML/JSON-triplr reworks are done. test corpus:
 escaped abstract http://l/org/cnxus/comments/feed/
 missing content http://localhost:8000/com/danielbachhuber/working-at-automattic/#f18efa4a785aeb87dabda0954ae72685914b72905a644498043ef39f1dc762aa8 http://l/gov/nsf/new/funding/opportunities/cyberinfrastructure-sustained-scientific

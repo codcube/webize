@@ -1,3 +1,5 @@
+data-folder-id
+data-folder
 bc:primarycategory
 brand
 categories
@@ -19,4 +21,4 @@ parentID
 parentId
 primaryCategory
 slot
-
+data-section-id
