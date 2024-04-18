@@ -18,8 +18,9 @@ module Webize
 
       format Format
 
-      EmptyText = /\A[\n\t\s]+\Z/
       DropAttrs = Webize.configList 'blocklist/attr'
+      EmptyText = /\A[\n\t\s]+\Z/
+      HTTPURI = /^https?:/
       StripTags = /<\/?(br|em|font|hr|nobr|noscript|span|wbr)[^>]*>/i
 
       def initialize(input = $stdin, options = {}, &block)
@@ -176,7 +177,7 @@ module Webize
               puts :SRCSET
             else # generic attribute emitter
 
-              # apply predicate map
+              # apply attribute map and blocklist
               p = MetaMap[p] if MetaMap.has_key? p
 
               if p == :drop
@@ -185,8 +186,14 @@ module Webize
                 yield subject, p, o, '#junk'
               else
 
-                # warn on unmapped predicates
-                logger.warn ["node attribute has no URI: \e[7m", p, "\e[0m ", o].join unless p.match? /^https?:/
+                # unmapped predicate?
+                unless p.match? HTTPURI
+                  if p.match? /type/i
+                    p = Type
+                  else
+                    logger.warn ["no URI for \e[7m@", p, "\e[0m ", o].join
+                  end
+                end
 
                 # cast relative URI string values to RDF URIs
                 o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)
