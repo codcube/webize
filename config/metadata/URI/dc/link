@@ -34,6 +34,7 @@ data-psl
 data-spl
 data-surl
 data-url
+data-url-not-encoded
 data-vurl
 dataHref
 dct:references
@@ -93,6 +94,7 @@ noreferrer
 og:see_also
 og:url
 originalUrl
+pageurl
 parsely-link
 path
 permalink
@@ -148,4 +150,3 @@ url_v2
 v:url
 vf:url
 vr:canonical
-data-url-not-encoded
