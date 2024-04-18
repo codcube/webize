@@ -181,6 +181,7 @@ data-laoid
 data-lel
 data-li
 data-lk
+data-loader
 data-lopri
 data-mcl
 data-md
@@ -255,6 +256,7 @@ data-vsc
 data-wcn
 debug
 decode-data-ved
+decoding
 default-theme
 defaultBranch
 default_profile
@@ -274,6 +276,7 @@ distribution
 donationsActive
 downloadable
 edituri
+elementtiming
 embeddable_by
 enableNewTagCreationWarning
 enableSocialMediaInSharePopup
@@ -387,7 +390,9 @@ layout
 layoutTemplate
 linecap
 listed_count
+loading
 locked
+loop
 managed_by_feeds
 maxHeight
 maxWidth
@@ -407,6 +412,7 @@ msapplication-task
 msapplication-window
 msvalidate.01
 multiInstanceEnabled
+muted
 mw-deduplicated-inline-style
 naver-site-verification
 newTab
@@ -436,6 +442,7 @@ parsely-post-id
 pingback
 pinned_tweet_ids
 pinned_tweet_ids_str
+playsinline
 podcastUnpublish
 possibly_sensitive
 possibly_sensitive_editable
@@ -567,7 +574,3 @@ x-ua-compatible
 y_key
 yandex-verification
 yelp-biz-id
-loading
-decoding
-data-loader
-elementtiming

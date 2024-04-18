@@ -46,6 +46,10 @@ data-menuimg
 data-native-src
 data-original
 data-raw-src
+data-source
+data-sourcedesktop
+data-sourcemobile
+data-sourcetablet
 data-src
 data-url
 desktopImage
@@ -128,6 +132,7 @@ picture_url
 pinterest:image
 pinterest:media
 placeholderImageUrl
+poster
 profileLarger
 profileMedium
 profilePicture
