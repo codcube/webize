@@ -11,6 +11,25 @@ module Webize
     StatusColor.keys.map{|s|
       StatusColor[s.to_i] = StatusColor[s]}
 
+    # There's a few layers to writing the HTML.
+    # First, the graph is turned into a tree of JSON-compatible nested Hash objects. the JSON#fromGraph
+    # implementation is in <JSON.rb> and we also use the treeization for other formats: RSS and JSON.
+    # the tree is first indexed on subject URI, returning a resource and its data, indexed on predicate URI,
+    # to an array of objects with blank and/or contained nodes inlined where predicate indexing begins anew
+
+    # {subject -> {predicate -> ['object', 234, {predicate -> [...]}]}}
+
+    # we came up with this format before Ruby had an RDF library, when we knew we didn't want to write one
+    # if we could get away with using a subset of RDF in JSON and piggyback on existing fast serializers/parsers.
+    # with good handling of recursive blank nodes there's not much missing besides literal datatypes not supported by JSON 
+    # the big one is URI type. instead we use a reserved key 'uri' for the resource identifier. without that, it's considered a bnode
+
+    # so we churn through the toplevel index and hand each resource to its type-specific markup function, or the generic one
+    # then we know everything has been renderd since any node not in the toplevel index has been inlined
+    # these lambdas emit yet another JSON-compatible representation, though this time of DOM nodes rather than a RDF graph
+
+    # we call this representation 'markup', and it's trivially serializable into the final HTML string form
+
     class Writer < RDF::Writer
 
       format Format
