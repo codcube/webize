@@ -109,3 +109,6 @@ twitterSocialHeadline
 twitterTitle
 urlName
 urlTitle
+data-title
+data-at
+data-cta
