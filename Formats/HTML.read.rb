@@ -22,6 +22,7 @@ module Webize
       EmptyText = /\A[\n\t\s]+\Z/
       HTTPURI = /^https?:/
       RelURI = /^(http|\/)\S+$/
+      SRCSET = /\s*(\S+)\s+([^,]+),*/
       StripTags = /<\/?(br|em|font|hr|nobr|noscript|span|wbr)[^>]*>/i
 
       def initialize(input = $stdin, options = {}, &block)
@@ -134,13 +135,6 @@ module Webize
         #     e['class'] = 'blocked host'
         #   else
         #     e['class'] = offsite ? 'global' : 'local'             # local or global reference style
-
-        # SrcSetRegex = /\s*(\S+)\s+([^,]+),*/
-    #   srcset = node['srcset'].scan(SrcSetRegex).map{|url, size|
-    #     [(base.join url), size].join ' '
-    #   }.join(', ')
-    #   srcset = base.join node['srcset'] if srcset.empty?
-
         #        @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
 #          JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 
@@ -175,7 +169,8 @@ module Webize
 
             case p
             when 'srcset'
-              puts :SRCSET
+              o.scan(SRCSET).map{|uri, _|
+               yield subject, Image, @base.join(uri)}
             else # generic attribute emitter
 
               # apply attribute map and blocklist
@@ -192,7 +187,7 @@ module Webize
                   if p.match? /type/i
                     p = Type
                   else
-                    logger.warn ["no URI for \e[7m@ ", p, "\e[0m ", o].join
+                    logger.warn ["no URI for \e[7m", p, "\e[0m ", o].join
                   end
                 end
 
