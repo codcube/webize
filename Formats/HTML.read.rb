@@ -76,7 +76,7 @@ module Webize
             if v = (m.attr('content') || m.attr('href')) # object
               k = MetaMap[k] || k                        # map property-names
               v = @base.join v if v.match? /^(http|\/)\S+$/
-              logger.warn ["no URI for <meta> attribute \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
+              logger.warn ["no URI for META tag \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
               yield @base, k, v unless k == :drop
             end
           elsif m['http-equiv'] == 'refresh'
@@ -100,7 +100,7 @@ module Webize
             @env[:links][:icon] ||= v if k.match? /^(fav)?icon?$/i
             @env[:feeds].push v if k == 'alternate' && ((m['type']&.match?(/atom|feed|rss/)) || (v.path&.match?(/^\/feed\/?$/)))
             k = MetaMap[k] || k
-            logger.warn ["no URI for <link> attribute \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
+            logger.warn ["no URI for LINK tag \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
             yield @base, k, v unless k == :drop || v.deny?}
 
           @env[:feeds].push v if Feed::Names.member?(v.basename) || Feed::Extensions.member?(v.extname)
@@ -189,7 +189,7 @@ module Webize
                   if p.match? /type/i
                     p = Type
                   else
-                    logger.warn ["no URI for \e[7m", p, "\e[0m ", o].join
+                    logger.warn ["no URI for DOM attr \e[7m", p, "\e[0m ", o].join
                   end
                 end
 
