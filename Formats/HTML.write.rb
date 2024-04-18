@@ -11,18 +11,18 @@ module Webize
     StatusColor.keys.map{|s|
       StatusColor[s.to_i] = StatusColor[s]}
 
-    # There's a few layers to writing the HTML.
+    # There's a few layers to writing the HTML:
     # First, the graph is turned into a tree of JSON-compatible nested Hash objects. the JSON#fromGraph
-    # implementation is in <JSON.rb> as we also use this treeization for other formats: RSS and JSON.
+    # implementation is in <JSON.rb> as we also use this treeization for other formats, RSS and JSON.
     # the tree is first indexed on subject URI, returning a resource and its data, indexed on predicate URI,
     # to an array of objects with blank and/or contained nodes inlined where predicate indexing begins anew
 
-    # {subject -> {predicate -> ['object', 234, {predicate -> [...]}]}}
+    # example: {subjectURI -> {predicateURI -> ['object', 234, {predicateURI -> [...]}]}}
 
     # we came up with this format before Ruby had an RDF library, when we knew we didn't want to write one
     # if we could get away with using a subset of RDF in JSON and piggyback on existing fast serializers/parsers.
-    # with good handling of recursive blank nodes there's not much missing besides literal datatypes not supported by JSON 
-    # the big one is URI type. instead we use a reserved key 'uri' for the resource identifier. without that, it's considered a bnode
+    # with good handling of recursive blank nodes there's not much missing aside from value types not supported by JSON,
+    # primarily <URI>. we use reserved key 'uri' for the resource identifier. if that's missing, it's a blank node.
 
     # so we churn through the toplevel index and hand each resource to its type-specific markup function, or the generic one
     # then we know everything has been rendered since any node not in the toplevel index has been inlined
@@ -63,16 +63,7 @@ module Webize
       when FalseClass         # boolean
         {_: :input, type: :checkbox}
       when Hash               # Hash
-        return if o.empty?
-        types = (o[Type]||[]).map{|t|
-          MetaMap[t.to_s] || t.to_s} # map to renderable type
-        seen = false
-        [types.map{|type|     # type tag(s)
-          if f = Markup[type] # renderer defined for type?
-            seen = true       # mark as rendered
-            f[o,env]          # render specific resource type
-          end},               # render generic resource
-         (Markup[BasicResource][o, env] unless seen)]
+        (Markup[o[Type]&.find{|t| Markup.has_key? t.to_s} || BasicResource][o, env]
       when Integer
         o
       when NilClass
