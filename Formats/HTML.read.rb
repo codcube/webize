@@ -184,7 +184,10 @@ module Webize
 
                 # unmapped predicate?
                 unless p.match? HTTPURI
-                  if p.match? /type/i
+                  case p
+                  when /^aria/i
+                    p = 'https://www.w3.org/ns/aria#' + p.sub(/^aria[-_]/i,'')
+                  when /type/i
                     p = Type
                   else
                     logger.warn ["no URI for DOM attr \e[7m", p, "\e[0m ", o].join
