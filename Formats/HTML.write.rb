@@ -13,7 +13,7 @@ module Webize
 
     # There's a few layers to writing the HTML.
     # First, the graph is turned into a tree of JSON-compatible nested Hash objects. the JSON#fromGraph
-    # implementation is in <JSON.rb> and we also use the treeization for other formats: RSS and JSON.
+    # implementation is in <JSON.rb> as we also use this treeization for other formats: RSS and JSON.
     # the tree is first indexed on subject URI, returning a resource and its data, indexed on predicate URI,
     # to an array of objects with blank and/or contained nodes inlined where predicate indexing begins anew
 
