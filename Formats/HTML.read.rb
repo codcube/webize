@@ -18,12 +18,13 @@ module Webize
 
       format Format
 
-      DropAttrs = Webize.configList 'blocklist/attr'
+      DropAttr = Webize.configList 'blocklist/attr'
       EmptyText = /\A[\n\t\s]+\Z/
       HTTPURI = /^https?:/
       RelURI = /^(http|\/)\S+$/
       SRCSET = /\s*(\S+)\s+([^,]+),*/
       StripTags = /<\/?(br|em|font|hr|nobr|noscript|span|wbr)[^>]*>/i
+      StyleAttr = /^on|border|style|theme/i
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
@@ -64,9 +65,10 @@ module Webize
         # strip upstream UI
         @doc.css('style').remove                                       # drop stylesheets
         @doc.traverse{|e|
-          e.respond_to?(:attribute_nodes) && e.attribute_nodes.map{|a| # inspect attributes
-            attr = a.name                                                      # name
-            a.unlink if DropAttrs.member?(attr) || attr.match?(/^on|style/i)}} # drop attribute
+          e.respond_to?(:attribute_nodes) && e.attribute_nodes.map{|a| # visit attributes
+            attr = a.name                                              # attribute name
+            a.unlink if DropAttr.member?(attr) ||                      # drop attribute
+                        attr.match?(StyleAttr)}}
 
         # <meta>
         @doc.css('meta').map{|m|
