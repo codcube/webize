@@ -25,8 +25,8 @@ module Webize
     # the big one is URI type. instead we use a reserved key 'uri' for the resource identifier. without that, it's considered a bnode
 
     # so we churn through the toplevel index and hand each resource to its type-specific markup function, or the generic one
-    # then we know everything has been renderd since any node not in the toplevel index has been inlined
-    # these lambdas emit yet another JSON-compatible representation, though this time of DOM nodes rather than a RDF graph
+    # then we know everything has been rendered since any node not in the toplevel index has been inlined
+    # these lambdas emit another JSON-compatible representation, this time of DOM nodes rather than a RDF graph
 
     # we call this representation 'markup', and it's trivially serializable into the final HTML string form
 
