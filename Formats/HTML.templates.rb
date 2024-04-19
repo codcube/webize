@@ -51,6 +51,8 @@ module Webize
           markup creator, env
         end}}
 
+    MarkupPredicate[Content] = MarkupPredicate[SIOC+'richContent'] = -> cs, env {cs.map{|c| markup c, env}}
+
     MarkupPredicate[To] = -> recipients, env {
       recipients.map{|r|
         if [Webize::URI, Webize::Resource, RDF::URI].member? r.class
@@ -61,6 +63,24 @@ module Webize
         else
           markup r, env
         end}}
+
+    Markup[:kv] = -> kv, env {
+      {_: :dl,
+       c: kv.map{|k, vs|
+         ["\n",
+          {_: :dt, c: MarkupPredicate[Type][[k], env]}, "\n",
+          {_: :dd,
+           c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][vs, env] : vs.map{|v|
+             markup(v, env)}}]}}}
+
+    Markup[Node + 'a'] = -> a, env {
+      if links = a.delete Link
+        puts ["multiple link targets:", links].join ' ' if links.size > 1
+        ref = links[0]
+      end
+      {_: :a,
+       c: [a.delete(Content),
+           Markup[:kv][a,env]]}.update(ref ? {href: ref} : {})}
 
     Markup[Node + 'script'] = -> script, env {
       {class: :script,
@@ -167,64 +187,37 @@ module Webize
        c: [{_: :span, class: :type, c: icon},
            {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}}
 
-    Markup[BasicResource] = -> re, env {
-      types = (re[Type]||[]).map{|t|            # RDF type(s)
-        MetaMap[t.to_s] || t.to_s}
+    Markup[BasicResource] = -> r, env {
 
-      classes = %w(resource)                    # CSS class(es)
-      classes.push :post if types.member? Post
+      # predicate renderer lambda
+      p = -> a {MarkupPredicate[a][r.delete(a),env] if r.has_key? a}
 
-      p = -> a {                                # predicate renderer
-        MarkupPredicate[a][re[a],env] if re.has_key? a}
-
-      if uri = re['uri']                        # unless blank node:
-        uri = Webize::Resource.new(uri).env env # full URI
-        id = uri.local_id                       # fragment identifier
+      if uri = r.delete('uri')                  # unless blank node:
+        uri = Resource(uri, env)                # URI
+        id = uri.local_id                       # fragment identity
         origin_ref = {_: :a, class: :pointer,   # origin pointer
                       href: uri, c: :🔗}
-        cache_ref = {_: :a, href: uri.href,     # cache pointer
+        ref = {_: :a, href: uri.href,           # pointer
                      id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}
-        color = if HostColor.has_key? uri.host  # color
+        color = if HostColor.has_key? uri.host  # host color
                   HostColor[uri.host]
                 elsif uri.deny?
                   :red
                 end
       end
 
-      from = p[Creator]                         # sender
-
-      if re.has_key? To                         # receiver
-        if re[To].size == 1 && [Webize::URI, Webize::Resource, RDF::URI].member?(re[To][0].class)
-          color = '#' + Digest::SHA2.hexdigest(Webize::URI.new(re[To][0]).display_name)[0..5]
-        end
-        to = p[To]
-      end
-
-      date = p[Date]                            # date
-      link = {class: :title, c: p[Title]}.      # title
-               update(cache_ref || {}) if re.has_key?(Title)
-      rest = {}                                 # remaining data
-      re.map{|k,v|                              # populate remaining attrs for key/val renderer
-        rest[k] = v.class == Array ? v : [v] unless [Abstract, Content, Creator, Date, From, SIOC + 'richContent', Title, 'uri', To, Type].member? k}
-
-      {class: classes.join(' '),                # resource
-       c: [link,                                # title
-           p[Abstract],                         # abstract
-           to,                                  # destination
-           from,                                # source
-           date,                                # timestamp
-           [Content, SIOC+'richContent'].map{|p|
-             (re[p]||[]).map{|o|markup o,env}}, # body
-           (["\n",
-             {_: :dl,
-              c: rest.map{|k, vs|               # key/val view of other fields
-                ["\n",
-                 {_: :dt, c: MarkupPredicate[Type][[k], env]}, "\n",
-                 {_: :dd,
-                  c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][vs, env] : vs.map{|v|
-                    markup(v, env)}}]
-              }}, "\n"] unless rest.empty?),
-           origin_ref,                          # origin pointer
+      color = '#' + Digest::SHA2.hexdigest(     # dest color
+                Webize::URI.new(r[To][0]).display_name)[0..5] if r.has_key?(To) &&
+                                                                 r[To].size==1 &&
+                                                                 [Webize::URI,Webize::Resource,RDF::URI].member?(r[To][0].class)
+      {class: :resource,                         # resource
+       c: [{class: :title, c: p[Title]}.         # title
+               update(ref || {}) if r.has_key?(Title),
+           p[Abstract], p[To],                   # abstract, dest
+           p[Content], p[SIOC+'richContent'],    # content
+           (["\n", Markup[:kv][r,env],           # key/val fields
+             "\n"] unless r.empty?),
+           origin_ref,                           # origin pointer
           ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(45deg, #{color}, #{color} 1px, transparent 1px, transparent 8px); border-color: #{color}"} : {})}
 
   end
