@@ -48,7 +48,8 @@ module Webize
           fn.call RDF::Statement.new(s, Webize::URI.new(p), o, graph_name: (Webize::URI.new g if g))}
       end
 
-      def read_RDFa? = !@isBookmarks
+      def read_RDFa? = false
+      #def read_RDFa? = !@isBookmarks
 
       def scanContent &f
 

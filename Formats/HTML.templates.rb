@@ -76,7 +76,7 @@ module Webize
     Markup[Node + 'a'] = -> a, env {
       if links = a.delete(Link)
         ref = links[0]
-        puts "ref #{ref}"
+        puts "ref #{ref} #{ref.class}",a unless ref.respond_to? :host
         puts ["multiple link targets:", links].join ' ' if links.size > 1
       end
       {_: :a, c: [a.delete(Content),

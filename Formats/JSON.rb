@@ -108,7 +108,7 @@ module Webize
                       o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)           # resolve URI
                       p = MetaMap[p] if MetaMap.has_key? p
                       unless p == :drop
-                        logger.warn ["URI unmapped for JSON attr \e[7m", p, "\e[0m ", o].join unless p.match? /^https?:/
+                        logger.warn ["no URI for JSON key \e[7m", p, "\e[0m ", o].join unless p.match? /^https?:/
                         yield s, p, o
                       end
                     end
