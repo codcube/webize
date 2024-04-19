@@ -121,20 +121,6 @@ module Webize
         #     @env[:links][:prev] ||= @base.join ref
         #   end}
 
-        #          origRef = Resource.new base.join e['href']              # resolve reference
-#          ref = origRef.relocate                                  # optionally relocate reference
-        #   blocked = ref.deny?
-        #   offsite = ref.host != base.host
-        #   if color = if HTML::HostColor.has_key? ref.host         # host-specific reference style
-        #                HTML::HostColor[ref.host]
-        #              elsif ref.scheme == 'mailto'
-        #                '#48f'
-        #              end
-        #     e['class'] = 'host'
-        #   elsif blocked
-        #     e['class'] = 'blocked host'
-        #   else
-        #     e['class'] = offsite ? 'global' : 'local'             # local or global reference style
         #        @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
 #          JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
 

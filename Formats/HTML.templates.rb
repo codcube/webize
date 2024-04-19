@@ -75,12 +75,13 @@ module Webize
 
     Markup[Node + 'a'] = -> a, env {
       if links = a.delete(Link)
-        puts ["multiple link targets:", links].join ' ' if links.size > 1
         ref = links[0]
+        puts ["multiple link targets:", links].join ' ' if links.size > 1
       end
-      {_: :a,
-       c: [a.delete(Content),
-           Markup[:kv][a,env]]}.update(ref ? {href: ref} : {})}
+      {_: :a, c: [a.delete(Content),
+                  Markup[:kv][a,env]]}.update(
+        ref ? {href: ref,
+               class: ref.host == env[:base].host ? 'local' : 'global'} : {})}
 
     Markup[Node + 'script'] = -> script, env {
       {class: :script,
