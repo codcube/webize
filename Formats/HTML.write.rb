@@ -63,7 +63,9 @@ module Webize
       when FalseClass         # boolean
         {_: :input, type: :checkbox}
       when Hash               # Hash
-        (Markup[o[Type]&.find{|t| Markup.has_key? t.to_s} || BasicResource][o, env]
+        Markup[o[Type] &&
+               o[Type].map(&:to_s).find{|t|Markup[t]} ||
+               BasicResource][o, env]
       when Integer
         o
       when NilClass
