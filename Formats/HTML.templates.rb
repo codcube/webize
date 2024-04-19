@@ -74,7 +74,7 @@ module Webize
              markup(v, env)}}]}}}
 
     Markup[Node + 'a'] = -> a, env {
-      if links = a.delete Link
+      if links = a.delete(Link)
         puts ["multiple link targets:", links].join ' ' if links.size > 1
         ref = links[0]
       end
@@ -193,7 +193,7 @@ module Webize
       p = -> a {MarkupPredicate[a][r.delete(a),env] if r.has_key? a}
 
       if uri = r.delete('uri')                  # unless blank node:
-        uri = Resource(uri, env)                # URI
+        uri = Webize::Resource(uri, env)        # URI
         id = uri.local_id                       # fragment identity
         origin_ref = {_: :a, class: :pointer,   # origin pointer
                       href: uri, c: :🔗}
@@ -211,8 +211,8 @@ module Webize
                                                                  r[To].size==1 &&
                                                                  [Webize::URI,Webize::Resource,RDF::URI].member?(r[To][0].class)
       {class: :resource,                         # resource
-       c: [{class: :title, c: p[Title]}.         # title
-               update(ref || {}) if r.has_key?(Title),
+       c: [({class: :title, c: p[Title]}.        # title
+              update(ref || {}) if r.has_key? Title),
            p[Abstract], p[To],                   # abstract, dest
            p[Content], p[SIOC+'richContent'],    # content
            (["\n", Markup[:kv][r,env],           # key/val fields
