@@ -76,9 +76,11 @@ module Webize
     Markup[Node + 'a'] = -> a, env {
       if links = a.delete(Link)
         ref = links[0]
+        puts "ref #{ref}"
         puts ["multiple link targets:", links].join ' ' if links.size > 1
       end
       {_: :a, c: [a.delete(Content),
+                  (CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '') if ref),
                   Markup[:kv][a,env]]}.update(
         ref ? {href: ref,
                class: ref.host == env[:base].host ? 'local' : 'global'} : {})}
