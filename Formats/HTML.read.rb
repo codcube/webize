@@ -181,8 +181,8 @@ module Webize
                   end
                 end
 
-                # cast relative URI string values to RDF URIs
-                o = @base.join o if o.class == String && o.match?(RelURI)
+                # cast URI string values to RDF::URI
+                o = @base.join o if p == Link || (o.class == String && o.match?(RelURI))
 
                 yield subject, p, o
               end
