@@ -38,6 +38,7 @@ bylines
 cXenseParse:author
 c_line
 c_line_for_display
+citation_author
 citation_authors
 content_author
 crdt
@@ -75,6 +76,7 @@ http://schema.org/byArtist
 http://schema.org/creator
 http://www.itunes.com/dtds/podcast-1.0.dtd#author
 http://www.livejournal.org/rss/lj/1.0/poster
+http://www.w3.org/2005/Atom#author
 https://schema.org/author
 itunes:author
 itunesAuthor
@@ -123,4 +125,3 @@ username
 video:director
 writer_composer
 youtubeAccount
-citation_author

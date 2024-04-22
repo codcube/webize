@@ -2,7 +2,8 @@ DC.Language
 DC.language
 dc.language
 docsearch:language
+hreflang
 lang
 language
 seoLang
-hreflang
+xml:lang
