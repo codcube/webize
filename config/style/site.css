@@ -34,7 +34,7 @@
 .resource a.pointer:visited {background-color: #555}
 .resource article div, .resource section div, .resource div > span, .resource > span {background-color: #000}
 .resource div.abstract {border-radius: .5em .5em 0 0; display: block; background-color: #bbb; color: #000}
-.resource {border: .12em solid #555; margin: 1px}
+.resource {border: 1px solid #444}
 .resource, pre {border-radius: .5em}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
@@ -72,8 +72,8 @@ body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
 code {color: #000; background-color: #eee; padding: .1em}
-dd {display: table-cell; background-color: #000; color: #fff}
-div {border: 1px solid #444; margin: 1px; border-radius: 0 8px 8px 8px; vertical-align: top; padding: 0}
+dd {display: table-cell}
+div {border: 1px solid #33; border-radius: 8px}
 div, form, table {display: inline-block}
 dl {display: table; border: 1px dotted #333; border-radius: .8em}
 dl > div {display: table-row}
