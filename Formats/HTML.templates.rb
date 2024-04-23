@@ -79,7 +79,7 @@ module Webize
         puts ["multiple link targets:", links].join ' ' if links.size > 1
       end
       {_: :a, c: [a.delete(Content),
-                  ({_: :span, class: :id, c: CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '')} if ref),
+                  ({_: :span, c: CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '')} if ref),
                   Markup[:kv][a,env]]}.update(
         ref ? {href: ref,
                class: ref.host == env[:base].host ? 'local' : 'global'} : {})}

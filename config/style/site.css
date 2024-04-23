@@ -56,7 +56,7 @@ a.blocked {border: 1px solid white}
 a.date {white-space: nowrap; color: #ccc; background-color: #000; font-weight: normal}
 a.from, a.to {color: #000}
 a.from:visited, a.to:visited {color: #fff}
-a.global > span.id, a.local > span.id {color: #ddd}
+a.global > span, a.local > span {color: #ddd; font-weight: normal; font-size: 0.83em; float: right}
 a.global {background-color: #004}
 a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
@@ -84,7 +84,6 @@ li:nth-child(odd) {background-color: #222; color: #fff}
 p {border-width: 1px; border-style: dotted; border-color: #000 #222 #333 #222; margin: 2px}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, img {margin: 0}
-span.id {font-weight: normal; font-size: 0.83em; float: right}
 svg, img[src*="svg"] {background-color: #fff; color: #000; min-width: 64px; max-width: 256px; max-height: 256px}
 table {border-spacing: 0}
 table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 0; border-style: dotted}
