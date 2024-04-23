@@ -20,7 +20,7 @@ module Webize
     MarkupPredicate[Type] = -> types, env {
       types.map{|t|
         t = Webize::Resource t, env
-        {_: :a, href: t.href,
+        {_: :a, class: :type, href: t.href,
          c: if t.uri == Contains
           nil
         elsif Icons.has_key? t.uri
