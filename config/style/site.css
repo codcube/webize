@@ -75,7 +75,7 @@ code {color: #000; background-color: #eee; padding: .1em}
 dd {display: table-cell}
 div {border: 1px solid #33; border-radius: 8px}
 div, form, table {display: inline-block}
-dl {display: table; border: 1px dotted #333; border-radius: .8em}
+dl {display: table; border: 1px dotted #333; border-radius: .2em .8em .8em .8em; margin: 0}
 dl > div {display: table-row}
 dt {display: table-cell; text-align: right}
 h1, h2, h3, h4, h5, h6 {border-radius: .4em}

@@ -208,6 +208,7 @@ module Webize
                 end
       end
 
+      children = r.delete Contains
       color = '#' + Digest::SHA2.hexdigest(     # dest color
                 Webize::URI.new(r[To][0]).display_name)[0..5] if r.has_key?(To) &&
                                                                  r[To].size==1 &&
@@ -219,6 +220,8 @@ module Webize
            p[Content], p[SIOC+'richContent'],    # content
            (["\n", Markup[:kv][r,env],           # key/val fields
              "\n"] unless r.empty?),
+           (children.map{|c|
+              markup c, env} if children),
            origin_ref,                           # origin pointer
           ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(45deg, #{color}, #{color} 1px, transparent 1px, transparent 8px); border-color: #{color}"} : {})}
 
