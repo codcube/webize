@@ -165,8 +165,8 @@ module Webize
 
               if p == :drop
 
-                # add data to junk graph
-                yield subject, p, o, '#junk'
+                # add data to junk bin
+                yield RDF::URI('#junk'), p, o
               else
 
                 # unmapped predicate?
