@@ -72,11 +72,12 @@ body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
 code {color: #000; background-color: #eee; padding: .1em}
-dd {float: right; margin: 0; background-color: #000; color: #fff}
+dd {display: table-cell; background-color: #000; color: #fff}
 div {border: 1px solid #444; margin: 1px; border-radius: 0 8px 8px 8px; vertical-align: top; padding: 0}
 div, form, table {display: inline-block}
-dl {display: inline-block; margin: 1px; border-width: 1px 0 1px 0; border-style: solid; border-color: #444}
-dt {float: left; border-width: 0 0 1px 0; clear: both; border-style: solid; border-color: #555}
+dl {display: table; border: 1px dotted #333; border-radius: .8em}
+dl > div {display: table-row}
+dt {display: table-cell; text-align: right}
 h1, h2, h3, h4, h5, h6 {border-radius: .4em}
 hr {margin: 1px 0 1px 0}
 img, video, table, td {max-width: 100%; border-radius: .4em}

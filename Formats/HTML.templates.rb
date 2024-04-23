@@ -67,11 +67,11 @@ module Webize
     Markup[:kv] = -> kv, env {
       {_: :dl,
        c: kv.map{|k, vs|
-         ["\n",
-          {_: :dt, c: MarkupPredicate[Type][[k], env]}, "\n",
-          {_: :dd,
-           c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][vs, env] : vs.map{|v|
-             markup(v, env)}}]}}}
+         {c: ["\n",
+              {_: :dt, c: MarkupPredicate[Type][[k], env]}, "\n",
+              {_: :dd,
+               c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][vs, env] : vs.map{|v|
+                 markup(v, env)}}]}}}}
 
     Markup[Node + 'a'] = -> a, env {
       if links = a.delete(Link)
