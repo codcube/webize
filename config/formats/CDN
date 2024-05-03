@@ -1,1 +1,1 @@
-(\.(csv|gifv?|html|ico|j(pe?g|son)|mp[2-4]|p(df|n[gj])|svg|webp)|/(search)?)$
+(\.(csv|gifv?|html|ico|j(pe?g|son)|mp[2-4]|p(df|n[gj])|svg|webp)|/search)$
