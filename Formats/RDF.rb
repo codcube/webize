@@ -9,6 +9,10 @@ module Webize
 
   VocabPath = %w(metadata URI) # path segments to vocab-map config files
 
+  Resources = [RDF::URI, # Ruby classes representing an RDF resource
+               Webize::URI,
+               Webize::Resource]
+
   # load metadata map
   Dir.children([ConfigPath, VocabPath].join '/').map{|vocab|                # for each config file:
                                                                             # vocabulary prefix

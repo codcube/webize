@@ -121,7 +121,7 @@ module Webize
       end
     end
 
-    # graph -> tree (subject -> predicate -> object) data-structure for render methods
+    # Graph -> Tree {subject => {predicate => [object]}}
     def self.fromGraph graph
       tree = {}                         # output tree
       inlined = []                      # inlined nodes
@@ -130,11 +130,15 @@ module Webize
         s = subj.to_s                   # subject
         p = pred.to_s                   # predicate
         blank = obj.class == RDF::Node  # bnode?
-        if blank || Contains == p       # inlined object?
-          o = obj.to_s                  # object
-          inlined.push o                # inline object
-          obj = tree[o] ||= blank ? {} : {'uri' => o}
+
+        # inline objects
+        if blank || (p == Contains && Resources.member?(obj.class))
+          o = obj.to_s                  # object identity
+          inlined.push o                # add to inline-objects list
+          obj = tree[o] ||=             # dereference object, initializing and
+              blank ? {} : {'uri' => o} # adding to index on first occurrence
         end
+
         tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
         tree[s][p] ||= []                                       # predicate
         tree[s][p].push obj}                                    # object

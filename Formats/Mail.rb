@@ -31,9 +31,9 @@ module Webize
       def each_statement &fn
         mail_triples(@doc){|subject, predicate, o, graph|
           fn.call RDF::Statement.new(Webize::URI(subject), Webize::URI(predicate),
-                                     (o.class == Webize::URI || o.class == RDF::URI || o.class == Webize::Resource) ? o : (l = RDF::Literal o
-                                                                                            l.datatype=RDF.XMLLiteral if predicate == Content
-                                                                                            l),
+                                     Resources.member?(o.class) ? o : (l = RDF::Literal o
+                                                                       l.datatype=RDF.XMLLiteral if predicate == Content
+                                                                       l),
                                      :graph_name => graph)}
       end
 
