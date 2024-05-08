@@ -47,41 +47,4 @@ module Webize
     end
 
   end
-  module HTML
-
-    TabularLayout = [Directory,
-                     'http://rdfs.org/sioc/ns#ChatLog']
-
-    # TODO merge w/ basicres/node 
-    Markup[Container] = -> dir, env {
-      uri = dir['uri']
-      id = RDF::URI(uri).fragment if uri
-      content = dir.delete(Contains) || []
-      tabular = (dir[Type] || []).find{|type| TabularLayout.member? type}
-      dir.delete Type
-      dir.delete Date
-      if title = dir.delete(Title)
-        title = title[0]
-        color = '#' + Digest::SHA2.hexdigest(title)[0..5]
-      end
-      {class: :container,
-       c: [([{class: :title, c: title,
-              id: 'c' + Digest::SHA2.hexdigest(rand.to_s)}.update(color ? {style: "border-color: #{color}; color: #{color}"} : {}), '<br>'] if title),
-           {class: :contents, # contained nodes
-            c: [if tabular
-                HTML.tabular content, env
-               else
-                 content.map{|c|markup(c, env)}
-                end,
-                (['<hr>',
-                  {_: :dl,
-                   c: dir.map{|k, v| # key/val view of other directory metadata
-                     [{_: :dt, c: MarkupPredicate[Type][[k], env]},
-                      {_: :dd, c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][v, env] : markup(v, env)}]
-                   }}] unless dir.keys.empty? || dir.keys == %w(uri))]}.
-             update(id ? {id: id} : {}).
-             update(color ? {class: 'contents columns',
-                             style: "background: repeating-linear-gradient(315deg, #{color}, #{color} 1px, transparent 1px, transparent 16px); border-color: #{color}; "} : {})]}}
-
-  end
 end
