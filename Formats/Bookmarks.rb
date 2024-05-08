@@ -38,8 +38,7 @@ class Webize::HTML::Reader
         domains[host] ||= (
           yield tld, Contains, host
           yield host, Title, subject.host
-          yield host, Type, RDF::URI(Container)
-          yield host, Type, RDF::URI(Directory))
+          yield host, Type, RDF::URI(Container))
 
         yield host, Contains, subject
       end

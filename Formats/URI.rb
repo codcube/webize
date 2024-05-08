@@ -127,7 +127,6 @@ module Webize
         list = @base + '#list'
         dropCount, linkCount = [0, 0] # stats
         fn.call RDF::Statement.new list, RDF::URI(Type), RDF::URI(Container)
-        fn.call RDF::Statement.new list, RDF::URI(Type), RDF::URI(Directory)
         @doc.lines.shuffle.map(&:chomp).map{|line|
           unless line.empty? || line.match?(/^#/) # skip empty and commented lines
             uri, title = line.split ' ', 2        # URI and optional title
