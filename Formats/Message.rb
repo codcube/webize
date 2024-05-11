@@ -25,7 +25,6 @@ module Webize
         lines = 0
         ts = {}
 
-        yield target, Type, RDF::URI(Container)
         yield target, Type, RDF::URI('http://rdfs.org/sioc/ns#ChatLog')
 
         @doc.lines.grep(/^[^-]/).map{|msg|
