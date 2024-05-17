@@ -195,7 +195,7 @@ module Webize
 
           # child nodes
           if depth > 30 || node.name == 'svg' # opaque HTML literal
-            yield subject, Content, RDF::Literal(node.to_html, datatype: RDF.HTML)
+            yield subject, Contains, RDF::Literal(node.to_html, datatype: RDF.HTML)
           else
             node.children.map{|child|
               if child.text? || child.cdata?  # text literal

@@ -34,10 +34,7 @@ module Webize
 
       def each_statement &fn
         archive_triples{|s,p,o|
-          fn.call RDF::Statement.new(@subject, RDF::URI(p),
-                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
-                                                                                            l.datatype=RDF.XMLLiteral if p == Content
-                                                                                            l),
+          fn.call RDF::Statement.new(@subject, RDF::URI(p), o,
                                      :graph_name => @subject)}
       end
 

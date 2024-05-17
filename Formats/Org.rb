@@ -37,7 +37,7 @@ module Webize
       def source_tuples
         html = RDF::Literal Orgmode::Parser.new(@doc).to_html
         html.datatype = RDF.XMLLiteral
-        yield RDF::URI(Content), html
+        yield RDF::URI(Contains), html
       end
     end
   end

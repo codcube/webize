@@ -30,10 +30,7 @@ module Webize
 
       def each_statement &fn
         vtt_triples{|s,p,o|
-          fn.call RDF::Statement.new(s, RDF::URI(p),
-                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
-                                                                                            l.datatype=RDF.XMLLiteral if p == Content
-                                                                                            l),
+          fn.call RDF::Statement.new(s, RDF::URI(p), o,
                                      :graph_name => @base)}
       end
 
@@ -44,7 +41,7 @@ module Webize
           subject = @base.join '#l' + line.to_s; line += 1
           yield subject, Type, RDF::URI(Post)
           yield subject, Date, cue.start
-          yield subject, Content, cue.text
+          yield subject, Contains, cue.text
         end
       end
     end

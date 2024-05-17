@@ -31,10 +31,7 @@ module Webize
 
       def each_statement &fn
         gemtext_triples{|s,p,o|
-          fn.call RDF::Statement.new(s, RDF::URI(p),
-                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
-                                                                                            l.datatype=RDF.XMLLiteral if p == Content
-                                                                                            l),
+          fn.call RDF::Statement.new(s, RDF::URI(p), o,
                                      :graph_name => @subject)}
       end
 
@@ -47,7 +44,7 @@ module Webize
           yield @base, Title, title.sub(Heading, '')
         end
 
-        yield @base, Content,
+        yield @base, Contains,
               lines.map{|line|
           line.chomp!
           case line

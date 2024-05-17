@@ -167,10 +167,7 @@ module Webize
 
       def each_statement &fn
         playlist_triples{|s,p,o|
-          fn.call RDF::Statement.new(@subject, RDF::URI(p),
-                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
-                                                                                            l.datatype=RDF.XMLLiteral if p == Content
-                                                                                            l),
+          fn.call RDF::Statement.new(@subject, RDF::URI(p), o,
                                      :graph_name => @subject)}
       end
 
@@ -192,7 +189,7 @@ module Webize
           graph << RDF::Statement.new(self, RDF::URI(Title), tag.title)
           graph << RDF::Statement.new(self, RDF::URI(Creator), tag.artist)
           graph << RDF::Statement.new(self, RDF::URI(Date), tag.year) unless !tag.year || tag.year == 0
-          graph << RDF::Statement.new(self, RDF::URI(Content), tag.comment)
+          graph << RDF::Statement.new(self, RDF::URI(Contains), tag.comment)
           graph << RDF::Statement.new(self, RDF::URI(Schema+'album'), tag.album)
           graph << RDF::Statement.new(self, RDF::URI(Schema+'track'), tag.track)
           graph << RDF::Statement.new(self, RDF::URI(Schema+'genre'), tag.genre)

@@ -67,7 +67,7 @@ module Webize
         converter = File.extname(@path) == '.doc' ? :antiword : :docx2txt
         html = RDF::Literal '<pre>' + `#{converter} #{Shellwords.escape @path}` + '</pre>'
         html.datatype = RDF.XMLLiteral
-        yield RDF::URI(Content), html
+        yield RDF::URI(Contains), html
       end
     end
   end
@@ -97,15 +97,12 @@ module Webize
 
       def each_statement &fn
         nfo_triples{|p,o|
-          fn.call RDF::Statement.new(@base, RDF::URI(p),
-                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
-                                                                                            l.datatype=RDF.XMLLiteral if p == Content
-                                                                                            l),
+          fn.call RDF::Statement.new(@base, RDF::URI(p), o,
                                      :graph_name => @base)}
       end
 
       def nfo_triples
-        yield Content, HTML.render({_: :pre, c: @doc})
+        yield Contains, HTML.render({_: :pre, c: @doc})
       end
     end
   end
@@ -135,11 +132,7 @@ module Webize
 
       def each_statement &fn
         text_triples{|s, p, o, graph=nil|
-          fn.call RDF::Statement.new(Webize::URI.new(s),
-                                     Webize::URI.new(p),
-                                     (o.class == Webize::URI || o.class == RDF::URI) ? o : (l = RDF::Literal o
-                                                                                            l.datatype=RDF.XMLLiteral if p == Content
-                                                                                            l),
+          fn.call RDF::Statement.new(Webize::URI.new(s), Webize::URI.new(p), o,
                                      graph_name: graph || @base)}
       end
 
@@ -150,7 +143,7 @@ module Webize
         elsif File.extname(@base) == '.irc'
           chat_triples &f
         else
-          yield @base, Content,
+          yield @base, Contains,
                 HTML.render({_: :pre,
                              c: @doc.lines.map{|line|
                                line.hrefs{|p,o|

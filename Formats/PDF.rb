@@ -32,7 +32,7 @@ module Webize
           io.close_write
           html = RDF::Literal io.read
           html.datatype = RDF.XMLLiteral
-          yield RDF::URI(Content), html }
+          yield RDF::URI(Contains), html }
       end
     end
   end

@@ -224,7 +224,7 @@ rss rss.xml
                                                d[Creator] ? {_: :author, c: d[Creator][0]} : nil,
                                                {_: :content, type: :xhtml,
                                                 c: {xmlns:"http://www.w3.org/1999/xhtml",
-                                                    c: d[Content]}}]}}]}]
+                                                    c: d[Contains]}}]}}]}]
       end
     end
   end

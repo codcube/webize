@@ -30,10 +30,7 @@ module Webize
 
       def each_statement &fn
         mail_triples(@doc){|subject, predicate, o, graph|
-          fn.call RDF::Statement.new(Webize::URI(subject), Webize::URI(predicate),
-                                     Resources.member?(o.class) ? o : (l = RDF::Literal o
-                                                                       l.datatype=RDF.XMLLiteral if predicate == Content
-                                                                       l),
+          fn.call RDF::Statement.new(Webize::URI(subject), Webize::URI(predicate), o,
                                      :graph_name => graph)}
       end
 
@@ -61,7 +58,7 @@ module Webize
           (!p.mime_type || p.mime_type.match?(/^text\/plain/)) && # text parts
             ::Mail::Encodings.defined?(p.body.encoding)    # decodable?
         }.map{|p|
-          yield mail, Content,
+          yield mail, Contains,
                 HTML.render(
                   p.decoded.lines.to_a.map{|l| # split lines
                     l = l.chomp # strip any remaining [\n\r]
@@ -147,7 +144,7 @@ module Webize
           yield mail, SIOC+'attachment', file, graph # attachment pointer
           if p.main_type == 'image'           # image attachments
             yield mail, Image, file, graph    # image link in RDF
-            yield mail, Content,              # image link in HTML
+            yield mail, Contains,             # image link in HTML
                   HTML.render({_: :a, href: file.uri, c: [{_: :img, src: file.uri}, p.filename]}), graph # render HTML
           end }
 
