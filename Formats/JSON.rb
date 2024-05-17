@@ -52,9 +52,7 @@ module Webize
         scanContent{|s, p, o, graph=nil|
           s = Webize::URI.new s
           o = Webize.date o if p.to_s == Date # normalize date formats
-          fn.call RDF::Statement.new(s, Webize::URI.new(p),
-                                     p == Content ? ((l = RDF::Literal o).datatype = RDF.HTML
-                                                      l) : o,
+          fn.call RDF::Statement.new(s, Webize::URI.new(p), o,
                                      graph_name: Webize::URI.new(graph || [s.host ? ['https://', s.host] : nil, s.path].join))}
       end
 
@@ -82,7 +80,7 @@ module Webize
               yield s, Creator, RDF::URI(o['url'])
               drop = true
             when 'content_text'
-              p = Content
+              p = Contains
               o = CGI.escapeHTML o
             end
             yield s, p, o unless drop}} if @json['items'] && @json['items'].respond_to?(:map)

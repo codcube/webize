@@ -51,8 +51,6 @@ module Webize
           markup creator, env
         end}}
 
-    MarkupPredicate[Content] = MarkupPredicate[SIOC+'richContent'] = -> cs, env {cs.map{|c| markup c, env}}
-
     MarkupPredicate[To] = -> recipients, env {
       recipients.map{|r|
         if Resources.member? r.class
@@ -76,13 +74,24 @@ module Webize
     Markup[Node + 'a'] = -> a, env {
       if links = a.delete(Link)
         ref = links[0]
-        puts ["multiple link targets:", links].join ' ' if links.size > 1
+        puts ["<a> with multiple references:", links].join ' ' if links.size > 1
       end
-      {_: :a, c: [a.delete(Content),
+      {_: :a, c: [a.delete(Contains),
                   ({_: :span, c: CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '')} if ref),
                   Markup[:kv][a,env]]}.update(
         ref ? {href: ref,
                class: ref.host == env[:base].host ? 'local' : 'global'} : {})}
+
+    # nodes using generic render
+    [[:p, :¶],
+     [:ul,''],
+     [:li,'']].map{|name, icon|
+
+      # generic node renderer
+      Markup[Node + name.to_s] = -> node, env {
+        {_: name,                       # node
+         c: [icon, node.delete(Contains), # child nodes
+             Markup[:kv][node, env]]}}} # attributes
 
     Markup[Node + 'script'] = -> script, env {
       {class: :script,
@@ -218,7 +227,6 @@ module Webize
        c: [({class: :title, c: p[Title]}.        # title
               update(ref || {}) if r.has_key? Title),
            p[Abstract], p[To],                   # abstract, dest
-           p[Content], p[SIOC+'richContent'],    # content
            (["\n", Markup[:kv][r,env],           # key/val fields
              "\n"] unless r.empty?),
            (children.map{|c|

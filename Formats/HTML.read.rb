@@ -1,7 +1,7 @@
 module Webize
   module HTML
 
-    Node = 'http://mw.logbook.am/webize/Node/' # URI constant for node schema
+    Node = 'http://mw.logbook.am/webize/Node#' # node-schema base URI
 
     class Format < RDF::Format
 
@@ -194,13 +194,13 @@ module Webize
           } if node.respond_to? :attribute_nodes
 
           # child nodes
-          if depth > 30 || node.name == 'svg' # emit node as HTML literal
+          if depth > 30 || node.name == 'svg' # opaque HTML literal
             yield subject, Content, RDF::Literal(node.to_html, datatype: RDF.HTML)
           else
             node.children.map{|child|
-              if child.text? || child.cdata?  # emit node as text literal
-                yield subject, Content, child.inner_text.strip unless child.inner_text.match? EmptyText
-              else                            # emit node as RDF node
+              if child.text? || child.cdata?  # text literal
+                yield subject, Contains, child.inner_text.strip unless child.inner_text.match? EmptyText
+              else                            # child node
                 yield subject, Contains, scan_node[child, depth + 1]
               end}
           end
