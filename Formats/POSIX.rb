@@ -6,11 +6,15 @@ module Webize
     def dir_triples graph
       return Node(join basename + '/').dir_triples graph unless dirURI?
       graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601)
-      node.children.map{|child|
+      (nodes = node.children).map{|child|
         c = Node join child.basename.to_s.gsub(' ','%20').gsub('#','%23')
-        bin = Node join c.basename[0].downcase + '*'
-        graph << RDF::Statement.new(self, RDF::URI(Contains), bin)
-        graph << RDF::Statement.new(bin, RDF::URI(Contains), c)}
+        if nodes.size > 32
+          bin = Node join c.basename[0].downcase + '*'
+          graph << RDF::Statement.new(self, RDF::URI(Contains), bin)
+          graph << RDF::Statement.new(bin, RDF::URI(Contains), c)
+        else
+          graph << RDF::Statement.new(self, RDF::URI(Contains), c)
+        end}
       graph
     end
 
