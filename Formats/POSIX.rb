@@ -9,9 +9,11 @@ module Webize
       (nodes = node.children).map{|child|
         c = Node join child.basename.to_s.gsub(' ','%20').gsub('#','%23')
         if nodes.size > 32
-          bin = Node join c.basename[0].downcase + '*'
+          char = c.basename[0].downcase
+          bin = Node join char + '*'
           graph << RDF::Statement.new(self, RDF::URI(Contains), bin)
           graph << RDF::Statement.new(bin, RDF::URI(Contains), c)
+          graph << RDF::Statement.new(bin, RDF::URI(Title), char)
         else
           graph << RDF::Statement.new(self, RDF::URI(Contains), c)
         end}
