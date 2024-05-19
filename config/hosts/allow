@@ -3,6 +3,7 @@ ajax.googleapis.com
 api-3.irccloud.com
 api-v2.soundcloud.com
 api.mixcloud.com
+basemaps-api.arcgis.com
 berkeleybeacon.com
 blogger.googleusercontent.com
 books.google.com
@@ -19,7 +20,6 @@ groups.google.com
 invisiblecollege.s3-us-west-1.amazonaws.com
 invisiblecollege.s3.us-west-1.amazonaws.com
 m.media-amazon.com
-miro.medium.com
 news.google.com
 patents.google.com
 private-user-images.githubusercontent.com
