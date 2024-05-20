@@ -292,7 +292,7 @@ module Webize
 
     URI_OPEN_OPTS = {open_timeout: 16,
                      read_timeout: 32,
-                     redirect: false} # don't invisibly follow redirects. we need this data to make clients and servers/proxies (populate relocation DB) aware
+                     redirect: false} # don't have HTTP library invisibly follow redirects. we use this data to make clients/servers/proxies relocation aware
 
     def fetchHTTP thru: true                                           # thread origin HTTP response through to caller?
       start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
@@ -308,9 +308,9 @@ module Webize
         fetch_time = Time.now                                          # fetch timing
         h = headers response.meta                                      # response header
         case status = response.status[0].to_i                          # response status
-        when 204                                                       # no content
-          [204, {}, []]
-        when 206                                                       # partial content
+        when 204                                                       # no upstream content
+          fetchLocal
+        when 206                                                       # partial upstream content
           h['Access-Control-Allow-Origin'] ||= origin
           [206, h, [response.read]]
         else                                                           # massage metadata, cache and return data
