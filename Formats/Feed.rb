@@ -5,7 +5,7 @@ module Webize
     def RSS_available?
       RSS_hosts.member?(host) &&
         !path.index('.rss') &&
-        parts[0] != 'gallery'
+        !%w(gallery media).member?(parts[0])
     end
 
   end
