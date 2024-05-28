@@ -59,11 +59,11 @@ module Webize
     # Ruby value -> Markup
     def self.markup o, env
       case o
-      when Array              # Array
+      when Array
         o.map{|n| markup n, env}
-      when FalseClass         # boolean
+      when FalseClass
         {_: :input, type: :checkbox}
-      when Hash               # Hash
+      when Hash
         Markup[o[Type] &&
                o[Type].map(&:to_s).find{|t|Markup[t]} ||
                BasicResource][o, env]
@@ -71,27 +71,27 @@ module Webize
         o
       when NilClass
         o
-      when RDF::Literal       # RDF literal
+      when RDF::Literal
         if [RDF.HTML, RDF.XMLLiteral].member? o.datatype
-          o.to_s              # HTML
-        else                  # String
+          o.to_s
+        else
           CGI.escapeHTML o.to_s
         end
-      when RDF::URI           # RDF::URI
+      when RDF::URI
         o = Resource.new(o).env env
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
-      when String             # String
+      when String
         CGI.escapeHTML o
-      when Time               # Time
+      when Time
         Markup[Date][o, env]
-      when TrueClass          # boolean
+      when TrueClass
         {_: :input, type: :checkbox, checked: true}
-      when Webize::Resource   # Resource
+      when Webize::Resource
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
-      when Webize::URI        # URI
+      when Webize::URI
         o = Resource.new(o).env env
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
-      else                    # default
+      else
         puts "markup undefined for #{o.class}"
         {_: :span, c: CGI.escapeHTML(o.to_s)}
       end
