@@ -26,8 +26,10 @@ module Webize
     # primarily <URI>. we use reserved key 'uri' for a resource's identifier. if that's missing, it's a blank node.
 
     # Resource and their properties are associated with type-specific markup methods (see table in HTML.templates),
-    # which emit representations of document nodes (again JSON-compatible nested Hash for compatibility and layering)
-    # Markup is then trivially serializable to HTML.
+    # which emit representations of document nodes, again a JSON-compatible nested Hash for composability and layering
+    # with RDF-unaware and generic JSON tools.
+
+    # Markup is trivially serializable to HTML, implemented below
 
     class Writer < RDF::Writer
 
