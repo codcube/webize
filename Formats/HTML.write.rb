@@ -19,16 +19,14 @@ module Webize
 
     # example: {subjectURI -> {predicateURI -> ['object', 234, {predicateURI -> [...]}]}}
 
-    # we came up with this format before Ruby had an RDF library, when we knew we didn't want to write one
+    # We came up with this format before Ruby had an RDF library, when we knew we didn't want to write one
     # if we could get away with using a subset of RDF in JSON and piggyback on existing fast serializers/parsers.
     # with good handling of recursive blank nodes there's not much missing aside from value types not supported by JSON,
     # primarily <URI>. we use reserved key 'uri' for the resource identifier. if that's missing, it's a blank node.
 
-    # so we churn through the toplevel index and hand each resource to its type-specific markup function, or the generic one
-    # then we know everything has been rendered since any node not in the toplevel index has been inlined
-    # these lambdas emit another JSON-compatible representation, this time of DOM nodes rather than a RDF graph
-
-    # we call this representation 'markup', and it's trivially serializable into the final HTML string form
+    # We churn through the toplevel index and hand each resource to its type-specific markup function, or a generic handler
+    # then we know everything has been rendered since any node not in the toplevel index was inlined and recursive renderers will hit it
+    # Markup lambdas emit again JSON-compatible nested Hash representation of DOM nodes, trivially serializable into HTML
 
     class Writer < RDF::Writer
 
