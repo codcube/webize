@@ -1,10 +1,7 @@
 module Webize
   module HTML
 
-    # markup-method tables
-
-    # {type URI -> λ (resource, env) -> markup for resource of type }
-    Markup = {
+    MarkupMethod = {
       'uri' => :identifier,
       Type => :rdf_type,
       Abstract => :abstract,
@@ -17,10 +14,9 @@ module Webize
       Schema + 'InteractionCounter' => :interactions,
     }
 
-    # {predicate URI -> λ (objects, env) -> markup for objects of predicate }
-    MarkupPredicate = {}
+    %w(div p ul ol li).map{|e|
+      MarkupMethod[e] = :element}
 
-    # HTML::Node renderers for base RDF types
     class Node < Resource
 
       def identifier uris
@@ -103,16 +99,12 @@ module Webize
                  class: ref.host == host ? 'local' : 'global'} : {})
       end
 
-      # nodes using generic render
-      [[:p, :¶],
-       [:ul,''],
-       [:li,'']].map{|name, icon|
-
-        # generic node renderer
-        Markup[Node + name.to_s] = -> node, env {
-          {_: name,                       # node
-           c: [icon, node.delete(Contains), # child nodes
-               Markup[:kv][node, env]]}}} # attributes
+      def element node
+        name = :div
+        {_: name,                       # node
+         c: [node.delete(Contains), # child nodes
+             Markup[:kv][node, env]]}
+      end
 
       def script code
         {class: :script,
