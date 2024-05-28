@@ -1,10 +1,18 @@
 module Webize
   module HTML
 
-    # markup-lambda tables
+    # markup-method tables
 
     # {type URI -> λ (resource, env) -> markup for resource of type }
-    Markup = {}
+    Markup = {
+      'uri' => :identifier,
+      Type => :rdf_type,
+      Abstract => :abstract,
+      Title => :title,
+      Creator => :creator,
+      To => :to,
+      
+    }
 
     # {predicate URI -> λ (objects, env) -> markup for objects of predicate }
     MarkupPredicate = {}
