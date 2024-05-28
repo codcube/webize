@@ -8,6 +8,7 @@ DC.contributor
 DC.creator
 DC.publisher
 Generator
+Story-article:author
 _owner
 accountName
 acct
@@ -77,6 +78,7 @@ http://schema.org/creator
 http://www.itunes.com/dtds/podcast-1.0.dtd#author
 http://www.livejournal.org/rss/lj/1.0/poster
 http://www.w3.org/2005/Atom#author
+http://xmlns.com/foaf/0.1/maker
 https://schema.org/author
 itunes:author
 itunesAuthor
@@ -125,4 +127,3 @@ username
 video:director
 writer_composer
 youtubeAccount
-Story-article:author
