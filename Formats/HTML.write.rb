@@ -25,8 +25,9 @@ module Webize
     # with good handling of recursive blank nodes there's not much missing aside from datatypes not supported by JSON,
     # primarily <URI>. we use reserved key 'uri' for a resource's identifier. if that's missing, it's a blank node.
 
-    # Resource and their properties can be associated with type-specific markup methods (see above).
-    # Markup methods emit JSON-compatible nested Hash representations of doc nodes, trivially serializable to HTML
+    # Resource and their properties are associated with type-specific markup methods (see table in HTML.templates),
+    # which emit representations of document nodes (again JSON-compatible nested Hash for compatibility and layering)
+    # Markup is then trivially serializable to HTML.
 
     class Writer < RDF::Writer
 
