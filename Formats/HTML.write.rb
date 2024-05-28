@@ -22,12 +22,11 @@ module Webize
 
     # We came up with this format before Ruby had an RDF library, when we knew we didn't want to write one
     # if we could get away with using a subset of RDF in JSON and piggyback on existing fast serializers/parsers.
-    # with good handling of recursive blank nodes there's not much missing aside from literal datatypes not supported by JSON,
+    # with good handling of recursive blank nodes there's not much missing aside from datatypes not supported by JSON,
     # primarily <URI>. we use reserved key 'uri' for a resource's identifier. if that's missing, it's a blank node.
 
-    # We churn through the toplevel index and hand each resource to its type-specific markup function, or a generic handler.
-    # we know everything has been rendered since any node not in the index was inlined and recursive renderers will hit it
-    # Markup lambdas emit again JSON-compatible nested Hash representation of DOM nodes, trivially serializable into HTML
+    # Resource and their properties can be associated with type-specific markup methods (see above).
+    # Markup methods emit JSON-compatible nested Hash representations of doc nodes, trivially serializable to HTML
 
     class Writer < RDF::Writer
 
