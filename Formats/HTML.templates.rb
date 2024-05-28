@@ -8,8 +8,8 @@ module Webize
       Title => :title,
       Creator => :creator,
       To => :to,
-      Node + 'a' => :anchor,
-      Node + 'script' => :script,
+      DOMnode + 'a' => :anchor,
+      DOMnode + 'script' => :script,
       Schema + 'Document' => :document,
       Schema + 'InteractionCounter' => :interactions,
     }

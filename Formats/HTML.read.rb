@@ -1,7 +1,7 @@
 module Webize
   module HTML
 
-    Node = 'http://mw.logbook.am/webize/Node#' # node-schema base URI
+    DOMnode = 'http://mw.logbook.am/webize/Node#' # node-schema base URI
 
     class Format < RDF::Format
 
@@ -146,7 +146,7 @@ module Webize
                     end
 
           # type
-          yield subject, Type, RDF::URI(Node + node.name)
+          yield subject, Type, RDF::URI(DOMnode + node.name)
 
           # attributes
           node.attribute_nodes.map{|attr|
