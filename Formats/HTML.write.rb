@@ -29,7 +29,7 @@ module Webize
     # which emit representations of document nodes, again a JSON-compatible nested Hash for composability and layering
     # with RDF-unaware and generic JSON tools.
 
-    # Markup is trivially serializable to HTML, implemented below
+    # Markup is trivially serializable to HTML, implemented below. if you have an as fast but more 'correct' way to do this, HMU on IRC
 
     class Writer < RDF::Writer
 
