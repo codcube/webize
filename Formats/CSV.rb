@@ -32,16 +32,9 @@ module Webize
                                                       'order' => env[:order] == 'asc' ? 'desc' : 'asc'}))}}, "\n"]}}} if env),
            {_: :tbody,
             c: graph.map{|resource|           # resource -> row
-              predicate = -> a {MarkupPredicate[a][resource[a],env] if resource.has_key? a}
-
               [{_: :tr, c: keys.map{|k|
                   [{_: :td, property: k,
-                    c: if MarkupPredicate.has_key? k
-                     predicate[k]
-                   else
-                     (resource[k]||[]).yield_self{|r|r.class == Array ? r : [r]}.map{|v|
-                       [(markup v, env), ' ']}
-                    end}, "\n" ]}}, "\n" ]}}]}
+                    c: property(k, resource[k]), "\n" ]}}, "\n" ]}}]}
     end
   end
 end

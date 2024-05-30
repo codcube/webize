@@ -33,10 +33,14 @@ module Webize
     end
   end
   module HTML
-
-    MarkupPredicate[Image] = -> images, env {
-      images.map{|i|
-        Markup[Image][ i.class == Hash ? i : {'uri' => i.to_s}, env ]}}
+    class Property
+      Markup[Image] = :image
+      def image images
+        images.map{|i|
+          i = {'uri' => i.to_s} unless i.class == Hash
+          i[Type] = Image
+          markup i}
+      end
 
     Markup[Image] = -> image, env {
       src = Webize::Resource((env[:base].join image['uri']), env).href

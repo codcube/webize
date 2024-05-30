@@ -2,12 +2,15 @@
 
 module Webize
   module HTML
-    MarkupPredicate[Date] = -> dates, env {
-      dates.map{|date| Markup[Date][date, env]}}
+    class Property
 
-    Markup[Date] = -> date, env {
-      date = date.to_s
-      {_: :a, class: :date, c: date, href: '/' + date[0..13].gsub(/[-T:]/,'/') + '*'}}
+      Markup[Date] = :date
+
+      def date
+        date = date.to_s
+        {_: :a, class: :date, c: date, href: '/' + date[0..13].gsub(/[-T:]/,'/') + '*'}
+      end
+    end
 
     class Reader
 
