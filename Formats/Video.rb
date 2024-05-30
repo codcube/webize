@@ -78,39 +78,49 @@ module Webize
     end
   end
   module HTML
+    class Property
 
-    MarkupPredicate[Video] = -> videos, env {
-      videos.map{|v|
-        Markup[Video][ v.class == Hash ? v : {'uri' => v.to_s}, env ]}}
+      Markup[Video] = :video
 
-    Markup[Video] = -> video, env {
-      v = Webize::Resource env[:base].join(video['uri']), env # video URI
-      video.delete Video
+      def video videos
+        videos.map{|v|
+          v = {'uri' => v.to_s} unless v.class == Hash
+          v[Type] = Video
+          HTML.markup v, env}
+      end
+    end
+    class Node
 
-      {class: :video,
-       c: [{_: :span, style: 'font-size: 4.2em', c: :🎞},
-           (MarkupPredicate[Title][video.delete(Title), env] if video.has_key? Title),
-           Markup[:kv][video, env],
-           if v.uri.match? /youtu/ # YouTube
+      Markup[Video] = :videotag
 
-             id = v.query_hash['v'] || v.parts[-1]
-             player = 'yt' + Digest::SHA2.hexdigest(rand.to_s)
+      def videotag video
+        v = Webize::Resource env[:base].join(video['uri']), env # video URI
+        video.delete Video
 
-             [ # thumbnail node
-               {_: :a, id: 'preembed' + Digest::SHA2.hexdigest(rand.to_s),
-               class: :preembed,
-               onclick: "inlineplayer(\"##{player}\",\"#{id}\"); this.remove()", # load player when selected
-               href: '#' + player,                                               # focus player when selected
-               c: [{_: :img,
-                    src: Webize::Resource("https://i.ytimg.com/vi_webp/#{id}/sddefault.webp", env).href},
-                   {class: :icon, c: '&#9654;'}]},
+        {class: :video,
+         c: [{_: :span, style: 'font-size: 4.2em', c: :🎞},
+             (Property Title, video.delete(Title) if video.has_key? Title),
+             (keyval video),
+             if v.uri.match? /youtu/ # YouTube
 
-               # player node
-              {id: player}]
-          else                     # video tag
-            [{_: :video, src: v.uri, controls: :true}, '<br>',
-             {_: :a, href: v.uri, c: v.display_name}]
-           end]}}
+               id = v.query_hash['v'] || v.parts[-1]
+               player = 'yt' + Digest::SHA2.hexdigest(rand.to_s)
 
+               [ # thumbnail node
+                 {_: :a, id: 'preembed' + Digest::SHA2.hexdigest(rand.to_s),
+                  class: :preembed,
+                  onclick: "inlineplayer(\"##{player}\",\"#{id}\"); this.remove()", # load player when selected
+                  href: '#' + player,                                               # focus player when selected
+                  c: [{_: :img,
+                       src: Webize::Resource("https://i.ytimg.com/vi_webp/#{id}/sddefault.webp", env).href},
+                      {class: :icon, c: '&#9654;'}]},
+
+                 # player node
+                 {id: player}]
+             else                     # video tag
+               [{_: :video, src: v.uri, controls: :true}, '<br>',
+                {_: :a, href: v.uri, c: v.display_name}]
+             end]}
+      end
+    end
   end
-end

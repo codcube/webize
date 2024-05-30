@@ -200,21 +200,36 @@ module Webize
   end
 
   module HTML
-    MarkupPredicate[Audio] = -> as, env {as.map{|a| Markup[Audio][a, env]}}
+    class Property
 
-    Markup[Audio] = -> audio, env {
-      if audio.class == Hash
-        audio = audio['https://schema.org/url'] || audio[Schema+'contentURL'] || audio[Schema+'url'] || audio[Link] || audio['uri']
-        (Console.logger.warn "no audio URI!"; audio = '#audio') unless audio
+      Markup[Audio] = :audio
+
+      def audio as
+        as.map{|a|
+          a[Type] = Audio
+          HTML.markup a, env}
       end
+    end
+    class Node
 
-      if audio.class == Array
-        Console.logger.warn ["multiple audio files: ", audio].join if audio.size > 1
-        audio = audio[0]
-        (Console.logger.warn "no audio reference!"; audio = '#audio') unless audio
+      Markup[Audio] = :audiotag
+
+      def audiotag audio
+        if audio.class == Hash
+          audio = audio['https://schema.org/url'] || audio[Schema+'contentURL'] || audio[Schema+'url'] || audio[Link] || audio['uri']
+          (Console.logger.warn "no audio URI!"; audio = '#audio') unless audio
+        end
+
+        if audio.class == Array
+          Console.logger.warn ["multiple audio files: ", audio].join if audio.size > 1
+          audio = audio[0]
+          (Console.logger.warn "no audio reference!"; audio = '#audio') unless audio
+        end
+
+        {_: :audio,
+         src: env[:base].join(audio),
+         controls: :true}
       end
-
-      {_: :audio, src: env[:base].join(audio), controls: :true}}
   end
 
 end

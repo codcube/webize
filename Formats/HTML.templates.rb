@@ -1,23 +1,15 @@
 module Webize
   module HTML
+    class Property < Resource
 
-    MarkupMethod = {
-      'uri' => :identifier,
-      Type => :rdf_type,
-      Abstract => :abstract,
-      Title => :title,
-      Creator => :creator,
-      To => :to,
-      DOMnode + 'a' => :anchor,
-      DOMnode + 'script' => :script,
-      Schema + 'Document' => :document,
-      Schema + 'InteractionCounter' => :interactions,
-    }
-
-    %w(div p ul ol li).map{|e|
-      MarkupMethod[e] = :element}
-
-    class Node < Resource
+      Markup = {
+        'uri' => :identifier,
+        Type => :rdf_type,
+        Abstract => :abstract,
+        Title => :title,
+        Creator => :creator,
+        To => :to,
+      }
 
       def identifier uris
         (uris.class == Array ? uris : [uris]).map{|uri|
@@ -76,6 +68,19 @@ module Webize
             markup r, env
           end}
       end
+    end
+
+    class Node < Resource
+
+      Markup = {
+        DOMnode + 'a' => :anchor,
+        DOMnode + 'script' => :script,
+        Schema + 'Document' => :document,
+        Schema + 'InteractionCounter' => :interactions,
+      }
+
+      %w(div p ul ol li).map{|e|
+        Markup[e] = :element}
 
       def keyval kv
         {_: :dl,
