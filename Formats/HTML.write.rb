@@ -11,11 +11,14 @@ module Webize
     StatusColor.keys.map{|s|
       StatusColor[s.to_i] = StatusColor[s]}
 
-    # Graph -> Tree -> Markup -> HTML
+    # RDF graph ->
+    #   JSON (s,p,o) tree ->
+    #     HTML in-memory representation ->
+    #       String
 
-    # First, the RDF graph is transformed to a tree of JSON-compatible nested Hash objects. JSON#fromGraph
-    # is implemented in JSON.rb as we also use treeization for rendering other formats like RSS and JSON.
-    # the tree is first indexed on subject URI, returning a resource and its data, indexed on predicate URI,
+    # the RDF graph is transformed to a tree of JSON-compatible nested Hash objects in JSON#fromGraph,
+    # implemented in JSON.rb as we also use treeization for rendering RSS and JSON.
+    # the datastructure is indexed on subject URI, returning a resource and its data, indexed on predicate URI,
     # to an array of objects with blank and/or contained nodes inlined where predicate indexing begins anew
 
     # example: {subjectURI -> {predicateURI -> ['object', 234, {predicateURI -> [...]}]}}
@@ -25,11 +28,9 @@ module Webize
     # with good handling of recursive blank nodes there's not much missing aside from datatypes not supported by JSON,
     # primarily <URI>. we use reserved key 'uri' for a resource's identifier. if that's missing, it's a blank node.
 
-    # Resource and their properties are associated with type-specific markup methods (see table in HTML.templates),
-    # which emit representations of document nodes, again a JSON-compatible nested Hash for composability and layering
-    # with RDF-unaware and generic JSON tools.
-
-    # Markup is trivially serializable to HTML, implemented below. if you have an as fast but more 'correct' way to do this, HMU on IRC
+    # Resources and their properties can be associated with type-specific markup methods (w/ generic/defaults in HTML.templates.rb),
+    # which emit representations of document nodes aka HTML elements, again a JSON-compatible nested Hash for composability and layering
+    # with RDF-unaware and generic JSON tools, trivially serializable to HTML. if you have a faster or more 'correct' way to do this, let me know
 
     class Writer < RDF::Writer
 
