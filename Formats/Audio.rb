@@ -230,6 +230,6 @@ module Webize
          src: env[:base].join(audio),
          controls: :true}
       end
+    end
   end
-
 end

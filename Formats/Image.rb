@@ -42,22 +42,23 @@ module Webize
           markup i}
       end
 
-    Markup[Image] = -> image, env {
-      src = Webize::Resource((env[:base].join image['uri']), env).href
+      Markup[Image] = -> image, env {
+        src = Webize::Resource((env[:base].join image['uri']), env).href
 
-      [{class: :image,
-        c: [{_: :a, href: src,
-             c: {_: :img, src: src}},
-            (['<br>', {class: :caption,
-               c: image[Abstract].map{|a|
-                 [(markup a,env),' ']}}] if image.has_key? Abstract),
-            ([Abstract,Image,Type,'uri'].map{|p| image.delete p }
-             {_: :dl,
-              c: image.map{|k, v|                         # key/val view of other fields
-                [{_: :dt, c: MarkupPredicate[Type][[k], env]},
-                 {_: :dd, c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][v, env] : markup(v, env)}]
-              }} unless image.empty?)]}, ' ']}
+        [{class: :image,
+          c: [{_: :a, href: src,
+               c: {_: :img, src: src}},
+              (['<br>', {class: :caption,
+                         c: image[Abstract].map{|a|
+                           [(markup a,env),' ']}}] if image.has_key? Abstract),
+              ([Abstract,Image,Type,'uri'].map{|p| image.delete p }
+               {_: :dl,
+                c: image.map{|k, v|                         # key/val view of other fields
+                  [{_: :dt, c: MarkupPredicate[Type][[k], env]},
+                   {_: :dd, c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][v, env] : markup(v, env)}]
+                }} unless image.empty?)]}, ' ']}
 
+    end
   end
   module JPEG
     class Format < RDF::Format
@@ -75,7 +76,7 @@ module Webize
 
       def initialize(input = $stdin, options = {}, &block)
         @subject = RDF::URI(options[:base_uri] || '#image')
-#        @img = Exif::Data.new(input.respond_to?(:read) ? input.read : input) rescue nil
+        #        @img = Exif::Data.new(input.respond_to?(:read) ? input.read : input) rescue nil
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)

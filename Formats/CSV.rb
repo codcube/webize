@@ -34,7 +34,7 @@ module Webize
             c: graph.map{|resource|           # resource -> row
               [{_: :tr, c: keys.map{|k|
                   [{_: :td, property: k,
-                    c: property(k, resource[k]), "\n" ]}}, "\n" ]}}]}
+                    c: property(k, resource[k])}, "\n" ]}}, "\n" ]}}]}
     end
   end
 end
