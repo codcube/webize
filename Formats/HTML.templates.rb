@@ -2,6 +2,9 @@ module Webize
   module HTML
     class Property < Resource
 
+      # methods for rendering an attribute, edge, field, key, predicate, property
+
+      # predicate URI -> method table
       Markup = {
         'uri' => :identifier,
         Type => :rdf_type,
@@ -11,11 +14,38 @@ module Webize
         To => :to,
       }
 
+      def abstract as
+        {class: :abstract,
+         c: as.map{|a| [(markup a, env), ' ']}}
+      end
+
+      def creator creators
+        creators.map{|creator|
+          if Resources.member? creator.class
+            uri = Webize::Resource.new(creator).env env
+            name = uri.display_name
+            color = Digest::SHA2.hexdigest(name)[0..5]
+            {_: :a, class: :from, href: uri.href, style: "background-color: ##{color}", c: name}
+          else
+            markup creator, env
+          end}
+      end
+
       def identifier uris
         (uris.class == Array ? uris : [uris]).map{|uri|
           {_: :a, c: :🔗,
            href: env ? Webize::Resource(uri, env).href : uri,
            id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}
+      end
+
+      def markup content
+        # type-specific render
+        if Markup.has_key? uri
+          send Markup[uri], content
+        else # generic render
+          content.map{|v|
+            HTML.markup v, env}
+        end
       end
 
       def rdf_type types
@@ -31,11 +61,6 @@ module Webize
            end}}
       end
 
-      def abstract as
-        {class: :abstract,
-         c: as.map{|a| [(markup a, env), ' ']}}
-      end
-
       def title ts
         ts.map(&:to_s).map(&:strip).uniq.map{|t|
           [if t[0] == '#'
@@ -43,18 +68,6 @@ module Webize
           else
             CGI.escapeHTML t
            end, ' ']}
-      end
-
-      def creator creators
-        creators.map{|creator|
-          if Resources.member? creator.class
-            uri = Webize::Resource.new(creator).env env
-            name = uri.display_name
-            color = Digest::SHA2.hexdigest(name)[0..5]
-            {_: :a, class: :from, href: uri.href, style: "background-color: ##{color}", c: name}
-          else
-            markup creator, env
-          end}
       end
 
       def to recipients
