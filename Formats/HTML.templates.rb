@@ -1,10 +1,10 @@
 module Webize
   module HTML
+
+    # HTML representation of attribute/edge/field/key/predicate/property
     class Property < Resource
-
-      # methods for rendering an attribute, edge, field, key, predicate, property
-
-      # predicate URI -> method table
+ 
+      # predicate URI -> markup method
       Markup = {
         'uri' => :identifier,
         Type => :rdf_type,
@@ -13,6 +13,18 @@ module Webize
         Creator => :creator,
         To => :to,
       }
+
+      # dispatch on predicate to generate markup
+      def markup content
+        if Markup.has_key? uri # type-specific renderer
+          send Markup[uri], content
+        else                   # generic renderer
+          content.map{|v|
+            HTML.markup v, env}
+        end
+      end
+
+      # type-specific markup methods
 
       def abstract as
         {class: :abstract,
@@ -36,16 +48,6 @@ module Webize
           {_: :a, c: :🔗,
            href: env ? Webize::Resource(uri, env).href : uri,
            id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}
-      end
-
-      def markup content
-        # type-specific render
-        if Markup.has_key? uri
-          send Markup[uri], content
-        else # generic render
-          content.map{|v|
-            HTML.markup v, env}
-        end
       end
 
       def rdf_type types
@@ -83,17 +85,27 @@ module Webize
       end
     end
 
+    # HTML representation of node/object/resource/thing
     class Node < Resource
 
+      # type URI -> markup method
       Markup = {
         DOMnode + 'a' => :anchor,
         DOMnode + 'script' => :script,
         Schema + 'Document' => :document,
-        Schema + 'InteractionCounter' => :interactions,
-      }
+        Schema + 'InteractionCounter' => :interactions}
 
-      %w(div p ul ol li).map{|e|
+      %w(div p ul ol li).map{|e| # DOM node types
         Markup[e] = :element}
+
+      # dispatch on type to generate markup
+      def self.markup o, env
+        Node(env[:base], env).send (Markup[o[Type] &&
+               o[Type].map(&:to_s).find{|t|Markup[t]} ||
+        #         BasicResource][o, env]
+      end
+
+      # type-specific markup methods
 
       def keyval kv
         {_: :dl,

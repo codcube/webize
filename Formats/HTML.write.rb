@@ -28,9 +28,9 @@ module Webize
     # with good handling of recursive blank nodes there's not much missing aside from datatypes not supported by JSON,
     # primarily <URI>. we use reserved key 'uri' for a resource's identifier. if that's missing, it's a blank node.
 
-    # Resources and their properties can be associated with type-specific markup methods (w/ generic/defaults in HTML.templates.rb),
-    # which emit representations of document nodes aka HTML elements, again a JSON-compatible nested Hash for composability and layering
-    # with RDF-unaware and generic JSON tools, trivially serializable to HTML. if you have a faster or more 'correct' way to do this, let me know
+    # Resources and their properties can be associated with type-specific markup methods (w/ defaults in HTML.templates.rb),
+    # which emit representations of DOM nodes / HTML elements, again in a JSON-compatible nested Hash for composability and
+    # layering with RDF-unaware and generic JSON tools and trivial serializability to HTML
 
     class Writer < RDF::Writer
 
@@ -52,26 +52,27 @@ module Webize
       end
 
       def write_epilogue
-        @output.write HTML.render Markup[Schema + 'Document'][JSON.fromGraph(@graph), @base.env]
+        @output.write HTML.render (HTML.markup @graph, @base.env)
       end
 
     end
 
-    # Ruby value -> Markup
+    # value -> Markup
     def self.markup o, env
       case o
       when Array
-        o.map{|n| markup n, env}
+        o.map{|_|
+          markup _, env}
       when FalseClass
         {_: :input, type: :checkbox}
       when Hash
-        Markup[o[Type] &&
-               o[Type].map(&:to_s).find{|t|Markup[t]} ||
-               BasicResource][o, env]
+        HTML::Node.markup o, env
       when Integer
         o
       when NilClass
         o
+      when RDF::Graph
+       markup JSON.fromGraph(o), env
       when RDF::Literal
         if [RDF.HTML, RDF.XMLLiteral].member? o.datatype
           o.to_s
@@ -84,7 +85,7 @@ module Webize
       when String
         CGI.escapeHTML o
       when Time
-        Markup[Date][o, env]
+        Webize::HTML::Property(Date, env).markup o
       when TrueClass
         {_: :input, type: :checkbox, checked: true}
       when Webize::Resource
