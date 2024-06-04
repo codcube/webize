@@ -250,8 +250,7 @@ module Webize
          c: [({class: :title, c: p[Title]}.        # title
                 update(ref || {}) if r.has_key? Title),
              p[Abstract], p[To],                   # abstract, dest
-             (["\n", Markup[:kv][r,env],           # key/val fields
-               "\n"] unless r.empty?),
+             (keyval r unless r.empty?),           # key/val fields
              (children.map{|c|
                 markup c, env} if children),
              origin_ref,                           # origin pointer
