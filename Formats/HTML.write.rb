@@ -11,10 +11,35 @@ module Webize
     StatusColor.keys.map{|s|
       StatusColor[s.to_i] = StatusColor[s]}
 
+    # representation of attribute/edge/field/key/predicate/property
+    class Property < Resource
+      def markup content # dispatch on property URI to representation generator method
+        if Markup.has_key? uri # type-specific renderer
+          send Markup[uri], content
+        else                   # generic renderer
+          content.map{|v|
+            HTML.markup v, env}
+        end
+      end
+    end
+
+    # representation of node/object/resource/thing
+    class Node < Resource
+      def self.markup o, env # dispatch on type URI to representation generator method
+        Node.new(env[:base]).env(env).        # representation instance
+          send o[Type] &&                     # has RDF type attribute?
+               Markup[o[Type].map(&:to_s).find{|t| # types
+                   Markup.has_key? t}] ||     # typed renderer found?
+               :resource, o                   # generic renderer
+      end
+    end
+
+    # OUTPUT dataflow:
+
     # RDF graph ->
     #   JSON (s,p,o) tree ->
-    #     HTML in-memory representation ->
-    #       String
+    #     HTML "markup" representation tree ->
+    #       HTML string
 
     # the RDF graph is transformed to a tree of JSON-compatible nested Hash objects in JSON#fromGraph,
     # implemented in JSON.rb as we also use treeization for rendering RSS and JSON.
@@ -59,6 +84,7 @@ module Webize
 
     # value -> Markup
     def self.markup o, env
+      # can we use new Ruby pattern-matching features to define each of these separately? TODO investigate
       case o
       when Array
         o.map{|_|
@@ -72,7 +98,9 @@ module Webize
       when NilClass
         o
       when RDF::Graph
-       markup JSON.fromGraph(o), env
+        markup JSON.fromGraph(o), env
+      when RDF::Repository
+        :repository
       when RDF::Literal
         if [RDF.HTML, RDF.XMLLiteral].member? o.datatype
           o.to_s

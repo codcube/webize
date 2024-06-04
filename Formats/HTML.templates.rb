@@ -1,8 +1,6 @@
 module Webize
   module HTML
-
-    # HTML representation of attribute/edge/field/key/predicate/property
-    class Property < Resource
+    class Property
  
       # predicate URI -> markup method
       Markup = {
@@ -14,17 +12,7 @@ module Webize
         To => :to,
       }
 
-      # dispatch on predicate to generate markup
-      def markup content
-        if Markup.has_key? uri # type-specific renderer
-          send Markup[uri], content
-        else                   # generic renderer
-          content.map{|v|
-            HTML.markup v, env}
-        end
-      end
-
-      # type-specific markup methods
+      # type-specific property-markup methods
 
       def abstract as
         {class: :abstract,
@@ -85,8 +73,7 @@ module Webize
       end
     end
 
-    # HTML representation of node/object/resource/thing
-    class Node < Resource
+    class Node
 
       # type URI -> markup method
       Markup = {
@@ -98,13 +85,7 @@ module Webize
       %w(div p ul ol li).map{|e| # DOM node types
         Markup[e] = :element}
 
-      # dispatch on type to generate markup
-      def self.markup o, env
-        Node.new(env[:base]).env(env).
-          send o[Type] && Markup[ o[Type].map(&:to_s).find{|t|Markup[t]} ] || :resource, o
-      end
-
-      # type-specific markup methods
+      # type-specific resource-markup methods
 
       def keyval kv
         {_: :dl,
@@ -123,7 +104,7 @@ module Webize
         end
         {_: :a, c: [a.delete(Contains),
                     ({_: :span, c: CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '')} if ref),
-                    Markup[:kv][a,env]]}.update(
+                    keyval(a)]}.update(
           ref ? {href: ref,
                  class: ref.host == host ? 'local' : 'global'} : {})
       end
