@@ -100,9 +100,8 @@ module Webize
 
       # dispatch on type to generate markup
       def self.markup o, env
-        Node(env[:base], env).send (Markup[o[Type] &&
-               o[Type].map(&:to_s).find{|t|Markup[t]} ||
-        #         BasicResource][o, env]
+        Node.new(env[:base]).env(env).
+          send o[Type] && Markup[ o[Type].map(&:to_s).find{|t|Markup[t]} ] || :resource, o
       end
 
       # type-specific markup methods
