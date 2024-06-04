@@ -122,7 +122,7 @@ module Webize
         o = Resource.new(o).env env
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       else
-        puts "markup undefined for #{o.class}"
+        puts "⚠️ markup undefined for type #{o.class}"
         {_: :span, c: CGI.escapeHTML(o.to_s)}
       end
     end
@@ -143,7 +143,7 @@ module Webize
         '<' + (x[:_] || 'div').to_s +                        # open tag
           (x.keys - [:_,:c]).map{|a|                         # attr name
           ' ' + a.to_s + '=' + "'" + x[a].to_s.chars.map{|c| # attr value
-            {"'"=>'%27', '>'=>'%3E', '<'=>'%3C'}[c]||c}.join + "'"}.join +
+            {"'"=>'%27', '>'=>'%3E', '<'=>'%3C'}[c]||c}.join + "'"}.join + # TODO faster / more complete escaping?
           (void ? '/' : '') + '>' + (render x[:c]) +         # child nodes
           (void ? '' : ('</'+(x[:_]||'div').to_s+'>'))       # close
 
