@@ -38,6 +38,9 @@ module Webize
            id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}
       end
 
+      #      def property
+#      end
+
       def rdf_type types
         types.map{|t|
           t = Webize::Resource t, env
@@ -91,9 +94,9 @@ module Webize
         {_: :dl,
          c: kv.map{|k, vs|
            {c: ["\n",
-                {_: :dt, c: MarkupPredicate[Type][[k], env]}, "\n",
+                {_: :dt, c: property(Type,[k])}, "\n",
                 {_: :dd,
-                 c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][vs, env] : vs.map{|v|
+                 c: Property::Markup.has_key?(k) ? property(k,vs) : vs.map{|v|
                    markup(v, env)}}]}}}
       end
 
@@ -225,7 +228,7 @@ module Webize
       def resource r
 
         # predicate renderer lambda
-        p = -> a {MarkupPredicate[a][r.delete(a),env] if r.has_key? a}
+        p = -> a {property(a, r.delete(a)) if r.has_key? a}
 
         if uri = r.delete('uri')                  # unless blank node:
           uri = Webize::Resource(uri, env)        # URI
