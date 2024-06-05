@@ -5,6 +5,7 @@ Contains http://mw.logbook.am/webize/Node#contains
 Creator  http://rdfs.org/sioc/ns#has_creator
 DC       http://purl.org/dc/terms/
 Date     http://purl.org/dc/terms/date
+Document http://xmlns.com/foaf/0.1/Document
 From     http://rdfs.org/sioc/ns#has_creator
 Image    http://purl.org/dc/terms/Image
 Link     http://purl.org/dc/terms/link

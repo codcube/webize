@@ -16,7 +16,7 @@ module Webize
 
       def abstract as
         {class: :abstract,
-         c: as.map{|a| [(markup a, env), ' ']}}
+         c: as.map{|a| [(HTML.markup a, env), ' ']}}
       end
 
       def creator creators
@@ -27,7 +27,7 @@ module Webize
             color = Digest::SHA2.hexdigest(name)[0..5]
             {_: :a, class: :from, href: uri.href, style: "background-color: ##{color}", c: name}
           else
-            markup creator, env
+            HTML.markup creator, env
           end}
       end
 
@@ -68,7 +68,7 @@ module Webize
             color = Digest::SHA2.hexdigest(name)[0..5]
             {_: :a, class: :to, href: uri.href, style: "background-color: ##{color}", c: ['&rarr;', name].join}
           else
-            markup r, env
+            HTML.markup r, env
           end}
       end
     end
@@ -79,7 +79,7 @@ module Webize
       Markup = {
         DOMnode + 'a' => :anchor,
         DOMnode + 'script' => :script,
-        Schema + 'Document' => :document,
+        Document => :document,
         Schema + 'InteractionCounter' => :interactions}
 
       %w(div p ul ol li).map{|e| # DOM node types
@@ -250,7 +250,7 @@ module Webize
              p[Abstract], p[To],                   # abstract, dest
              (keyval r unless r.empty?),           # key/val fields
              (children.map{|c|
-                markup c, env} if children),
+                HTML.markup c, env} if children),
              origin_ref,                           # origin pointer
             ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(45deg, #{color}, #{color} 1px, transparent 1px, transparent 8px); border-color: #{color}"} : {})
       end

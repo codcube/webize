@@ -141,8 +141,11 @@ module Webize
         tree[s][p] ||= []                                       # predicate
         tree[s][p].push obj}                                    # object
 
-      inlined.map{|n| tree.delete n} # sweep inlined nodes from toplevel index
-      tree                           # tree
+      inlined.map{|n| tree.delete n} # sweep inlined nodes from index
+
+      # output tree
+      {Type => [Document],
+       Contains => tree.values}
     end
   end
 

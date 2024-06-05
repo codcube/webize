@@ -46,7 +46,7 @@ module Webize
 
     end
     class Node
-      
+
       Markup[Image] = :img
 
       def img image
