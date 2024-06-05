@@ -113,7 +113,7 @@ module Webize
       when String
         CGI.escapeHTML o
       when Time
-        Webize::HTML::Property(Date, env).markup o
+        Property.new(Date).env(env).markup o
       when TrueClass
         {_: :input, type: :checkbox, checked: true}
       when Webize::Resource
