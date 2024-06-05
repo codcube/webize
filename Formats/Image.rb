@@ -34,15 +34,23 @@ module Webize
   end
   module HTML
     class Property
-      Markup[Image] = :image
-      def image images
+
+      Markup[Image] = :img
+
+      def img images
         images.map{|i|
           i = {'uri' => i.to_s} unless i.class == Hash
           i[Type] = Image
           markup i}
       end
 
-      Markup[Image] = -> image, env {
+    end
+    class Node
+      
+      Markup[Image] = :img
+
+      def img image
+
         src = Webize::Resource((env[:base].join image['uri']), env).href
 
         [{class: :image,
@@ -56,7 +64,8 @@ module Webize
                 c: image.map{|k, v|                         # key/val view of other fields
                   [{_: :dt, c: MarkupPredicate[Type][[k], env]},
                    {_: :dd, c: MarkupPredicate.has_key?(k) ? MarkupPredicate[k][v, env] : markup(v, env)}]
-                }} unless image.empty?)]}, ' ']}
+                }} unless image.empty?)]}, ' ']
+      end
 
     end
   end
