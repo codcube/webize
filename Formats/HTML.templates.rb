@@ -91,10 +91,8 @@ module Webize
         {_: :dl,
          c: kv.map{|k, vs|
            {c: ["\n",
-                {_: :dt, c: property(Type,[k])}, "\n",
-                {_: :dd,
-                 c: Property::Markup.has_key?(k) ? property(k,vs) : vs.map{|v|
-                   markup(v, env)}}]}}}
+                {_: :dt, c: property(Type, [k])}, "\n",
+                {_: :dd, c: property(k, vs)}]}}}
       end
 
       def anchor a
@@ -111,9 +109,9 @@ module Webize
 
       def element node
         name = :div
-        {_: name,                       # node
+        {_: name,                   # node
          c: [node.delete(Contains), # child nodes
-             Markup[:kv][node, env]]}
+             keyval(node)]}         # attributes
       end
 
       def script code
