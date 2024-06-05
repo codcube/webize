@@ -13,6 +13,7 @@ module Webize
 
     # representation of attribute/edge/field/key/predicate/property
     class Property < Resource
+
       def markup content # dispatch on property URI to representation generator method
         if Markup.has_key? uri # type-specific renderer
           send Markup[uri], content
@@ -21,10 +22,12 @@ module Webize
             HTML.markup v, env}
         end
       end
+
     end
 
     # representation of node/object/resource/thing
     class Node < Resource
+
       def self.markup o, env # dispatch on type URI to representation generator method
         Node.new(env[:base]).env(env).        # representation instance
           send o[Type] &&                     # has RDF type attribute?
@@ -32,6 +35,12 @@ module Webize
                    Markup.has_key? t}] ||     # typed renderer found?
                :resource, o                   # generic renderer
       end
+
+      # construct and call property renderer
+      def property p, o
+        Property.new(p).env(env).markup o
+      end
+
     end
 
     # OUTPUT dataflow:

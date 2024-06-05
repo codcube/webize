@@ -38,10 +38,6 @@ module Webize
            id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}
       end
 
-      def property p,o
-        Property.new(p).env(env).markup o
-      end
-
       def rdf_type types
         types.map{|t|
           t = Webize::Resource t, env
