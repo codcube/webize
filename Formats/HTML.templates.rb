@@ -121,7 +121,7 @@ module Webize
               c: :📜}]}
       end
 
-      def document graph
+      def document doc
 
         bc = String.new             # breadcrumb trail
 
@@ -148,8 +148,7 @@ module Webize
           c: [{_: :head,
                c: [{_: :meta, charset: 'utf-8'},
 
-                   ({_: :title, c: CGI.escapeHTML(graph[uri][Title].join ' ')} if graph.has_key?(uri) &&
-                                                                                  graph[uri].has_key?(Title)),
+                   ({_: :title, c: CGI.escapeHTML(doc[Title].join ' ')} if doc.has_key? Title),
                    {_: :style,
                     c: [CSS::Site,
                         "body {background-color: #{bgcolor}}",
@@ -202,8 +201,7 @@ module Webize
                    ({class: :referers,                                                                                   # 👉 referring node(s)
                      c: [:👉, HTML.markup(HTTP::Referer[self], env)]} if HTTP::Referer[self]),
 
-                   graph.values.map{|v| HTML.markup v, env },                                                            # node(s)
-                   #                (document[Contains].map{|v| HTML.markup v, env } if document.has_key? Contains), # child nodes
+                   (doc[Contains].map{|v| HTML.markup v, env } if doc.has_key? Contains), # child nodes
 
                    link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],                                  # 👉 previous, contained and next node(s)
 
