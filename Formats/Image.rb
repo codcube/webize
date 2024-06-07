@@ -39,9 +39,8 @@ module Webize
 
       def img images
         images.map{|i|
-          i = {'uri' => i.to_s} unless i.class == Hash
-          i[Type] = Image
-          markup i}
+          i[Type] = [Image] if i.class == Hash
+          HTML.markup i, env}
       end
 
     end
