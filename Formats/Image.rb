@@ -39,8 +39,7 @@ module Webize
 
       def img images
         images.map{|i|
-          i[Type] = [Image] if i.class == Hash
-          HTML.markup i, env}
+          Node.new(env[:base]).env(env).img i}
       end
 
     end
@@ -49,6 +48,7 @@ module Webize
       Markup[Image] = :img
 
       def img image
+        image = {'uri' => image.to_s} unless image.class == Hash
 
         src = Webize::Resource((env[:base].join image['uri']), env).href
 
