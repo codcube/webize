@@ -98,7 +98,7 @@ module Webize
 
         {class: :video,
          c: [{_: :span, style: 'font-size: 4.2em', c: :🎞},
-             (Property Title, video.delete(Title) if video.has_key? Title),
+             (property Title, video.delete(Title) if video.has_key? Title),
              (keyval video),
              if v.uri.match? /youtu/ # YouTube
 

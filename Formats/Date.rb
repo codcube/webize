@@ -6,12 +6,14 @@ module Webize
 
       Markup[Date] = :date
 
-      def date d
-        d = d.to_s
-        {_: :a,
-         class: :date,
-         c: d,
-         href: '/' + d[0..13].gsub(/[-T:]/,'/') + '*'}
+      def date ds
+        ds.map{|d|
+          d = d.to_s
+          {_: :a,
+           class: :date,
+           c: d,
+           href: '/' + d[0..13].gsub(/[-T:]/,'/') + '*'}
+        }
       end
     end
 
