@@ -84,9 +84,7 @@ module Webize
 
       def video videos
         videos.map{|v|
-          v = {'uri' => v.to_s} unless v.class == Hash
-          v[Type] = Video
-          HTML.markup v, env}
+          Node.new(env[:base]).env(env).videotag v}
       end
     end
     class Node
@@ -94,8 +92,9 @@ module Webize
       Markup[Video] = :videotag
 
       def videotag video
+        video = {'uri' => video.to_s} unless video.class == Hash
+
         v = Webize::Resource env[:base].join(video['uri']), env # video URI
-        video.delete Video
 
         {class: :video,
          c: [{_: :span, style: 'font-size: 4.2em', c: :🎞},
