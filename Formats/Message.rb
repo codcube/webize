@@ -52,9 +52,7 @@ module Webize
           yield subject, To, target
           creator = RDF::URI(daydir + '/*/*irc?q=' + nick + '&sort=date&view=table#' + nick)
           yield subject, Creator, creator
-          yield subject, Contains, ['<pre>',
-                                   msg.hrefs{|p,o| yield [Image,Video].member?(p) ? subject : linkgroup, p, o}, # cluster non-media links per channel for space-efficient layout
-                                   '</pre>'].join if msg}
+          yield subject, Contains, msg.hrefs{|p,o| yield [Image,Video].member?(p) ? subject : linkgroup, p, o} if msg} # cluster non-media links per channel for space-efficient layout
       end
 
       # twtxt -> RDF
