@@ -47,7 +47,7 @@ module Webize
 
     # RDF graph ->
     #   JSON (s,p,o) tree ->
-    #     HTML "markup" representation tree ->
+    #     HTML "markup" representation ->
     #       HTML string
 
     # the RDF graph is transformed to a tree of JSON-compatible nested Hash objects in JSON#fromGraph,
@@ -55,7 +55,8 @@ module Webize
     # the datastructure is indexed on subject URI, returning a resource and its data, indexed on predicate URI,
     # to an array of objects with blank and/or contained nodes inlined where predicate indexing begins anew
 
-    # example: {subjectURI -> {predicateURI -> ['object', 234, {predicateURI -> [...]}]}}
+    # example: {subjectURI -> {
+    #             predicateURI -> ['object', 234, {predicateURI -> [...]}]}}
 
     # We came up with this format before Ruby had an RDF library, when we knew we didn't want to write one
     # if we could get away with using a subset of RDF in JSON and piggyback on existing fast serializers/parsers.
