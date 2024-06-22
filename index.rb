@@ -37,7 +37,7 @@ Gemini
 HTTP
 POSIX
 ),
- config: %w(scripts/site)}.
+ config: %w(scripts/subscriptions)}.
   map{|category, components|
   components.map{|component|
     require_relative "#{category}/#{component}"}}

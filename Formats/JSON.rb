@@ -10,16 +10,6 @@ module Webize
   end
 
   module JSON
-    def self.scan v, &y
-      case v.class.to_s
-      when 'Hash'
-        yield v
-        v.values.map{|_v| scan _v, &y }
-      when 'Array'
-        v.map{|_v| scan _v, &y }
-      end
-    end
-
     class Format < RDF::Format
       content_type 'application/json',
                    extensions: [:json, :meta, :webmanifest],
@@ -56,66 +46,8 @@ module Webize
                                      graph_name: Webize::URI.new(graph || [s.host ? ['https://', s.host] : nil, s.path].join))}
       end
 
-      def JSONfeed
-        @json['items'].map{|item|
-          s = @base.join(item['url'] || item['id'])
-          yield s, Type, RDF::URI(Post)
-          item.map{|p, o|
-            case p
-            when 'attachments'
-              o.map{|a|
-                attachment = @base.join(a['url']); attachment.path ||= '/'
-                type = case File.extname attachment.path
-                       when /m4a|mp3|ogg|opus/i
-                         Audio
-                       when /mkv|mp4|webm/i
-                         Video
-                       else
-                         Link
-                       end
-                yield s, type, attachment}
-              drop = true
-            when 'author'
-              yield s, Creator, o['name']
-              yield s, Creator, RDF::URI(o['url'])
-              drop = true
-            when 'content_text'
-              p = Contains
-              o = CGI.escapeHTML o
-            end
-            yield s, p, o unless drop}} if @json['items'] && @json['items'].respond_to?(:map)
-      end
-
       def scanContent &f
-        if hostTriples = Triplr[@base.host]
-          @base.send hostTriples, @json, &f
-        else
-          JSON.scan(@json){|h|
-            if s = h['expanded_url']||h['uri']||h['url']||h['link']||h['canonical_url']||h['src']|| # URL attribute
-                   ((id = h['id'] || h['ID'] || h['_id'] || h['id_str']) && ['#', id].join)         # id attribute
-              s = Webize::URI.new @base.join s                                                      # subject URI. TODO return to caller for triple pointing to inner resource
-              if s.parts[0] == 'users'
-                host = RDF::URI('https://' + s.host)
-                yield s, Creator, host.join(s.parts[0..1].join('/'))
-                yield s, To, host
-              end
-              h.map{|p, v|
-                unless %w(_id id id_str uri).member? p
-                  (v.class == Array ? v : [v]).map{|o|
-                    unless [Hash, NilClass].member?(o.class) || (o.class == String && o.empty?)     # each non-nil terminal value
-                      o = @base.join o if o.class == String && o.match?(/^(http|\/)\S+$/)           # resolve URI
-                      p = MetaMap[p] if MetaMap.has_key? p
-                      unless p == :drop
-                        logger.warn ["no URI for JSON key \e[7m", p, "\e[0m ", o].join unless p.match? /^https?:/
-                        yield s, p, o
-                      end
-                    end
-                  }
-                end
-              }
-            end
-          }
-        end
+
       end
     end
 
