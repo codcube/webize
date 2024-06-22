@@ -24,6 +24,13 @@ module Webize
     class Reader < RDF::Reader
       format Format
 
+      Identifier = %w(
+uri url
+link
+canonical_url
+src
+id ID _id id_str)
+
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
         @json = ::JSON.parse(input.respond_to?(:read) ? input.read : input) rescue (logger.debug ['JSON parse failure in: ', @base].join; {})
@@ -47,7 +54,7 @@ module Webize
       end
 
       def scanContent &f
-
+        
       end
     end
 
