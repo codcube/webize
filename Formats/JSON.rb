@@ -46,14 +46,14 @@ id ID _id id_str)
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        scan_doc(@doc){|s, p, o, graph=nil|
+        scan_document{|s, p, o, graph=nil|
           s = Webize::URI.new s
           o = Webize.date o if p.to_s == Date # normalize date formats
           fn.call RDF::Statement.new(s, Webize::URI.new(p), o,
                                      graph_name: Webize::URI.new(graph || [s.host ? ['https://', s.host] : nil, s.path].join))}
       end
 
-      def scan_doc &f
+      def scan_document &f
 
         scan_node = -> node {
 
@@ -80,6 +80,10 @@ id ID _id id_str)
 
           subject} # return subject node to caller
 
+        if @doc.class == Array # toplevel array to node
+          puts :ARRAY, @doc
+          @doc = {Contains => @doc}
+        end
         yield @base, Contains, scan_node[@doc] # scan document
       end
     end
