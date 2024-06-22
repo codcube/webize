@@ -57,21 +57,28 @@ id ID _id id_str)
 
         scan_node = -> node {
 
-          # subject identity
-          subject = if id = Identifier.find{|i| node.has_key? i} # identified node
-                      @base.join node.delete id
+          # subject node
+          subject = if id = Identifier.find{|i| node.has_key? i} # search for identifier
+                      @base.join node.delete id # identified node
                     else
-                      RDF::Node.new # blank node
+                      RDF::Node.new             # blank node
                     end
 
+          # node attributes
           node.map{|k, v|
-            predicate = MetaMap[k] || k
+            predicate = MetaMap[k] || k # predicate URI
 
-            (v.class == Array ? v : [v]).map{|object|
-              
+            # objects
+            (v.class == Array ? v : [v]).flatten.map{|object|
+
+              # emit triple
+              yield subject,
+                    predicate,
+                    object.class == Hash ? scan_node[object] : object
             }
           }
-        }
+
+          subject} # return subject node to caller
 
         yield @base, Contains, scan_node[@doc] # scan document
       end
