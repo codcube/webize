@@ -33,7 +33,7 @@ id ID _id id_str)
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
-        @json = ::JSON.parse(input.respond_to?(:read) ? input.read : input) rescue (logger.debug ['JSON parse failure in: ', @base].join; {})
+        @doc = ::JSON.parse(input.respond_to?(:read) ? input.read : input) rescue (logger.debug ['JSON parse failure in: ', @base].join; {})
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -46,19 +46,38 @@ id ID _id id_str)
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        scanContent{|s, p, o, graph=nil|
+        scan_doc(@doc){|s, p, o, graph=nil|
           s = Webize::URI.new s
           o = Webize.date o if p.to_s == Date # normalize date formats
           fn.call RDF::Statement.new(s, Webize::URI.new(p), o,
                                      graph_name: Webize::URI.new(graph || [s.host ? ['https://', s.host] : nil, s.path].join))}
       end
 
-      def scanContent &f
-        
+      def scan_doc &f
+
+        scan_node = -> node {
+
+          # subject identity
+          subject = if id = Identifier.find{|i| node.has_key? i} # identified node
+                      @base.join node.delete id
+                    else
+                      RDF::Node.new # blank node
+                    end
+
+          node.map{|k, v|
+            predicate = MetaMap[k] || k
+
+            (v.class == Array ? v : [v]).map{|object|
+              
+            }
+          }
+        }
+
+        yield @base, Contains, scan_node[@doc] # scan document
       end
     end
 
-    # Graph -> Tree {subject => {predicate => [object]}}
+    # Graph -> Tree
     def self.fromGraph graph
       tree = {}                         # output tree
       inlined = []                      # inlined nodes
