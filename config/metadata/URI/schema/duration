@@ -4,3 +4,5 @@ durationInSeconds
 full_duration
 og:video:duration
 video:duration
+data-default-duration
+data-duration
