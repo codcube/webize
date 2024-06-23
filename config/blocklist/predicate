@@ -488,8 +488,6 @@ source_status_id_str
 source_user_id
 source_user_id_str
 spellcheck
-station_permalink
-station_urn
 statuses_count
 streamable
 subscriber_only
@@ -533,12 +531,10 @@ unlisted
 upc_or_ean
 uploadId
 uriSlug
-urn
 useFooterSignup
 useSignupLink
 user-login
 user_sorting
-uuid
 valign
 verified
 verify-v1

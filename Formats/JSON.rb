@@ -67,7 +67,7 @@ id ID _id id_str)
           # node attributes
           node.map{|k, v|
             predicate = MetaMap[k] || k # map predicate URI
-
+puts k if predicate == :drop
             # objects
             (v.class == Array ? v : [v]).flatten.map{|object|
 
