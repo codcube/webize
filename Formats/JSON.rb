@@ -74,7 +74,7 @@ id ID _id id_str)
               # emit triple
               yield subject,
                     predicate,
-                    object.class == Hash ? scan_node[object] : object
+                    object.class == Hash ? scan_node[object] : object unless object.nil?
             }
           }
 
