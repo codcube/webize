@@ -188,3 +188,5 @@ Story-image
 data-nuxt-img
 data-lazyload
 data-full-res
+data-lazy-retina
+data-src-retina
