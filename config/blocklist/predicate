@@ -15,7 +15,6 @@ _token
 action-cable-url
 adPositionIncrement
 adPositionIncremented
-ad_targeting_id
 advertiser_account_service_levels
 advertising
 ahrefs-site-verification
@@ -23,16 +22,12 @@ al:android:app_name
 al:android:package
 al:android:url
 al:ios:app_name
-al:ios:app_store_id
 al:ios:url
 al:ipad:app_name
-al:ipad:app_store_id
 al:ipad:url
 al:iphone:app_name
-al:iphone:app_store_id
 al:iphone:url
 al:web:should_fallback
-alexaVerifyID
 align
 alignment
 allowfullscreen
@@ -43,13 +38,9 @@ apple-itunes-app
 apple-mobile-web-app-capable
 apple-mobile-web-app-title
 apple-touch-fullscreen
-applicationId
 applicationServerKey
 archived
 article:content_tier
-articleid
-artifactId
-assetId
 async
 authorization_endpoint
 autocapitalize
@@ -63,7 +54,6 @@ blurhash
 bot
 botify-site-verification
 brightspot.cached
-brightspot.contentId
 browser-errors-url
 browser-optimizely-client-errors-url
 browser-stats-url
@@ -106,7 +96,6 @@ data-async-fc
 data-async-fcv
 data-async-ons
 data-async-trigger
-data-beid
 data-biboe
 data-bla
 data-blend-mode
@@ -116,7 +105,6 @@ data-cav
 data-cf-beacon
 data-cf-settings
 data-cfasync
-data-cid
 data-cmh
 data-count
 data-d
@@ -139,7 +127,6 @@ data-escd
 data-esrvl
 data-essb
 data-event-click-tracking
-data-experiment-id
 data-fcss
 data-fhs
 data-fluid-engine
@@ -148,13 +135,10 @@ data-fnhc
 data-focus
 data-full-width-responsive
 data-g
-data-gid
 data-hp
 data-hpmde
-data-hveid
 data-ias
 data-iatvcap
-data-iid
 data-image-processor-enabled
 data-index
 data-is-images-mode
@@ -165,7 +149,6 @@ data-iu
 data-jiis
 data-kulima
 data-l
-data-laoid
 data-lel
 data-li
 data-lk
@@ -173,7 +156,6 @@ data-loader
 data-lopri
 data-mcl
 data-md
-data-mid
 data-mnr
 data-mof
 data-mpc
@@ -188,17 +170,10 @@ data-o
 data-ogsr-alt
 data-ogsr-fb
 data-ogsr-up
-data-oid
-data-oslsid
-data-osmid
 data-pcs
-data-pid
-data-placement-id
 data-preloadapi
-data-promo-id
 data-propagated-experiment-ids
 data-pvf
-data-pvid
 data-pvo
 data-pvt
 data-pws
@@ -220,7 +195,6 @@ data-snc
 data-sncf
 data-snf
 data-snhf
-data-sori-id
 data-spdr
 data-spe
 data-ssc
@@ -228,7 +202,6 @@ data-sstk
 data-st-cnt
 data-st-tgt
 data-stfc
-data-storemid
 data-submitfalse
 data-sz
 data-target
@@ -258,7 +231,6 @@ derivedScore
 directScore
 direction
 disable-upgrade
-discogsId
 discourse/config/environment
 discourse_current_homepage
 discoverable
@@ -284,10 +256,7 @@ facebook-domain-verification
 fast_followers_count
 favorited
 fb:admins
-fb:app_id
-fb:page_id
 fb:pages
-fb:profile_id
 focusable
 following
 fontSize
@@ -296,7 +265,6 @@ friends_count
 fullPage
 generated
 geo_enabled
-gh-contentid
 github-keyboard-shortcuts
 globalsign-domain-verification
 go-import
@@ -304,7 +272,6 @@ google
 google-adsense-platform-account
 google-adsense-platform-domain
 google-play-app
-google-signin-client_id
 google-site-verification
 google-translate-customization
 googlebot
@@ -331,7 +298,6 @@ includeDivider
 indexable
 indices
 insertSpaceAfterNameTabCompletion
-instapp:owner_user_id
 isActive
 isAnimationEnabled
 isCookieBannerEnabled
@@ -423,11 +389,9 @@ optimizely-datafile
 order
 ordering
 p:domain_verify
-pageId
 pagePosition
 parsely-metadata
 parsely-page
-parsely-post-id
 pingback
 pinned_tweet_ids
 pinned_tweet_ids_str
@@ -442,14 +406,10 @@ profile_background_tile
 profile_use_background_image
 protected
 public
-pubp_event_id
 quote_count
 renderer
-request-id
-request_id
 require_some_consent
 resolutionMethod
-rest_id
 retweet_count
 retweeted
 revision
@@ -466,7 +426,6 @@ selected
 sensitive
 seznam-wmt
 sha1hash
-shareaholic:site_id
 sharing
 shenma-site-verification
 shopify-checkout-api-token
@@ -475,17 +434,13 @@ shopify-storefront-access-token
 show
 showRepeatVisitorSignupCta
 show_edit_button
-siteid
 skype_toolbar
-slack-app-id
 slurp
 snipped
 socialLinksPosition
 sogou_site_verification
 soundcloud:sound_count
-source_status_id
 source_status_id_str
-source_user_id
 source_user_id_str
 spellcheck
 statuses_count
@@ -529,7 +484,6 @@ twitter:partner
 twitter:widgets:csp
 unlisted
 upc_or_ean
-uploadId
 uriSlug
 useFooterSignup
 useSignupLink
@@ -552,6 +506,5 @@ wot-verification
 x-ua-compatible
 y_key
 yandex-verification
-yelp-biz-id
 msapplication-TileColor
 theme-color
