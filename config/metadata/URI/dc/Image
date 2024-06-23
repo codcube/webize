@@ -186,3 +186,5 @@ data-asset
 data-cmp-src
 Story-image
 data-nuxt-img
+data-lazyload
+data-full-res
