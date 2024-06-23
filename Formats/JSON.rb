@@ -57,30 +57,29 @@ id ID _id id_str)
 
         scan_node = -> node {
 
-          # subject node
           subject = if id = Identifier.find{|i| node.has_key? i} # search for identifier
-                      @base.join node.delete id # identified node
+                      @base.join node.delete id # subject URI
                     else
                       RDF::Node.new             # blank node
                     end
 
           # node attributes
           node.map{|k, v|
-            predicate = MetaMap[k] || k # map predicate URI
-puts k if predicate == :drop
+            predicate = MetaMap[k] || k # predicate URI
+
             # objects
             (v.class == Array ? v : [v]).flatten.map{|object|
 
-              object = @base.join object if object.class == String && object.match?(/^(http|\/)\S+$/) # object URI from string
+              object = @base.join object if object.class == String && object.match?(/^(http|\/)\S+$/) # object URI
 
               # emit triple
               yield subject,
                     predicate,
-                    object.class == Hash ? scan_node[object] : object unless object.nil?
+                    object.class == Hash ? scan_node[object] : object unless predicate == :drop || object.nil?
             }
           }
 
-          subject} # return child reference to parent node
+          subject} # return child reference to parent
 
         @doc = {Contains => @doc} if @doc.class == Array # contain toplevel array in document node
 
