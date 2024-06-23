@@ -66,10 +66,12 @@ id ID _id id_str)
 
           # node attributes
           node.map{|k, v|
-            predicate = MetaMap[k] || k # predicate URI
+            predicate = MetaMap[k] || k # map predicate URI
 
             # objects
             (v.class == Array ? v : [v]).flatten.map{|object|
+
+              object = @base.join object if object.class == String && object.match?(/^(http|\/)\S+$/) # object URI from string
 
               # emit triple
               yield subject,
@@ -78,12 +80,10 @@ id ID _id id_str)
             }
           }
 
-          subject} # return subject node to caller
+          subject} # return child reference to parent node
 
-        if @doc.class == Array # toplevel array to node
-          puts :ARRAY, @doc
-          @doc = {Contains => @doc}
-        end
+        @doc = {Contains => @doc} if @doc.class == Array # contain toplevel array in document node
+
         yield @base, Contains, scan_node[@doc] # scan document
       end
     end
