@@ -73,7 +73,7 @@ id ID _id id_str)
           # objects
           (v.class == Array ? v : [v]).flatten.map{|object|
 
-            object = @base.join object if object.class == String && object.match?(/^(http|\/)\S+$/) # object URI
+            object = @base.join object if object.class == String && object.match?(RelURI) # object URI
 
             # triple
             yield subject,

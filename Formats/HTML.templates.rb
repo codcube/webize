@@ -103,15 +103,20 @@ module Webize
       end
 
       def anchor a
-        if links = a.delete(Link)
-          ref = links[0]
-          puts ["<a> with multiple references:", links].join ' ' if links.size > 1
+        if content = a.delete Contains
+          content.map!{|c|
+            HTML.markup c, env}
         end
-        {_: :a, c: [a.delete(Contains),
-                    ({_: :span, c: CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '')} if ref),
-                    keyval(a)]}.update(
-          ref ? {href: ref,
-                 class: ref.host == host ? 'local' : 'global'} : {})
+        links = a.delete Link
+        attrs = keyval a unless a.empty?
+
+        links.map{|ref|
+          {_: :a,
+           class: ref.host == host ? 'local' : 'global',
+           href: ref,
+           c: [content,
+               {_: :span, c: CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '')},
+               attrs]}}
       end
 
       def script code

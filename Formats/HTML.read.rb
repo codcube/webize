@@ -19,7 +19,6 @@ module Webize
       format Format
 
       EmptyText = /\A[\n\t\s]+\Z/
-      RelURI = /^(http|\/)\S+$/
       SRCSET = /\s*(\S+)\s+([^,]+),*/
       StripTags = /<\/?(br|em|font|hr|nobr|noscript|span|wbr)[^>]*>/i
       StyleAttr = /^on|border|color|style|theme/i
@@ -186,6 +185,7 @@ module Webize
                 when /^{.*}$/ # webize JSON in value field
                   o = JSON::Reader.new(o, base_uri: @base).scan_node &f
                 end
+                o = @base.join o if p == Link && o.class == String
 
                 yield subject, p, o
               end
