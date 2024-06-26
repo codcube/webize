@@ -59,17 +59,17 @@ id ID _id id_str)
         scan_node = -> node {
 
           subject = if id = Identifier.find{|i| node.has_key? i} # search for identifier
-                      @base.join node.delete id # subject URI
+                      @base.join node.delete id                  # subject URI
                     else
-                      RDF::Node.new             # blank node
+                      RDF::Node.new                              # blank node
                     end
 
-          # scan node attributes
+          # node attributes
           node.map{|k, v|
 
             # predicates
             predicate = MetaMap[k] || k # map predicate URI
-            unless predicate.match? HTTPURI # unmapped predicate?
+            unless predicate.match? HTTPURI # warn on unmapped predicate (chatty, JSON in wild has vast array of non-URI attr names)
               logger.warn ["no URI for JSON attr \e[7m", predicate, "\e[0m "].join
             end
 

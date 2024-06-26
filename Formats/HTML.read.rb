@@ -180,8 +180,12 @@ module Webize
                   end
                 end
 
-                # cast URI string values to RDF::URI
-                o = @base.join o if p == Link || (o.class == String && o.match?(RelURI))
+                case o
+                when RelURI # cast URI in string to RDF::URI
+                  o = @base.join o
+                when /^{.*}$/ # webize JSON in value field
+                  puts :JSON, o
+                end
 
                 yield subject, p, o
               end
