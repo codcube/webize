@@ -86,7 +86,7 @@ id ID _id id_str)
       def scan_document &f
         @doc = {Contains => @doc} if @doc.class == Array # contain toplevel array in document node
 
-        yield @base, Contains, (scan_node @doc) # scan document
+        yield @base, Contains, (scan_node @doc, &f) # scan document
       end
     end
 

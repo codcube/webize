@@ -82,15 +82,17 @@ module Webize
         Document => :document,
         Schema + 'InteractionCounter' => :interactions}
 
-      %w(p ul ol li).map{|e| # DOM node types
+      # DOM node type -> markup method
+      %w(p ul ol li).map{|e|
         Markup[DOMnode + e] = e}
 
+      # parametrize default renderer with element type
       def p(node) = resource node, :p
       def ul(node) = resource node, :ul
       def ol(node) = resource node, :ol
       def li(node) = resource node, :li
 
-      # type-specific resource-markup methods
+      # markup methods
 
       def keyval kv
         {_: :dl,
