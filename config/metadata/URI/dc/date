@@ -207,3 +207,5 @@ xx_created
 xx_updated
 data-node-publishdate
 lastpublished
+data-sort-time
+data-update-time
