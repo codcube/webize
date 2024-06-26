@@ -82,8 +82,13 @@ module Webize
         Document => :document,
         Schema + 'InteractionCounter' => :interactions}
 
-      %w(div p ul ol li).map{|e| # DOM node types
-        Markup[e] = :element}
+      %w(p ul ol li).map{|e| # DOM node types
+        Markup[DOMnode + e] = e}
+
+      def p(node) = resource node, :p
+      def ul(node) = resource node, :ul
+      def ol(node) = resource node, :ol
+      def li(node) = resource node, :li
 
       # type-specific resource-markup methods
 
@@ -105,13 +110,6 @@ module Webize
                     keyval(a)]}.update(
           ref ? {href: ref,
                  class: ref.host == host ? 'local' : 'global'} : {})
-      end
-
-      def element node
-        name = :div
-        {_: name,                   # node
-         c: [node.delete(Contains), # child nodes
-             keyval(node)]}         # attributes
       end
 
       def script code
@@ -218,7 +216,7 @@ module Webize
              {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}
       end
 
-      def resource r
+      def resource r, name = :div
 
         # predicate renderer lambda
         p = -> a {property(a, r.delete(a)) if r.has_key? a}
@@ -242,7 +240,7 @@ module Webize
                   Webize::URI.new(r[To][0]).display_name)[0..5] if r.has_key?(To) &&
                                                                    r[To].size==1 &&
                                                                    Resources.member?(r[To][0].class)
-        {class: :resource,                         # resource
+        {_: name, class: :resource,                # resource representation
          c: [({class: :title, c: p[Title]}.        # title
                 update(ref || {}) if r.has_key? Title),
              p[Abstract], p[To],                   # abstract, dest
