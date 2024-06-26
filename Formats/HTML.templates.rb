@@ -103,7 +103,7 @@ module Webize
       end
 
       def anchor a
-        if content = a.delete Contains
+        if content = (a.delete Contains)
           content.map!{|c|
             HTML.markup c, env}
         end
