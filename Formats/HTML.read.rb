@@ -43,14 +43,14 @@ module Webize
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        send(@isBookmarks ? :bookmarks : :scanContent){|s, p, o, g=nil|
+        send(@isBookmarks ? :bookmarks : :scan_document){|s, p, o, g=nil|
           fn.call RDF::Statement.new(s, Webize::URI.new(p), o, graph_name: (Webize::URI.new g if g))}
       end
 
       def read_RDFa? = false
       #def read_RDFa? = !@isBookmarks
 
-      def scanContent &f
+      def scan_document &f
 
         @doc = Nokogiri::HTML.parse @in.gsub(StripTags, '')
 
@@ -184,7 +184,7 @@ module Webize
                 when RelURI # cast URI in string to RDF::URI
                   o = @base.join o
                 when /^{.*}$/ # webize JSON in value field
-                  puts :JSON, o
+                  o = JSON::Reader.new(o, base_uri: @base).scan_node &f
                 end
 
                 yield subject, p, o

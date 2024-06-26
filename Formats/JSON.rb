@@ -52,44 +52,41 @@ id ID _id id_str)
           fn.call RDF::Statement.new(s, Webize::URI.new(p), o,
                                      graph_name: Webize::URI.new(graph || [s.host ? ['https://', s.host] : nil, s.path].join))}
       end
+      
+      def scan_node node = @doc, &f
+
+        subject = if id = Identifier.find{|i| node.has_key? i} # search for identifier
+                    @base.join node.delete id                  # subject URI
+                  else
+                    RDF::Node.new                              # blank node
+                  end
+
+        # node attributes
+        node.map{|k, v|
+
+          # predicates
+          predicate = MetaMap[k] || k # map predicate URI
+          unless predicate.match? HTTPURI # warn on unmapped predicate (chatty, JSON in wild has vast array of non-URI attr names)
+            logger.warn ["no URI for JSON attr \e[7m", predicate, "\e[0m "].join
+          end
+
+          # objects
+          (v.class == Array ? v : [v]).flatten.map{|object|
+
+            object = @base.join object if object.class == String && object.match?(/^(http|\/)\S+$/) # object URI
+
+            # triple
+            yield subject,
+                  predicate,
+                  object.class == Hash ? scan_node(object, &f) : object unless predicate == :drop || object.nil? }}
+
+        subject # return child reference to caller (parent node)
+      end
 
       def scan_document &f
-
-        # scan node
-        scan_node = -> node {
-
-          subject = if id = Identifier.find{|i| node.has_key? i} # search for identifier
-                      @base.join node.delete id                  # subject URI
-                    else
-                      RDF::Node.new                              # blank node
-                    end
-
-          # node attributes
-          node.map{|k, v|
-
-            # predicates
-            predicate = MetaMap[k] || k # map predicate URI
-            unless predicate.match? HTTPURI # warn on unmapped predicate (chatty, JSON in wild has vast array of non-URI attr names)
-              logger.warn ["no URI for JSON attr \e[7m", predicate, "\e[0m "].join
-            end
-
-            # objects
-            (v.class == Array ? v : [v]).flatten.map{|object|
-
-              object = @base.join object if object.class == String && object.match?(/^(http|\/)\S+$/) # object URI
-
-              # emit triple
-              yield subject,
-                    predicate,
-                    object.class == Hash ? scan_node[object] : object unless predicate == :drop || object.nil?
-            }
-          }
-
-          subject} # return child reference to parent
-
         @doc = {Contains => @doc} if @doc.class == Array # contain toplevel array in document node
 
-        yield @base, Contains, scan_node[@doc] # scan document
+        yield @base, Contains, (scan_node @doc) # scan document
       end
     end
 
