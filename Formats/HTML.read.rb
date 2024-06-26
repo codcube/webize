@@ -19,7 +19,6 @@ module Webize
       format Format
 
       EmptyText = /\A[\n\t\s]+\Z/
-      HTTPURI = /^https?:/
       RelURI = /^(http|\/)\S+$/
       SRCSET = /\s*(\S+)\s+([^,]+),*/
       StripTags = /<\/?(br|em|font|hr|nobr|noscript|span|wbr)[^>]*>/i

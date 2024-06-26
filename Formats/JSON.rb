@@ -55,6 +55,7 @@ id ID _id id_str)
 
       def scan_document &f
 
+        # scan node
         scan_node = -> node {
 
           subject = if id = Identifier.find{|i| node.has_key? i} # search for identifier
@@ -63,9 +64,14 @@ id ID _id id_str)
                       RDF::Node.new             # blank node
                     end
 
-          # node attributes
+          # scan node attributes
           node.map{|k, v|
-            predicate = MetaMap[k] || k # predicate URI
+
+            # predicates
+            predicate = MetaMap[k] || k # map predicate URI
+            unless predicate.match? HTTPURI # unmapped predicate?
+              logger.warn ["no URI for JSON attr \e[7m", predicate, "\e[0m "].join
+            end
 
             # objects
             (v.class == Array ? v : [v]).flatten.map{|object|
