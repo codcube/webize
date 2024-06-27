@@ -11,6 +11,8 @@ module Webize
     Redirector = {}                                      # runtime redirection cache - NOTE we're going to switch to a per-process RDF::Repository for all metadata caching, soonish
     Referer = {}                                         # runtime referer cache
 
+    # HTTP schema https://www.w3.org/2011/http
+
     def self.bwPrint(kv) = kv.map{|k,v| "\e[38;5;7;7m#{k}\e[0m#{v}\n"}
 
     # instantiate resource, call method and log response

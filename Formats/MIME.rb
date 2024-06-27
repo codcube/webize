@@ -13,6 +13,8 @@ module Webize
   end
   module MIME
 
+    # format URIs https://www.w3.org/ns/formats/
+
     # formats we prefer to not (content-negotiation) or can not (unimplemented) transform
     FixedFormat = /audio|css|image|octet|script|video/
 
