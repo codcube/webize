@@ -84,9 +84,17 @@ id ID _id id_str)
       end
 
       def scan_document &f
-        @doc = {Contains => @doc} if @doc.class == Array # contain toplevel array in document node
 
-        yield @base, Contains, (scan_node @doc, &f) # scan document
+        # if JSON value is Array, contain it in base node
+        if @doc.class == Array
+          @doc = {'uri' => @base,
+                  Contains => @doc}
+        end
+
+        out = scan_node &f # scan document
+
+        # if output node is blank, contain it in base node
+        yield @base, Contains, out if out.node?
       end
     end
 
