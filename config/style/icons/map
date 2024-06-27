@@ -79,6 +79,7 @@ http://schema.org/mainEntityOfPage 🥩
 http://schema.org/maxPrice ≤
 http://schema.org/minPrice ≥
 http://schema.org/nextItem ▶
+http://schema.org/pagination 📚
 http://schema.org/playCount 🎶
 http://schema.org/prepTime ⏱️
 http://schema.org/previousItem ◀
