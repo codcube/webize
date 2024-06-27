@@ -85,7 +85,7 @@ id ID _id id_str)
 
       def scan_document &f
 
-        # if JSON value is Array, contain it in base node
+        # if input value is Array, reference it in base node
         if @doc.class == Array
           @doc = {'uri' => @base,
                   Contains => @doc}
@@ -93,7 +93,7 @@ id ID _id id_str)
 
         out = scan_node &f # scan document
 
-        # if output node is blank, contain it in base node
+        # if output node has no identifier, reference it in base node
         yield @base, Contains, out if out.node?
       end
     end
