@@ -66,19 +66,24 @@ id ID _id id_str)
 
           # predicates
           predicate = MetaMap[k] || k # map predicate URI
-          unless predicate.match? HTTPURI # warn on unmapped predicate (chatty, JSON in wild has vast array of non-URI attr names)
-            logger.warn ["no URI for JSON attr \e[7m", predicate, "\e[0m "].join
-          end
 
-          # objects
-          (v.class == Array ? v : [v]).flatten.map{|object|
+          unless predicate == :drop
 
-            object = @base.join object if object.class == String && object.match?(RelURI) # object URI
+            # warn on unmapped predicate. chatty w/ JSON-in-wild's vast array of non-URI attribute names
+            unless predicate.match? HTTPURI
+              logger.warn ["no URI for JSON attr \e[7m", predicate, "\e[0m "].join
+            end
 
-            # triple
-            yield subject,
-                  predicate,
-                  object.class == Hash ? scan_node(object, &f) : object unless predicate == :drop || object.nil? }}
+            # objects
+            (v.class == Array ? v : [v]).flatten.map{|object|
+
+              object = @base.join object if object.class == String && object.match?(RelURI) # object URI
+
+              # triple
+              yield subject,
+                    predicate,
+                    object.class == Hash ? scan_node(object, &f) : object unless object.nil?}
+          end}
 
         subject # return child reference to caller (parent node)
       end
