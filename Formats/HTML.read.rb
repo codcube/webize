@@ -162,9 +162,7 @@ module Webize
               p = MetaMap[p] if MetaMap.has_key? p
 
               if p == :drop
-
-                # add data to junk bin
-                yield RDF::URI('#junk'), p, o
+               puts ['drop:', subject, attr.name, o].join ' '
               else
 
                 # unmapped predicate?

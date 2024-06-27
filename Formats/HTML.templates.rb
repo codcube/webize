@@ -86,7 +86,7 @@ module Webize
       %w(p ul ol li h1 h2 h3 h4 h5 h6 table tr td).map{|e|
         Markup[DOMnode + e] = e}
 
-      # parametrize default renderer with DON-node types
+      # parametrize default renderer with DOM-node types
 
       def p(node) = resource node, :p
 
