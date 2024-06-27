@@ -83,10 +83,11 @@ module Webize
         Schema + 'InteractionCounter' => :interactions}
 
       # DOM-node type -> markup method
-      %w(p ul ol li h1 h2 h3 h4 h5 h6 table tr td).map{|e|
+      %w(p ul ol li h1 h2 h3 h4 h5 h6 table thead tfoot th tr td).map{|e|
         Markup[DOMnode + e] = e}
 
       # parametrize default renderer with DOM-node types
+      # we could map all DOM nodes to #resource and fish through RDF for node types there, but we already did that in the render-method dispatcher
 
       def p(node) = resource node, :p
 
@@ -102,26 +103,22 @@ module Webize
       def h6(node) = resource node, :h6
 
       def table(node) = resource node, :table
+      def thead(node) = resource node, :thead
+      def tfoot(node) = resource node, :tfoot
+      def th(node) = resource node, :th
       def tr(node) = resource node, :tr
       def td(node) = resource node, :td
 
       # markup methods
 
-      def keyval kv
-        {_: :dl,
-         c: kv.map{|k, vs|
-           {c: ["\n",
-                {_: :dt, c: property(Type, [k])}, "\n",
-                {_: :dd, c: property(k, vs)}]}}}
-      end
-
       def anchor a
+        a.delete Type
         if content = (a.delete Contains)
           content.map!{|c|
             HTML.markup c, env}
         end
         links = a.delete Link
-        attrs = keyval a unless a.empty?
+        attrs = keyval a unless a.empty? # remaining attributes
 
         links.map{|ref|
           {_: :a,
@@ -130,6 +127,13 @@ module Webize
            c: [content,
                {_: :span, c: CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '')},
                attrs]}} if links
+      end
+
+      def keyval kv
+        [{_: :dl,
+          c: kv.map{|k, vs|
+            {c: [{_: :dt, c: property(Type, [k])}, "\n",
+                 {_: :dd, c: property(k, vs)}, "\n"]}}}, "\n"]
       end
 
       def script code
@@ -262,15 +266,18 @@ module Webize
                   Webize::URI.new(r[To][0]).display_name)[0..5] if r.has_key?(To) &&
                                                                    r[To].size==1 &&
                                                                    Resources.member?(r[To][0].class)
-        {_: type, class: :resource,                # resource representation
-         c: [({class: :title, c: p[Title]}.        # title
-                update(ref || {}) if r.has_key? Title),
-             p[Abstract], p[To],                   # abstract, dest
-             (keyval r unless r.empty?),           # key/val fields
-             (children.map{|c|
-                HTML.markup c, env} if children),
-             origin_ref,                           # origin pointer
-            ]}.update(id ? {id: id} : {}).update(color ? {style: "background: repeating-linear-gradient(45deg, #{color}, #{color} 1px, transparent 1px, transparent 8px); border-color: #{color}"} : {})
+        [{_: type,                                # representation node
+          c: [({class: :title, c: p[Title]}.      # title
+                 update(ref || {}) if r.has_key? Title),
+              p[Abstract], p[To],                 # abstract, dest
+              (["\n", keyval(r)] unless r.empty?),# key/val fields
+              (children.map{|c|
+                 HTML.markup c, env} if children),
+              origin_ref,                         # origin pointer
+             ]}.
+           update(id ? {id: id} : {}).
+           update(type ? {} : {class: :resource}).
+           update(color ? {style: "background: repeating-linear-gradient(45deg, #{color}, #{color} 1px, transparent 1px, transparent 8px); border-color: #{color}"} : {}), "\n"]
       end
     end
   end
