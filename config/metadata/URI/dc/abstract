@@ -13,7 +13,6 @@ altText
 alt_text
 alternativeText
 alttext
-ariaLabel
 article.summary
 article.tag
 article.type.display
@@ -89,7 +88,6 @@ itunesKeywords
 keyword
 keywords
 kwl
-label_name
 ledeCaption
 localizedCaption
 machine_tags
@@ -116,7 +114,6 @@ parsely-section
 parsely-tags
 placeholder
 podcastEpisodeDesc
-postLabel
 primaryTag
 primaryTopic
 promotionalSummary
@@ -174,8 +171,6 @@ twitter:data1
 twitter:data2
 twitter:image.alt
 twitter:image:alt
-twitter:label1
-twitter:label2
 twitter:tile:image:alt
 urlCode
 vertical

@@ -7,3 +7,8 @@ data-layout-label
 data-short-label
 data-tracking-label
 data-track-label
+ariaLabel
+label_name
+postLabel
+twitter:label1
+twitter:label2
