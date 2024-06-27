@@ -86,11 +86,23 @@ module Webize
       %w(p ul ol li).map{|e|
         Markup[DOMnode + e] = e}
 
-      # parametrize default renderer with element type
+      # parametrize default renderer with element types
       def p(node) = resource node, :p
+
       def ul(node) = resource node, :ul
       def ol(node) = resource node, :ol
       def li(node) = resource node, :li
+
+      def h1(node) = resource node, :h1
+      def h2(node) = resource node, :h2
+      def h3(node) = resource node, :h3
+      def h4(node) = resource node, :h4
+      def h5(node) = resource node, :h5
+      def h6(node) = resource node, :h6
+
+      def table(node) = resource node, :table
+      def tr(node) = resource node, :tr
+      def td(node) = resource node, :td
 
       # markup methods
 
@@ -116,7 +128,7 @@ module Webize
            href: ref,
            c: [content,
                {_: :span, c: CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '')},
-               attrs]}}
+               attrs]}} if links
       end
 
       def script code
