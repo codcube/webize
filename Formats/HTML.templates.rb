@@ -236,8 +236,9 @@ module Webize
              {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}
       end
 
-      def resource r, element_type = nil
-        r.delete Type if element_type # explicit element type
+      def resource r, type = nil
+        # explicit type overrides ambient typing found in RDF data
+        r.delete Type if type || r[Type] == [RDF::URI(DOMnode + 'div')]
 
         # predicate renderer lambda
         p = -> a {property(a, r.delete(a)) if r.has_key? a}
@@ -261,7 +262,7 @@ module Webize
                   Webize::URI.new(r[To][0]).display_name)[0..5] if r.has_key?(To) &&
                                                                    r[To].size==1 &&
                                                                    Resources.member?(r[To][0].class)
-        {_: element_type, class: :resource,        # resource representation
+        {_: type, class: :resource,                # resource representation
          c: [({class: :title, c: p[Title]}.        # title
                 update(ref || {}) if r.has_key? Title),
              p[Abstract], p[To],                   # abstract, dest
