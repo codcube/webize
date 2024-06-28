@@ -1,4 +1,7 @@
+320wx320h
 360-site-verification
+640wx640h
+768wx768h
 Distribution
 EditURI
 GOOGLEBOT
@@ -82,6 +85,7 @@ currentUserCanPush
 data-abe
 data-ad-client
 data-ad-format
+data-ad-marker-group
 data-ad-slot
 data-aie
 data-ait
@@ -96,6 +100,7 @@ data-async-fc
 data-async-fcv
 data-async-ons
 data-async-trigger
+data-autoplay
 data-biboe
 data-bla
 data-blend-mode
@@ -153,6 +158,7 @@ data-lel
 data-li
 data-lk
 data-loader
+data-loop
 data-lopri
 data-mcl
 data-md
@@ -238,6 +244,7 @@ display_text_range
 distribution
 donationsActive
 downloadable
+draggable
 edituri
 elementtiming
 embeddable_by
@@ -286,6 +293,7 @@ has_file_link_password
 has_nft_avatar
 has_proto_link_password
 hidden
+hidden_stats
 hideCredit
 hideDate
 hideFromMenu
@@ -362,6 +370,7 @@ mobile-web-app-capable
 monetization
 monetization_model
 mozallowfullscreen
+msapplication-TileColor
 msapplication-config
 msapplication-tap-highlight
 msapplication-task
@@ -455,6 +464,7 @@ target
 targetNewWindow
 tec-api-origin
 tec-api-version
+theme-color
 tier
 token
 token_endpoint
@@ -506,10 +516,3 @@ wot-verification
 x-ua-compatible
 y_key
 yandex-verification
-msapplication-TileColor
-theme-color
-data-autoplay
-data-loop
-draggable
-data-ad-marker-group
-hidden_stats
