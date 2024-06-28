@@ -19,6 +19,7 @@ module Webize
       format Format
 
       EmptyText = /\A[\n\t\s]+\Z/
+      JSONstring = /^{.*}$/
       SRCSET = /\s*(\S+)\s+([^,]+),*/
       StripTags = /<\/?(br|em|font|hr|nobr|noscript|span|wbr)[^>]*>/i
       StyleAttr = /^on|border|color|style|theme/i
@@ -72,7 +73,12 @@ module Webize
           if k = (m.attr('name') || m.attr('property'))  # predicate
             if v = (m.attr('content') || m.attr('href')) # object
               k = MetaMap[k] || k                        # map property-names
-              v = @base.join v if v.match? /^(http|\/)\S+$/
+              case v
+              when RelURI
+                v = @base.join v
+              when JSONstring
+                v = JSON::Reader.new(v, base_uri: @base).scan_node &f
+              end
               logger.warn ["no URI for META tag \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
               yield @base, k, v unless k == :drop
             end
@@ -180,7 +186,7 @@ module Webize
                 case o
                 when RelURI # cast URI in string to RDF::URI
                   o = @base.join o
-                when /^{.*}$/ # webize JSON in value field
+                when JSONstring # webize JSON in value field
                   o = JSON::Reader.new(o, base_uri: @base).scan_node &f
                 end
                 o = @base.join o if p == Link && o.class == String
