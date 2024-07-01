@@ -17,6 +17,7 @@ article:author:first_name
 article:author:last_name
 article:author:username
 article:author_name
+article:publisher
 article_author
 artist
 artistName
@@ -49,6 +50,7 @@ credit
 data-artist
 data-artistid
 dc.creator
+dc.publisher
 dc.source
 dct:creator
 dcterms.creator
@@ -103,6 +105,8 @@ profile:first_name
 profile:last_name
 profile:username
 profileUrl
+publisher
+publisher_metadata
 sailthru.author
 screen_name
 smartbanner:author
@@ -121,14 +125,10 @@ twitterId
 twitterName
 twitterUrl
 urlToAuthorPage
+user
 user_id
 user_id_str
-user
 username
 video:director
 writer_composer
 youtubeAccount
-publisher_metadata
-article:publisher
-dc.publisher
-publisher
