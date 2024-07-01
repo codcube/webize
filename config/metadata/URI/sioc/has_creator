@@ -128,3 +128,7 @@ username
 video:director
 writer_composer
 youtubeAccount
+publisher_metadata
+article:publisher
+dc.publisher
+publisher
