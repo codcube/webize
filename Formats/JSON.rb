@@ -25,10 +25,8 @@ module Webize
       format Format
 
       Identifier = %w(
-uri url
-link
-canonical_url
-src
+permalink_url url uri canonical_url
+href link src
 id ID _id id_str)
 
       def initialize(input = $stdin, options = {}, &block)
