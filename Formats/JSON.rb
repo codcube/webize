@@ -50,12 +50,12 @@ id ID _id id_str)
       
       def scan_node node = @doc, graph = @base, &f
 
-        subject = if id = Identifier.find{|i| node.has_key? i} # search for identifier
-                    @base.join node.delete id                  # subject URI
+        subject = if id = Identifier.find{|i| node.has_key? i}  # search for identifier
+                    @base.join node.delete id                   # subject URI
                   else
-                    RDF::Node.new                              # unidentified node
+                    RDF::Node.new                               # unidentified node
                   end
-        graph = URI(subject).graph unless subject.node?        # graph URI
+        graph = Webize::URI(subject).graph unless subject.node? # graph URI
 
         # attributes
         node.map{|k, v|
