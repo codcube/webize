@@ -86,7 +86,7 @@ id ID _id id_str)
 
               # triple
               yield subject,
-                    Webize::URI.new(predicate),
+                    Webize::URI(predicate),
                     object.class == Hash ? scan_node(object, graph, &f) : object unless object.nil?}
           end}
 
@@ -104,7 +104,7 @@ id ID _id id_str)
         out = scan_node &f # scan base node
 
         # if output has no identifier, point to it from base/identified node
-        yield @base, Contains, out if out.node?
+        yield @base, Webize::URI(Contains), out if out.node?
       end
     end
 

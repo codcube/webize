@@ -661,7 +661,8 @@ module Webize
                                                schema: Schema,
                                                sioc: SIOC,
                                                n: HTML::Node}) do |w|
-                        repositories.map{|r| w << r }
+                        repositories.map{|r|
+                          w << r }
                       end
                      else
                        logger.warn "⚠️ Writer unavailable for #{format}" ; ''
