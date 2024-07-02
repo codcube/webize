@@ -77,14 +77,14 @@ id ID _id id_str)
 
               object = case o.class
                        when Hash
-                         scan_node object, graph, &f # recursion on object node
+                         scan_node o, graph, &f  # recursion on object node
                        when String
-                         if o.match? RelURI          # URI in JSON string?
-                           @base.join o              # String -> RDF::URI
-                         elsif predicate == Date     # normalize date
+                         if o.match? RelURI      # URI in String?
+                           @base.join o          # String -> RDF::URI
+                         elsif predicate == Date # normalize date
                            Webize.date o
                          else
-                           RDF::Literal o            # String -> RDF::Literal
+                           RDF::Literal o        # String -> RDF::Literal
                          end
                        else
                          o
@@ -109,7 +109,7 @@ id ID _id id_str)
         out = scan_node &f # scan base node
 
         # if output has no identifier, point to it from base/identified node
-        yield @base, Webize::URI(Contains), out if out.node?
+#        yield @base, Webize::URI(Contains), out if out.node?
       end
     end
 
