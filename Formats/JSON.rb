@@ -75,7 +75,7 @@ id ID _id id_str)
             # objects
             (v.class == Array ? v : [v]).flatten.compact.map{|o|
 
-              object = case o.class
+              object = case o
                        when Hash
                          scan_node o, graph, &f  # recursion on object node
                        when String
@@ -109,7 +109,7 @@ id ID _id id_str)
         out = scan_node &f # scan base node
 
         # if output has no identifier, point to it from base/identified node
-#        yield @base, Webize::URI(Contains), out if out.node?
+        yield @base, Webize::URI(Contains), out if out.node?
       end
     end
 
