@@ -51,6 +51,7 @@ id ID _id id_str)
       
       def scan_node node = @doc, graph = @base, &f
 
+        # subject
         subject = if id = Identifier.find{|i| node.has_key? i}  # search for identifier
                     @base.join node.delete id                   # subject URI
                   else
@@ -58,7 +59,7 @@ id ID _id id_str)
                   end
         graph = Webize::URI(subject).graph unless subject.node? # graph URI
 
-        # attributes
+        # node attributes
         node.map{|k, v|
 
           # predicates
@@ -74,20 +75,21 @@ id ID _id id_str)
             # objects
             (v.class == Array ? v : [v]).flatten.map{|object|
 
-              if object.class == String
-                 if object.match? RelURI
-                   object = @base.join object   # URI
+              case object.class
+              when Hash
+                object = scan_node object, graph, &f # recursion on object node
+              when String
+                 if object.match? RelURI        # URI in JSON string?
+                   object = @base.join object   # String -> RDF::URI
                  else
-#                  object = RDF::Literal object # literal
+                   object = Webize.date object if predicate == Date # normalize date format
+                   # object = RDF::Literal object # String -> RDF::Literal
                  end
               end
 
-              object = Webize.date object if predicate == Date # normalize date format
-
-              # triple
-              yield subject,
-                    Webize::URI(predicate),
-                    object.class == Hash ? scan_node(object, graph, &f) : object unless object.nil?}
+              # output triple
+              yield subject, Webize::URI(predicate), object, graph #unless object.nil?
+            }
           end}
 
         subject # return child reference to caller / parent-node

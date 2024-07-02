@@ -1,7 +1,7 @@
 Abstract http://purl.org/dc/terms/abstract
 Audio    http://purl.org/dc/terms/Audio
 Container http://www.w3.org/ns/ldp#Container
-Contains http://mw.logbook.am/webize/Node#contains
+Contains http://www.w3.org/ns/ldp#contains
 Creator  http://rdfs.org/sioc/ns#has_creator
 DC       http://purl.org/dc/terms/
 Date     http://purl.org/dc/terms/date
