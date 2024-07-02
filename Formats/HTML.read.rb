@@ -43,8 +43,9 @@ module Webize
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        send(@isBookmarks ? :bookmarks : :scan_document){|s, p, o, g=nil|
-          fn.call RDF::Statement.new(s, Webize::URI.new(p), o, graph_name: (Webize::URI.new g if g))}
+        send(@isBookmarks ? :bookmarks : :scan_document){|s, p, o, graph = @base|
+          fn.call RDF::Statement.new(s, Webize::URI.new(p), o,
+                                     graph_name: graph)}
       end
 
       def read_RDFa? = false

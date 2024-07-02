@@ -92,9 +92,9 @@ module Webize
 
     end
 
-    # recursive markup-generator function for any type. is there a clean way to add #markup to every class or is that considered monkey-patching/pollution?
+    # markup-generation function for any type. is there a clean way to add #markup to every class or is that monkey-patching/namespace-pollution?
     def self.markup o, env
-      # can we use new Ruby pattern-matching features to define each of these separately?
+      # can we use Ruby pattern-matching features to define each of these separately?
       case o
       when Array
         o.map{|_|

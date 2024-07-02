@@ -45,7 +45,8 @@ id ID _id id_str)
 
       def each_statement &fn
         scan_document{|s, p, o, graph = @base|
-          fn.call RDF::Statement.new(s, p, o, graph_name: graph)}
+          fn.call RDF::Statement.new(s, p, o,
+                                     graph_name: graph)}
       end
       
       def scan_node node = @doc, graph = @base, &f
@@ -73,7 +74,14 @@ id ID _id id_str)
             # objects
             (v.class == Array ? v : [v]).flatten.map{|object|
 
-              object = @base.join object if object.class == String && object.match?(RelURI) # object URI
+              if object.class == String
+                 if object.match? RelURI
+                   object = @base.join object   # URI
+                 else
+#                  object = RDF::Literal object # literal
+                 end
+              end
+
               object = Webize.date object if predicate == Date # normalize date format
 
               # triple
@@ -82,7 +90,7 @@ id ID _id id_str)
                     object.class == Hash ? scan_node(object, graph, &f) : object unless object.nil?}
           end}
 
-        subject # return child reference to caller / parent node
+        subject # return child reference to caller / parent-node
       end
 
       def scan_document &f
