@@ -73,7 +73,7 @@ id ID _id id_str)
             end
 
             # objects
-            (v.class == Array ? v : [v]).flatten.map{|object|
+            (v.class == Array ? v : [v]).flatten.compact.map{|object|
 
               case object.class
               when Hash
@@ -88,7 +88,7 @@ id ID _id id_str)
               end
 
               # output triple
-              yield subject, Webize::URI(predicate), object, graph #unless object.nil?
+              yield subject, Webize::URI(predicate), object, graph
             }
           end}
 
