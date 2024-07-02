@@ -44,22 +44,20 @@ id ID _id id_str)
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        scan_document{|s, p, o, graph=nil|
-          s = Webize::URI.new s
-          o = Webize.date o if p.to_s == Date # normalize date formats
-          fn.call RDF::Statement.new(s, Webize::URI.new(p), o,
-                                     graph_name: Webize::URI.new(graph || [s.host ? ['https://', s.host] : nil, s.path].join))}
+        scan_document{|s, p, o, graph = @base|
+          fn.call RDF::Statement.new(s, p, o, graph_name: graph)}
       end
       
-      def scan_node node = @doc, &f
+      def scan_node node = @doc, graph = @base, &f
 
         subject = if id = Identifier.find{|i| node.has_key? i} # search for identifier
                     @base.join node.delete id                  # subject URI
                   else
-                    RDF::Node.new                              # blank node
+                    RDF::Node.new                              # unidentified node
                   end
+        graph = subject.graph unless subject.node?             # graph URI
 
-        # node attributes
+        # attributes
         node.map{|k, v|
 
           # predicates
@@ -76,27 +74,28 @@ id ID _id id_str)
             (v.class == Array ? v : [v]).flatten.map{|object|
 
               object = @base.join object if object.class == String && object.match?(RelURI) # object URI
+              object = Webize.date object if predicate == Date # normalize date format
 
               # triple
               yield subject,
-                    predicate,
+                    Webize::URI.new(predicate),
                     object.class == Hash ? scan_node(object, &f) : object unless object.nil?}
           end}
 
-        subject # return child reference to caller (parent node)
+        subject # return child reference to caller / parent node
       end
 
       def scan_document &f
 
-        # if input value is Array, reference it in base node
+        # if input is Array, wrap it in a node
         if @doc.class == Array
           @doc = {'uri' => @base,
                   Contains => @doc}
         end
 
-        out = scan_node &f # scan document
+        out = scan_node &f # scan base node
 
-        # if output node has no identifier, reference it in base node
+        # if output has no identifier, point to it from base/identified node
         yield @base, Contains, out if out.node?
       end
     end

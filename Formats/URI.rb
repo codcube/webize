@@ -40,6 +40,9 @@ module Webize
 
     def extname = (File.extname path if path)
 
+    def graph = URI.new [s.host ? ['https://', s.host] : nil,
+                         s.path].join
+
     def local_id
       if fragment && in_doc?
         fragment
