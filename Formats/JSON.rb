@@ -73,19 +73,22 @@ id ID _id id_str)
             end
 
             # objects
-            (v.class == Array ? v : [v]).flatten.compact.map{|object|
+            (v.class == Array ? v : [v]).flatten.compact.map{|o|
 
-              case object.class
-              when Hash
-                object = scan_node object, graph, &f # recursion on object node
-              when String
-                 if object.match? RelURI        # URI in JSON string?
-                   object = @base.join object   # String -> RDF::URI
-                 else
-                   object = Webize.date object if predicate == Date # normalize date format
-                   # object = RDF::Literal object # String -> RDF::Literal
-                 end
-              end
+              object = case o.class
+                       when Hash
+                         scan_node object, graph, &f # recursion on object node
+                       when String
+                         if o.match? RelURI          # URI in JSON string?
+                           @base.join o              # String -> RDF::URI
+                         elsif predicate == Date     # normalize date
+                           Webize.date o
+                         else
+                           RDF::Literal o            # String -> RDF::Literal
+                         end
+                       else
+                         o
+                       end
 
               # output triple
               yield subject, Webize::URI(predicate), object, graph
