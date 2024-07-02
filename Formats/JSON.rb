@@ -55,7 +55,7 @@ id ID _id id_str)
                   else
                     RDF::Node.new                              # unidentified node
                   end
-        graph = subject.graph unless subject.node?             # graph URI
+        graph = URI(subject).graph unless subject.node?        # graph URI
 
         # attributes
         node.map{|k, v|
@@ -79,7 +79,7 @@ id ID _id id_str)
               # triple
               yield subject,
                     Webize::URI.new(predicate),
-                    object.class == Hash ? scan_node(object, &f) : object unless object.nil?}
+                    object.class == Hash ? scan_node(object, graph, &f) : object unless object.nil?}
           end}
 
         subject # return child reference to caller / parent node
