@@ -37,7 +37,7 @@ module Webize
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        @html.scanContent{|s, p, o, g = nil|
+        @html.scan_document{|s, p, o, g = nil|
           fn.call RDF::Statement.new(s, Webize::URI(p), o, :graph_name => g)}
       end
     end
