@@ -137,7 +137,6 @@ module Webize
             uri, title = line.split ' ', 2        # URI and optional title
             u = Webize::URI(uri)                  # URI-list item
             if u.deny?
-              puts "dROp #{u}"
               dropCount += 1
             else
               linkCount += 1
