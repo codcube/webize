@@ -411,6 +411,8 @@ possibly_sensitive_editable
 premium
 preserveaspectratio
 private
+pro
+pro_unlimited
 profile_background_tile
 profile_use_background_image
 protected
@@ -516,6 +518,3 @@ wot-verification
 x-ua-compatible
 y_key
 yandex-verification
-pro_unlimited
-pro
-nonce
