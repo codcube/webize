@@ -88,7 +88,7 @@ module Webize
         m[:from] && m[:from].yield_self{|fr|
           fr.addrs.map{|a|
             name = a.display_name || a.name # human-readable name
-            yield mail, Creator, name, graph
+            yield mail, Creator, name, graph if name
           } if fr.respond_to? :addrs}
 
         # To
