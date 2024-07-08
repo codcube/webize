@@ -69,7 +69,7 @@ id ID _id id_str)
 
             # warn on unmapped predicate. chatty w/ JSON-in-wild's vast array of non-URI attribute names
             unless predicate.match? HTTPURI
-              logger.warn ["no URI for JSON attr \e[7m", predicate, "\e[0m "].join
+              print ["\e[7m", predicate, "\e[0m "].join
             end
 
             # objects
