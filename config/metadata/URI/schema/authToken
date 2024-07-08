@@ -1,2 +1,5 @@
 track_authorization
 secret_token
+csp-nonce
+html-safe-nonce
+nonce

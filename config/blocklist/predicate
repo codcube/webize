@@ -64,7 +64,6 @@ contains_music
 contributors_enabled
 cookieDomain
 crossorigin
-csp-nonce
 csrf-param
 csrf-token
 curr_heat_score
@@ -266,7 +265,6 @@ hidden_stats
 hideCredit
 hideDate
 hideFromMenu
-html-safe-nonce
 http://schema.org/regionsAllowed
 imageEssenceContainsCaption
 includeDivider
@@ -347,7 +345,6 @@ newTab
 new_tab
 next-head-count
 nextItemOffset
-nonce
 noopenner
 norton-safeweb-site-verification
 not_interested
