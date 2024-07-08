@@ -67,12 +67,11 @@ id ID _id id_str)
 
           unless predicate == :drop
 
-            unless predicate.match? HTTPURI
-              predicate = '#' + predicate
-
-              # warn on unmapped predicate. chatty w/ JSON-in-wild's vast array of non-URI attribute names
-              #print ["\e[7m", predicate, "\e[0m "].join
-            end
+            # warn on unmapped predicate. chatty w/ JSON-in-wild's vast array of non-URI attribute names
+#unless predicate.match? HTTPURI
+#  predicate = '#' + predicate
+#  print ["\e[7m", predicate, "\e[0m "].join
+#end
 
             # objects
             (v.class == Array ? v : [v]).flatten.compact.map{|o|
