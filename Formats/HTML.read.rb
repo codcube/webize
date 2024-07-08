@@ -204,16 +204,16 @@ module Webize
           else
             node.children.map{|child|
               if child.text? || child.cdata? # text literal
-                if node.name == 'script'
+                if node.name == 'script'     # script node
                   if m = child.inner_text.match(InnerJSON)
-                    stringified = !m[1].nil?
-                    text = m[2]
-                    begin
+                    stringified = !m[1].nil? # serialized to string value?
+                    text = m[2]              # raw JSON data
+                    begin                    # read JSON
                       json = stringified ? (::JSON.load %Q("#{text}")) : text
                       json_node = JSON::Reader.new(json, base_uri: @base).scan_node &f
-                      yield subject, Contains, json_node
+                      yield subject, Contains, json_node # emit JSON node
                     rescue
-                      puts "SCRIPT #{child.inner_text[0..255]} "
+                      puts "SCRIPT #{child.inner_text[0..255]} " # parse failure
                     end
                   end
                 else
