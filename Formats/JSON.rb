@@ -31,7 +31,7 @@ id ID _id id_str)
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
-        @doc = ::JSON.parse(input.respond_to?(:read) ? input.read : input) rescue (logger.debug ['JSON parse failure in: ', @base].join; {})
+        @doc = ::JSON.parse input.respond_to?(:read) ? input.read : input
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)

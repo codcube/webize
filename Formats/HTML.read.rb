@@ -204,16 +204,16 @@ module Webize
             node.children.map{|child|
               if child.text? || child.cdata? # text literal
                 if node.name == 'script'
-                  if child.inner_text.match? /[{}]/
-                    text = child.inner_text.match(/^[^{]*({.*})[^}]*$/)[1]
+                  m = child.inner_text.match(/^[^{'"]*(['"])?({.*})[^}]*$/)
+                  stringified = !m[1].nil?
+                  text = m[2]
                     begin
-                      json = ::JSON.load %Q("#{text}")
+                      json = stringified ? (::JSON.load %Q("#{text}")) : text
                       json_node = JSON::Reader.new(json, base_uri: @base).scan_node &f
                       yield subject, Contains, json_node
                     rescue
                       puts "SCRIPT #{child.inner_text[0..255]} "
                     end
-                  end
                 else
                   case child.inner_text
                   when EmptyText
