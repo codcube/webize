@@ -78,7 +78,6 @@ module Webize
       # type URI -> markup method
       Markup = {
         DOMnode + 'a' => :anchor,
-        DOMnode + 'script' => :script,
         Document => :document,
         Schema + 'InteractionCounter' => :interactions}
 
@@ -134,13 +133,6 @@ module Webize
           c: kv.map{|k, vs|
             {c: [{_: :dt, c: property(Type, [k])}, "\n",
                  {_: :dd, c: property(k, vs)}, "\n"]}}}, "\n"]
-      end
-
-      def script code
-        {class: :script,
-         c: [{_: :span,
-              style: 'font-size: 2em',
-              c: :📜}]}
       end
 
       def document doc
