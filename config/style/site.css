@@ -71,9 +71,9 @@ body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
 code {color: #000; background-color: #eee; padding: .1em}
-dd {display: table-cell; overflow: hidden; max-width: 256em}
-dd dd {max-width: 128em}
-dd dd dd {max-width: 64em}
+dd {display: table-cell; overflow: hidden; max-width: 384em}
+dd dd {max-width: 256em}
+dd dd dd {max-width: 128em}
 div {border: 1px solid #33; border-radius: 8px}
 div, form, table {display: inline-block}
 dl {display: table; margin: 0}

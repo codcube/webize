@@ -7,7 +7,6 @@ module Webize
         'uri' => :identifier,
         Type => :rdf_type,
         Abstract => :abstract,
-        Title => :title,
         Creator => :creator,
         To => :to,
       }
@@ -49,15 +48,6 @@ module Webize
           else
             t.display_name
            end}}
-      end
-
-      def title ts
-        ts.map(&:to_s).map(&:strip).uniq.map{|t|
-          [if t[0] == '#'
-           {_: :span, class: :identifier, c: CGI.escapeHTML(t)}
-          else
-            CGI.escapeHTML t
-           end, ' ']}
       end
 
       def to recipients
@@ -258,8 +248,10 @@ module Webize
                   Webize::URI.new(r[To][0]).display_name)[0..5] if r.has_key?(To) &&
                                                                    r[To].size==1 &&
                                                                    Resources.member?(r[To][0].class)
-        [{_: type,                                # representation node
-          c: [({class: :title, c: p[Title]}.      # title
+        [{_: type,                                # node
+          c: [({class: :title,                    # title
+                c: r.delete(Title).map{|t|
+                  HTML.markup t, env}}.
                  update(ref || {}) if r.has_key? Title),
               p[Abstract], p[To],                 # abstract, dest
               (["\n", keyval(r)] unless r.empty?),# key/val fields
