@@ -207,7 +207,7 @@ module Webize
                   if child.inner_text.match? /[{}]/
                     text = child.inner_text.match(/^[^{]*({.*})[^}]*$/)[1]
                     begin
-                      json = %Q("#{text}")
+                      json = ::JSON.load %Q("#{text}")
                       json_node = JSON::Reader.new(json, base_uri: @base).scan_node &f
                       yield subject, Contains, json_node
                     rescue
