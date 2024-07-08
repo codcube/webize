@@ -205,7 +205,7 @@ module Webize
             node.children.map{|child|
               if child.text? || child.cdata? # text literal
                 if node.name == 'script'
-                  if m = child.inner_text.match InnerJSON
+                  if m = child.inner_text.match(InnerJSON)
                     stringified = !m[1].nil?
                     text = m[2]
                     begin
