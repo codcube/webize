@@ -19,7 +19,8 @@ module Webize
       format Format
 
       EmptyText = /\A[\n\t\s]+\Z/
-      JSONstring = /^{.*}$/
+      OuterJSON = /^{.*}$/
+      InnerJSON = /^[^{'"]*(['"])?({.*})[^}]*$/
       SRCSET = /\s*(\S+)\s+([^,]+),*/
       StripTags = /<\/?(br|em|font|hr|nobr|noscript|span|wbr)[^>]*>/i
       StyleAttr = /^on|border|color|style|theme/i
@@ -77,7 +78,7 @@ module Webize
               case v
               when RelURI
                 v = @base.join v
-              when JSONstring
+              when OuterJSON
                 v = JSON::Reader.new(v, base_uri: @base).scan_node &f
               end
               logger.warn ["no URI for META tag \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
@@ -183,7 +184,7 @@ module Webize
                 case o
                 when RelURI # cast URI in string to RDF::URI
                   o = @base.join o
-                when JSONstring # webize JSON in value field
+                when OuterJSON # webize JSON in value field
                   o = JSON::Reader.new(o, base_uri: @base).scan_node &f
                 end
                 o = @base.join o if p == Link && o.class == String
@@ -204,7 +205,7 @@ module Webize
             node.children.map{|child|
               if child.text? || child.cdata? # text literal
                 if node.name == 'script'
-                  m = child.inner_text.match(/^[^{'"]*(['"])?({.*})[^}]*$/)
+                  m = child.inner_text.match InnerJSON
                   stringified = !m[1].nil?
                   text = m[2]
                     begin
