@@ -205,9 +205,9 @@ module Webize
             node.children.map{|child|
               if child.text? || child.cdata? # text literal
                 if node.name == 'script'
-                  m = child.inner_text.match InnerJSON
-                  stringified = !m[1].nil?
-                  text = m[2]
+                  if m = child.inner_text.match InnerJSON
+                    stringified = !m[1].nil?
+                    text = m[2]
                     begin
                       json = stringified ? (::JSON.load %Q("#{text}")) : text
                       json_node = JSON::Reader.new(json, base_uri: @base).scan_node &f
@@ -215,6 +215,7 @@ module Webize
                     rescue
                       puts "SCRIPT #{child.inner_text[0..255]} "
                     end
+                  end
                 else
                   case child.inner_text
                   when EmptyText
