@@ -127,10 +127,6 @@ module Webize
         #     @env[:links][:prev] ||= @base.join ref
         #   end}
 
-        #        @doc.css('script[type="application/json"], script[type="text/json"]').map{|json|
-#          JSON::Reader.new(json.inner_text.strip.sub(/^<!--/,'').sub(/-->$/,''), base_uri: @base).scanContent &f}
-
-
         # fix id-collisions to prevent unwanted cycles in tree/linked-list datastructures
         nodes = {}
         @doc.css('[id]').map{|node|    # identified node
@@ -206,9 +202,26 @@ module Webize
             yield subject, Contains, RDF::Literal(node.to_html, datatype: RDF.HTML)
           else
             node.children.map{|child|
-              if child.text? || child.cdata?  # text literal
-                yield subject, Contains, child.inner_text.strip unless child.inner_text.match? EmptyText
-              else                            # child node
+              if child.text? || child.cdata? # text literal
+                if node.name == 'script'
+                  if child.inner_text.match? /[{}]/
+                    text = child.inner_text.match(/^[^{]*({.*})[^}]*$/)[1]
+                    begin
+                      json = %Q("#{text}")
+                      json_node = JSON::Reader.new(json, base_uri: @base).scan_node &f
+                      yield subject, Contains, json_node
+                    rescue
+                      puts "SCRIPT #{child.inner_text[0..255]} "
+                    end
+                  end
+                else
+                  case child.inner_text
+                  when EmptyText
+                  else
+                    yield subject, Contains, child.inner_text.strip
+                  end
+                end
+              else # child node
                 yield subject, Contains, scan_node[child, depth + 1]
               end}
           end
