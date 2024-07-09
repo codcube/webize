@@ -84,12 +84,14 @@ id ID _id id_str)
                        when Hash
                          scan_node o, graph, &f  # recursion on object node
                        when String
-                         if o.match? RelURI      # URI in String?
-                           @base.join o          # String -> RDF::URI
-                         elsif predicate == Date # normalize date
+                         if predicate == Date # normalize date
                            Webize.date o
+                         elsif o.match? RelURI # URI in String
+                           @base.join o        # String -> RDF::URI
+                         elsif o.match? Outer  # JSON in String
+                           Reader.new(o, base_uri: @base).scan_node &f
                          else
-                           RDF::Literal o        # String -> RDF::Literal
+                           RDF::Literal o      # String -> RDF::Literal
                          end
                        else
                          o

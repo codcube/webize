@@ -175,7 +175,7 @@ module Webize
                   when /type/i
                     p = Type
                   else
-                    logger.warn ["no URI for DOM attr \e[7m", p, "\e[0m ", o].join
+                    logger.warn ["no URI for DOM attr \e[7m", p, "\e[0m ", o[0..255]].join
                   end
                 end
 
