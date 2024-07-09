@@ -10,6 +10,10 @@ module Webize
   end
 
   module JSON
+
+    Inner = /^[^{'"]*(['"])?({.*})[^}]*$/
+    Outer = /^{.*}$/
+
     class Format < RDF::Format
       content_type 'application/json',
                    extensions: [:json, :meta, :webmanifest],
@@ -68,10 +72,10 @@ id ID _id id_str)
           unless predicate == :drop
 
             # warn on unmapped predicate. chatty w/ JSON-in-wild's vast array of non-URI attribute names
-#unless predicate.match? HTTPURI
-#  predicate = '#' + predicate
-#  print ["\e[7m", predicate, "\e[0m "].join
-#end
+            #unless predicate.match? HTTPURI
+            #  print ["\e[7m", predicate, "\e[0m "].join
+            #  predicate = '#' + predicate
+            #end
 
             # objects
             (v.class == Array ? v : [v]).flatten.compact.map{|o|
