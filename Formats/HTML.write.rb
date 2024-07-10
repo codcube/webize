@@ -100,9 +100,16 @@ module Webize
         o
       when NilClass
         o
-      when RDF::Graph
-        graph = JSON.fromGraph(o)[env[:base]] # RDF -> JSON
-        graph[Type] = [Document]
+      when RDF::Graph # render all nodes reachable from base
+
+        graph = JSON.fromGraph(o)[env[:base]] || {} # RDF -> JSON
+        graph[Type] = [Document]                    # markup as graph document
+
+        puts :IIIIIIIIIIIIIIIIIIIIIIIIIIIII_graph
+        puts ::JSON.pretty_generate JSON.fromGraph(o)
+        puts :OOOOOOOOOOOOOOOOOOOOOOOOOOOOO_graph
+        puts ::JSON.pretty_generate graph
+
         markup graph, env
       when RDF::Repository
         :repository
