@@ -101,7 +101,9 @@ module Webize
       when NilClass
         o
       when RDF::Graph
-        markup JSON.fromGraph(o)[env[:base]], env
+        graph = JSON.fromGraph(o)[env[:base]] # RDF -> JSON
+        graph[Type] = [Document]
+        markup graph, env
       when RDF::Repository
         :repository
       when RDF::Literal
