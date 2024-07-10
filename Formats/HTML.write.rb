@@ -45,25 +45,20 @@ module Webize
 
     # OUTPUT dataflow:
 
-    # RDF graph ->
-    #   JSON (s,p,o) tree ->
-    #     HTML "markup" representation ->
-    #       HTML string
+    # RDF::Graph -> JSON (RDF-subset) graph representation ->
+    #  HTML/DOM-node tree representation -> HTML string
 
-    # the RDF graph is transformed to a tree of JSON-compatible nested Hash objects in JSON#fromGraph,
-    # implemented in JSON.rb as we also use treeization for rendering RSS and JSON.
-    # the datastructure is indexed on subject URI, returning a resource and its data, indexed on predicate URI,
-    # to an array of objects with blank and/or contained nodes inlined where predicate indexing begins anew
+    # the RDF graph is transformed to a JSON-compatible Hash-based structure in JSON#fromGraph <JSON.rb>
 
-    # example: {subjectURI -> {
-    #             predicateURI -> ['object', 234, {predicateURI -> [...]}]}}
+    # example: { uri -> .. ,
+    #            predicate -> ['object', 234, {predicate -> [...]}]}
 
     # We came up with this format before Ruby had an RDF library, when we knew we didn't want to write one
     # if we could get away with using a subset of RDF in JSON and piggyback on existing fast serializers/parsers.
     # with good handling of recursive blank nodes there's not much missing aside from datatypes not supported by JSON,
     # primarily <URI>. we use reserved key 'uri' for a resource's identifier. if that's missing, it's a blank node.
 
-    # Resources and their properties can be associated with type-specific markup methods (w/ defaults in HTML.templates.rb),
+    # Resources and their properties can be associated with type-specific markup methods (defaults in HTML.templates.rb),
     # which emit representations of DOM nodes / HTML elements, again in a JSON-compatible nested Hash for composability and
     # layering with RDF-unaware and generic JSON tools and trivial serializability to HTML
 

@@ -131,8 +131,8 @@ id ID _id id_str)
         s = subj.to_s                   # subject
         p = pred.to_s                   # predicate
 
-        blank = obj.class == RDF::Node  # blank object node?
-        obj = index[o] ||= blank ? {} : {'uri' => obj.to_s} if blank || Identifiable.member?(obj.class) # object node
+        blank = obj.class == RDF::Node  # blank object node?                                # object node
+        obj = index[obj] ||= blank ? {} : {'uri' => obj.to_s} if blank || Identifiable.member?(obj.class)
 
         index[s] ||= subj.node? ? {} : {'uri' => s} # subject
         index[s][p] ||= []                          # predicate
