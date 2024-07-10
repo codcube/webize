@@ -20,7 +20,7 @@ module Webize
 
       def creator creators
         creators.map{|creator|
-          if Resources.member? creator.class
+          if Identifiable.member? creator.class
             uri = Webize::Resource.new(creator).env env
             name = uri.display_name
             color = Digest::SHA2.hexdigest(name)[0..5]
@@ -52,7 +52,7 @@ module Webize
 
       def to recipients
         recipients.map{|r|
-          if Resources.member? r.class
+          if Identifiable.member? r.class
             uri = Webize::Resource.new(r).env env
             name = uri.display_name
             color = Digest::SHA2.hexdigest(name)[0..5]
@@ -247,7 +247,7 @@ module Webize
         color = '#' + Digest::SHA2.hexdigest(     # dest color
                   Webize::URI.new(r[To][0]).display_name)[0..5] if r.has_key?(To) &&
                                                                    r[To].size==1 &&
-                                                                   Resources.member?(r[To][0].class)
+                                                                   Identifiable.member?(r[To][0].class)
         [{_: type,                                # node
           c: [({class: :title,                    # title
                 c: r.delete(Title).map{|t|

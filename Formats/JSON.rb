@@ -72,10 +72,10 @@ id ID _id id_str)
           unless predicate == :drop
 
             # warn on unmapped predicate. chatty w/ JSON-in-wild's vast array of non-URI attribute names
-            #unless predicate.match? HTTPURI
-            #  print ["\e[7m", predicate, "\e[0m "].join
-            #  predicate = '#' + predicate
-            #end
+            unless predicate.match? HTTPURI
+              print ["\e[7m", predicate, "\e[0m "].join
+              predicate = Schema + predicate
+            end
 
             # objects
             (v.class == Array ? v : [v]).flatten.compact.map{|o|
@@ -120,33 +120,25 @@ id ID _id id_str)
       end
     end
 
-    # Graph -> Tree
+    # RDF::Graph -> JSON
+    # very similar to #to_h in RDF.rb, we may switch to that but need to investigate its handling of
+    # cycles and blank nodes, or do away w/ entirely and hand a RDF::Graph to the render dispatcher,
+    # or extend to automagically add backlinks/reverse-arcs using OWL inverse functional properties
     def self.fromGraph graph
-      tree = {}                         # output tree
-      inlined = []                      # inlined nodes
+      index = {}                        # node index
 
-      graph.each_triple{|subj,pred,obj| # visit graph
+      graph.each_triple{|subj,pred,obj| # triple
         s = subj.to_s                   # subject
         p = pred.to_s                   # predicate
-        blank = obj.class == RDF::Node  # bnode?
 
-        # inline objects
-        if blank || (p == Contains && Resources.member?(obj.class))
-          o = obj.to_s                  # object identity
-          inlined.push o                # add to inline-objects list
-          obj = tree[o] ||=             # dereference object, initializing and
-              blank ? {} : {'uri' => o} # adding to index on first occurrence
-        end
+        blank = obj.class == RDF::Node  # blank object node?
+        obj = index[o] ||= blank ? {} : {'uri' => obj.to_s} if blank || Identifiable.member?(obj.class) # object node
 
-        tree[s] ||= subj.class == RDF::Node ? {} : {'uri' => s} # subject
-        tree[s][p] ||= []                                       # predicate
-        tree[s][p].push obj}                                    # object
+        index[s] ||= subj.node? ? {} : {'uri' => s} # subject
+        index[s][p] ||= []                          # predicate
+        index[s][p].push obj}                       # object
 
-      inlined.map{|n| tree.delete n} # sweep inlined nodes from index
-
-      # output tree
-      {Type => [Document],
-       Contains => tree.values}
+      index # output data-structure, indexed on node identity
     end
   end
 

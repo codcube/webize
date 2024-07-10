@@ -108,7 +108,7 @@ module Webize
       when NilClass
         o
       when RDF::Graph
-        markup JSON.fromGraph(o), env
+        markup JSON.fromGraph(o)[env[:base]], env
       when RDF::Repository
         :repository
       when RDF::Literal
