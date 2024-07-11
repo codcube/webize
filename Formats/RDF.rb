@@ -12,7 +12,8 @@ module Webize
   # Ruby classes capable of representing an RDF resource with an identifier
   Identifiable = [RDF::URI,
                   Webize::URI,
-                  Webize::Resource]
+                  Webize::Resource,
+                  Webize::POSIX::Node]
 
   # load metadata map
   Dir.children([ConfigPath, VocabPath].join '/').map{|vocab|                # for each config file:

@@ -100,17 +100,14 @@ module Webize
         o
       when NilClass
         o
-      when RDF::Graph # render all nodes reachable from base
-
+      when RDF::Graph # render all nodes reachable from base node
+        # sweep nodes unreachable in a path from base node, fetch a JSON rendition
+        # of a Concise Bounded Description of the graph identified by the base URI
+        # <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
         graph = JSON.fromGraph(o)[env[:base]] || {} # RDF -> JSON
-        graph[Type] = [Document]                    # markup as graph document
 
-        puts :IIIIIIIIIIIIIIIIIIIIIIIIIIIII_graph
-        puts ::JSON.pretty_generate JSON.fromGraph(o)
-        puts :OOOOOOOOOOOOOOOOOOOOOOOOOOOOO_graph
-        puts ::JSON.pretty_generate graph
-
-        markup graph, env
+        graph[Type] = [Document]                    # type as graph document
+        markup graph, env                           # markup for graph document
       when RDF::Repository
         :repository
       when RDF::Literal

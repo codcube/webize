@@ -115,30 +115,26 @@ id ID _id id_str)
 
         out = scan_node &f # scan base node
 
-        # if output has no identifier, point to it from base/identified node
+        # if node has no identifier, point to it from identified base node
         yield @base, Webize::URI(Contains), out if out.node?
       end
     end
 
     # RDF::Graph -> JSON
-    # very similar to #to_h in RDF.rb, we may switch to that but need to investigate its handling of
-    # cycles and blank nodes, or do away w/ entirely and hand a RDF::Graph to the render dispatcher,
-    # or extend to automagically add backlinks/reverse-arcs using OWL inverse functional properties
-    def self.fromGraph graph
-      index = {}                        # node index
+    # very similar to Graph#to_h, we may switch to that but need to investigate its handling of
+    # cyclic structure and bnodes, or do away w/ entirely and hand a RDF::Graph to the render dispatcher.
+    # also possibly extend this with backlinks/reverse-arcs using OWL inverse functional properties or Reasoner tools
+    def self.fromGraph graph; index = {}
 
-      graph.each_triple{|subj,pred,obj| # triple
-        s = subj.to_s                   # subject
-        p = pred.to_s                   # predicate
+      graph.each_triple{|s,p,o| # triple
+        blank = o.class == RDF::Node # blank-node object?                    # dereference object
+        o = index[o] ||= blank ? {} : {'uri' => o.to_s} if blank || Identifiable.member?(o.class)
 
-        blank = obj.class == RDF::Node  # blank object node?                                # object node
-        obj = index[obj] ||= blank ? {} : {'uri' => obj.to_s} if blank || Identifiable.member?(obj.class)
+        index[s] ||= s.node? ? {} : {'uri' => s} # subject
+        index[s][p] ||= []                       # predicate
+        index[s][p].push o}                      # object
 
-        index[s] ||= subj.node? ? {} : {'uri' => s} # subject
-        index[s][p] ||= []                          # predicate
-        index[s][p].push obj}                       # object
-
-      index # output data-structure, indexed on node identity
+      index # output data-structure, indexable on node identity
     end
   end
 
