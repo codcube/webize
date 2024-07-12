@@ -106,7 +106,7 @@ module Webize
         # <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
 
         graph = JSON.fromGraph(o)[env[:base]] || {} # RDF -> JSON
-        graph[Type] = [Document]                    # type as graph document
+        graph[Type] = [DOMnode + 'html']               # type as HTML document
 
         # puts ::JSON.pretty_generate JSON.fromGraph(o)
         # puts ::JSON.pretty_generate graph

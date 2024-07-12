@@ -66,19 +66,14 @@ module Webize
     class Node
 
       # type URI -> markup method
-      Markup = {
-        DOMnode + 'a' => :anchor,
-        Document => :document,
-        Schema + 'InteractionCounter' => :interactions}
+      Markup = {Schema + 'InteractionCounter' => :interactions}
 
-      %w(p ul ol li h1 h2 h3 h4 h5 h6 table thead tfoot th tr td).map{|e|
+      %w(a p ul ol li h1 h2 h3 h4 h5 h6 html table thead tfoot th tr td).map{|e|
         Markup[DOMnode + e] = e}
 
       # render methods - parametrize default renderer with DOM-node types
       # we could map all DOM nodes to #resource and fish through RDF for node types there, but we already did that in the render dispatcher, so pass the type explicitly
-      # we still may get rid of all these methods and do the lookup in #resource, Document can become DOMnode#html
-      # and since this class is small and the JSON-esque format is only used here and RSS renderer, we could eliminate our bespoke datastructure and use only RDF.rb native types
-      # unless there's any sort of market for 'subset of RDF in JSON' we don't know about in which case we have an early-mover advantage
+      # since this class is small and the JSON format is only used here and for RSS, we could eliminate our bespoke datastructure and use only RDF.rb native types
 
       def p(node) = resource node, :p
 
@@ -100,14 +95,14 @@ module Webize
       def tr(node) = resource node, :tr
       def td(node) = resource node, :td
 
-      def anchor a
-        a.delete Type
-        if content = (a.delete Contains)
+      def a _
+        _.delete Type
+        if content = (_.delete Contains)
           content.map!{|c|
             HTML.markup c, env}
         end
-        links = a.delete Link
-        attrs = keyval a unless a.empty? # remaining attributes
+        links = _.delete Link
+        attrs = keyval _ unless _.empty? # remaining attributes
 
         links.map{|ref|
           {_: :a,
@@ -118,14 +113,7 @@ module Webize
                attrs]}} if links
       end
 
-      def keyval kv
-        [{_: :dl,
-          c: kv.map{|k, vs|
-            {c: [{_: :dt, c: property(Type, [k])}, "\n",
-                 {_: :dd, c: property(k, vs)}, "\n"]}}}, "\n"]
-      end
-
-      def document doc
+      def html doc
 
         bc = String.new             # breadcrumb trail
 
@@ -226,8 +214,48 @@ module Webize
              {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}
       end
 
-      def resource r, type = nil
-        # explicit type overrides ambient typing found in RDF data
+      def keyval kv
+        [{_: :dl,
+          c: kv.map{|k, vs|
+            {c: [{_: :dt, c: property(Type, [k])}, "\n",
+                 {_: :dd, c: property(k, vs)}, "\n"]}}}, "\n"]
+      end
+
+      def tabular graph
+        graph = graph.values if graph.class == Hash
+
+        keys = graph.select{|r|r.respond_to? :keys}.map(&:keys).flatten.uniq
+        [Type, 'uri'].map{|k|
+          if keys.member? k # move key to head of list
+            keys.delete k
+            keys.unshift k
+          end}
+
+        sort_attrs = [Size, Date, Title, 'uri']
+
+        sort_attr = sort_attrs.find{|a| keys.member? a}
+        sortable, rest = graph.partition{|r| # to be sortable, object needs attribute
+          r.class == Hash && (r.has_key? sort_attr)}
+        graph = [*sortable.sort_by{|r| r[sort_attr][0].to_s}.reverse, *rest] # sort resources
+
+        {_: :table, class: :tabular,            # table
+         c: [({_: :thead,
+               c: {_: :tr, c: keys.map{|p|       # table heading
+                     p = Webize::URI(p)
+                     slug = p.display_name
+                     icon = Icons[p.uri] || slug
+                     [{_: :th,                   # ☛ sorted columns
+                       c: {_: :a, c: icon,
+                           href: URI.qs(env[:qs].merge({'sort' => p.uri,
+                                                        'order' => env[:order] == 'asc' ? 'desc' : 'asc'}))}}, "\n"]}}} if env),
+             {_: :tbody,
+              c: graph.map{|resource|           # resource -> row
+                [{_: :tr, c: keys.map{|k|
+                    [{_: :td, property: k,
+                      c: property(k, resource[k])}, "\n" ]}}, "\n" ]}}]}
+      end
+
+      def resource r, type = nil # explicit type overrides ambient typing found in RDF data
         r.delete Type if type || r[Type] == [RDF::URI(DOMnode + 'div')]
 
         # predicate renderer lambda
