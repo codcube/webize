@@ -40,7 +40,7 @@ module Webize
 
       def rdf_type types
         types.map{|t|
-          t = Webize::Resource t, env
+          t = Webize::Resource t.class == Hash ? t['uri'] : t, env
           {_: :a, class: :type, href: t.href,
            c: if t.uri == Contains
             nil
