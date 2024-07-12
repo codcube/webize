@@ -126,9 +126,12 @@ id ID _id id_str)
     # also possibly extend this with backlinks/reverse-arcs using OWL inverse functional properties or Reasoner tools
     def self.fromGraph graph; index = {}
 
-      graph.each_triple{|s,p,o| # triple
-        blank = o.class == RDF::Node # blank-node object?                    # dereference object
-        o = index[o] ||= blank ? {} : {'uri' => o.to_s} if blank || Identifiable.member?(o.class)
+      graph.each_triple{|s,p,o|                           # triple
+        p = p.to_s                                        # predicate key
+        blank = o.class == RDF::Node                      # blank-node object?
+        if blank || Identifiable.member?(o.class)         # object is a reference?
+          o = index[o] ||= blank ? {} : {'uri' => o.to_s} # dereference object
+        end
 
         index[s] ||= s.node? ? {} : {'uri' => s} # subject
         index[s][p] ||= []                       # predicate
