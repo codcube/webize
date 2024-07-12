@@ -205,7 +205,11 @@ module Webize
                    ({class: :referers,                                                                                   # 👉 referring node(s)
                      c: [:👉, HTML.markup(HTTP::Referer[self], env)]} if HTTP::Referer[self]),
 
-                   (doc[Contains].map{|v| HTML.markup v, env } if doc.has_key? Contains), # child nodes
+                   if doc.has_key? Contains
+                     doc.delete(Contains).map{|v| HTML.markup v, env }
+                   end, # child nodes
+
+                   keyval(doc), # document attributes
 
                    link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],                                  # 👉 previous, contained and next node(s)
 
