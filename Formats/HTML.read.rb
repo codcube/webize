@@ -58,6 +58,7 @@ module Webize
         if base = @doc.css('head base')[0]
           if baseHref = base['href']
             @base = HTTP::Node @base.join(baseHref), @env
+            yield @env[:base], Contains, @base
           end
         end
 

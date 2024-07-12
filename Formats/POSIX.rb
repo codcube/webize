@@ -4,7 +4,7 @@ module Webize
   class POSIX::Node < Resource
 
     def dir_triples graph
-      return Node(join basename + '/').dir_triples graph unless dirURI? # trailing slash for directory URIs
+      return Node(join basename + '/').dir_triples graph unless dirURI? # trailing slash for directory URI
       graph << RDF::Statement.new(env[:base], RDF::URI(Contains), self) unless self == env[:base] # provenance for non-canonical directory source
       graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601) # directory timestamp
       graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename   # directory name

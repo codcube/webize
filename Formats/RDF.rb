@@ -13,7 +13,9 @@ module Webize
   Identifiable = [RDF::URI,
                   Webize::URI,
                   Webize::Resource,
-                  Webize::POSIX::Node]
+                  Webize::HTTP::Node,
+                  Webize::POSIX::Node,
+                 ]
 
   # load metadata map
   Dir.children([ConfigPath, VocabPath].join '/').map{|vocab|                # for each config file:

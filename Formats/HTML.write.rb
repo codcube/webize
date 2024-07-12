@@ -108,6 +108,8 @@ module Webize
         # sweep nodes unreachable in a path from base node, returning a rendition
         # of a Concise Bounded Description of the graph identified by the base URI
         # <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
+
+        #puts ::JSON.pretty_generate JSON.fromGraph(o)[env[:base]]
         graph = JSON.fromGraph(o)[env[:base]] || {} # RDF -> JSON
         graph[Type] = [DOMnode + 'html']            # type as HTML document
         markup graph, env                           # markup for graph document
