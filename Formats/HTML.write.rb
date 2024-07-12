@@ -108,7 +108,7 @@ module Webize
         graph = JSON.fromGraph(o)[env[:base]] || {} # RDF -> JSON
         graph[Type] = [Document]                    # type as graph document
 
-        puts ::JSON.pretty_generate JSON.fromGraph(o)
+        # puts ::JSON.pretty_generate JSON.fromGraph(o)
         # puts ::JSON.pretty_generate graph
 
         markup graph, env                           # markup for graph document

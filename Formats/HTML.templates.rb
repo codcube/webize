@@ -71,7 +71,6 @@ module Webize
         Document => :document,
         Schema + 'InteractionCounter' => :interactions}
 
-      # DOM-node type -> markup method
       %w(p ul ol li h1 h2 h3 h4 h5 h6 table thead tfoot th tr td).map{|e|
         Markup[DOMnode + e] = e}
 
@@ -100,8 +99,6 @@ module Webize
       def th(node) = resource node, :th
       def tr(node) = resource node, :tr
       def td(node) = resource node, :td
-
-      # markup methods
 
       def anchor a
         a.delete Type
