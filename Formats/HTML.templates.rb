@@ -9,7 +9,7 @@ module Webize
         Abstract => :abstract,
         Creator => :creator,
         To => :to,
-        '#fileSource' => :table,
+        '#graphSource' => :table,
       }
 
       # type-specific property-markup methods

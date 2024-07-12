@@ -45,20 +45,20 @@ module Webize
 
     # OUTPUT dataflow:
 
-    # RDF::Graph -> JSON (RDF-subset) graph representation ->
-    #  HTML/DOM-node tree representation -> HTML string
+    # Graph -(JSON#fromGraph) -> RDF-subset represented in polymorphic values -(Node/Property#markup)->
+    # DOM-node tree representation -(Writer#render)-> HTML string -(Network/File protocol)-> message receiver
 
-    # the RDF graph is transformed to a JSON-compatible Hash-based structure in JSON#fromGraph
+    # the RDF graph after transformation to ruby values:
 
-    # example: { uri -> .. ,
-    #            predicate -> ['object', 234, {predicate -> [...]}]}
+    # { uri -> .. ,
+    #   predicate -> [123, :symbol, 'string', True,
+    #                 {predicate -> [...]}]}
 
-    # some RDF datatypes and syntactic primitives are not supported by JSON, <URI> being the most crucial.
-    # reserved key 'uri' denotes an identifier. without this, it's a blank node.
+    # some RDF datatypes and syntactic primitives are not supported in JSON, but are as Hash keys, URI most crucially.
+    # Hash with key 'uri' denotes an identifier. without this key, it's treated as a blank node.
 
-    # Resources and their properties can be associated with type-specific markup methods (defaults in HTML.templates.rb),
-    # which emit representations of DOM nodes / HTML elements, again in a JSON-compatible nested Hash for composability and
-    # layering with RDF-unaware and generic JSON tools and easy serializability to HTML
+    # RDF classes and properties can be associated with type-specific markup methods which emit representations
+    # of DOM nodes in the same format except a Hash represents a DOM node instead of an RDF graph node
 
     class Writer < RDF::Writer
 
