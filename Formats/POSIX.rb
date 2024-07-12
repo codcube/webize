@@ -4,19 +4,25 @@ module Webize
   class POSIX::Node < Resource
 
     def dir_triples graph
-      return Node(join basename + '/').dir_triples graph unless dirURI?
-      graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601)
-      graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename
-      (nodes = node.children).map{|child|
-        c = Node join child.basename.to_s.gsub(' ','%20').gsub('#','%23')
-        if nodes.size > 32
+      return Node(join basename + '/').dir_triples graph unless dirURI? # trailing slash for directory URIs
+
+      graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601) # directory timestamp
+      graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename   # directory name
+
+      (nodes = node.children).map{|child|                                        # child nodes
+        name = child.basename.to_s
+        c = Node join name.gsub(' ','%20').gsub('#','%23') # child node - TODO more name-escaping?
+
+        graph << RDF::Statement.new(c, RDF::URI(Title), name)
+
+        if nodes.size > 32 # alpha binning of large directories
           char = c.basename[0].downcase
           bin = Node join char + '*'
           graph << RDF::Statement.new(self, RDF::URI(Contains), bin)
-          graph << RDF::Statement.new(bin, RDF::URI(Contains), c)
           graph << RDF::Statement.new(bin, RDF::URI(Title), char)
+          graph << RDF::Statement.new(bin, RDF::URI(Schema + 'item'), c)
         else
-          graph << RDF::Statement.new(self, RDF::URI(Contains), c)
+          graph << RDF::Statement.new(self, RDF::URI(Schema + 'item'), c)
         end}
       graph
     end
@@ -28,7 +34,6 @@ module Webize
       stat = File.stat fsPath
       graph << RDF::Statement.new(self, RDF::URI('http://www.w3.org/ns/posix/stat#size'), stat.size)
       graph << RDF::Statement.new(self, RDF::URI(Date), stat.mtime.iso8601)
-      graph << RDF::Statement.new(self, RDF::URI('#pigs'), RDF::URI('#dongs'))
       graph
     end
 
