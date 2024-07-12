@@ -75,8 +75,11 @@ module Webize
       %w(p ul ol li h1 h2 h3 h4 h5 h6 table thead tfoot th tr td).map{|e|
         Markup[DOMnode + e] = e}
 
-      # parametrize default renderer with DOM-node types
-      # we could map all DOM nodes to #resource and fish through RDF for node types there, but we already did that in the render-method dispatcher
+      # render methods - parametrize default renderer with DOM-node types
+      # we could map all DOM nodes to #resource and fish through RDF for node types there, but we already did that in the render dispatcher, so pass the type explicitly
+      # we still may get rid of all these methods and do the lookup in #resource, Document can become DOMnode#html
+      # and since this class is small and the JSON-esque format is only used here and RSS renderer, we could eliminate our bespoke datastructure and use only RDF.rb native types
+      # unless there's any sort of market for 'subset of RDF in JSON' we don't know about in which case we have an early-mover advantage
 
       def p(node) = resource node, :p
 
