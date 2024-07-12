@@ -129,23 +129,24 @@ module Webize
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        list = @base + '#list'
-        dropCount, linkCount = [0, 0] # stats
-        fn.call RDF::Statement.new list, RDF::URI(Type), RDF::URI(Container)
-        fn.call RDF::Statement.new @base.env[:base], RDF::URI(Contains), list
-        @doc.lines.shuffle.map(&:chomp).map{|line|
-          unless line.empty? || line.match?(/^#/) # skip empty and commented lines
-            uri, title = line.split ' ', 2        # URI and optional title
-            u = Webize::URI(uri)                  # URI-list item
+        list = @base + '#list'                                                # list URI
+        fn.call RDF::Statement.new @base.env[:base], RDF::URI(Contains), list # point to list in base document
+        linkCount = 0                                                         # stats
+
+        @doc.lines.shuffle.map(&:chomp).map{|line| # each line:
+          unless line.empty? || line.match?(/^#/)  # skip empty or commented line
+            uri, title = line.split ' ', 2         # URI and optional title (String)
+            u = Webize::URI(uri)                   # URI                    (RDF)
             if u.deny?
-              dropCount += 1
+              puts "dropping #{u} in URI-list"
             else
               linkCount += 1
-              fn.call RDF::Statement.new list, RDF::URI(Contains), u
+              fn.call RDF::Statement.new list, RDF::URI(Schema + 'item'), u
               fn.call RDF::Statement.new u, RDF::URI(Title), title || uri
             end
           end}
-        puts "#{linkCount} URIs. dropped #{dropCount}" unless dropCount == 0
+
+        fn.call RDF::Statement.new list, RDF::URI(Size), linkCount
       end
     end
   end

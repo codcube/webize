@@ -10,6 +10,7 @@ module Webize
         Creator => :creator,
         To => :to,
         '#graphSource' => :table,
+        Schema + 'item' => :table,
       }
 
       # type-specific property-markup methods
