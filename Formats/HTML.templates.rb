@@ -9,6 +9,7 @@ module Webize
         Abstract => :abstract,
         Creator => :creator,
         To => :to,
+        '#fileSource' => :table,
       }
 
       # type-specific property-markup methods
@@ -50,6 +51,39 @@ module Webize
            end}}
       end
 
+      def table graph
+        keys = graph.select{|r|r.respond_to? :keys}.map(&:keys).flatten.uniq
+        [Type, 'uri'].map{|k|
+          if keys.member? k # move key to head of list
+            keys.delete k
+            keys.unshift k
+          end}
+
+        sort_attrs = [Size, Date, Title, 'uri']
+
+        sort_attr = sort_attrs.find{|a| keys.member? a}
+        sortable, rest = graph.partition{|r| # to be sortable, object needs attribute
+          r.class == Hash && (r.has_key? sort_attr)}
+        graph = [*sortable.sort_by{|r| r[sort_attr][0].to_s}.reverse, *rest] # sort resources
+
+        {_: :table, class: :tabular,            # table
+         c: [({_: :thead,
+               c: {_: :tr, c: keys.map{|p|       # table heading
+                     p = Webize::URI(p)
+                     slug = p.display_name
+                     icon = Icons[p.uri] || slug
+                     [{_: :th,                   # ☛ sorted columns
+                       c: {_: :a, c: icon,
+                           href: URI.qs(env[:qs].merge({'sort' => p.uri,
+                                                        'order' => env[:order] == 'asc' ? 'desc' : 'asc'}))}}, "\n"]}}} if env),
+             {_: :tbody,
+              c: graph.map{|resource|           # resource -> row
+                [{_: :tr, c: keys.map{|k|
+                    [{_: :td, property: k,
+                      c: (Property.new(k).env(env).markup(resource[k]) if resource.has_key? k)},
+                     "\n" ]}}, "\n" ]}}]}
+      end
+
       def to recipients
         recipients.map{|r|
           if Identifiable.member? r.class
@@ -71,9 +105,10 @@ module Webize
       %w(a p ul ol li h1 h2 h3 h4 h5 h6 html table thead tfoot th tr td).map{|e|
         Markup[DOMnode + e] = e}
 
-      # render methods - parametrize default renderer with DOM-node types
-      # we could map all DOM nodes to #resource and fish through RDF for node types there, but we already did that in the render dispatcher, so pass the type explicitly
-      # since this class is small and the JSON format is only used here and for RSS, we could eliminate our bespoke datastructure and use only RDF.rb native types
+      # render methods - for most this means parametrize default renderer with DOM-node type
+      # we could map all nodes to #resource and lookup RDF types there, but we already did that in the render dispatcher, so we thread it through
+      # we could (should?) eliminate our bespoke datastructure by rewriting this class to use only RDF.rb types. need to investigate its 'resource
+      # plus data' classes if any since writing SPARQL or doing tons of tedious pattern-match queries on a Graph/Repository is not our idea of fun
 
       def p(node) = resource node, :p
 
@@ -95,6 +130,7 @@ module Webize
       def tr(node) = resource node, :tr
       def td(node) = resource node, :td
 
+      # anchor
       def a _
         _.delete Type
         if content = (_.delete Contains)
@@ -219,40 +255,6 @@ module Webize
           c: kv.map{|k, vs|
             {c: [{_: :dt, c: property(Type, [k])}, "\n",
                  {_: :dd, c: property(k, vs)}, "\n"]}}}, "\n"]
-      end
-
-      def tabular graph
-        graph = graph.values if graph.class == Hash
-
-        keys = graph.select{|r|r.respond_to? :keys}.map(&:keys).flatten.uniq
-        [Type, 'uri'].map{|k|
-          if keys.member? k # move key to head of list
-            keys.delete k
-            keys.unshift k
-          end}
-
-        sort_attrs = [Size, Date, Title, 'uri']
-
-        sort_attr = sort_attrs.find{|a| keys.member? a}
-        sortable, rest = graph.partition{|r| # to be sortable, object needs attribute
-          r.class == Hash && (r.has_key? sort_attr)}
-        graph = [*sortable.sort_by{|r| r[sort_attr][0].to_s}.reverse, *rest] # sort resources
-
-        {_: :table, class: :tabular,            # table
-         c: [({_: :thead,
-               c: {_: :tr, c: keys.map{|p|       # table heading
-                     p = Webize::URI(p)
-                     slug = p.display_name
-                     icon = Icons[p.uri] || slug
-                     [{_: :th,                   # ☛ sorted columns
-                       c: {_: :a, c: icon,
-                           href: URI.qs(env[:qs].merge({'sort' => p.uri,
-                                                        'order' => env[:order] == 'asc' ? 'desc' : 'asc'}))}}, "\n"]}}} if env),
-             {_: :tbody,
-              c: graph.map{|resource|           # resource -> row
-                [{_: :tr, c: keys.map{|k|
-                    [{_: :td, property: k,
-                      c: property(k, resource[k])}, "\n" ]}}, "\n" ]}}]}
       end
 
       def resource r, type = nil # explicit type overrides ambient typing found in RDF data
