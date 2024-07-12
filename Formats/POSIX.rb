@@ -28,6 +28,7 @@ module Webize
       stat = File.stat fsPath
       graph << RDF::Statement.new(self, RDF::URI('http://www.w3.org/ns/posix/stat#size'), stat.size)
       graph << RDF::Statement.new(self, RDF::URI(Date), stat.mtime.iso8601)
+      graph << RDF::Statement.new(self, RDF::URI('#pigs'), RDF::URI('#dongs'))
       graph
     end
 

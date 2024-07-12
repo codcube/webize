@@ -95,7 +95,11 @@ module Webize
       when FalseClass
         {_: :input, type: :checkbox}
       when Hash
-        HTML::Node.markup o, env
+        if o.keys == %w(uri)
+          markup (RDF::URI o['uri']), env
+        else
+          HTML::Node.markup o, env
+        end
       when Integer
         o
       when NilClass
