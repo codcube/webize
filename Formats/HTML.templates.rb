@@ -264,7 +264,7 @@ module Webize
                     :red
                   end
         end
-puts :res, r.keys.map(&:class)
+
         children = r.delete Contains
         color = '#' + Digest::SHA2.hexdigest(     # dest color
                   Webize::URI.new(r[To][0]).display_name)[0..5] if r.has_key?(To) &&
