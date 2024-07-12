@@ -772,4 +772,5 @@ module Webize
     end
 
   end
+  Identifiable.push HTTP::Node
 end

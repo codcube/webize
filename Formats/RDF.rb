@@ -13,7 +13,6 @@ module Webize
   Identifiable = [RDF::URI,
                   Webize::URI,
                   Webize::Resource,
-                  Webize::HTTP::Node,
                   Webize::POSIX::Node,
                  ]
 
