@@ -115,8 +115,8 @@ id ID _id id_str)
 
         out = scan_node &f # scan base node
 
-        # if node has no identifier, point to it from identified base node
-        yield @base, Webize::URI(Contains), out if out.node?
+        yield @base.env[:base], Webize::URI(Contains), @base # point to document base from request base
+        yield @base, Webize::URI(Contains), out              # point to JSON base from document base
       end
     end
 
@@ -144,8 +144,8 @@ id ID _id id_str)
     #   predicate -> [123, :symbol, 'string', True,
     #                 {predicate -> [...]}]}
 
-    # some RDF datatypes are supported as Hash keys in Ruby, but not in a JSON serialization, URI most crucially.
-    # a Hash attr 'uri' denotes an identifier. without this key, a Hash will be handled as a blank node
+    # some RDF datatypes are supported as Hash keys in Ruby but not in JSON serializations, URI most crucially.
+    # attr 'uri' denotes an identifier. without this key, a Hash is treated as a blank node
 
   end
 
