@@ -129,6 +129,7 @@ module Webize
         attrs = keyval _ unless _.empty? # remaining attributes
 
         links.map{|ref|
+          ref = Webize::URI(ref['uri']) if ref.class == Hash
           {_: :a,
            class: ref.host == host ? 'local' : 'global',
            href: ref,
@@ -245,11 +246,9 @@ module Webize
                  {_: :dd, c: property(k, vs)}, "\n"]}}}, "\n"]
       end
 
-      def resource r, type = nil # explicit type overrides ambient typing found in RDF data
-        r.delete Type if type || r[Type] == [RDF::URI(DOMnode + 'div')]
+      def resource r, type = :div
 
-        # predicate renderer lambda
-        p = -> a {property(a, r.delete(a)) if r.has_key? a}
+        p = -> a {property(a, r.delete(a)) if r.has_key? a} # predicate renderer
 
         if uri = r.delete('uri')                  # unless blank node:
           uri = Webize::Resource(uri, env)        # URI
@@ -265,6 +264,8 @@ module Webize
                   end
         end
 
+        #types =
+        r.delete Type
         children = r.delete Contains
         color = '#' + Digest::SHA2.hexdigest(     # dest color
                   Webize::URI.new(r[To][0]).display_name)[0..5] if r.has_key?(To) &&
@@ -282,7 +283,6 @@ module Webize
               origin_ref,                         # origin pointer
              ]}.
            update(id ? {id: id} : {}).
-           update(type ? {} : {class: :resource}).
            update(color ? {style: "background: repeating-linear-gradient(45deg, #{color}, #{color} 1px, transparent 1px, transparent 8px); border-color: #{color}"} : {}), "\n"]
       end
     end

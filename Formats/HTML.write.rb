@@ -31,9 +31,10 @@ module Webize
       def self.markup o, env # dispatch on type URI to representation generator method
         Node.new(env[:base]).env(env).        # representation instance
           send o[Type] &&                     # has RDF type attribute?
-               Markup[o[Type].map(&:to_s).find{|t| # types
-                   Markup.has_key? t}] ||     # typed renderer found?
-               :resource, o                   # generic renderer
+               Markup[o[Type].map{|t|
+                        t.class == Hash ? t['uri'] : t.to_s}.find{|t| # types
+                        Markup.has_key? t}] || # typed renderer found?
+               :resource, o                    # generic render
       end
 
       # construct and call property renderer
@@ -98,6 +99,7 @@ module Webize
         if o.keys == %w(uri)
           markup (RDF::URI o['uri']), env
         else
+          #puts :markup,o if o['robots']
           HTML::Node.markup o, env
         end
       when Integer
@@ -108,8 +110,8 @@ module Webize
         # sweep nodes unreachable in a path from base node, returning a rendition
         # of a Concise Bounded Description of the graph identified by the base URI
         # <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
-
         #puts ::JSON.pretty_generate JSON.fromGraph(o)[env[:base]]
+
         graph = JSON.fromGraph(o)[env[:base]] || {} # RDF -> JSON
         graph[Type] = [DOMnode + 'html']            # type as HTML document
         markup graph, env                           # markup for graph document
