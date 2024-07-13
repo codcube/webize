@@ -262,11 +262,16 @@ module Webize
                   elsif uri.deny?
                     :red
                   end
+
+          if env[:fragmap].has_key? id # reference to in-doc representation
+            return {_: :a, href: '#' + id, c: :stub}
+          else                         # new in-doc representation
+            env[:fragmap][id] = uri
+          end
         end
 
-        #types =
-        r.delete Type
-        children = r.delete Contains
+        r.delete Type; children=r.delete Contains # child nodes
+
         color = '#' + Digest::SHA2.hexdigest(     # dest color
                   Webize::URI.new(r[To][0]).display_name)[0..5] if r.has_key?(To) &&
                                                                    r[To].size==1 &&

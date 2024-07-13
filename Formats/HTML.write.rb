@@ -93,10 +93,8 @@ module Webize
         o
       when NilClass
         o
-      when RDF::Graph # render all nodes reachable from base node
-        # <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
-        #puts ::JSON.pretty_generate JSON.fromGraph(o)[env[:base]]
-
+      when RDF::Graph # render all nodes reachable from base <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
+        env[:fragmap] = {} # global to local fragment map
         graph = JSON.fromGraph(o)[env[:base]] || {} # RDF -> JSON
         graph[Type] = [DOMnode + 'html']            # type as HTML document
         markup graph, env                           # markup for graph document
