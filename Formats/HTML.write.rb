@@ -99,7 +99,6 @@ module Webize
         if o.keys == %w(uri)
           markup (RDF::URI o['uri']), env
         else
-          #puts :markup,o if o['robots']
           HTML::Node.markup o, env
         end
       when Integer
@@ -107,8 +106,6 @@ module Webize
       when NilClass
         o
       when RDF::Graph # render all nodes reachable from base node
-        # sweep nodes unreachable in a path from base node, returning a rendition
-        # of a Concise Bounded Description of the graph identified by the base URI
         # <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
         #puts ::JSON.pretty_generate JSON.fromGraph(o)[env[:base]]
 
