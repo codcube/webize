@@ -46,8 +46,8 @@ module Webize
 
     # OUTPUT dataflow:
 
-    # Graph -(JSON#fromGraph)-> RDF-subset represented in polymorphic values -(Node/Property#markup)->
-    # DOM-node representation -(Writer#render)-> HTML -(Network/File protocol)-> message receiver
+    # Graph --(JSON#fromGraph)--> RDF-subset represented in polymorphic Ruby values --(Node/Property#markup)-->
+    # DOM-node representation --(Writer#render)--> HTML --(Protocol)--> message receiver
 
     # the RDF graph after transformation to ruby values:
 
