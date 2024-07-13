@@ -46,7 +46,7 @@ module Webize
 
     # OUTPUT dataflow:
 
-    # Graph --JSON#fromGraph--> RDF representation in polymorphic Ruby values --Node/Property#markup-->
+    # RDF::Graph --JSON#fromGraph--> RDF representation in Ruby values --Node/Property#markup-->
     # DOM-node representation in Ruby values --Writer#render--> HTML --Protocols--> message receiver
 
     class Writer < RDF::Writer
