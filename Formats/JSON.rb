@@ -139,6 +139,15 @@ id ID _id id_str)
 
       index # output data-structure, indexable on node identity
     end
+    # the RDF graph after transformation to ruby values:
+
+    # { uri -> .. ,
+    #   predicate -> [123, :symbol, 'string', True,
+    #                 {predicate -> [...]}]}
+
+    # some RDF datatypes and syntactic primitives are not supported in JSON, but are as Hash keys, URI most crucially.
+    # Hash with key 'uri' denotes an identifier. without this key, it's treated as a blank node.
+
   end
 
 end
