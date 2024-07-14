@@ -15,12 +15,16 @@ content_html
 content_text
 contents
 cooked
+data-block-json
 data-content-text
 data-full-content
+data-full-text
 data-image-description
 data-initq
+data-long-text
 data-maindata
 data-q
+data-track-component
 dc.description
 dcterms.Description
 dcterms.description
@@ -65,6 +69,7 @@ safe_content
 sailthru.description
 shortDescription
 shortDescriptionOrTagLine
+simpleText
 socialDescription
 socialStatus
 source
@@ -75,7 +80,3 @@ twitter:description
 twitterDescription
 twitterText
 value
-data-long-text
-data-full-text
-data-track-component
-simpleText

@@ -51,6 +51,11 @@ created_time
 creationDate
 creation_date
 dat
+data-node-publishdate
+data-sort-time
+data-timestamp
+data-update-time
+data-updated-on
 date
 date.release
 dateBroadcast
@@ -141,6 +146,7 @@ last_status_at
 last_updated
 last_updated_date
 lastmod
+lastpublished
 magazineIssueDate
 modDate
 modified
@@ -205,8 +211,3 @@ video:release_date
 xxUpdated
 xx_created
 xx_updated
-data-node-publishdate
-lastpublished
-data-sort-time
-data-update-time
-data-timestamp

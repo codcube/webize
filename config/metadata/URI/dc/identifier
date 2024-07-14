@@ -17,6 +17,7 @@ contentId
 data-asset-id
 data-beid
 data-cid
+data-collection-id
 data-docid
 data-entityid
 data-experiment-id
@@ -25,6 +26,8 @@ data-gid
 data-hveid
 data-id
 data-iid
+data-image-id
+data-item-id
 data-laoid
 data-mid
 data-node-id
@@ -43,6 +46,8 @@ data-testid
 data-tpvid
 data-unique-identifier
 data-vid
+data-w-id
+data-widget-id
 dc.identifier
 dcterms.identifier
 discogsId
@@ -79,5 +84,3 @@ urn
 uuid
 wordpressID
 yelp-biz-id
-data-w-id
-data-widget-id
