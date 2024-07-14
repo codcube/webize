@@ -658,11 +658,8 @@ module Webize
        # body
        head? ? nil : [if writer = RDF::Writer.for(content_type: format)
                       writer.buffer(base_uri: self,
-                                    prefixes: {dc: DC,
-                                               rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
-                                               schema: Schema,
-                                               sioc: SIOC,
-                                               n: HTML::Node}) do |w|
+                                    prefixes: {dc: DC, ldp: LDP, rdfs: RDFs, schema: Schema,
+                                               sioc: SIOC, n: HTML::Node}) do |w|
                         repositories.map{|r|
                           w << r }
                       end

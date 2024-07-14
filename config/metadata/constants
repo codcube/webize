@@ -8,8 +8,10 @@ Date     http://purl.org/dc/terms/date
 Document http://xmlns.com/foaf/0.1/Document
 From     http://rdfs.org/sioc/ns#has_creator
 Image    http://purl.org/dc/terms/Image
+LDP	 http://www.w3.org/ns/ldp#
 Link     http://purl.org/dc/terms/link
 Post     http://rdfs.org/sioc/ns#Post
+RDFs	 http://www.w3.org/2000/01/rdf-schema#
 SIOC     http://rdfs.org/sioc/ns#
 Schema   http://schema.org/
 Size	 http://www.w3.org/ns/posix/stat#size
