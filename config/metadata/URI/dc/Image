@@ -49,6 +49,7 @@ data-img
 data-img-path
 data-img-src
 data-img-url
+data-large_image
 data-lazy
 data-lazy-img
 data-lazy-retina
@@ -65,7 +66,9 @@ data-sourcemobile
 data-sourcetablet
 data-src
 data-src-retina
+data-thumb
 data-url
+data-zoom
 desktopImage
 extra_large
 facebook:image
@@ -199,4 +202,3 @@ twitter:image:src
 twitter:tile:image
 vk:image
 vr:image
-data-zoom

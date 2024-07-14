@@ -7,6 +7,7 @@ KeyWords
 Keywords
 Marketing_Bullets
 Section
+Story-description1
 abstract
 alt
 altText
@@ -30,12 +31,18 @@ cXenseParse:keywords
 cXenseParse:news_keywords
 calloutText
 caption
+carddescription
+citation_abstract
 closeupUnifiedDescription
 column
 components
 data-alt
+data-caption
 data-description
 data-image-caption
+data-short-text
+data-thumb-alt
+data-tracking-value
 dcterms.abstract
 definition
 dek
@@ -154,8 +161,3 @@ vertical
 verticals
 vf:topic
 wordpressSlug
-carddescription
-citation_abstract
-data-short-text
-Story-description1
-data-tracking-value
