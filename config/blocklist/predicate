@@ -460,3 +460,6 @@ wot-verification
 x-ua-compatible
 y_key
 yandex-verification
+required
+data-placement
+data-scroll-devices

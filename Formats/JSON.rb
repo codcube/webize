@@ -33,7 +33,7 @@ module Webize
       Identifier = %w(
 permalink_url url uri canonical_url
 href link src
-id ID _id id_str)
+id ID _id id_str @id)
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
