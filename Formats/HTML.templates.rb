@@ -246,13 +246,13 @@ module Webize
       end
 
       def resource r, type = :div
-#puts r[Link].map(&:class),:__________________
-        p = -> a {property(a, r.delete(a)) if r.has_key? a} # predicate renderer
+        p = -> a {                                # predicate renderer lambda
+          property(a, r.delete(a)) if r.has_key? a}
 
         if uri = r.delete('uri')                  # unless blank node:
           uri = Webize::Resource(uri, env)        # URI
           id = uri.local_id                       # localized fragment identity (representation of remote resource in doc)
-#         puts "#{uri} -> #{id}"
+
           origin_ref = {_: :a, class: :pointer,   # origin pointer
                         href: uri, c: :🔗}
           ref = {_: :a, href: uri.href,           # pointer
@@ -265,9 +265,10 @@ module Webize
 
            if env[:fragmap].has_key? id # reference to in-doc representation
             return {_: :a, href: '#' + id, c: :stub}
-          else                         # new in-doc representation
+          else                         #  in-doc representation
             env[:fragmap][id] = uri
-          end
+            puts "fragmap #{id} -> #{uri}"
+           end
         end
 
         r.delete Type; children=r.delete Contains # child nodes
