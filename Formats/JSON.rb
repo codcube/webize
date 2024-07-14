@@ -129,12 +129,12 @@ id ID _id id_str)
     def self.fromGraph graph; index = {}
 
       graph.each_triple{|s,p,o|                           # triple
+        next if s == o                                    # cyclic reference
         p = p.to_s                                        # predicate key
         blank = o.class == RDF::Node                      # blank-node object?
         if blank || Identifiable.member?(o.class)         # object is a reference?
           o = index[o] ||= blank ? {} : {'uri' => o.to_s} # dereference object
         end
-        puts [:DAG_VIOLATION, s, p, o].join ' ' if s == o
         index[s] ||= s.node? ? {} : {'uri' => s} # subject
         index[s][p] ||= []                       # predicate
         index[s][p].push o}                      # object

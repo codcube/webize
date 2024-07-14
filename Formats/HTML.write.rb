@@ -39,7 +39,6 @@ module Webize
 
       # construct and call property renderer
       def property p, o
-        puts "property #{p}"
         Property.new(p).env(env).markup o
       end
 
