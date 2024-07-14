@@ -87,24 +87,24 @@ module Webize
         if o.keys == %w(uri)
           markup (RDF::URI o['uri']), env
         else
-          # if uri = o['uri']
-          #   uri = Webize::Resource uri, env # node identifier
-          #   if env[:displayed].has_key? uri # reference existing representation
-          #     puts "existing rendering of #{uri} at #{uri.local_id}"
-          #     return {_: :a, href: '#' + uri.local_id, c: uri.display_name}
-          #   else
-          #     env[:displayed][uri] = true
-          #   end
-          # end
+          if uri = o['uri']
+            uri = Webize::Resource uri, env # node identifier
+            if env[:displayed].has_key? uri # reference existing representation
+              puts "existing rendering of #{uri} at #{uri.local_id}"
+              return {_: :a, href: '#' + uri.local_id, c: uri.display_name}
+            else
+              env[:displayed][uri] = true
+            end
+          end
           HTML::Node.markup o, env          # node representation
         end
       when Integer
         o
       when NilClass
         o
-      when RDF::Graph # render all nodes reachable from base <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
-        graph = JSON.fromGraph(o)[env[:base]] || {} # RDF -> JSON
-        graph[Type] = [DOMnode + 'html']            # type as HTML document
+      when RDF::Graph # show all nodes reachable from base URI <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
+        graph = JSON.fromGraph(o)[env[:base]] || {} # graph data
+        graph[Type] = [Document]                    # type as graph document
         markup graph, env                           # markup graph document
       when RDF::Repository
         :repository

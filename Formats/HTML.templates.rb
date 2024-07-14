@@ -88,9 +88,11 @@ module Webize
     class Node
 
       # type URI -> markup method
-      Markup = {Schema + 'InteractionCounter' => :interactions}
+      Markup = {
+        Document => :document,
+        Schema + 'InteractionCounter' => :interactions}
 
-      %w(a p ul ol li h1 h2 h3 h4 h5 h6 html table thead tfoot th tr td).map{|e|
+      %w(a p ul ol li h1 h2 h3 h4 h5 h6 table thead tfoot th tr td).map{|e|
         Markup[DOMnode + e] = e}
 
       # render methods - for most this means parametrize default renderer with DOM-node type
@@ -136,7 +138,7 @@ module Webize
                attrs]}} if links
       end
 
-      def html doc
+      def document doc
         bc = String.new             # breadcrumb trail
 
         bgcolor = if env[:deny]     # blocked?
