@@ -29,15 +29,17 @@ module Webize
     class Node < Resource
 
       def self.markup o, env # dispatch on type URI to representation generator method
+
+        # cycle detection - in-doc link to existing rendering
         if uri = o['uri']
           uri = Webize::Resource uri, env
-          if env[:displayed].has_key? uri # reference to in-doc representation
+          if env[:displayed].has_key? uri # reference in-doc representation
             return {_: :a, href: '#' + uri.local_id, c: uri.display_name}
-          else                            # mark as displayed
+          else                            # new representation
             env[:displayed][uri] = true
           end
-
         end
+
         Node.new(env[:base]).env(env).        # representation instance
           send o[Type] &&                     # has RDF type attribute?
                Markup[o[Type].map{|t|
