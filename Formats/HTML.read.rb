@@ -181,8 +181,8 @@ module Webize
                 end
 
                 case o
-                when RelURI # cast URI in string to RDF::URI
-                  o = Webize::URI(@base.join o).relocate
+                when RelURI # URI string -> RDF::URI
+                  o = Webize::Resource(@base.join(o), @env).relocate
                 when JSON::Array
                   ::JSON.parse(o).map{|e|
                     yield subject, p, e if e}

@@ -40,3 +40,4 @@ video:tag
 wssTags
 tagname
 data-event-label
+data-test-attribute
