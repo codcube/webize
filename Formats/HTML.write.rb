@@ -87,15 +87,15 @@ module Webize
         if o.keys == %w(uri)
           markup (RDF::URI o['uri']), env
         else
-          if uri = o['uri']
-            uri = Webize::Resource uri, env # node identifier
-            if env[:displayed].has_key? uri # reference existing representation
-              puts "existing rendering of #{uri} at #{uri.local_id}"
-              return {_: :a, href: '#' + uri.local_id, c: uri.display_name}
-            else
-              env[:displayed][uri] = true
-            end
-          end
+          # if uri = o['uri']
+          #   uri = Webize::Resource uri, env # node identifier
+          #   if env[:displayed].has_key? uri # reference existing representation
+          #     puts "existing rendering of #{uri} at #{uri.local_id}"
+          #     return {_: :a, href: '#' + uri.local_id, c: uri.display_name}
+          #   else
+          #     env[:displayed][uri] = true
+          #   end
+          # end
           HTML::Node.markup o, env          # node representation
         end
       when Integer
