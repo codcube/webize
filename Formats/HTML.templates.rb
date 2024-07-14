@@ -11,6 +11,7 @@ module Webize
         To => :to,
         '#graphSource' => :table,
         Schema + 'item' => :table,
+        Schema + 'transcodings' => :table,
       }
 
       # type-specific property-markup methods
