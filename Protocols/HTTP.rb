@@ -123,10 +123,12 @@ module Webize
     end
 
     # initial environment struct
-    def self.env = {feeds: [],
-                    links: {},
-                    qs: {},
-                    warnings: []}
+    def self.env = {
+      displayed: {},
+      feeds: [],
+      links: {},
+      qs: {},
+      warnings: []}
 
     # Node constructor method
     def self.Node(uri, env) = Node.new(uri).env env

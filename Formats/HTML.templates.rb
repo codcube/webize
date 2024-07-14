@@ -137,8 +137,6 @@ module Webize
       end
 
       def html doc
-        env[:fragmap] = {self => self} # local<>global fragment map
-
         bc = String.new             # breadcrumb trail
 
         bgcolor = if env[:deny]     # blocked?
@@ -262,13 +260,6 @@ module Webize
                   elsif uri.deny?
                     :red
                   end
-
-           if env[:fragmap].has_key? id # reference to in-doc representation
-            return {_: :a, href: '#' + id, c: :stub}
-          else                         #  in-doc representation
-            env[:fragmap][id] = uri
-            puts "fragmap #{id} -> #{uri}"
-           end
         end
 
         r.delete Type; children=r.delete Contains # child nodes
