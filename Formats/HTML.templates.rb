@@ -121,11 +121,19 @@ module Webize
       # anchor
       def a _
         _.delete Type
+
         if content = (_.delete Contains)
           content.map!{|c|
             HTML.markup c, env}
         end
+
         links = _.delete Link
+
+        if title = (_.delete Title)
+          title.map!{|c|
+            HTML.markup c, env}
+        end
+
         attrs = keyval _ unless _.empty? # remaining attributes
 
         links.map{|ref|
@@ -133,9 +141,9 @@ module Webize
           {class: :link,
            c: [{_: :a, href: ref,
                 class: ref.host == host ? 'local' : 'global',
-                c: [content,
+                c: [title,
                     {_: :span, c: CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '')}]},
-               attrs]}} if links
+               content, attrs]}} if links
       end
 
       def document doc
