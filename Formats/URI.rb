@@ -47,7 +47,7 @@ module Webize
       if fragment && in_doc?
         fragment
       else
-        'r' + Digest::SHA2.hexdigest(rand.to_s)
+        'r' + Digest::SHA2.hexdigest(uri)
       end
     end
 
