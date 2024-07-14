@@ -115,8 +115,10 @@ id ID _id id_str)
 
         out = scan_node &f # scan base node
 
-        yield @base.env[:base], Webize::URI(Contains), @base # point to document base from request base
-        yield @base, Webize::URI(Contains), out              # point to JSON base from document base
+        # point to document-base node from request node
+        yield @base.env[:base], Webize::URI(Contains), @base unless @base == @base.env[:base]
+        # point to JSON from document
+        yield @base, Webize::URI(Contains), out              unless @base == out
       end
     end
 
@@ -132,7 +134,7 @@ id ID _id id_str)
         if blank || Identifiable.member?(o.class)         # object is a reference?
           o = index[o] ||= blank ? {} : {'uri' => o.to_s} # dereference object
         end
-
+        puts :CYCLE, s if s == o
         index[s] ||= s.node? ? {} : {'uri' => s} # subject
         index[s][p] ||= []                       # predicate
         index[s][p].push o}                      # object

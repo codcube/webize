@@ -39,6 +39,7 @@ module Webize
 
       # construct and call property renderer
       def property p, o
+        puts "property #{p}"
         Property.new(p).env(env).markup o
       end
 
@@ -87,19 +88,16 @@ module Webize
         if o.keys == %w(uri)
           markup (RDF::URI o['uri']), env
         else
-          # cycle detection - in-doc link to existing rendering
-          if uri = o['uri']
-            uri = Webize::Resource uri, env
-            if env[:displayed].has_key? uri # reference in-doc representation
-              return {_: :a, href: '#' + uri.local_id, c: uri.display_name}
-            else                            # new representation
-              env[:displayed][uri] = true
-            end
-          else
-            puts "unID!", o
-          end
-
-          HTML::Node.markup o, env
+          # if uri = o['uri']
+          #   uri = Webize::Resource uri, env # node identifier
+          #   if env[:displayed].has_key? uri # reference existing representation
+          #     puts "existing rendering of #{uri} at #{uri.local_id}"
+          #     return {_: :a, href: '#' + uri.local_id, c: uri.display_name}
+          #   else
+          #     env[:displayed][uri] = true
+          #   end
+          # end
+          HTML::Node.markup o, env          # node representation
         end
       when Integer
         o
