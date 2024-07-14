@@ -246,7 +246,6 @@ module Webize
       end
 
       def resource r, type = :div
-
         p = -> a {                                # predicate renderer lambda
           property(a, r.delete(a)) if r.has_key? a}
 

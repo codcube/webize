@@ -124,8 +124,8 @@ module Webize
 
     # initial environment struct
     def self.env = {
-      displayed: {},
       feeds: [],
+      fragments: {},
       links: {},
       qs: {},
       warnings: []}
