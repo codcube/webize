@@ -11,6 +11,7 @@ module Webize
 
   module JSON
 
+    Array = /^\[.*\]$/
     Inner = /^[^{'"]*(['"])?({.*})[^}]*$/
     Outer = /^{.*}$/
 

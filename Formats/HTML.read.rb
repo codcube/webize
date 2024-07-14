@@ -165,7 +165,7 @@ module Webize
               p = MetaMap[p] if MetaMap.has_key? p
 
               if p == :drop
-               puts ['drop:', subject, attr.name, o].join ' '
+               #puts ['drop:', subject, attr.name, o].join ' '
               else
 
                 # unmapped predicate?
@@ -182,13 +182,17 @@ module Webize
 
                 case o
                 when RelURI # cast URI in string to RDF::URI
-                  o = @base.join o
+                  o = Webize::URI(@base.join o).relocate
+                when JSON::Array
+                  ::JSON.parse(o).map{|e|
+                    yield subject, p, e if e}
+                  o = nil
                 when JSON::Outer # webize JSON in value field
                   o = JSON::Reader.new(o, base_uri: @base).scan_node &f
                 end
                 o = @base.join o if p == Link && o.class == String
 
-                yield subject, p, o
+                yield subject, p, o if o
               end
             end
 

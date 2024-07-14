@@ -22,7 +22,7 @@ module Webize
     def relocate
       Webize::URI(if URL_host?
                   q = query_hash
-                  q['url'] || q['u'] || q['q'] || self
+                  q['url'] || q['u'] || self
                  elsif FWD_hosts.member? host
                    ['//', FWD_hosts[host], path, query ? ['?', query] : nil].join
                  elsif RSS_available?
