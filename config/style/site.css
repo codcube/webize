@@ -22,7 +22,7 @@
 .interactionCount .type {border-radius: .38em 0 0 .38em}
 .interactionCount span {background-color: #fff; color: #000; padding: .1em}
 .interactionCount {white-space: nowrap; margin: .06em}
-.link {border: 1px solid #0cf}
+.link {border: 1px solid #0cf; margin: 1px}
 .name {background-color: #888; color: #000; font-size: .8em; vertical-align: top}
 .preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
 .preembed {position: relative; vertical-align: top}

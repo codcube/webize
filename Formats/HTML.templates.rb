@@ -290,7 +290,7 @@ module Webize
               origin_ref,                         # origin pointer
              ]}.
            update(id ? {id: id} : {}).
-           update((id && type == :div) ? {} : {class: :resource}).
+           update((id && type == :div) ? {class: :resource} : {}).
            update(color ? {style: "background: repeating-linear-gradient(45deg, #{color}, #{color} 1px, transparent 1px, transparent 8px); border-color: #{color}"} : {}), "\n"]
       end
     end
