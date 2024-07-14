@@ -87,16 +87,21 @@ module Webize
         if o.keys == %w(uri)
           markup (RDF::URI o['uri']), env
         else
-          if uri = o['uri']                 # identified?
-            uri = Webize::Resource uri, env # identifier
-            if env[:fragments].has_key? uri # reference existing representation
-              puts "representation of #{uri} at #{env[:base]}##{env[:fragments][uri]}"
-              return {_: :a, href: '#' + env[:fragments][uri], c: uri.display_name}
-            else
-              env[:fragments][uri] = uri.local_id
+          id = o.__id__
+          if env[:fragments].has_key? id # existing representation
+            if uri = o['uri']            # global identifier
+              uri = Webize::Resource uri, env
+              fragment = uri.local_id    # local (in-doc) identifier
+              puts "representation of #{uri} at #{env[:base]}##{fragment}"
+              {_: :a, href: '#' + fragment, c: uri.display_name}
+            else                         # ^ link to local representation
+              puts :BLANK_NODE_LINK, o
+              nil # can't link to blank node - no identifier available
             end
+          else
+            env[:fragments][id] = true
+            HTML::Node.markup o, env     # new representation
           end
-          HTML::Node.markup o, env          # representation
         end
       when Integer
         o
