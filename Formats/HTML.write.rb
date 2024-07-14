@@ -89,16 +89,15 @@ module Webize
         else
           id = o.__id__
           if env[:fragments].has_key? id # existing representation
-            if uri = o['uri']            # resource identifier
-              uri = Webize::Resource uri, env
-              puts "representation of #{uri} at #{ env[:base] }##{ uri.local_id }"
+            if uri = o['uri']            # identified?
+              uri = Webize::Resource uri, env # global reference
               {_: :a, href: '#' + uri.local_id, c: uri.display_name} # local (in-doc) reference
             else
               nil # can't link to blank node - no identifier available
             end
           else
             env[:fragments][id] = true
-            HTML::Node.markup o, env     # new representation
+            HTML::Node.markup o, env # new representation
           end
         end
       when Integer
