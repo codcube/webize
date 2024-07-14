@@ -17,7 +17,10 @@ module Webize
 
   class URI
 
-    def relocate? = URL_host? || RSS_available? || [FWD_hosts, YT_hosts].find{|_| _.member? host} || filtered_allow?
+    def relocate? = (URL_host? && (query_hash['url'] || query_hash['u'])) ||
+                    RSS_available? ||
+                    [FWD_hosts, YT_hosts].find{|_| _.member? host} ||
+                    filtered_allow?
 
     def relocate
       Webize::URI(if URL_host? && (query_hash['url'] || query_hash['u'])
