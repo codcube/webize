@@ -95,8 +95,6 @@ module Webize
 
       # render methods - for most this means parametrize default renderer with DOM-node type
       # we could map all nodes to #resource and lookup RDF types there, but we already did that in the render dispatcher, so we thread it through
-      # we could (should?) eliminate our bespoke datastructure by rewriting this class to use only RDF.rb types. need to investigate its 'resource
-      # plus data' classes if any since writing SPARQL or doing tons of tedious pattern-match queries on a Graph/Repository is not our idea of fun
 
       def p(node) = resource node, :p
 
@@ -139,6 +137,7 @@ module Webize
       end
 
       def html doc
+        env[:fragmap] = {self => self} # local<>global fragment map
 
         bc = String.new             # breadcrumb trail
 

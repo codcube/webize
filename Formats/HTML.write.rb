@@ -94,10 +94,9 @@ module Webize
       when NilClass
         o
       when RDF::Graph # render all nodes reachable from base <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
-        env[:fragmap] = {} # global to local fragment map
         graph = JSON.fromGraph(o)[env[:base]] || {} # RDF -> JSON
         graph[Type] = [DOMnode + 'html']            # type as HTML document
-        markup graph, env                           # markup for graph document
+        markup graph, env                           # markup graph document
       when RDF::Repository
         :repository
       when RDF::Literal
