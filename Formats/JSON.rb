@@ -115,7 +115,7 @@ id ID _id id_str)
 
         out = scan_node &f # scan base node
 
-        # point to document base from request node
+        # point to document base from request base
         yield @base.env[:base], Webize::URI(Contains), @base unless @base == @base.env[:base]
         # point to JSON base from document base
         yield @base, Webize::URI(Contains), out              unless @base == out
@@ -128,9 +128,9 @@ id ID _id id_str)
     # also possibly extend this with backlinks/reverse-arcs using OWL inverse functional properties or Reasoner tools
     def self.fromGraph graph; index = {}
 
-      graph.each_triple{|s,p,o|                           # triple
-        next if s == o                                    # cyclic reference
-        p = p.to_s                                        # predicate key
+      graph.each_triple{|s,p,o|                           # for each triple, in a
+        next if s == o                                    # directed *acyclic* graph:
+        p = p.to_s                                        # predicate
         blank = o.class == RDF::Node                      # blank-node object?
         if blank || Identifiable.member?(o.class)         # object is a reference?
           o = index[o] ||= blank ? {} : {'uri' => o.to_s} # dereference object
