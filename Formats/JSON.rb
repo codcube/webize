@@ -19,6 +19,7 @@ module Webize
       content_type 'application/json',
                    extensions: [:json, :meta, :webmanifest],
                    aliases: %w(
+                   app/json
                    text/json
                    application/manifest+json;q=0.8
                    application/vnd.imgur.v1+json;q=0.1)
