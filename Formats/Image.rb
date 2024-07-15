@@ -44,31 +44,29 @@ module Webize
 
     end
     class Node
-
       Markup[Image] = :img
 
       def img image
-        if image.class != Hash
-          puts "image #{image.class} #{image}"
-        else
-          src = Webize::Resource((env[:base].join image['uri']), env).href
+        return puts "not an Image URI: #{image}" unless image.class == Hash
 
-          [{class: :image,
-            c: [{_: :a, href: src,
-                 c: {_: :img, src: src}},
-                if image.has_key? Abstract
-                  ['<br>',
-                   {class: :caption,
-                    c: image[Abstract].map{|a|
-                      [(HTML.markup a,env), ' ']}}]
-                end,
-                ([Abstract, Image, Type, 'uri'].map{|p| # base properties
-                   image.delete p }                     # rest of properties
-                 keyval image unless image.empty?)]}, ' ']
-        end
+        src = Webize::Resource((env[:base].join image['uri']), env).href
+
+        [{class: :image,
+          c: [{_: :a, href: src,
+               c: {_: :img, src: src}},
+              if image.has_key? Abstract
+                ['<br>',
+                 {class: :caption,
+                  c: image[Abstract].map{|a|
+                    [(HTML.markup a,env), ' ']}}]
+              end,
+              ([Abstract, Image, Type, 'uri'].map{|p| # base properties
+                 image.delete p }                     # rest of properties
+               keyval image unless image.empty?)]}, ' ']
       end
     end
   end
+
   module JPEG
     class Format < RDF::Format
       content_type 'image/jpeg',
