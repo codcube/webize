@@ -35,6 +35,7 @@ data-asset
 data-background-image
 data-baseurl
 data-bg
+data-bg-url
 data-big-photo
 data-cmp-src
 data-delayed-url
@@ -58,6 +59,7 @@ data-lazyload
 data-menuimg
 data-native-src
 data-nuxt-img
+data-orig-src
 data-original
 data-raw-src
 data-source
@@ -128,6 +130,7 @@ large
 ledeImageUrl
 logo
 logoUrl
+logo_url
 mask-icon
 mediaUrl
 media_url
@@ -149,6 +152,7 @@ ogImage
 ownerAvatar
 parsely-image-url
 photo
+photo_url
 picture
 picture_url
 pinterest:image
@@ -179,6 +183,7 @@ site_logo
 small
 snapchat:sticker
 socialImageUrl
+submenu_icon
 taboola:image:large
 taboola:image:medium
 tbi-image
@@ -202,6 +207,3 @@ twitter:image:src
 twitter:tile:image
 vk:image
 vr:image
-submenu_icon
-data-orig-src
-data-bg-url
