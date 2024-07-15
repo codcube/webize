@@ -333,7 +333,7 @@ module Webize
                    elsif path && content_type = (MIME.fromSuffix File.extname path)
                      content_type                                       # format defined on basename
                    else
-                     'application/octet-stream'
+                     'text/plain'
                    end.downcase                                         # normalize format
           if !charset && format.index('html') && metatag = body[0..4096].encode('UTF-8', undef: :replace, invalid: :replace).match(/<meta[^>]+charset=['"]?([^'">]+)/i)
             charset = metatag[1]                                        # detect in-band charset definition
@@ -342,7 +342,6 @@ module Webize
           body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML
 
-          puts "prior SHA #{cache_headers['SHA2']} current SHA #{sha2}" if cache_headers['SHA2']
           if (formats = RDF::Format.content_types[format]) &&           # content type
              (extensions = formats.map(&:file_extension).flatten) &&    # suffixes for content type
              !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix in mapped set?
