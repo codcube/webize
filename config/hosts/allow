@@ -8,6 +8,7 @@ api.weather.com
 api.weather.gov
 api.x.com
 assets.msn.com
+assets.twitch.tv
 basemaps-api.arcgis.com
 blogger.googleusercontent.com
 books.google.com
@@ -19,6 +20,7 @@ cdnjs.cloudflare.com
 datatracker.ietf.org
 developer.mozilla.org
 docs.google.com
+gql.twitch.tv
 groups.google.com
 hugh.cdn.rumble.cloud
 i.imgur.com
@@ -42,6 +44,7 @@ thumbnailer.mixcloud.com
 time.apple.com
 track-blaster.com
 tracker.debian.org
+twitch.tv
 w3c.github.io
 www.amazon.com
 www.cnbc.com
@@ -50,5 +53,6 @@ www.ebay.com
 www.msn.com
 www.nytimes.com
 www.reddit.com
+www.twitch.tv
 www.youtube.com
 www.zillow.com
