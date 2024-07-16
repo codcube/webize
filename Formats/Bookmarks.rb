@@ -43,7 +43,7 @@ module Webize
               yield host, Title, subject.host
               yield host, Type, RDF::URI(Container))
 
-            yield host, Contains, subject
+            yield host, Schema + 'item', subject
           end
 
           # title = a.inner_text
