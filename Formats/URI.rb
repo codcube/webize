@@ -12,6 +12,15 @@ module Webize
   configHash('metadata/constants').map{|symbol, uri|
     const_set symbol, uri }
 
+  # map constants to prefix symbols for RDF serializer
+  Prefixes = {
+    dc: DC,
+    ldp: LDP,
+    rdfs: RDFs,
+    schema: Schema,
+    sioc: SIOC,
+  }
+
   class URI < RDF::URI
 
     def basename

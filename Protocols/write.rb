@@ -21,7 +21,8 @@ module Webize
           if File.exist? f  # TODO store version at same URI instead of require new URI for new version?
             # immutable graphs and graph-version-URI minting have so proven to be enough for us
           else # store graph:
-            RDF::Writer.for(:turtle).open(f){|f|f << graph} # save 🐢
+            RDF::Writer.for(:turtle).open(f, base_uri: g, prefixes: Prefixes){|f|
+              f << graph} # save 🐢
             if env.has_key? :updates_only                       # updates graph:
               out << RDF::Statement.new(dataset, RDF::URI(Contains), g) # 👉 graph
               out << graph                                      # init updates graph

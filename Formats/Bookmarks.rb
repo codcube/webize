@@ -14,7 +14,7 @@ module Webize
         links = RDF::URI '#links'
 
         # links container
-        yield @base, Contains, links
+        yield @base.env[:base], Contains, links
         yield links, Type, RDF::URI(Container)
 
         @in.lines.grep(/<A/).map{|a|
