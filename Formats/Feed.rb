@@ -53,6 +53,7 @@ rss rss.xml
       def initialize(input = $stdin, options = {}, &block)
         @doc = input.respond_to?(:read) ? input.read : input
         @base = options[:base_uri]
+        @options = options
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -136,7 +137,9 @@ rss rss.xml
             subject = Webize::URI.new @base.join id
             subject.query = nil if subject.query&.match?(/utm[^a-z]/)
             subject.fragment = nil if subject.fragment&.match?(/utm[^a-z]/)
-            reddit = subject.host&.match /reddit.com$/
+
+            yield @base.env[:base], Contains, subject # containment triple
+
             # type tag
             yield subject, Type,
                   Webize::URI(if subject.host == 'www.youtube.com'
@@ -147,9 +150,8 @@ rss rss.xml
                             Post
                            end)
 
-            # addressee/recipient/destination-group
-            to = reddit ? Webize::URI('https://www.reddit.com/' + subject.parts[0..1].join('/')) : @base
-            yield subject, To, to
+            # addressee aka recipient aka destination. currently that means the blog itself
+            yield subject, To, @base
 
             # media links
             inner.scan(reMedia){|e|
