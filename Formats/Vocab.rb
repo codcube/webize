@@ -1,4 +1,4 @@
-class Webize
+module Webize
 
   MetaMap = {} # vocab URI mapping table
 
@@ -6,7 +6,7 @@ class Webize
 
   Dir.children([ConfigPath, VocabPath].join '/').map{|vocab|                # for each vocab-map config file:
                                                                             # find vocab prefix defined by RDF library:
-    if vocabulary = vocab == 'rdf' ? {uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'} : RDF.vocab_map[vocab.to_sym] # special-case RDF symbol so we don't shadow 
+    if vocabulary = vocab == 'rdf' ? {uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'} : RDF.vocab_map[vocab.to_sym] # special-case RDF symbol so we don't shadow (actually needed?)
       Dir.children([ConfigPath, VocabPath, vocab].join '/').map{|predicate| # for each predicate:
         destURI = [vocabulary[:uri], predicate].join                        # expand predicate URI
         configList([VocabPath, vocab, predicate].join '/').map{|srcURI|     # parse mapping entries

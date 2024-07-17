@@ -28,7 +28,8 @@ PDF
 Subtitle
 Text
 Video
-Vocab),
+Vocab
+XML),
  Protocols: %w(
 access
 location
