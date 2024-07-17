@@ -27,7 +27,8 @@ Org
 PDF
 Subtitle
 Text
-Video),
+Video
+Vocab),
  Protocols: %w(
 access
 location
