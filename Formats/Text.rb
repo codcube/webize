@@ -118,6 +118,7 @@ module Webize
       def initialize(input = $stdin, options = {}, &block)
         @doc = (input.respond_to?(:read) ? input.read : input).encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
         @base = options[:base_uri]
+        @options = options
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)

@@ -24,7 +24,7 @@ module Webize
         linkgroup = [nil, parts[0..2]].join('/') + '/#IRClinks'
         lines = 0
         ts = {}
-
+        yield @base.env[:base], Contains, target
         yield target, Type, RDF::URI('http://rdfs.org/sioc/ns#ChatLog')
 
         @doc.lines.grep(/^[^-]/).map{|msg|
@@ -45,7 +45,7 @@ module Webize
           timestamp = day + time
           subject = '#' + channame + hourslug + (lines += 1).to_s
           yield subject, Type, type
-          yield target, Contains, RDF::URI(subject)
+          yield target, Schema+'item', RDF::URI(subject)
           ts[timestamp] ||= 0
           yield subject, Date, [timestamp, '%02d' % ts[timestamp]].join('.')
           ts[timestamp] += 1
