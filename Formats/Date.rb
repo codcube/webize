@@ -63,6 +63,7 @@ title)
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
+        @options = options
         @doc = input.respond_to?(:read) ? input.read : input
         @subject = RDF::URI(options[:base_uri] || '#textfile')
         if block_given?

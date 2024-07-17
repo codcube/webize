@@ -38,6 +38,7 @@ id ID _id id_str @id)
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
         @doc = ::JSON.parse input.respond_to?(:read) ? input.read : input
+        @options = options
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)

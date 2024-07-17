@@ -15,6 +15,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
+        @options = options
         @subject = RDF::URI(options[:base_uri] || '#image')
         @img = Exif::Data.new(input.respond_to?(:read) ? input.read : input) rescue nil
         if block_given?
@@ -82,6 +83,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
+        @options = options
         @subject = RDF::URI(options[:base_uri] || '#image')
         #        @img = Exif::Data.new(input.respond_to?(:read) ? input.read : input) rescue nil
         if block_given?
@@ -133,6 +135,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
+        @options = options
         @subject = RDF::URI(options[:base_uri] || '#image')
         if block_given?
           case block.arity
@@ -167,6 +170,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
+        @options = options
         @subject = RDF::URI(options[:base_uri] || '#image')
         if block_given?
           case block.arity

@@ -19,9 +19,9 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
+        @options = options
 
-        # initialize HTML reader with input from Markdown->HTML render
-        @html = HTML::Reader.new(
+        @html = HTML::Reader.new( # initialize HTML reader with its input the output of (Markdown -> HTML) transform
           ::Redcarpet::Markdown.new(Renderer, fenced_code_blocks: true).
             render(input.respond_to?(:read) ? input.read : input), base_uri: options[:base_uri])
 

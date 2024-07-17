@@ -10,6 +10,7 @@ module Webize
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
         @body = input.respond_to?(:read) ? input.read : input
+        @options = options
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)

@@ -16,6 +16,7 @@ module Webize
       Quote = /^>[\s>]*/
 
       def initialize(input = $stdin, options = {}, &block)
+        @options = options
         @doc = input.respond_to?(:read) ? input.read : input
         @base = options[:base_uri]
         if block_given?

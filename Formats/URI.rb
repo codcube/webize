@@ -53,8 +53,8 @@ module Webize
                          path].join
 
     def local_id
-      if fragment && in_doc?
-        fragment
+      if in_doc?
+        fragment || ''
       else
         'r' + Digest::SHA2.hexdigest(uri)
       end
@@ -126,6 +126,7 @@ module Webize
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
         @doc = input.respond_to?(:read) ? input.read : input
+        @options = options
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)

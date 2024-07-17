@@ -10,6 +10,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
+        @options = options
         @subject = RDF::URI(options[:base_uri] || '#aac')
         if block_given?
           case block.arity
@@ -37,6 +38,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
+        @options = options
         @subject = RDF::URI(options[:base_uri] || '#mp3')
         if block_given?
           case block.arity
@@ -66,6 +68,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
+        @options = options
         @subject = RDF::URI(options[:base_uri] || '#opus')
         if block_given?
           case block.arity
@@ -97,6 +100,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
+        @options = options
         @subject = RDF::URI(options[:base_uri] || '#m4s')
         if block_given?
           case block.arity
@@ -124,6 +128,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
+        @options = options
         @subject = RDF::URI(options[:base_uri] || '#wav')
         if block_given?
           case block.arity
@@ -152,6 +157,7 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
+        @options = options
         @doc = input.respond_to?(:read) ? input.read : input
         @subject = RDF::URI(options[:base_uri] || '#js')
         if block_given?
