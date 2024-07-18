@@ -1,11 +1,5 @@
 module Webize
   module Cache
-      # # graph stats
-      # count = out.size
-      # out << RDF::Statement.new(dataset, RDF::URI(Size), count) unless count == 0                                # dataset size (triples)
-      # if newest = query(timestamp).objects.sort[-1]                                                              # dataset timestamp
-      #   out << RDF::Statement.new(dataset, RDF::URI(Date), newest)
-      # end
 
     # Repository -> 🐢 file(s)
     def persist env
@@ -15,14 +9,14 @@ module Webize
       creator = RDF::Query::Pattern.new :s, RDF::URI(Creator), :o # sender
       to = RDF::Query::Pattern.new :s, RDF::URI(To), :o           # receiver
       type = RDF::Query::Pattern.new :s, RDF::URI(Type), :o       # type
-
+  
       out = env.has_key?(:updates_only) ? RDF::Repository.new : self # update graph
 
       each_graph.map{|graph|           # for each
         next unless g = graph.name     # named graph:
         g = POSIX::Node g              # graph URI
         f = [g.document, :🐢].join '.' # 🐢 location
-        next if File.exist? f          # cache up-to-date with graphURI==version constraint TODO automatically mint version URIs (perhaps at calling site, in which case nothing changes here) and/or introduce Git dependency
+        next if File.exist? f          # cache up-to-date with graphURI<>version TODO automatically mint version URIs (perhaps at calling site, in which case nothing changes here)
 
         RDF::Writer.for(:turtle).open(f, base_uri: g, prefixes: Prefixes){|f|f << graph} # cache 🐢
 
@@ -42,9 +36,9 @@ module Webize
                          Webize::URI(o).display_name          # slug from URI
                        else
                          o.to_s.split /[\W_]/                 # slugs from literal
-                       end}}].flatten.compact.map(&:downcase).# normalize slug case
+                       end}}].flatten.compact.map(&:downcase).# normalize slugs
                     uniq - BasicSlugs)].                      # apply slug skiplist
-                  compact.join('.')[0..125].                  # join slug for max-length 128
+                  compact.join('.')[0..125].                  # join basename (max-length 128)
                   sub(/\.$/,'') + '.🐢'].                     # append turtle extension
                  compact.join '/'                             # join path
 
