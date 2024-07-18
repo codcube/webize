@@ -161,7 +161,8 @@ module Webize
     end
   end
 
-  # Ruby classes representing an RDF identifier
+  # Ruby classes representing an RDF identifier and turn into one on #to_s
+  # there's probaly some Ruby method to get an array of parent classes where we can check for RDF::URI membership, TODO investigate/delete this
   Identifiable = [RDF::URI,
                   Webize::URI,
                   Webize::Resource]
