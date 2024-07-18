@@ -189,7 +189,7 @@ module Webize
                     yield subject, p, e if e}
                   o = nil
                 when JSON::Outer # webize JSON in value field
-                  o = JSON::Reader.new(o, base_uri: @base).scan_node &f
+                  o = JSON::Reader.new(o, base_uri: @base).scan_node &f rescue o
                 end
                 o = @base.join o if p == Link && o.class == String
 
