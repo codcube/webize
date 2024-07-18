@@ -1,5 +1,8 @@
 # coding: utf-8
 
+# enable 🐢 extension for text/turtle
+RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl]
+
 class String
 
   # text -> HTML, yielding inlined-resource (rel,href) tuples to block

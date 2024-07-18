@@ -8,7 +8,7 @@ module Webize
 
     # (MIME, data) -> RDF::Repository
     def readRDF format = fileMIME, content = read
-      repository = RDF::Repository.new.extend Webize::Graph::Cache
+      repository = RDF::Repository.new.extend Webize::Cache
 
       case format                                                 # content type:TODO needless reads? stop media reads earlier
       when /octet.stream/                                         #  blob

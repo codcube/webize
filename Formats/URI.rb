@@ -160,4 +160,10 @@ module Webize
       end
     end
   end
+
+  # Ruby classes representing an RDF identifier
+  Identifiable = [RDF::URI,
+                  Webize::URI,
+                  Webize::Resource,
+                  Webize::POSIX::Node]
 end

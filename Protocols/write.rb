@@ -1,5 +1,5 @@
 module Webize
-  module Graph::Cache
+  module Cache
 
     # Repository -> 🐢 file(s)
     def persist env, dataset # environment, dataset URI

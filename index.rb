@@ -8,7 +8,6 @@ HTML.write
 HTML.templates
 MIME
 POSIX
-RDF
 Archive
 Audio
 Code
