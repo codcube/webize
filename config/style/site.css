@@ -1,11 +1,9 @@
-#datasets {float: left}
 #down {right: 4.5em; bottom: 0; border-radius: .6em .6em 0 0; border-width: .04em .04em 0 .04em}
 #next {right: 0; bottom: 0; border-radius: .6em 0 0 0; border-width: .04em 0 0 .04em}
 #prev {left: 0; bottom: 0; border-radius: 0 .6em 0 0; border-width: .04em .04em 0 0}
 #prev, #next, #up, #down {font-size: 2em; border-style: solid; border-color: #777; color: #bbb; padding: .2em .8em .2em .8em; position: fixed}
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
-#updates {border: 1px solid #444; border-radius: 1em; display: block}
 .blocked {background: repeating-linear-gradient(315deg, #f00, #f00 6em, transparent 6em, transparent 8em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
 .columns {column-width: 83ex; column-gap: 0}
@@ -94,6 +92,3 @@ table {border-spacing: 0}
 table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 0; border-style: dotted}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
-td[property="http://purl.org/dc/terms/title"] {background-color: #000; color: #fff}
-td[property="http://rdfs.org/sioc/ns#addressed_to"] > a {white-space: nowrap}
-td[property="http://rdfs.org/sioc/ns#has_creator"] {text-align: right}
