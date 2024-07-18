@@ -12,40 +12,37 @@ module Webize
 
       out = env.has_key?(:updates_only) ? RDF::Repository.new : self # update graph
 
-      each_graph.map{|graph|                              # for each
-        next unless g = graph.name                        # named graph:
-        g = POSIX::Node g                               # graph URI
-        f = [g.document, :🐢].join '.'                  # 🐢 location
-        log = []
+      each_graph.map{|graph|           # for each
+        next unless g = graph.name     # named graph:
+        g = POSIX::Node g              # graph URI
+        f = [g.document, :🐢].join '.' # 🐢 location
+        next if File.exist? f          # new graph URI required for next version
+        log = []                       # log buffer
 
-        if File.exist? f  # TODO store version at same URI instead of require new URI for new version?
-        # immutable graphs and graph-version-URI minting have so proven to be enough for us
-        else # store graph:
-          RDF::Writer.for(:turtle).open(f, base_uri: g, prefixes: Prefixes){|f|
-            f << graph} # save 🐢
-          if env.has_key? :updates_only                       # updates graph:
-            out << RDF::Statement.new(dataset, RDF::URI(Contains), g) # 👉 graph
-            out << graph                                      # init updates graph
-          else                                                # original graph:
-            env[:updates] ||= out << RDF::Statement.new(RDF::URI('#updates'), RDF::URI(Type), RDF::URI(Container)) # init updates container
-            graph.subjects.map{|subject|                      # 👉 updates
-              if dest = graph.query(RDF::Query::Pattern.new subject, RDF::URI(To), :o).first_object
-                env[:dests] ||= {}
-                env[:dests][dest] ||= (
-                  dest_bin = RDF::Node.new
-                  out << RDF::Statement.new(dest_bin, RDF::URI(Type), RDF::URI(Container))
-                  out << RDF::Statement.new(dest_bin, RDF::URI(Title), dest.class == RDF::Literal ? dest : Webize::URI(dest).display_name)
-                  out << RDF::Statement.new(RDF::URI('#updates'), RDF::URI(Contains), dest_bin)
-                  dest_bin)
-                out << RDF::Statement.new(env[:dests][dest], RDF::URI(Contains), subject)
-              else
-                out << RDF::Statement.new(RDF::URI('#updates'), RDF::URI(Contains), subject)
-              end
-            }
-          end
-
-          log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join]
+        RDF::Writer.for(:turtle).open(f, base_uri: g, prefixes: Prefixes){|f|f << graph} # cache 🐢
+        if env.has_key? :updates_only  # updates graph:
+          out << RDF::Statement.new(dataset, RDF::URI(Contains), g) # 👉 graph
+          out << graph                 # init updates graph
+        else                           # original graph:
+          env[:updates] ||= out << RDF::Statement.new(RDF::URI('#updates'), RDF::URI(Type), RDF::URI(Container)) # init updates container
+          graph.subjects.map{|subject| # 👉 updates
+            if dest = graph.query(RDF::Query::Pattern.new subject, RDF::URI(To), :o).first_object
+              env[:dests] ||= {}
+              env[:dests][dest] ||= (
+                dest_bin = RDF::Node.new
+                out << RDF::Statement.new(dest_bin, RDF::URI(Type), RDF::URI(Container))
+                out << RDF::Statement.new(dest_bin, RDF::URI(Title), dest.class == RDF::Literal ? dest : Webize::URI(dest).display_name)
+                out << RDF::Statement.new(RDF::URI('#updates'), RDF::URI(Contains), dest_bin)
+                dest_bin)
+              out << RDF::Statement.new(env[:dests][dest], RDF::URI(Contains), subject)
+            else
+              out << RDF::Statement.new(RDF::URI('#updates'), RDF::URI(Contains), subject)
+            end
+          }
         end
+
+        log << ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join]
+
 
         # link to timeline if not already there and we have a timestamp
         if !g.to_s.match?(/^\/\d\d\d\d\/\d\d\/\d\d\/\d\d/) && (ts = graph.query(timestamp).first_value) && ts.match?(/^\d\d\d\d-/)
