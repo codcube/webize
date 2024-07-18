@@ -491,16 +491,13 @@ module Webize
     def GET
       return hostGET if host                  # remote node
       ps = parts                              # parse path
-      p = ps[0]                               # first node in path
-      return fetchLocal unless p              # local node - root or no path
+      p = ps[0]                               # find first node in path
+      return fetchLocal unless p              # local node - empty or root path
       return unproxy.hostGET if p[-1] == ':' && ps.size > 1        # remote node - proxy URI with scheme
       return unproxy.hostGET if p.index('.') && p != 'favicon.ico' # remote node - proxy URI sans scheme
-      return dateDir if %w{m d h y}.member? p # year/month/day/hour dir
+      return dateDir if %w{m d h y}.member? p # redirect to current year/month/day/hour container
       return block parts[1] if p == 'block'   # block domain
-      if extname == '.u' && query == 'fetch'  # URI list and ?fetch
-        env[:updates_only] ||= true           # elide non-updates for news/feed/aggregation scenarios, which is main use of this feature so far. any time we don't want this?
-        return fetch uris                     # remote node(s)
-      end
+      return fetch uris if extname == '.u' && query == 'fetch' # remote node(s) - enumerated in URI list
       fetchLocal                              # local node
     end
 
@@ -562,7 +559,6 @@ module Webize
     def hostGET
       return [301, {'Location' => relocate.href}, []] if relocate? # relocated node
       if path == '/feed' && adapt? && Feed::Subscriptions[host]    # aggregate feed node - doesn't exist on origin server
-        env[:updates_only] ||= true
         return fetch Feed::Subscriptions[host]
       end
       dirMeta              # 👉 adjacent nodes
