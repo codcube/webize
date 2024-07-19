@@ -1,10 +1,8 @@
 module Webize
   module Cache
 
-    # Repository -> 🐢 file(s)
-    def persist env
-
-      # query patterns
+     def persist env # Repository -> 🐢(s)
+                                                          # query pattern for:
       timestamp = RDF::Query::Pattern.new :s, RDF::URI(Date), :o  # timestamp
       creator = RDF::Query::Pattern.new :s, RDF::URI(Creator), :o # sender
       to = RDF::Query::Pattern.new :s, RDF::URI(To), :o           # receiver
@@ -23,7 +21,6 @@ module Webize
         if !g.to_s.match?(/^\/\d\d\d\d\/\d\d\/\d\d\/\d\d/) && # if graph not already located on timeline,
            (ts = graph.query(timestamp).first_value) &&       # and we have a timestamp value in RDF,
            ts.match?(/^\d\d\d\d-/)                            # in iso8601-compatible format
-
           t = ts.split /\D/                                   # split timestamp
 
           🕒 = [t[0..3], t.size < 4 ? '0' : nil,              # nested timeslice (year -> month -> day -> hour) containers
@@ -49,7 +46,6 @@ module Webize
 
         Console.logger.info log.join ' ' # display log message
       }
-
       self
     end
 
