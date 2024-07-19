@@ -90,3 +90,7 @@ urn
 uuid
 wordpressID
 yelp-biz-id
+data-client-id
+data-fid
+page-category-id
+item-id

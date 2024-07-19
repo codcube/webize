@@ -162,3 +162,6 @@ verticals
 vf:topic
 wordpressSlug
 captionText
+data-summary
+data-topic
+page-category-name

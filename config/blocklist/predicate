@@ -463,3 +463,7 @@ yandex-verification
 required
 data-placement
 data-scroll-devices
+js-target
+data-js-target
+track-target
+fetchpriority
