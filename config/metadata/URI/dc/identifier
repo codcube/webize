@@ -23,6 +23,7 @@ data-docid
 data-elementor-id
 data-entityid
 data-experiment-id
+data-feature-id
 data-file-id
 data-formid
 data-gid
@@ -65,9 +66,11 @@ guid
 http://purl.org/rss/1.0/guid
 http://www.w3.org/2005/Atom#id
 id
+idAttr
 instapp:owner_user_id
 itemid
 key
+moat-id
 nodeId
 pageId
 parsely-post-id
@@ -87,4 +90,3 @@ urn
 uuid
 wordpressID
 yelp-biz-id
-idAttr

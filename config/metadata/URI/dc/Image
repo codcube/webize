@@ -56,6 +56,7 @@ data-lazy-img
 data-lazy-retina
 data-lazy-src
 data-lazyload
+data-low-res-src
 data-menuimg
 data-native-src
 data-nuxt-img
@@ -174,6 +175,7 @@ pubexchange:image
 publisherLogo
 rawAvatar
 rich-pin-icon
+riverImage
 sailthru.image
 sailthru.image.full
 sailthru.image.thumb
@@ -207,4 +209,3 @@ twitter:image:src
 twitter:tile:image
 vk:image
 vr:image
-riverImage
