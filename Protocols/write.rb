@@ -9,15 +9,13 @@ module Webize
       creator = RDF::Query::Pattern.new :s, RDF::URI(Creator), :o # sender
       to = RDF::Query::Pattern.new :s, RDF::URI(To), :o           # receiver
       type = RDF::Query::Pattern.new :s, RDF::URI(Type), :o       # type
-  
-      out = env.has_key?(:updates_only) ? RDF::Repository.new : self # update graph
 
       each_graph.map{|graph|           # for each
         next unless g = graph.name     # named graph:
         g = POSIX::Node g              # graph URI
         f = [g.document, :🐢].join '.' # 🐢 location
-        next if File.exist? f          # cache up-to-date with graphURI<>version TODO automatically mint version URIs (perhaps at calling site, in which case nothing changes here)
-
+        next if File.exist? f          # cache hit (mint a new graph URI to store a new version)
+                                       # TODO automagic graph-version-URI minting and RDF indexing (with append-only URI lists)
         RDF::Writer.for(:turtle).open(f, base_uri: g, prefixes: Prefixes){|f|f << graph} # cache 🐢
 
         log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] # canonical location
