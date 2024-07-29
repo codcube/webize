@@ -225,13 +225,20 @@ module Webize
           audio = {'uri' => audio.to_s}
         end
 
-        # resolve locator for environment context
-        src = Webize::Resource((env[:base].join audio['uri']), env).href
+        # resolve locator to environment context
+        src = Webize::Resource((env[:base].join audio['uri']), env)
 
         {class: 'audio resource',
-         c: [{_: :audio, src: src, # audio tag
+         c: [{_: :audio,      # audio tag
+              src: src.href,
               controls: :true},
-             (keyval audio)]}      # extra attributes
+
+             {_: :a,          # audio link
+              class: :global,
+              href: src.href,
+              c: [:🔊, src.display_name]},
+
+             (keyval audio)]} # extra attributes
       end
     end
   end
