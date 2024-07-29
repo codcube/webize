@@ -97,8 +97,9 @@ module Webize
         v = Webize::Resource env[:base].join(video['uri']), env # video URI
 
         {class: :video,
-         c: [{_: :span, style: 'font-size: 4.2em', c: :🎞},
-             (property Title, video.delete(Title) if video.has_key? Title),
+         c: [({class: :title,                    # title
+               c: video.delete(Title).map{|t|
+                 HTML.markup t, env}} if video.has_key? Title),
              (keyval video),
              if v.uri.match? /youtu/ # YouTube
 
