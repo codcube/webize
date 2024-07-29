@@ -20,8 +20,8 @@
 .interactionCount {white-space: nowrap; margin: .06em}
 .link {border: 1px dotted #0cf; margin: 1px}
 .name {background-color: #888; color: #000; font-size: .8em; vertical-align: top}
-.preembed .icon {position: absolute; left: 45%; top: 35%; font-size: 8em; color: #f00}
-.preembed {position: relative; vertical-align: top}
+.preembed .icon {position: absolute; left: 45%; top: 32%; font-size: 8em; color: #f00}
+.preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .quote > .quote > .quote {background-color: #777}
 .quote > .quote {background-color: #aaa}
 .redirectors, .referers {border: 1px solid #eee; border-radius: .8em}
@@ -39,7 +39,7 @@
 .toolbox {border-width: 0 1px 1px 1px; border-style: solid; border-color: #555; border-radius: 0 0 .7em .7em; padding-right: .125em}
 .toolbox, td, li, dt, dd {vertical-align: top}
 .type {background-color: #666; color: #000}
-.video {border: 2px solid #444; border-radius: 1em; background-color: #282828; max-width: 100ex; margin: .2em}
+.video {max-width: 80em}
 .warning a {background-color: #fff; color: #000}
 .warning {background-color: #ff0; color: #000; padding: .2em; margin: .3em; border-radius: .5em}
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}

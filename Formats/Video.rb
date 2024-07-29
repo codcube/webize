@@ -94,33 +94,29 @@ module Webize
       def videotag video
         video = {'uri' => video.to_s} unless video.class == Hash
 
-        v = Webize::Resource env[:base].join(video['uri']), env # video URI
+        v = Webize::Resource env[:base].join(video['uri']), env                    # video resource
 
-        {class: :video,
-         c: [({class: :title,                    # title
+        {class: 'video resource',
+         c: [({class: :title,                                                      # title
                c: video.delete(Title).map{|t|
                  HTML.markup t, env}} if video.has_key? Title),
-             (keyval video),
-             if v.uri.match? /youtu/ # YouTube
 
-               id = v.query_hash['v'] || v.parts[-1]
-               player = 'yt' + Digest::SHA2.hexdigest(rand.to_s)
-
-               [ # thumbnail node
-                 {_: :a, id: 'preembed' + Digest::SHA2.hexdigest(rand.to_s),
-                  class: :preembed,
-                  onclick: "inlineplayer(\"##{player}\",\"#{id}\"); this.remove()", # load player when selected
-                  href: '#' + player,                                               # focus player when selected
-                  c: [{_: :img,
-                       src: Webize::Resource("https://i.ytimg.com/vi_webp/#{id}/sddefault.webp", env).href},
-                      {class: :icon, c: '&#9654;'}]},
-
-                 # player node
-                 {id: player}]
-             else                     # video tag
+             if v.uri.match? /youtu/                                               # Youtube
+               id = v.query_hash['v'] || v.parts[-1]                                # video id
+               player = 'yt' + Digest::SHA2.hexdigest(rand.to_s)                    # player id
+               video.delete Image                                                   # strip duplicate thumbnail(s)
+               [{_: :a, id: 'preembed' + Digest::SHA2.hexdigest(rand.to_s),         # pre-embed thumbnail
+                  class: :preembed,                                                 # on activation:
+                  href: '#' + player,                                               # focus player (embed)
+                  onclick: "inlineplayer(\"##{player}\",\"#{id}\"); this.remove()", # load player
+                  c: [{_: :img, src: Webize::Resource("https://i.ytimg.com/vi_webp/#{id}/sddefault.webp", env).href},
+                      {class: :icon, c: '&#9654;'}]},                               # ▶ icon
+                 {id: player}]                                                      # player
+             else                                                                  # generic video
                [{_: :video, src: v.uri, controls: :true}, '<br>',
                 {_: :a, href: v.uri, c: v.display_name}]
-             end]}
+             end,
+             (keyval video)]}                                                      # extra attributes
       end
     end
   end
