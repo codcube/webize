@@ -48,7 +48,10 @@ module Webize
       Markup[Image] = :img
 
       def img image
-        return puts "not an Image URI: #{image}" unless image.class == Hash
+        unless image.class == Hash
+          puts "not an image resource: #{image.class} #{image}"
+          image = {'uri' => image.to_s}
+        end
 
         src = Webize::Resource((env[:base].join image['uri']), env).href
 

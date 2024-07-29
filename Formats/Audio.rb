@@ -212,8 +212,7 @@ module Webize
 
       def audio as
         as.map{|a|
-          a[Type] = Audio
-          HTML.markup a, env}
+          Node.new(env[:base]).env(env).audiotag a}
       end
     end
     class Node
@@ -221,20 +220,18 @@ module Webize
       Markup[Audio] = :audiotag
 
       def audiotag audio
-        if audio.class == Hash
-          audio = audio['https://schema.org/url'] || audio[Schema+'contentURL'] || audio[Schema+'url'] || audio[Link] || audio['uri']
-          (Console.logger.warn "no audio URI!"; audio = '#audio') unless audio
+        unless audio.class == Hash
+          puts "not an audio resource: #{audio.class} #{audio}"
+          audio = {'uri' => audio.to_s}
         end
 
-        if audio.class == Array
-          Console.logger.warn ["multiple audio files: ", audio].join if audio.size > 1
-          audio = audio[0]
-          (Console.logger.warn "no audio reference!"; audio = '#audio') unless audio
-        end
+        # resolve locator for environment context
+        src = Webize::Resource((env[:base].join audio['uri']), env).href
 
-        {_: :audio,
-         src: env[:base].join(audio),
-         controls: :true}
+        {class: 'audio resource',
+         c: [{_: :audio, src: src, # audio tag
+              controls: :true},
+             (keyval audio)]}      # extra attributes
       end
     end
   end

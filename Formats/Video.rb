@@ -92,7 +92,10 @@ module Webize
       Markup[Video] = :videotag
 
       def videotag video
-        video = {'uri' => video.to_s} unless video.class == Hash
+        unless video.class == Hash
+          video = {'uri' => video.to_s}
+          puts "not a video resource: #{video.class} #{video}"
+        end
 
         v = Webize::Resource env[:base].join(video['uri']), env                    # video resource
 
