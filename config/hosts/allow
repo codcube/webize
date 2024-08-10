@@ -12,6 +12,7 @@ assets.twitch.tv
 basemaps-api.arcgis.com
 blogger.googleusercontent.com
 books.google.com
+bsky.app
 camo.githubusercontent.com
 cdn.discordapp.com
 cdn.shopify.com
@@ -42,6 +43,7 @@ news.google.com
 patents.google.com
 players.brightcove.net
 private-user-images.githubusercontent.com
+public.api.bsky.app
 ruby-rdf.github.io
 science.mozilla.org
 shopify.engineering
