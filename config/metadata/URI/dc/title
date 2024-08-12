@@ -122,3 +122,6 @@ data-formatted-headline
 headerText
 item-name
 data-panel-name
+long_headline
+bannerHeadline
+cXenseParse:tde-shortHeadline
