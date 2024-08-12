@@ -2,8 +2,8 @@ module Webize
   module Feed
 
     # mixcloud
-    subscribe 'www.mixcloud.com' do |c|
-      "https://api.mixcloud.com/#{c}/cloudcasts/"
+    subscribe 'www.mixcloud.com' do |chan|
+      "https://api.mixcloud.com/#{chan}/cloudcasts/"
     end
 
     # soundcloud
@@ -15,8 +15,8 @@ module Webize
     end
 
     # youtube
-    subscribe 'www.youtube.com' do |c|
-      'https://www.youtube.com/feeds/videos.xml?channel_id=' + c
+    subscribe 'www.youtube.com' do |chan|
+      'https://www.youtube.com/feeds/videos.xml?channel_id=' + chan
     end
 
   end
