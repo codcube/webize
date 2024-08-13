@@ -22,8 +22,9 @@ feed feed.xml
 index.xml
 rss rss.xml
 )
-    Subscriptions = {} # hostname -> [feedURL,..]
+    Subscriptions = {} # hostname -> [feed URI, ..]
 
+    # contruct subscription list
     def self.subscribe host
       names = Webize.configList 'subscriptions/' + host # tokenize slugs
       uris = names.map{|slug| yield slug }              # emit slug to URI-template block

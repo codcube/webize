@@ -1,4 +1,7 @@
 1024wx1024h
+320wx320h
+640wx640h
+768wx768h
 ICON
 Icon
 Image
@@ -38,6 +41,7 @@ data-bg
 data-bg-url
 data-big-photo
 data-cmp-src
+data-content-image
 data-delayed-url
 data-ezsrc
 data-full-res
@@ -150,6 +154,7 @@ og:image:url
 og:images
 og:logo
 ogImage
+og_image
 ownerAvatar
 parsely-image-url
 photo
@@ -209,5 +214,3 @@ twitter:image:src
 twitter:tile:image
 vk:image
 vr:image
-data-content-image
-og_image

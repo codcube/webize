@@ -39,6 +39,8 @@ id ID _id id_str @id)
         @base = options[:base_uri]
         @doc = ::JSON.parse input.respond_to?(:read) ? input.read : input
         @options = options
+        @unmapped = []
+
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -76,7 +78,7 @@ id ID _id id_str @id)
 
             # warn on unmapped predicate. chatty w/ JSON-in-wild's vast array of non-URI attribute names
             unless predicate.match? HTTPURI
-              print ["\e[7m", predicate, "\e[0m "].join
+              @unmapped.push predicate
               predicate = Schema + predicate
             end
 
@@ -117,6 +119,11 @@ id ID _id id_str @id)
         end
 
         out = scan_node &f # scan base node
+
+        unless @unmapped.empty?
+          puts @unmapped.uniq.map{|u|
+            ["\e[7m", u, "\e[0m "].join}.join ' '
+        end
 
         # point to document base from request base
         yield @base.env[:base], Webize::URI(Contains), @base unless @base == @base.env[:base]
