@@ -25,8 +25,10 @@ rss rss.xml
     Subscriptions = {} # hostname -> [feedURL,..]
 
     def self.subscribe host
-      puts :sub, host
-      
+      names = Webize.configList 'subscriptions/' + host # tokenize slugs
+      uris = names.map{|slug| yield slug }              # emit slug to URI-template block
+
+      Subscriptions[host] = uris                        # subscriptions
     end
 
     class Format < RDF::Format
