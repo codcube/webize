@@ -33,3 +33,6 @@ primary_collection
 slot
 station_permalink
 station_urn
+data-container_id
+data-album_gallery_id
+data-alb_gal_id
