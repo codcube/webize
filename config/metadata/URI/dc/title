@@ -135,3 +135,5 @@ twitter_title
 data-original-title
 data-slot-name
 icon-name
+data-event-name
+data-feature-name
