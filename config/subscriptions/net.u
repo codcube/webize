@@ -67,6 +67,7 @@ https://fosstodon.org/@whynothugo.rss
 https://fosstodon.org/api/v1/timelines/public?local=true&only_media=false
 https://garbados.github.io/my-blog/rss.xml
 https://gerikson.com/m/feed.atom
+https://gitlab.com/ix.atom
 https://gnucode.me/feed.xml
 https://gnuworldorder.info/opus.xml
 https://goodenough.us/feed.xml
@@ -134,6 +135,7 @@ https://openreferral.org/feed/
 https://ospolicyobservatory.uvic.ca/feed/
 https://pkp.sfu.ca/feed/
 https://psychedelicalpha.com/feed
+https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=did%3Aplc%3Aulsvrqhqegjw5gh7lxyav4yq&filter=posts_and_author_threads&limit=40
 https://puri.sm/feed/
 https://reb00ted.org/index.xml
 https://retractionwatch.com/feed/
@@ -224,4 +226,3 @@ https://www.ukri.org/feed/
 https://www.ukri.org/news/feed/
 https://xeiaso.net/blog.rss
 https://zverok.space/feed.xml
-https://gitlab.com/ix.atom
