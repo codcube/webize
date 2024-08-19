@@ -29,6 +29,7 @@ Text
 Video
 Vocab
 XML),
+
  Protocols: %w(
 access
 location
@@ -38,6 +39,7 @@ Gemini
 HTTP
 POSIX
 ),
+
  config: %w(scripts/subscriptions)}.
   map{|category, components|
   components.map{|component|
@@ -49,7 +51,7 @@ end
 
 module Webize
 
-  # classes that return a URI string on #to_s
+  # classes which become a URI on #to_s
   Identifiable = [POSIX::Node, HTTP::Node, RDF::URI,
                   Webize::URI, Webize::Resource]
 end

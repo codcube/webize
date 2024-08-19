@@ -227,10 +227,10 @@ module Webize
                      c: [:👉, HTML.markup(HTTP::Referer[self], env)]} if HTTP::Referer[self]),
 
                    if doc.has_key? Contains
-                     doc.delete(Contains).map{|v| HTML.markup v, env }
+                     doc[Contains].map{|v| HTML.markup v, env }
                    end, # child nodes
 
-                   keyval(doc), # document attributes
+                   keyval(doc, Contains), # document attributes
 
                    link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],                                  # 👉 previous, contained and next node(s)
 
@@ -247,18 +247,22 @@ module Webize
              {_: :span, class: :count, c: counter[Schema+'userInteractionCount']}]}
       end
 
-      def keyval kv
+      def keyval kv, skip: []
         [{_: :dl,
           c: kv.map{|k, vs|
             {c: [{_: :dt, c: property(Type, [k])}, "\n",
-                 {_: :dd, c: property(k, vs)}, "\n"]}}}, "\n"]
+                 {_: :dd, c: property(k, vs)}, "\n"]} unless skip.member? k
+          }},
+         "\n"]
       end
 
       def resource r, type = :div
-        p = -> a {                                # predicate renderer lambda
-          property(a, r.delete(a)) if r.has_key? a}
+        shown = ['uri', Title, Abstract, To, Contains]
 
-        if uri = r.delete('uri')                  # unless blank node:
+        p = -> a {                                # predicate renderer lambda
+          property(a, r[a]) if r.has_key? a}
+
+        if uri = r['uri']                  # unless blank node:
           uri = Webize::Resource(uri, env)        # URI
           id = uri.local_id                       # localized fragment identity (representation of remote resource in doc)
 
@@ -273,21 +277,19 @@ module Webize
                   end
         end
 
-        r.delete Type; children=r.delete Contains # child nodes
-
         color = '#' + Digest::SHA2.hexdigest(     # dest color
                   Webize::URI.new(r[To][0]).display_name)[0..5] if r.has_key?(To) &&
                                                                    r[To].size==1 &&
                                                                    Identifiable.member?(r[To][0].class)
         [{_: type,                                # node
           c: [({class: :title,                    # title
-                c: r.delete(Title).map{|t|
+                c: r[Title].map{|t|
                   HTML.markup t, env}}.
                  update(ref || {}) if r.has_key? Title),
               p[Abstract], p[To],                 # abstract, dest
-              (["\n", keyval(r)] unless r.empty?),# key/val fields
-              (children.map{|c|
-                 HTML.markup c, env} if children),
+              "\n", keyval(r, skip: shown),       # key/val fields
+              (r[Contains].map{|c|
+                 HTML.markup c, env} if r[Contains]),
               origin_ref,                         # origin pointer
              ]}.
            update(id ? {id: id} : {}).
