@@ -160,5 +160,4 @@ module Webize
     def size = node.size
 
   end
-   Identifiable.push POSIX::Node
 end
