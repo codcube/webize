@@ -58,25 +58,32 @@ module Webize
       end
 
       def table graph, skip: []
-puts graph.class,graph.size
-        keys = graph.map(&:keys).flatten.uniq - skip
+        case graph.size
+        when 0 # nothing to render
+          nil
+        when 1 # key/val table of singleton resource
+          Node.new(env[:base]).env(env).keyval graph[0], skip: skip
+        else # tabular rendering
 
-        {_: :table, class: :tabular,            # table
-         c: [({_: :thead,
-               c: {_: :tr, c: keys.map{|p|       # table heading
-                     p = Webize::URI(p)
-                     slug = p.display_name
-                     icon = Icons[p.uri] || slug
-                     [{_: :th,                   # ☛ sorted columns
-                       c: {_: :a, c: icon,
-                           href: URI.qs(env[:qs].merge({'sort' => p.uri,
-                                                        'order' => env[:order] == 'asc' ? 'desc' : 'asc'}))}}, "\n"]}}} if env),
-             {_: :tbody,
-              c: graph.map{|resource|           # resource -> row
-                [{_: :tr, c: keys.map{|k|
-                    [{_: :td, property: k,
-                      c: (Property.new(k).env(env).markup(resource[k]) if resource.has_key? k)},
-                     "\n" ]}}, "\n" ]}}]}
+          keys = graph.map(&:keys).flatten.uniq - skip
+
+          {_: :table, class: :tabular,       # table
+           c: [({_: :thead,
+                 c: {_: :tr, c: keys.map{|p| # table heading
+                       p = Webize::URI(p)
+                       slug = p.display_name
+                       icon = Icons[p.uri] || slug
+                       [{_: :th,             # ☛ sorted columns
+                         c: {_: :a, c: icon,
+                             href: URI.qs(env[:qs].merge({'sort' => p.uri,
+                                                          'order' => env[:order] == 'asc' ? 'desc' : 'asc'}))}}, "\n"]}}} if env),
+               {_: :tbody,
+                c: graph.map{|resource|      # resource -> row
+                  [{_: :tr, c: keys.map{|k|
+                      [{_: :td, property: k,
+                        c: (Property.new(k).env(env).markup(resource[k]) if resource.has_key? k)},
+                       "\n" ]}}, "\n" ]}}]}
+        end
       end
 
       def to recipients
