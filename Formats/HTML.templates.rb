@@ -230,7 +230,7 @@ module Webize
                      doc[Contains].map{|v| HTML.markup v, env }
                    end, # child nodes
 
-                   keyval(doc, Contains), # document attributes
+                   keyval(doc, skip: [Contains]), # document attributes
 
                    link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],                                  # 👉 previous, contained and next node(s)
 
