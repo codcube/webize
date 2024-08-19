@@ -25,6 +25,7 @@ module Webize
                    application/vnd.imgur.v1+json;q=0.1)
       content_encoding 'utf-8'
       reader { Reader }
+      writer { Writer }
     end
 
     class Reader < RDF::Reader
@@ -132,10 +133,31 @@ id ID _id id_str @id)
       end
     end
 
+    class Writer < RDF::Writer
+      format Format
+      
+      def initialize(output = $stdout, **options, &block)
+        @graph = RDF::Graph.new
+        @base = RDF::URI(options[:base_uri])
+
+        super do
+          block.call(self) if block_given?
+        end
+      end
+
+      def write_triple(subject, predicate, object)
+        @graph.insert RDF::Statement.new(subject, predicate, object)
+      end
+
+      def write_epilogue
+        @output.write ((fromGraph @graph)[@base] || {}).to_json
+      end
+    end
+
     # RDF::Graph -> JSON
     # very similar to Graph#to_h, we may switch to that but need to investigate its handling of
     # cyclic structure and bnodes, or do away w/ entirely and hand a RDF::Graph to the render dispatcher.
-    # also possibly extend this with backlinks/reverse-arcs using OWL inverse functional properties or Reasoner tools
+    # possible TODO extend this with backlinks/reverse-arcs using OWL inverse functional properties / Reasoner
     def self.fromGraph graph; index = {}
 
       graph.each_triple{|s,p,o|                           # for each triple, in a
@@ -157,7 +179,7 @@ id ID _id id_str @id)
     #                 {predicate -> [...]}]}
 
     # some RDF datatypes are supported as Hash keys in Ruby but not in JSON serializations, URI most crucially.
-    # attr 'uri' denotes an identifier. without this key, a Hash is treated as a blank node
+    # attr 'uri' denotes an identifier. without this key, an object is treated as a blank node
 
   end
 
