@@ -101,8 +101,7 @@ module Webize
       %w(a p ul ol li h1 h2 h3 h4 h5 h6 table thead tfoot th tr td).map{|e|
         Markup[DOMnode + e] = e}
 
-      # render methods - for most this means parametrize default renderer with DOM-node type
-      # we could map all nodes to #resource and lookup RDF types there, but we already did that in the render dispatcher, so we thread it through
+      # render methods - for most nodes we parameterize default renderer with DOM-node name
 
       def p(node) = resource node, :p
 

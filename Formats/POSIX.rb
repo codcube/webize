@@ -20,9 +20,9 @@ module Webize
           bin = Node join char + '*'
           graph << RDF::Statement.new(self, RDF::URI(Contains), bin)
           graph << RDF::Statement.new(bin, RDF::URI(Title), char)
-          graph << RDF::Statement.new(bin, RDF::URI('#entry'), c)
+          graph << RDF::Statement.new(bin, RDF::URI('#entry'), c)  # directory entry in alpha-bin
         else
-          graph << RDF::Statement.new(self, RDF::URI('#entry'), c)
+          graph << RDF::Statement.new(self, RDF::URI('#entry'), c) # directory entry
         end}
       graph
     end
