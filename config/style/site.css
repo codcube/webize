@@ -25,7 +25,8 @@
 .quote > .quote > .quote {background-color: #777}
 .quote > .quote {background-color: #aaa}
 .redirectors, .referers {border: 1px solid #eee; border-radius: .8em}
-.resource {border: 1px dotted #555; border-radius: .62em; margin: 1px}
+.resource {border: 1px solid #333; border-radius: .62em; background-color: #222; color: #fff}
+.resource > dl {float: right}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title > .identifier {color: #000; background-color: #929292; border-radius: .3em}
@@ -73,7 +74,7 @@ dd {display: table-cell; overflow: hidden; max-width: 384em; border-width: 0 0 1
 div {border: 1px solid #33; border-radius: 8px}
 div, form, table {display: inline-block}
 dl > div {display: table-row}
-dl {display: table; border: 1px dotted #555; border-radius: .8em}
+dl {display: table; border-radius: .8em; background-color: black; color: white}
 dt {display: table-cell; text-align: right}
 h1, h2, h3, h4, h5, h6 {border-radius: .4em}
 hr {margin: 1px 0 1px 0}
