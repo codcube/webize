@@ -150,7 +150,8 @@ id ID _id id_str @id)
       end
 
       def write_epilogue
-        @output.write ((fromGraph @graph)[@base] || {}).to_json
+        @output.write (JSON.fromGraph(@graph)[@base] || {}).
+                        to_json
       end
     end
 
