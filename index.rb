@@ -46,3 +46,12 @@ POSIX
 class Array
   def rest = self[1..-1]
 end
+
+module Webize
+
+  # Ruby classes that represent an RDF identifier and turn into a URI on #to_s
+  # can we get a recursive list of superclasses from current class, or subclasses from RDF::URI, without writing that method?
+
+  Identifiable = [POSIX::Node, HTTP::Node, RDF::URI,
+                  Webize::URI, Webize::Resource]
+end

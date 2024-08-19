@@ -161,8 +161,4 @@ module Webize
     end
   end
 
-  # Ruby classes that represent an RDF identifier - turn into URI on #to_s
-  # can we get a recursive list of superclasses from current class, or subclasses from RDF::URI, without writing that method ?
-  Identifiable = [POSIX::Node, HTTP::Node, RDF::URI,
-                  Webize::URI, Webize::Resource]
 end
