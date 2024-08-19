@@ -6,6 +6,7 @@ class FilteredServer < Async::DNS::Server
 
   DefaultAddr = ENV['ADDR'] || '127.0.0.1'
   Seen = {}
+  Unfiltered = ENV.has_key? 'UNFILTERED'
 
   Log = -> name, color, v6 {
     unless Seen[name]
@@ -50,9 +51,9 @@ class FilteredServer < Async::DNS::Server
     resource = Webize::URI(['//', name].join)
 
     if resource.deny?
-      color = "\e[38;5;#{resource.deny_domain? ? 196 : 202};7m"
+      color = "\e[38;5;#{resource.deny_domain? ? 196 : 202}#{Unfiltered ? nil : ';7'}m"
       Log[name, color, v6]
-      if ENV.has_key? 'UNFILTERED'
+      if Unfiltered
         transaction.passthrough! @resolver
       else
         transaction.respond! v6 ? '::1' : DefaultAddr
