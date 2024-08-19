@@ -9,7 +9,7 @@ module Webize
         Abstract => :abstract,
         Creator => :creator,
         To => :to,
-        '#graphSource' => :table,
+        '#graphSource' => :index_table,
         Schema + 'item' => :table,
         Schema + 'transcodings' => :table,
       }
@@ -40,6 +40,8 @@ module Webize
            id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}
       end
 
+      def index_table(graph) = table graph, skip: [Contains]
+
       def rdf_type types
         types.map{|t|
           t = Webize::Resource t.class == Hash ? t['uri'] : t, env
@@ -53,8 +55,10 @@ module Webize
            end}}
       end
 
-      def table graph
-        keys = graph.map(&:keys).flatten.uniq
+      def table graph, skip: []
+
+        keys = graph.map(&:keys).flatten.uniq - skip
+
         {_: :table, class: :tabular,            # table
          c: [({_: :thead,
                c: {_: :tr, c: keys.map{|p|       # table heading
