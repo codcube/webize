@@ -5,7 +5,7 @@ module Webize
       # predicate URI -> markup method
       Markup = {
         '#entry' => :index_table,
-        '#graphSource' => :index_table,
+        '#graph' => :index_table,
         'uri' => :identifier,
         Abstract => :abstract,
         Creator => :creator,
