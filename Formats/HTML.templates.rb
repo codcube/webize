@@ -41,6 +41,7 @@ module Webize
            id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}
       end
 
+      # no inlining of child nodes, just an index that points to them
       def index_table(graph) = table graph, skip: [Contains]
 
       def rdf_type types
@@ -57,7 +58,7 @@ module Webize
       end
 
       def table graph, skip: []
-
+puts graph.class,graph.size
         keys = graph.map(&:keys).flatten.uniq - skip
 
         {_: :table, class: :tabular,            # table
