@@ -139,9 +139,9 @@ module Webize
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        list = @base + '#list'                                                # list URI
-        fn.call RDF::Statement.new @base.env[:base], RDF::URI(Contains), list # point to list in base document
-        linkCount = 0                                                         # stats
+        list = @base + '#list'                                     # list URI
+        fn.call RDF::Statement.new @base, RDF::URI(Contains), list # point to list from doc base
+        linkCount = 0                                              # stats
 
         @doc.lines.shuffle.map(&:chomp).map{|line| # each line:
           unless line.empty? || line.match?(/^#/)  # skip empty or commented line

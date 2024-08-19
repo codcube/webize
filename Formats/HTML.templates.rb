@@ -2,7 +2,7 @@ module Webize
   module HTML
     class Property
  
-      # predicate URI -> markup method
+      # property URI -> markup method
       Markup = {
         '#entry' => :index_table,
         '#graph' => :index_table,
@@ -15,7 +15,7 @@ module Webize
         Type => :rdf_type,
       }
 
-      # type-specific property-markup methods
+      # property-markup methods
 
       def abstract as
         {class: :abstract,
@@ -101,7 +101,7 @@ module Webize
       %w(a p ul ol li h1 h2 h3 h4 h5 h6 table thead tfoot th tr td).map{|e|
         Markup[DOMnode + e] = e}
 
-      # render methods - for most nodes we parameterize default renderer with DOM-node name
+      # markup methods - for most types we parameterize default renderer with DOM-node name
 
       def p(node) = resource node, :p
 
