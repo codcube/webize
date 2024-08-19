@@ -52,6 +52,12 @@ end
 module Webize
 
   # classes which become a URI on #to_s
-  Identifiable = [POSIX::Node, HTTP::Node, RDF::URI,
-                  Webize::URI, Webize::Resource]
+  Identifiable = [
+    HTTP::Node,
+    POSIX::Node,
+    RDF::URI,
+    Webize::Resource,
+    Webize::URI,
+  ]
+
 end

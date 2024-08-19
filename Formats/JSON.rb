@@ -135,7 +135,7 @@ id ID _id id_str @id)
 
     class Writer < RDF::Writer
       format Format
-      
+
       def initialize(output = $stdout, **options, &block)
         @graph = RDF::Graph.new
         @base = RDF::URI(options[:base_uri])
