@@ -137,3 +137,7 @@ data-slot-name
 icon-name
 data-event-name
 data-feature-name
+section-slug
+slug
+slugline
+data-slug

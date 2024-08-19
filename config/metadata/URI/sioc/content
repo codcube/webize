@@ -85,3 +85,5 @@ value
 data
 article
 innerHtml
+data-content
+data-placeholder

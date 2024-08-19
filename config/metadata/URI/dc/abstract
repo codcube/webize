@@ -115,7 +115,6 @@ sailthru.verticals
 screen
 section
 section-name
-section-slug
 sections
 seoCaption
 seoDescription
@@ -125,8 +124,6 @@ short-description
 short_description
 shortcode
 site_name
-slug
-slugline
 spoiler_text
 standfirst
 subHeading
