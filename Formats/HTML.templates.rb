@@ -4,14 +4,15 @@ module Webize
  
       # predicate URI -> markup method
       Markup = {
+        '#entry' => :index_table,
+        '#graphSource' => :index_table,
         'uri' => :identifier,
-        Type => :rdf_type,
         Abstract => :abstract,
         Creator => :creator,
-        To => :to,
-        '#graphSource' => :index_table,
         Schema + 'item' => :table,
         Schema + 'transcodings' => :table,
+        To => :to,
+        Type => :rdf_type,
       }
 
       # type-specific property-markup methods

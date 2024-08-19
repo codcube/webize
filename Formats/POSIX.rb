@@ -20,9 +20,9 @@ module Webize
           bin = Node join char + '*'
           graph << RDF::Statement.new(self, RDF::URI(Contains), bin)
           graph << RDF::Statement.new(bin, RDF::URI(Title), char)
-          graph << RDF::Statement.new(bin, RDF::URI(Schema + 'item'), c)
+          graph << RDF::Statement.new(bin, RDF::URI('#entry'), c)
         else
-          graph << RDF::Statement.new(self, RDF::URI(Schema + 'item'), c)
+          graph << RDF::Statement.new(self, RDF::URI('#entry'), c)
         end}
       graph
     end
