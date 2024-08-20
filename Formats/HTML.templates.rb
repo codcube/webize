@@ -53,7 +53,9 @@ module Webize
            id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}
       end
 
-      # graph index
+      # graph index - we're essentially adding more triples at a late stage, just before view rendering
+      # if we want to use these pointers from Turtle or elsewhere, we may want a 'graph annotation pass' earlier
+      # there's too many places where a list of graphs is emitted to put the burden on the caller
       def graph_index nodes
 
         nodes.map{|node|
@@ -62,7 +64,7 @@ module Webize
           uri = Webize::Resource uri, env
           next unless uri.host
 
-          # add pointers to upstream, cached, historical versions
+          # add pointers to upstream, cached (TODO historical) versions
           node.update({'#cache' => [POSIX::Node(uri)],
                        '#origin' => [uri],
                       })}
