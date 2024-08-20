@@ -55,7 +55,7 @@ a.global {background-color: #004}
 a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
 a.local {background-color: #002}
-a.origin {background-color: #444; color: #fff}
+a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
 a.pointer {margin: 0; padding: 0; background-color: #000; border-radius: .5em; font-weight: normal; float: right}
 a.pointer:visited {background-color: #555}
 a.to {float: right; margin: 0}
@@ -86,7 +86,7 @@ p {border-width: 1px; border-style: dotted; border-color: #000 #222 #333 #222; m
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, img {margin: 0}
 svg, img[src*="svg"] {background-color: #fff; color: #000; min-width: 64px; max-width: 256px; max-height: 256px}
-table {border-spacing: 0}
 table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 0; border-style: dotted}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
+th {background-color: #ccc; color: #000; border-radius: .3em}

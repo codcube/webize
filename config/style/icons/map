@@ -1,4 +1,5 @@
 #cache 📦
+#origin 🌍
 ArticleGQL 📝
 article 📰
 http://purl.org/dc/terms/Audio 🔊
@@ -120,6 +121,5 @@ https://schema.org/commentCount 🗯
 https://schema.org/itemListElement ☰
 https://schema.org/repostCount ⏩
 https://schema.org/upvoteCount 👍
-origin 🌍
 sioct:Comment 🗨️
 uri 🔗
