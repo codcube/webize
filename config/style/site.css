@@ -75,7 +75,7 @@ dd {display: table-cell; overflow: hidden; max-width: 384em; border-width: 0 0 1
 div {border: 1px solid #33; border-radius: 8px}
 div, form, table {display: inline-block}
 dl > div {display: table-row}
-dl {display: table; border-radius: .8em; background-color: black; color: white}
+dl {display: table; border-radius: .8em; margin: 0}
 dt {display: table-cell; text-align: right}
 h1, h2, h3, h4, h5, h6 {border-radius: .4em}
 hr {margin: 1px 0 1px 0}
@@ -87,9 +87,9 @@ pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, img {margin: 0}
 svg, img[src*="svg"] {background-color: #fff; color: #000; min-width: 64px; max-width: 256px; max-height: 256px}
 table {border-spacing: 1px}
-table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 0; border-style: dotted}
+table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 0; border-style: dotted; background-color: black; color: white}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
-th {background-color: #444; color: #fff}
+th {background-color: #383838; color: #fff}
 th:first-child {border-radius: .3em 0 0 .3em}
 th:last-child {border-radius: 0 .3em .3em 0}

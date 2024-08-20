@@ -13,6 +13,7 @@ module Webize
         Creator => :creator,
         Schema + 'item' => :table,
         Schema + 'transcodings' => :table,
+        Title => :title,
         To => :to,
         Type => :rdf_type,
       }
@@ -29,11 +30,6 @@ module Webize
           {_: :a, href: '/' + l.fsPath, c: :📦}}
       end
 
-      def origin locations
-        locations.map{|l|
-          {_: :a, href: l.uri, c: :↗, class: :origin}}
-      end
-
       def creator creators
         creators.map{|creator|
           if Identifiable.member? creator.class
@@ -46,15 +42,8 @@ module Webize
           end}
       end
 
-      def identifier uris
-        (uris.class == Array ? uris : [uris]).map{|uri|
-          {_: :a, c: :🔗,
-           href: env ? Webize::Resource(uri, env).href : uri,
-           id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}
-      end
-
-      # graph index - we're essentially adding more triples at a late stage, just before view rendering
-      # if we want to use these pointers from Turtle or elsewhere, we may want a 'graph annotation pass' earlier
+      # graph index - we're essentially adding more triples at a late stage just before view rendering
+      # if we want to use these pointers via Turtle, we'll want a 'graph annotation pass' earlier
       def graph_index nodes
 
         nodes.map{|node|
@@ -71,9 +60,21 @@ module Webize
         index_table nodes
       end
 
+      def identifier uris
+        (uris.class == Array ? uris : [uris]).map{|uri|
+          {_: :a, c: :🔗,
+           href: env ? Webize::Resource(uri, env).href : uri,
+           id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}
+      end
+
       # table of nodes without an inlined display of their full content
-      # like above, we may want to add pointers to e.g. in-doc representation fragments
+      # as w/ #graph_index we may create pointers to e.g. in-doc representations
       def index_table(nodes) = table nodes, skip: [Contains]
+
+      def origin locations
+        locations.map{|l|
+          {_: :a, href: l.uri, c: :↗, class: :origin, target: :_blank}}
+      end
 
       def rdf_type types
         types.map{|t|
@@ -90,13 +91,13 @@ module Webize
 
       def table graph, skip: []
         case graph.size
-        when 0 # nothing to render
+        when 0 # empty
           nil
         when 1 # key/val table of singleton resource
           Node.new(env[:base]).env(env).keyval graph[0], skip: skip
-        else # tabular rendering
-
-          keys = graph.map(&:keys).flatten.uniq - skip
+        else   # tabular render of resources
+          keys = graph.map(&:keys).flatten.uniq -
+                 skip                        # apply property skiplist
 
           {_: :table, class: :tabular,       # table
            c: [({_: :thead,
@@ -330,8 +331,8 @@ module Webize
                   HTML.markup t, env}}.
                  update(ref || {}) if r.has_key? Title),
               p[Abstract], p[To],                 # abstract, dest
-              "\n", keyval(r, skip: shown),       # key/val fields
-              (r[Contains].map{|c|
+             f "\n", keyval(r, skip: shown),       # key/val fields
+             (r[Contains].map{|c|
                  HTML.markup c, env} if r[Contains]),
               origin_ref,                         # origin pointer
              ]}.

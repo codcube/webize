@@ -11,13 +11,12 @@ module Webize
     StatusColor.keys.map{|s|
       StatusColor[s.to_i] = StatusColor[s]}
 
-    # representation of attribute/edge/field/key/predicate/property
-    class Property < Resource
+    class Property < Resource # representation of attribute/edge/field/key/predicate/property
 
-      def markup content # dispatch on property URI to representation generator method
-        if Markup.has_key? uri # type-specific renderer
+      def markup content       # property URI -> representation generator method
+        if Markup.has_key? uri # typeed render
           send Markup[uri], content
-        else                   # generic renderer
+        else                   # generic render
           content.map{|v|
             HTML.markup v, env}
         end
@@ -25,29 +24,32 @@ module Webize
 
     end
 
-    # representation of node/object/resource/thing
-    class Node < Resource
+    class Node < Resource # representation of node/object/resource/thing
 
-      def self.markup o, env # dispatch on type URI to representation generator method
+      def self.markup o, env # type URI -> representation generator method
         Node.new(env[:base]).env(env).        # representation instance
           send o[Type] &&                     # has RDF type attribute?
                Markup[o[Type].map{|t|
                         t.class == Hash ? t['uri'] : t.to_s}.find{|t| # types
-                        Markup.has_key? t}] || # typed renderer found?
+                        Markup.has_key? t}] || # typed render
                :resource, o                    # generic render
       end
 
-      # construct and call property renderer
+      # construct and call a property renderer
       def property p, o
         Property.new(p).env(env).markup o
       end
 
     end
 
-    # OUTPUT dataflow:
+    # OUT dataflow
+    # class --method-->
 
-    # RDF::Graph --JSON#fromGraph--> RDF representation in Ruby values --Node/Property#markup-->
-    # DOM-node representation in Ruby values --Writer#render--> HTML --Protocols--> message receiver
+    # RDF::Graph --JSON#fromGraph-->
+    # RDF representation in Ruby values --Node/Property#markup-->
+    # DOM-node representation in Ruby values --Writer#render-->
+    # HTML --Protocols-->
+    # message receiver (User Agent, client, method caller)
 
     class Writer < RDF::Writer
 
