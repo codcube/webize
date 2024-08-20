@@ -45,11 +45,11 @@ module Webize
     # OUT dataflow
     # class --method-->
 
-    # RDF::Graph --JSON#fromGraph-->
-    # RDF representation in Ruby values --Node/Property#markup-->
-    # DOM-node representation in Ruby values --Writer#render-->
+    # RDF --JSON#fromGraph-->
+    # RDF representation in Ruby values --Node#markup--> or --Property#markup-->
+    # DOM representation in Ruby values --Writer#render-->
     # HTML --Protocols-->
-    # message receiver (User Agent, client, method caller)
+    # message receiver: caller, client, User Agent
 
     class Writer < RDF::Writer
 

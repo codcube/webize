@@ -331,8 +331,8 @@ module Webize
                   HTML.markup t, env}}.
                  update(ref || {}) if r.has_key? Title),
               p[Abstract], p[To],                 # abstract, dest
-             f "\n", keyval(r, skip: shown),       # key/val fields
-             (r[Contains].map{|c|
+              "\n", keyval(r, skip: shown),       # key/val fields
+              (r[Contains].map{|c|
                  HTML.markup c, env} if r[Contains]),
               origin_ref,                         # origin pointer
              ]}.
