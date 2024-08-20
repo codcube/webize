@@ -90,6 +90,6 @@ table {border-spacing: 1px}
 table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 0; border-style: dotted}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
-th {background-color: #ccc; color: #000}
+th {background-color: #555; color: #fff}
 th:first-child {border-radius: .3em 0 0 .3em}
 th:last-child {border-radius: 0 .3em .3em 0}
