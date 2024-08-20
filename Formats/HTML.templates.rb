@@ -55,7 +55,6 @@ module Webize
 
       # graph index - we're essentially adding more triples at a late stage, just before view rendering
       # if we want to use these pointers from Turtle or elsewhere, we may want a 'graph annotation pass' earlier
-      # there's too many places where a list of graphs is emitted to put the burden on the caller
       def graph_index nodes
 
         nodes.map{|node|
@@ -73,7 +72,7 @@ module Webize
       end
 
       # table of nodes without an inlined display of their full content
-      # like above, we may want to add pointers, such as to in-doc representation fragments
+      # like above, we may want to add pointers to e.g. in-doc representation fragments
       def index_table(nodes) = table nodes, skip: [Contains]
 
       def rdf_type types
