@@ -55,6 +55,7 @@ a.global {background-color: #004}
 a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
 a.local {background-color: #002}
+a.origin {background-color: #444; color: #fff}
 a.pointer {margin: 0; padding: 0; background-color: #000; border-radius: .5em; font-weight: normal; float: right}
 a.pointer:visited {background-color: #555}
 a.to {float: right; margin: 0}

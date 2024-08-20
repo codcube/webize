@@ -8,6 +8,8 @@ module Webize
         '#graph' => :graph_index,
         'uri' => :identifier,
         Abstract => :abstract,
+        '#cache' => :cache,
+        '#origin' => :origin,
         Creator => :creator,
         Schema + 'item' => :table,
         Schema + 'transcodings' => :table,
@@ -20,6 +22,16 @@ module Webize
       def abstract as
         {class: :abstract,
          c: as.map{|a| [(HTML.markup a, env), ' ']}}
+      end
+
+      def cache locations
+        locations.map{|l|
+          {_: :a, href: '/' + l.fsPath, c: :📦}}
+      end
+
+      def origin locations
+        locations.map{|l|
+          {_: :a, href: l.uri, c: :↗, class: :origin}}
       end
 
       def creator creators
@@ -41,18 +53,19 @@ module Webize
            id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}
       end
 
-      # graph index with pointers to upstream, cached, historical versions
+      # graph index
       def graph_index nodes
 
         nodes.map{|node|
-          if uri = node['uri']
-            uri = Webize::Resource uri, env
-            next unless uri.host
-            fsNode = POSIX::Node uri
-            node.update({'#cache_location' => [Webize::URI('/' + fsNode.fsPath)],
-                         '#origin_location' => [uri],
-                        })
-          end}
+          # for remote graphs,
+          next unless uri = node['uri']
+          uri = Webize::Resource uri, env
+          next unless uri.host
+
+          # add pointers to upstream, cached, historical versions
+          node.update({'#cache' => [POSIX::Node(uri)],
+                       '#origin' => [uri],
+                      })}
 
         index_table nodes
       end
