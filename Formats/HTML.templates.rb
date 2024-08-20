@@ -219,8 +219,8 @@ module Webize
                         ({_: :a, id: :rehost, href: Webize::Resource(['//', ReHost[host], path].join, env).href,
                           c: {_: :img, src: ['//', ReHost[host], '/favicon.ico'].join}} if ReHost.has_key? host),
                         {_: :a, id: :UI, href: host ? uri : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, "\n", # 👉 origin UI
-                        {_: :a, id: :cache, href: '/' + POSIX::Node(self).fsPath, c: :📦}, "\n",                         # 👉 cache a
-                        ({_: :location, id: :block, href: '/block/' + host.sub(/^(www|xml)\./,''), class: :dimmed,              # 👉 block domain
+                        {_: :a, id: :cache, href: '/' + POSIX::Node(self).fsPath, c: :📦}, "\n",                         # 👉 cache location
+                        ({_: :a, id: :block, href: '/block/' + host.sub(/^(www|xml)\./,''), class: :dimmed,              # 👉 block domain
                           c: :🛑} if host && !deny_domain?), "\n",
                         {_: :span, class: :path, c: parts.map{|p|
                            bc += '/' + p                                                                                 # 👉 path breadcrumbs
