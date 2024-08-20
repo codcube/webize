@@ -5,7 +5,7 @@ module Webize
       # property URI -> markup method
       Markup = {
         '#entry' => :index_table,
-        '#graph' => :index_table,
+        '#graph' => :graph_index,
         'uri' => :identifier,
         Abstract => :abstract,
         Creator => :creator,
@@ -41,8 +41,24 @@ module Webize
            id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}
       end
 
-      # no inlining of child nodes, just an index that points to them
-      def index_table(graph) = table graph, skip: [Contains]
+      # graph index with pointers to upstream, cached, historical versions
+      def graph_index nodes
+
+        nodes.map{|node|
+          if uri = node['uri']
+            uri = Webize::Resource uri, env
+            fsNode = POSIX::Node uri
+            node.update({'#cache_location' => [Webize::URI('/' + fsNode.fsPath)],
+                         '#origin_location' => [uri],
+                        })
+          end}
+
+        index_table nodes
+      end
+
+      # table of nodes without an inlined display of their full content
+      # like above, we may want to add pointers, such as to in-doc representation fragments
+      def index_table(nodes) = table nodes, skip: [Contains]
 
       def rdf_type types
         types.map{|t|
@@ -203,8 +219,8 @@ module Webize
                         ({_: :a, id: :rehost, href: Webize::Resource(['//', ReHost[host], path].join, env).href,
                           c: {_: :img, src: ['//', ReHost[host], '/favicon.ico'].join}} if ReHost.has_key? host),
                         {_: :a, id: :UI, href: host ? uri : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, "\n", # 👉 origin UI
-                        {_: :a, id: :cache, href: '/' + POSIX::Node(self).fsPath, c: :📦}, "\n",                         # 👉 cache location
-                        ({_: :a, id: :block, href: '/block/' + host.sub(/^(www|xml)\./,''), class: :dimmed,              # 👉 block domain
+                        {_: :a, id: :cache, href: '/' + POSIX::Node(self).fsPath, c: :📦}, "\n",                         # 👉 cache a
+                        ({_: :location, id: :block, href: '/block/' + host.sub(/^(www|xml)\./,''), class: :dimmed,              # 👉 block domain
                           c: :🛑} if host && !deny_domain?), "\n",
                         {_: :span, class: :path, c: parts.map{|p|
                            bc += '/' + p                                                                                 # 👉 path breadcrumbs
