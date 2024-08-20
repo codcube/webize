@@ -47,6 +47,7 @@ module Webize
         nodes.map{|node|
           if uri = node['uri']
             uri = Webize::Resource uri, env
+            next unless uri.host
             fsNode = POSIX::Node uri
             node.update({'#cache_location' => [Webize::URI('/' + fsNode.fsPath)],
                          '#origin_location' => [uri],
