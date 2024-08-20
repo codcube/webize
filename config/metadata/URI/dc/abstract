@@ -1,7 +1,6 @@
 DC.Subject
 DC.keywords
 DC.subject
-DCSext.ChannelList
 KEYWORDS
 KeyWords
 Keywords
@@ -18,7 +17,6 @@ article.summary
 article.type.display
 article:section
 article:suggested-social-copy
-article_backend_channel_list
 article_keywords
 article_n2_codes
 audienceDek
@@ -100,7 +98,6 @@ og:keywords
 og:section
 ogDescription
 oneLine
-page:primary_channel
 page:topic
 parsely-section
 placeholder
@@ -162,3 +159,4 @@ data-summary
 data-topic
 page-category-name
 og_description
+data-logo-meta-data

@@ -40,3 +40,9 @@ data-unpinned-container-id
 data-pinned-container-id
 for
 data-mw-ve-target-container
+data-section-url
+data-section-name
+data-channel
+DCSext.ChannelList
+article_backend_channel_list
+page:primary_channel
