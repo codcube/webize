@@ -14,7 +14,7 @@ module Webize
     class Property < Resource # representation of attribute/edge/field/key/predicate/property
 
       def markup content       # property URI -> representation generator method
-        if Markup.has_key? uri # typeed render
+        if Markup.has_key? uri # typed render
           send Markup[uri], content
         else                   # generic render
           content.map{|v|

@@ -118,6 +118,11 @@ module Webize
         end
       end
 
+      def title titles
+        titles.map{|t|
+          {_: :span, c: HTML.markup(t, env)}}
+      end
+
       def to recipients
         recipients.map{|r|
           if Identifiable.member? r.class
