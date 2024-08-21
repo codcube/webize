@@ -102,3 +102,5 @@ data-pinnable-element-id
 data-data-id
 cid
 did
+data-wf-page-id
+data-wf-element-id

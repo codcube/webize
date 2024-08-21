@@ -4,3 +4,4 @@ csp-nonce
 html-safe-nonce
 nonce
 accesskey
+data-sitekey
