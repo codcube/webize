@@ -271,17 +271,21 @@ module Webize
     def fetch nodes = nil
       return fetchLocal nodes if offline? # local node(s) - offline cache
       return fileResponse if immutable?   # local node - immutable cache
-      return fetchAsync nodes if nodes    # remote node(s)
+      return fetchMultiple nodes if nodes # remote node(s)
              fetchRemote                  # remote node
     end
 
-    def fetchAsync nodes
+    def fetchMultiple nodes
+      # limit concurrency
       barrier = Async::Barrier.new
       semaphore = Async::Semaphore.new(16, parent: barrier)
-      repos = []
+
+      repos = [] # repository list
+
       nodes.map{|n|
-        semaphore.async{
+        semaphore.async{ # URI -> Repository
           repos << (Node(n).fetchRemote thru: false)}}
+
       barrier.wait
       respond repos
     end
