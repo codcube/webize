@@ -276,18 +276,18 @@ module Webize
     end
 
     def fetchMultiple nodes
-      # limit concurrency
+                         # limit concurrency
       barrier = Async::Barrier.new
       semaphore = Async::Semaphore.new(16, parent: barrier)
 
-      repos = [] # repository list
+      repos = []         # repositories
 
       nodes.map{|n|
         semaphore.async{ # URI -> Repository
           repos << (Node(n).fetchRemote thru: false)}}
 
       barrier.wait
-      respond repos
+      respond repos      # HTTP response
     end
 
     # fetch resource and cache upstream/original and derived graph data
