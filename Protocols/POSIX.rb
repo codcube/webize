@@ -10,7 +10,7 @@ module Webize
 
   class POSIX::Node
     include MIME
-    HomePage = 'bookmarks/{home.u,search.🐢}'
+    HomePage = 'start/{bookmarks.u,homepage.🐢}'
 
     def dirname = node.dirname
 

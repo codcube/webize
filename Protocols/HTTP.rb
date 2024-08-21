@@ -271,11 +271,11 @@ module Webize
     def fetch nodes = nil
       return fetchLocal nodes if offline? # local node(s) - offline cache
       return fileResponse if immutable?   # local node - immutable cache
-      return fetchMultiple nodes if nodes # remote node(s)
+      return fetchMany nodes if nodes     # remote node(s)
              fetchRemote                  # remote node
     end
 
-    def fetchMultiple nodes
+    def fetchMany nodes
                          # limit concurrency
       barrier = Async::Barrier.new
       semaphore = Async::Semaphore.new(16, parent: barrier)
@@ -300,12 +300,12 @@ module Webize
 
     URI_OPEN_OPTS = {open_timeout: 16,
                      read_timeout: 32,
-                     redirect: false} # don't have HTTP library invisibly follow redirects. we use this data to make clients/servers/proxies relocation aware
+                     redirect: false} # don't have HTTP library invisibly follow redirects. we use this data to make clients/servers/proxies relocation-aware
 
     def fetchHTTP thru: true                                           # thread origin HTTP response through to caller?
       start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
-      doc = storage.document                                           # cache locator
-      meta = [doc, '.meta'].join                                       # metadata locator
+      doc = storage.document                                           # graph-cache location
+      meta = [doc, '.meta'].join                                       # HTTP metadata-cache location
       cache_headers = {}
       if File.exist? meta
         metadata = ::JSON.parse File.open(meta).read
