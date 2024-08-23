@@ -43,8 +43,8 @@ module Webize
             log.unshift [:🕒, ts]                             # timeline location
           end
         end
-
-        Console.logger.info log.join ' ' # display log message
+        graph << RDF::Statement.new(g, RDF::URI('#new'), true)# mark as updated
+        Console.logger.info log.join ' '                      # log message
       }
       self
     end

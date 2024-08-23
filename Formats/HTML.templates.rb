@@ -308,28 +308,32 @@ module Webize
       def resource r, type = :div
         shown = ['uri', Title, Abstract, To, Contains]
 
-        p = -> a {                                # predicate renderer lambda
+        p = -> a {                                # property-render indirection to skip empty/nil fields (lambda)
           property(a, r[a]) if r.has_key? a}
 
-        if uri = r['uri']                  # unless blank node:
+        if uri = r['uri']                         # identified node:
           uri = Webize::Resource(uri, env)        # URI
-          id = uri.local_id                       # localized fragment identity (representation of remote resource in doc)
+          id = uri.local_id                       # localized fragment identity (representation of transcluded resource in document)
 
           origin_ref = {_: :a, class: :pointer,   # origin pointer
                         href: uri, c: :🔗}
           ref = {_: :a, href: uri.href,           # pointer
                  id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}
-          color = if HostColor.has_key? uri.host  # host color
-                    HostColor[uri.host]
-                  elsif uri.deny?
-                    :red
-                  end
         end
 
-        color = '#' + Digest::SHA2.hexdigest(     # dest color
-                  Webize::URI.new(r[To][0]).display_name)[0..5] if r.has_key?(To) &&
-                                                                   r[To].size==1 &&
-                                                                   Identifiable.member?(r[To][0].class)
+        color = if r.has_key? '#new'              # new resource
+                  :white
+                elsif r.has_key?(To) && Identifiable.member?(r[To][0].class)
+                  '#' + Digest::SHA2.hexdigest(   # message-dest color
+                    Webize::URI.new(r[To][0]).display_name)[0..5]
+                elsif uri
+                  if uri.deny?                    # blocked resource
+                    :red
+                  elsif HostColor.has_key? uri.host
+                    HostColor[uri.host]           # host color
+                  end
+                end
+
         [{_: type,                                # node
           c: [({class: :title,                    # title
                 c: r[Title].map{|t|
