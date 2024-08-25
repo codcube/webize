@@ -122,10 +122,11 @@ module Webize
       body
     end
 
-    # initial environment struct
+    # initialize environment
     def self.env = {
       feeds: [],
       fragments: {},
+      images: {},
       links: {},
       qs: {},
       warnings: []}

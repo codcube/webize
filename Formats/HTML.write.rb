@@ -90,18 +90,18 @@ module Webize
           markup (RDF::URI o['uri']), env
         else
           # loop-elimination and deduplication:
-          # render node and point to its in-doc representation fragment on subsequent calls
+          # mark up node and point to its in-doc representation fragment on subsequent calls
           id = o.__id__
-          if env[:fragments].has_key? id                             # existing representation?
-            if uri = o['uri']                                        # identified?
-              uri = Webize::Resource uri, env                        # global reference
-              {_: :a, href: '#' + uri.local_id, c: uri.display_name} # representation reference
+          if env[:fragments].has_key? id                # existing representation?
+            if uri = o['uri']                           # identified?
+              uri = Webize::Resource uri, env           # global identifier
+              {_: :a, href: '#' + uri.local_id, c: :↜} # representation reference
             else
-              nil # can't link to blank node - no identifier available
+              nil                                       # blank node (no identifier)
             end
           else
             env[:fragments][id] = true
-            HTML::Node.markup o, env # new representation
+            HTML::Node.markup o, env                    # representation
           end
         end
       when Integer
