@@ -11,6 +11,7 @@ module Webize
         '#cache' => :cache,
         '#origin' => :origin,
         Creator => :creator,
+        Schema + 'facets' => :table,
         Schema + 'item' => :table,
         Schema + 'transcodings' => :table,
         Title => :title,
@@ -322,7 +323,7 @@ module Webize
         end
 
         color = if r.has_key? '#new'              # new resource
-                  :white
+                  '#8aa'
                 elsif r.has_key?(To) && Identifiable.member?(r[To][0].class)
                   '#' + Digest::SHA2.hexdigest(   # message-dest color
                     Webize::URI.new(r[To][0]).display_name)[0..5]
@@ -347,7 +348,7 @@ module Webize
              ]}.
            update(id ? {id: id} : {}).
            update((id && type == :div) ? {class: :resource} : {}).
-           update(color ? {style: "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} .05em, transparent .05em, transparent 1.6em); border-color: #{color}"} : {}), "\n"]
+           update(color ? {style: "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} 1px, transparent 1px, transparent 28px); border-color: #{color}"} : {}), "\n"]
       end
     end
   end
