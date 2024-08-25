@@ -49,8 +49,7 @@ module Webize
 
     def extname = (File.extname path if path)
 
-    def graph = URI.new [host ? ['https://', host] : nil,
-                         path].join
+    def graph = URI.new split('#')[0]
 
     def local_id
       if in_doc?
@@ -74,6 +73,8 @@ module Webize
     def query_digest = Digest::SHA2.hexdigest(query)[0..15]
 
     def query_hash = query_values || {}
+
+    def split(*a) = uri.split *a
 
     def slugs
       re = /[\W_]/

@@ -170,6 +170,7 @@ id ID _id id_str @id)
       index = {}                                  # (URI -> node) table
 
       graph.each_triple{|s,p,o|                   # for each triple, in a
+
         next if s == o                            # directed *acyclic* graph:
         p = p.to_s                                # predicate
 
