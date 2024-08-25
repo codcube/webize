@@ -163,8 +163,8 @@ id ID _id id_str @id)
       end
     end
 
-    # RDF::Graph -> JSON
-    # similar to Graph#to_h, we may switch to that if its bnode and cyclic-structure shapes are compatible
+    # Graph -> JSON
+    # similar to Graph#to_h, we'll switch to that if its bnode and cyclic-structure shapes are compatible
     def self.fromGraph graph
 
       index = {}                                  # (URI -> node) table
@@ -172,10 +172,12 @@ id ID _id id_str @id)
       graph.each_triple{|s,p,o|                   # for each triple, in a
         next if s == o                            # directed *acyclic* graph:
         p = p.to_s                                # predicate
+
         blank = o.class == RDF::Node              # blank-node object?
         if blank || Identifiable.member?(o.class) # object is a reference?
-          o = index[o] ||= blank ? {} : {'uri' => o.to_s} # dereference object
+          o = index[o] ||= blank ? {} : {'uri' => o.to_s} # dereference
         end
+
         index[s] ||= s.node? ? {} : {'uri' => s}  # subject
         index[s][p] ||= []                        # predicate
         index[s][p].push o}                       # object
