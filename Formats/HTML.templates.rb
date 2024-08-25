@@ -347,7 +347,7 @@ module Webize
              ]}.
            update(id ? {id: id} : {}).
            update((id && type == :div) ? {class: :resource} : {}).
-           update(color ? {style: "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} 1px, transparent 1px, transparent 28px); border-color: #{color}"} : {}), "\n"]
+           update(color ? {style: "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} .05em, transparent .05em, transparent 1.6em); border-color: #{color}"} : {}), "\n"]
       end
     end
   end

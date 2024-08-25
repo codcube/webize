@@ -116,7 +116,7 @@ module Webize
         if [RDF.HTML, RDF.XMLLiteral].member? o.datatype
           o.to_s
         else
-          CGI.escapeHTML o.to_s
+          {_: :span, c: (CGI.escapeHTML o.to_s)}
         end
       when RDF::URI
         o = Resource.new(o).env env
