@@ -24,8 +24,8 @@
 .quote > .quote > .quote {background-color: #777}
 .quote > .quote {background-color: #aaa}
 .redirectors, .referers {border: 1px solid #eee; border-radius: .8em}
-.resource {border: 1px solid #333; border-radius: .62em; background-color: #222; color: #fff; margin: 1px}
 .resource > dl {float: right}
+.resource {border: 1px solid #333; border-radius: .62em; background-color: #222; color: #fff; margin: 1px}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title > .identifier {color: #000; background-color: #929292; border-radius: .3em}
@@ -47,6 +47,7 @@ a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; p
 a, a > span { max-width: 40em; overflow: hidden}
 a.blocked {border: 1px solid white}
 a.date {white-space: nowrap; color: #ccc; background-color: #000; font-weight: normal}
+a.fragref {padding: .2em; font-size: 1.3em; border: 1px dotted #fef}
 a.from, a.to {color: #000}
 a.from:visited, a.to:visited {color: #fff}
 a.global > span, a.local > span {color: #ddd; font-weight: normal; font-size: 0.83em; float: right}
@@ -70,7 +71,7 @@ body.error {background: #f00; font-weight: bold}
 code {color: #000; background-color: #eee; padding: .1em}
 dd dd dd {max-width: 128em}
 dd dd {max-width: 256em}
-dd {display: table-cell; overflow: hidden; max-width: 384em; border-width: 0 0 1px 0; border-style: dotted; border-color: #222}
+dd {display: table-cell; max-width: 384em; border-width: 0 0 1px 0; border-style: dotted; border-color: #222}
 div {border: 1px solid #33; border-radius: 8px}
 div, form, table {display: inline-block}
 dl > div {display: table-row}
