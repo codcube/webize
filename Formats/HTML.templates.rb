@@ -306,7 +306,7 @@ module Webize
       end
 
       def resource r, type = :div
-        shown = ['uri', Title, Abstract, To, Contains]
+        shown = ['#new', 'uri', Title, Abstract, To, Contains]
 
         p = -> a {                                # property-render indirection to skip empty/nil fields (lambda)
           property(a, r[a]) if r.has_key? a}
