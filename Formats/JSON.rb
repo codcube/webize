@@ -1,6 +1,14 @@
 require 'json'
 module Webize
 
+  # JSON-RDF data structure:
+  # { uri -> .. ,
+  #   predicate -> [123, :symbol, 'string', True,
+  #                 {predicate -> [...]}]}
+
+  # some RDF datatypes are supported as Hash keys in Ruby but not in JSON serializations, URI most crucially.
+  # attr 'uri' denotes an identifier. without this attribute, a Hash or JSON object is treated as a blank node
+
   module ActivityStream
     class Format < ::JSON::LD::Format
       content_type 'application/activity+json', extension: :ajson
@@ -156,32 +164,25 @@ id ID _id id_str @id)
     end
 
     # RDF::Graph -> JSON
-    # very similar to Graph#to_h, we may switch to that but need to investigate its handling of
-    # cyclic structure and bnodes, or do away w/ entirely and hand a RDF::Graph to the render dispatcher.
-    # possible TODO extend this with backlinks/reverse-arcs using OWL inverse functional properties / Reasoner
-    def self.fromGraph graph; index = {}
+    # similar to Graph#to_h, we may switch to that if its bnode and cyclic-structure shapes are compatible
+    def self.fromGraph graph
 
-      graph.each_triple{|s,p,o|                           # for each triple, in a
-        next if s == o                                    # directed *acyclic* graph:
-        p = p.to_s                                        # predicate
-        blank = o.class == RDF::Node                      # blank-node object?
-        if blank || Identifiable.member?(o.class)         # object is a reference?
+      index = {}                                  # (URI -> node) table
+
+      graph.each_triple{|s,p,o|                   # for each triple, in a
+        next if s == o                            # directed *acyclic* graph:
+        p = p.to_s                                # predicate
+        blank = o.class == RDF::Node              # blank-node object?
+        if blank || Identifiable.member?(o.class) # object is a reference?
           o = index[o] ||= blank ? {} : {'uri' => o.to_s} # dereference object
         end
-        index[s] ||= s.node? ? {} : {'uri' => s} # subject
-        index[s][p] ||= []                       # predicate
-        index[s][p].push o}                      # object
+        index[s] ||= s.node? ? {} : {'uri' => s}  # subject
+        index[s][p] ||= []                        # predicate
+        index[s][p].push o}                       # object
 
-      index # output data-structure, indexable on node identity
-    end # JSON-RDF output structure:
-
-    # { uri -> .. ,
-    #   predicate -> [123, :symbol, 'string', True,
-    #                 {predicate -> [...]}]}
-
-    # some RDF datatypes are supported as Hash keys in Ruby but not in JSON serializations, URI most crucially.
-    # attr 'uri' denotes an identifier. without this key, an object is treated as a blank node
-
+      index                                       # output data
+    end
+ 
   end
 
 end
