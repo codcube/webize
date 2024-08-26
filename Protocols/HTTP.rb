@@ -440,7 +440,7 @@ module Webize
 
       repos = (nodes || storage.nodes).map{|x|          # node(s) to fetch
         if x.file?                                      # file?
-          x.file_triples x.readRDF.persist env # fetch file + fs-metadata
+          x.file_triples x.readRDF#.persist env # fetch file + fs-metadata
         elsif x.directory?                              # directory?
           x.dir_triples RDF::Repository.new             # fetch directory metadata
         end}
