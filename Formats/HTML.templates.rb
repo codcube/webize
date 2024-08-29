@@ -3,27 +3,18 @@ module Webize
     class Property
  
       # property URI -> markup method
-      Markup = {
-        '#entry' => :index_table,
-        '#graph' => :graph_index,
-        'uri' => :identifier,
-        Abstract => :abstract,
-        '#cache' => :cache,
-        '#origin' => :origin,
-        Creator => :creator,
-        Schema + 'facets' => :table,
-        Schema + 'item' => :table,
-        Schema + 'transcodings' => :table,
-        Title => :title,
-        To => :to,
-        Type => :rdf_type,
-      }
+      Markup = Webize.configHash 'HTML/property'
 
       # property-markup methods
 
       def abstract as
         {class: :abstract,
          c: as.map{|a| [(HTML.markup a, env), ' ']}}
+      end
+
+      def buttons uris
+        uris.map{|l|
+          {_: :a, hef: l.href, c: l.display_name}}
       end
 
       def cache locations
@@ -140,12 +131,7 @@ module Webize
     class Node
 
       # type URI -> markup method
-      Markup = {
-        Document => :document,
-        Schema + 'InteractionCounter' => :interactions}
-
-      %w(a p ul ol li h1 h2 h3 h4 h5 h6 table thead tfoot th tr td).map{|e|
-        Markup[DOMnode + e] = e}
+      Markup = Webize.configHash 'HTML/resource'
 
       # markup methods - for most types we parameterize default renderer with DOM-node name
 
