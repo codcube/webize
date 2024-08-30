@@ -141,10 +141,7 @@ module Webize
       # type URI -> markup method
       Markup = Webize.configHash 'HTML/resource'
 
-      # markup methods - for most types we parameterize default renderer with DOM-node name
-
-      def p(node) = resource node, :p
-
+      # markup methods - for most types we parameterize generic renderer with node type
       def ul(node) = resource node, :ul
       def ol(node) = resource node, :ol
       def li(node) = resource node, :li
@@ -189,6 +186,11 @@ module Webize
                 c: [title,
                     {_: :span, c: CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '')}]},
                content, attrs]}} if links
+      end
+
+      # paragraph
+      def p
+        :pppp
       end
 
       def document doc
