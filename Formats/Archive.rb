@@ -2,15 +2,21 @@
 module Webize
   module ArchiveFile
     class Format < RDF::Format
-      content_type 'application/x-tar',
+      content_type 'application/gzip',
                    aliases: %w(
                    application/x-bzip2;q=0.8
                    application/x-gzip;q=0.8
+                   application/x-tar;q=0.8
                    application/x-xz;q=0.8
                    application/gzip;q=0.8
                    application/zip;q=0.8
 ),
-                   extensions: [:gz,:tar]
+                   extensions: [:apk,
+                                :gz,
+                                :tar,
+                                :tgz,
+                                :xz,
+                                :zst]
       content_encoding 'utf-8'
       reader { Reader }
     end
