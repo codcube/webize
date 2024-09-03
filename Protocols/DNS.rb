@@ -2,11 +2,14 @@
 require 'async/dns'
 require_relative '../index'
 
+Host = ENV['HOST'] || '127.0.0.1'
+Port = ENV['PORT'] || 53
+
+Unfiltered = ENV.has_key? 'UNFILTERED'
+
 class FilteredServer < Async::DNS::Server
 
-  DefaultAddr = ENV['ADDR'] || '127.0.0.1'
   Seen = {}
-  Unfiltered = ENV.has_key? 'UNFILTERED'
 
   Log = -> name, color, v6 {
     unless Seen[name]
@@ -56,7 +59,7 @@ class FilteredServer < Async::DNS::Server
       if Unfiltered
         transaction.passthrough! @resolver
       else
-        transaction.respond! v6 ? '::1' : DefaultAddr
+        transaction.respond! v6 ? '::1' : Host
       end
     else
       color = name.index('www.') == 0 ? nil : "\e[38;5;51m"
@@ -85,11 +88,9 @@ end
 
 # 5) redirect traffic in userspace with netcat/socat
 
-port = ENV['PORT'] || 53
-
-server = FilteredServer.new([[:udp, '127.0.0.1', port],
-                             [:tcp, '127.0.0.1', port],
-                             [:udp, '::1', port],
-                             [:tcp, '::1', port]])
+server = FilteredServer.new([[:udp, Host, Port],
+                             [:tcp, Host, Port],
+                             [:udp, '::1', Port],
+                             [:tcp, '::1', Port]])
 
 server.run
