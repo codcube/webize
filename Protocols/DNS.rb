@@ -85,8 +85,11 @@ end
 
 # 5) redirect traffic in userspace with netcat/socat
 
-server = FilteredServer.new([[:udp, '127.0.0.1', 53],
-                             [:tcp, '127.0.0.1', 53],
-                             [:udp, '::1', 53],
-                             [:tcp, '::1', 53]])
+port = ENV['PORT'] || 53
+
+server = FilteredServer.new([[:udp, '127.0.0.1', port],
+                             [:tcp, '127.0.0.1', port],
+                             [:udp, '::1', port],
+                             [:tcp, '::1', port]])
+
 server.run
