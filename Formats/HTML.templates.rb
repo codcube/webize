@@ -189,8 +189,11 @@ module Webize
       end
 
       # paragraph
-      def p
-        :pppp
+      def p para
+        unless para['uri']
+          print "unID paragraph " # TODO synthesize ID for locatability
+        end
+        resource para, :p
       end
 
       def document doc
