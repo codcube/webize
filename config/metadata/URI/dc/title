@@ -143,3 +143,6 @@ slugline
 data-slug
 data-link-name
 data-logo-name
+data-track-headline
+data-track-component-title
+data-track-component-name
