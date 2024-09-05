@@ -191,7 +191,7 @@ module Webize
       # paragraph
       def p para
         unless para['uri']
-          print "unID paragraph " # TODO synthesize ID for locatability
+          para['uri'] = '#p_' + Digest::SHA2.hexdigest(rand.to_s)
         end
         resource para, :p
       end
