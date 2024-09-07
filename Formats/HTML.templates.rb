@@ -113,7 +113,9 @@ module Webize
                 c: graph.map{|resource|      # resource -> row
                   [{_: :tr, c: keys.map{|k|
                       [{_: :td, property: k,
-                        c: (Property.new(k).env(env).markup(resource[k]) if resource.has_key? k)},
+                        c: if resource.has_key? k
+                         Property.new(k).env(env).markup resource[k]
+                        end},
                        "\n" ]}}, "\n" ]}}]}
         end
       end
@@ -342,8 +344,8 @@ module Webize
               p[Abstract], p[To],                 # abstract, dest
               "\n", keyval(r, skip: shown),       # key/val fields
               if r[Contains]
-                if type == :ul
-                  puts :UL
+                if %w(form ol ul select).member? type.to_s
+                  property Schema + 'item', r[Contains]
                 else
                   r[Contains].map{|c|
                     HTML.markup c, env}
