@@ -93,7 +93,7 @@ module Webize
         case graph.size
         when 0 # empty
           nil
-        when 1 # key/val table of singleton resource
+        when 1 # key/val render of resource
           Node.new(env[:base]).env(env).keyval graph[0], skip: skip
         else   # tabular render of resources
           keys = graph.map(&:keys).flatten.uniq -
@@ -341,8 +341,14 @@ module Webize
                  update(ref || {}) if r.has_key? Title),
               p[Abstract], p[To],                 # abstract, dest
               "\n", keyval(r, skip: shown),       # key/val fields
-              (r[Contains].map{|c|
-                 HTML.markup c, env} if r[Contains]),
+              if r[Contains]
+                if type == :ul
+                  puts :UL
+                else
+                  r[Contains].map{|c|
+                    HTML.markup c, env}
+                end
+              end,
               origin_ref,                         # origin pointer
              ]}.
            update(id ? {id: id} : {}).
