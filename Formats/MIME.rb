@@ -16,7 +16,7 @@ module Webize
     # format URIs https://www.w3.org/ns/formats/
 
     # formats we prefer to not (content-negotiation) or can not (unimplemented) transform
-    FixedFormat = /audio|css|image|octet|script|video/
+    FixedFormat = /audio|css|image|octet|script|video|zip/
 
     # formats we transform even if MIME stays the same
     ReFormat = %w(text/html)
