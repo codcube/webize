@@ -344,7 +344,7 @@ module Webize
               p[Abstract], p[To],                 # abstract, dest
               "\n", keyval(r, skip: shown),       # key/val fields
               if r[Contains]
-                if %w(form ol ul select).member? type.to_s
+                if %w(head ol ul).member? type.to_s
                   property Schema + 'item', r[Contains]
                 else
                   r[Contains].map{|c|
