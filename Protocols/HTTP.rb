@@ -273,7 +273,7 @@ module Webize
 
       # local fetch (filesystem)
       return fetchLocal nodes if offline? # offline mode
-      return fileResponse if storage.file? && fileMIME.match?(FixedFormat) && !basename.index?(/index/i)# cache
+      return fileResponse if storage.file? && fileMIME.match?(FixedFormat) && !basename.match?(/index/i)# cache
 
       # remote fetch (network)
       return fetchMany nodes if nodes # multiple node(s)
