@@ -2,7 +2,7 @@ module Webize
   module HTML
     class Property
  
-      # property URI -> markup method
+      # property-URI -> markup-method map
       Markup = Webize.configHash 'HTML/property'
 
       # property-markup methods
