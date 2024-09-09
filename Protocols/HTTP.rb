@@ -270,10 +270,14 @@ module Webize
 
     # fetch node(s) from local or remote host
     def fetch nodes = nil
-      return fetchLocal nodes if offline? # local node(s) - offline cache
-      return fileResponse if immutable?   # local node - immutable cache
-      return fetchMany nodes if nodes     # remote node(s)
-             fetchRemote                  # remote node
+
+      # local fetch (filesystem)
+      return fetchLocal nodes if offline? # offline mode
+      return fileResponse if storage.file? && fileMIME.match?(FixedFormat) && !basename.index?(/index/i)# cache
+
+      # remote fetch (network)
+      return fetchMany nodes if nodes # multiple node(s)
+             fetchRemote              # node
     end
 
     def fetchMany nodes
@@ -490,7 +494,7 @@ module Webize
       return [s, h, b] if s == 304          # client cache is valid
       format = fileMIME                     # find MIME type - Rack's extension-map may differ from ours which preserves upstream/origin HTTP metadata
       h['content-type'] = format            # override Rack MIME type specification
-      h['Expires'] = (Time.now + 3e7).httpdate if immutable? # give immutable node a long expiry
+      h['Expires'] = (Time.now + 3e7).httpdate if format.match?(FixedFormat) # give immutable cache a long expiry
       [s, h, b]}
  
     def GET
@@ -570,8 +574,6 @@ module Webize
       return deny if deny? # blocked node
       fetch                # remote node
     end
-
-    def immutable? = storage.file? && fileMIME.match?(FixedFormat)
 
     def linkHeader
       return unless env.has_key? :links
