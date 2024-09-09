@@ -143,7 +143,9 @@ module Webize
       # type URI -> markup method
       Markup = Webize.configHash 'HTML/resource'
 
-      # markup methods - for most types we parameterize generic renderer with node type
+      # markup methods - for simple cases, parameterize generic renderer with name
+      def head(node) = resource node, :head
+
       def ul(node) = resource node, :ul
       def ol(node) = resource node, :ol
       def li(node) = resource node, :li
@@ -308,6 +310,9 @@ module Webize
       end
 
       def resource r, type = :div
+
+        name = type == :head ? :div : type
+
         shown = ['#new', 'uri', Title, Abstract, To, Contains]
 
         p = -> a {                                # property-render indirection to skip empty/nil fields (lambda)
@@ -336,7 +341,7 @@ module Webize
                   end
                 end
 
-        [{_: type,                                # node
+        [{_: name,                                # node
           c: [({class: :title,                    # title
                 c: r[Title].map{|t|
                   HTML.markup t, env}}.
