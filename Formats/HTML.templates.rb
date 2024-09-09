@@ -310,7 +310,6 @@ module Webize
       end
 
       def resource r, type = :div
-
         name = type == :head ? :div : type
 
         shown = ['#new', 'uri', Title, Abstract, To, Contains]
