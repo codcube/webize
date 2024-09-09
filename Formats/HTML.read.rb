@@ -88,9 +88,7 @@ module Webize
             if u = m['content'].split('url=')[-1]
               yield @base, Link, RDF::URI(u)
             end
-          end
-
-          m.remove}
+          end}
 
         # <link>
         @doc.css('link[rel][href]').map{|m|
@@ -108,15 +106,11 @@ module Webize
             logger.warn ["no URI for LINK tag \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
             yield @base, k, v unless k == :drop || v.deny?}
 
-          @env[:feeds].push v if Feed::Names.member?(v.basename) || Feed::Extensions.member?(v.extname)
-
-          m.remove}
+          @env[:feeds].push v if Feed::Names.member?(v.basename) || Feed::Extensions.member?(v.extname)}
 
         # <title>
         @doc.css('title').map{|t|
-          yield @base, Title, t.inner_text unless t.inner_text.empty?
-
-          t.remove}
+          yield @base, Title, t.inner_text unless t.inner_text.empty?}
 
         # @doc.css('#next, #nextPage, a.next, .show-more > a').map{|nextPage|
         #   if ref = nextPage.attr('href')
