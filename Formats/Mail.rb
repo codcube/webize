@@ -61,7 +61,7 @@ module Webize
             ::Mail::Encodings.defined?(p.body.encoding)    # decodable?
         }.map{|p|
           yield mail, Contains,
-                HTML.render(
+                RDF::Literal(HTML.render(
                   p.decoded.lines.to_a.map{|l| # split lines
                     l = l.chomp # strip any remaining [\n\r]
                     if qp = l.match(/^(\s*[>|][>|\s]*)(.*)/) # quoted line
@@ -74,7 +74,8 @@ module Webize
                       end
                     else # fresh line
                       l.hrefs{|p, o| yield mail, p, o, graph}
-                    end}.map{|line| [line, "<br>\n"]}), graph}
+                    end}.map{|line| [line, "<br>\n"]}), datatype: RDF.HTML),
+                graph}
 
         # recursively contained messages: digests, forwards, archives
         parts.select{|p|p.mime_type=='message/rfc822'}.map{|m|
