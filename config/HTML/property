@@ -5,6 +5,7 @@ uri identifier
 http://purl.org/dc/terms/abstract abstract
 #cache cache
 #origin origin
+#source graph_index
 http://rdfs.org/sioc/ns#has_creator creator
 http://schema.org/facets table
 http://schema.org/item table

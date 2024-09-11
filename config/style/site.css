@@ -23,7 +23,7 @@
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .quote > .quote > .quote {background-color: #777}
 .quote > .quote {background-color: #aaa}
-.redirectors, .referers {border: 1px solid #eee; border-radius: .8em}
+.redirectors, .referers {border: 1px dotted #888; border-radius: 0}
 .resource {border: 1px solid #333; border-radius: .62em; background-color: #181818; color: #fff; margin: 1px}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
@@ -33,17 +33,17 @@
 .title:visited {background-color: #ccc; color: #000}
 .toolbox .path a {color: #ddd; font-weight: normal; font-size: .88em}
 .toolbox .path {color: #666}
+.toolbox .tabular {display: block}
 .toolbox form input {background-color: #282828; color: #eee; border-radius: .5em; border-width: 0; margin: 0; padding: 0; width: 24ex}
 .toolbox img {max-height: 1.2em}
 .toolbox svg {height: 1em; width: 1em}
-.toolbox {border-width: 0 1px 1px 1px; border-style: solid; border-color: #555; border-radius: 0 0 .7em .7em; padding-right: .125em}
-.toolbox, td, li, dt, dd {vertical-align: top}
+.toolbox {border-width: 0 1px 1px 1px; border-style: solid; border-color: #555; border-radius: 0 0 .62em .62em; vertical-align: top}
 .type {background-color: #666; color: #000}
 .video {max-width: 80em}
 .warning a {background-color: #fff; color: #000}
 .warning {background-color: #ff0; color: #000; padding: .2em; margin: .3em; border-radius: .5em}
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}
-a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px; vertical-align: top}
+a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px}
 a, a > span { max-width: 40em }
 a.blocked {border: 1px solid white}
 a.date {white-space: nowrap; color: #ccc; background-color: #000; font-weight: normal}

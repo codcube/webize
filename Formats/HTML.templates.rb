@@ -93,8 +93,8 @@ module Webize
         case graph.size
         when 0 # empty
           nil
-        when 1 # key/val render of resource
-          Node.new(env[:base]).env(env).keyval graph[0], skip: skip
+#        when 1 # key/val render of resource
+#          Node.new(env[:base]).env(env).keyval graph[0], skip: skip
         else   # tabular render of resources
           keys = graph.map(&:keys).flatten.uniq -
                  skip                        # apply property skiplist
@@ -245,28 +245,43 @@ module Webize
 
                    {class: :toolbox,
                     c: [{_: :a, id: :rootpath, href: Resource.new(join('/')).env(env).href, c: '&nbsp;' * 3}, "\n",      # 👉 root node
-                        ({_: :a, id: :rehost, href: Webize::Resource(['//', ReHost[host], path].join, env).href,
+  
+                        ({_: :a, id: :rehost, href: Webize::Resource(['//', ReHost[host], path].join, env).href,         # 👉 alternate UI
                           c: {_: :img, src: ['//', ReHost[host], '/favicon.ico'].join}} if ReHost.has_key? host),
-                        {_: :a, id: :UI, href: host ? uri : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, "\n", # 👉 origin UI
+
+                        {_: :a, id: :UI, href: host ? uri : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, "\n", # 👉 original UI/format
+
                         {_: :a, id: :cache, href: '/' + POSIX::Node(self).fsPath, c: :📦}, "\n",                         # 👉 cache location
+
                         ({_: :a, id: :block, href: '/block/' + host.sub(/^(www|xml)\./,''), class: :dimmed,              # 👉 block domain
                           c: :🛑} if host && !deny_domain?), "\n",
+
                         {_: :span, class: :path, c: parts.map{|p|
                            bc += '/' + p                                                                                 # 👉 path breadcrumbs
                            ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
                                   href: Resource.new(join(bc)).env(env).href,
                                   c: CGI.escapeHTML(Webize::URI(Rack::Utils.unescape p).basename || '')}]}}, "\n",
+
                         ([{_: :form, c: env[:qs].map{|k,v|                                                               # 🔍 search box
                              {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}},                   # hidden search parameters
                           "\n"] if env[:qs].has_key? 'q'),
+
                         env[:feeds].uniq.map{|feed|                                                                      # 👉 feed(s)
                           feed = Resource.new(feed).env env
                           [{_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'f' + Digest::SHA2.hexdigest(feed.uri)}. # 👉 feed
                              update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {}), "\n"]},
+
                         (:🔌 if offline?),                                                                               # 🔌 offline status
+
                         {_: :span, class: :stats,
                          c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                           # ⏱️ elapsed time
-                             [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)}]},
+                             [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)},
+
+                        ({class: :referers,                                                                              # 👉 referring graph(s)
+                          c: [:👉, HTML.markup(HTTP::Referer[self], env)]} if HTTP::Referer[self]),
+
+                        (property '#source', doc['#source'] if doc.has_key? '#source'),                                  # 👉 source graph(s)
+                       ]},
 
                    (['<br>', {class: :warning, c: env[:warnings]}] unless env[:warnings].empty?),                        # ⚠️ warnings
 
@@ -280,14 +295,11 @@ module Webize
                                      {_: :td, c: ({_: :a, href: '/block/' + r.host.sub(/^(www|xml)\./,''), id: 'block' + Digest::SHA2.hexdigest(r.uri),
                                                    c: :🛑} unless r.deny_domain?)}]}}}]} if HTTP::Redirector[self]),
 
-                   ({class: :referers,                                                                                   # 👉 referring node(s)
-                     c: [:👉, HTML.markup(HTTP::Referer[self], env)]} if HTTP::Referer[self]),
-
                    if doc.has_key? Contains
                      doc[Contains].map{|v| HTML.markup v, env }
                    end, # child nodes
 
-                   keyval(doc, skip: [Contains]), # document attributes
+                   keyval(doc, skip: ['#source', Contains]), # document attributes
 
                    link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],                                  # 👉 previous, contained and next node(s)
 
