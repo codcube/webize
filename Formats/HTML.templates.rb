@@ -231,10 +231,10 @@ module Webize
                c: [{_: :meta, charset: 'utf-8'},
 
                    ({_: :title, c: CGI.escapeHTML(doc[Title].join ' ')} if doc.has_key? Title),
+
                    {_: :style,
                     c: [CSS::Site,
-                        "body {background-color: #{bgcolor}}",
-                        "#updates {background: repeating-linear-gradient(#{rand(8) * 45}deg, #444, #444 1px, transparent 1px, transparent 16px)"].join("\n")},
+                        "body {background-color: #{bgcolor}}"].join("\n")},
 
                    env[:links].map{|type, resource|
                      {_: :link, rel: type, href: CGI.escapeHTML(Resource.new(resource).env(env).href)}}]},
@@ -329,7 +329,9 @@ module Webize
                  keyval(doc, skip: ['#source', Contains]),
 
                  # 👉 previous, contained and next node(s)
-                 link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
+                 link[:prev,'&#9664;'],
+                 link[:down,'&#9660;'],
+                 link[:next,'&#9654;'],
 
                  # script
                  {_: :script, c: Code::SiteJS}]}]}]
