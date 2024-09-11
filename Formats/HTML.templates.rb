@@ -146,7 +146,7 @@ module Webize
 
       # markup methods
 
-      # base DOM nodes - parameterize generic renderer with name
+      # basic DOM nodes - parameterize generic renderer with name
       def head(node) = resource node, :head
 
       def ul(node) = resource node, :ul

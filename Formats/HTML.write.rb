@@ -45,7 +45,7 @@ module Webize
     # OUT dataflow
     # class --method-->
 
-    # RDF --JSON#fromGraph-->
+    # RDF::Graph --JSON#fromGraph-->
     # RDF representation in Ruby values --Node#markup--> or --Property#markup-->
     # DOM representation in Ruby values --Writer#render-->
     # HTML --Protocols-->

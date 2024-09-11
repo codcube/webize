@@ -146,6 +146,7 @@ rss rss.xml
             subject.query = nil if subject.query&.match?(/utm[^a-z]/)
             subject.fragment = nil if subject.fragment&.match?(/utm[^a-z]/)
 
+            #puts [@base.env[:base], subject].join "\t"
             yield @base.env[:base], Contains, subject # containment triple
 
             # type tag
