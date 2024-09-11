@@ -310,12 +310,7 @@ module Webize
       end
 
       def resource r, type = :div
-        name = type == :head ? :div : type
-
-        shown = ['#new', 'uri', Title, Abstract, To, Contains]
-
-        p = -> a {                                # property-render indirection to skip empty/nil fields (lambda)
-          property(a, r[a]) if r.has_key? a}
+        name = type == :head ? :div : type        # node name
 
         if uri = r['uri']                         # identified node:
           uri = Webize::Resource(uri, env)        # URI
@@ -340,12 +335,13 @@ module Webize
                   end
                 end
 
+        shown = ['#new', 'uri', Title, Contains]  # properties we show, before delegating to generic/keyval render
+
         [{_: name,                                # node
           c: [({class: :title,                    # title
                 c: r[Title].map{|t|
                   HTML.markup t, env}}.
                  update(ref || {}) if r.has_key? Title),
-              p[Abstract], p[To],                 # abstract, dest
               "\n", keyval(r, skip: shown),       # key/val fields
               if r[Contains]
                 if %w(head ol ul).member? type.to_s
