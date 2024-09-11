@@ -24,12 +24,12 @@
 .quote > .quote > .quote {background-color: #777}
 .quote > .quote {background-color: #aaa}
 .redirectors, .referers {border: 1px solid #eee; border-radius: .8em}
-.resource > dl {float: right}
 .resource {border: 1px solid #333; border-radius: .62em; background-color: #181818; color: #fff; margin: 1px}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title > .identifier {color: #000; background-color: #929292; border-radius: .3em}
-.title {background-color: #fff; color: #000; border-radius: .5em 0 .2em 0; margin: 0; max-width: 80ex; float: left}
+.title {border-radius: .5em 0 .2em 0; margin: 0; max-width: 80ex; float: left}
+.title, .title > span {background-color: #fff; color: #000}
 .title:visited {background-color: #ccc; color: #000}
 .toolbox .path a {color: #ddd; font-weight: normal; font-size: .88em}
 .toolbox .path {color: #666}
@@ -44,7 +44,7 @@
 .warning {background-color: #ff0; color: #000; padding: .2em; margin: .3em; border-radius: .5em}
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px; vertical-align: top}
-a, a > span { max-width: 40em; overflow: hidden}
+a, a > span { max-width: 40em }
 a.blocked {border: 1px solid white}
 a.date {white-space: nowrap; color: #ccc; background-color: #000; font-weight: normal}
 a.fragref {padding: .1em .3em .1em .3em; border-radius: .3em; font-size: 1.3em; border: 1px dotted #fef}
@@ -87,8 +87,8 @@ pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, dl, h1, h2, h3, h4, h5, h6, img {margin: 0}
 svg, img[src*="svg"] {background-color: #fff; color: #000; min-width: 64px; max-width: 256px; max-height: 256px}
 table {border-spacing: 1px; border: 1px dotted pink}
-table.tabular {border: 1px dotted #555}
 table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 0; border-style: dotted}
+table.tabular {border: 1px dotted #555}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
 th {background-color: #383838; color: #fff}
