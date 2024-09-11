@@ -142,8 +142,11 @@ module Webize
 
       # type URI -> markup method
       Markup = Webize.configHash 'HTML/resource'
+      TabularChild = %w(head ol ul) # display children in tabular format
 
-      # markup methods - for simple cases, parameterize generic renderer with name
+      # markup methods
+
+      # base DOM nodes - parameterize generic renderer with name
       def head(node) = resource node, :head
 
       def ul(node) = resource node, :ul
@@ -160,6 +163,7 @@ module Webize
       def table(node) = resource node, :table
       def thead(node) = resource node, :thead
       def tfoot(node) = resource node, :tfoot
+
       def th(node) = resource node, :th
       def tr(node) = resource node, :tr
       def td(node) = resource node, :td
@@ -341,14 +345,14 @@ module Webize
         [{_: name,                                # node
           c: [({class: :title,                    # title
                 c: r[Title].map{|t|
-                  HTML.markup t, env}}.
+                  HTML.markup t, env}}.           # attach link to title if exists
                  update(ref || {}) if r.has_key? Title),
               "\n", keyval(r, skip: shown),       # keyval render remaining fields
-              if r[Contains]
-                if %w(head ol ul).member? type.to_s
+              if r[Contains]                      # child nodes
+                if TabularChild.member? type.to_s # tabular view of child nodes
                   property Schema + 'item', r[Contains]
                 else
-                  r[Contains].map{|c|
+                  r[Contains].map{|c|             # generic inlining of child nodes
                     HTML.markup c, env}
                 end
               end,
