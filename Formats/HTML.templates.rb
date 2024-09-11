@@ -316,16 +316,17 @@ module Webize
           uri = Webize::Resource(uri, env)        # URI
           id = uri.local_id                       # localized fragment identity (representation of transcluded resource in document)
 
-          origin_ref = {_: :a, class: :pointer,   # origin pointer
+          origin_ref = {_: :a, class: :pointer,   # original pointer
                         href: uri, c: :🔗}
-          ref = {_: :a, href: uri.href,           # pointer
+
+          ref = {_: :a, href: uri.href,           # pointer in current context
                  id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}
         end
 
-        color = if r.has_key? '#new'              # new resource
+        color = if r.has_key? '#new'              # new/updated resource highlight
                   '#8aa'
                 elsif r.has_key?(To) && Identifiable.member?(r[To][0].class)
-                  '#' + Digest::SHA2.hexdigest(   # message-dest color
+                  '#' + Digest::SHA2.hexdigest(   # message-destination / group color
                     Webize::URI.new(r[To][0]).display_name)[0..5]
                 elsif uri
                   if uri.deny?                    # blocked resource
@@ -335,14 +336,14 @@ module Webize
                   end
                 end
 
-        shown = ['#new', 'uri', Title, Contains]  # properties we show, before delegating to generic/keyval render
+        shown = ['#new', 'uri', Title, Contains]  # properties we handle before delegating to generic keyval render
 
         [{_: name,                                # node
           c: [({class: :title,                    # title
                 c: r[Title].map{|t|
                   HTML.markup t, env}}.
                  update(ref || {}) if r.has_key? Title),
-              "\n", keyval(r, skip: shown),       # key/val fields
+              "\n", keyval(r, skip: shown),       # keyval render remaining fields
               if r[Contains]
                 if %w(head ol ul).member? type.to_s
                   property Schema + 'item', r[Contains]
