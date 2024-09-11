@@ -277,8 +277,8 @@ module Webize
                          c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                           # ⏱️ elapsed time
                              [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)},
 
-                        ({class: :referers,                                                                              # 👉 referring graph(s)
-                          c: [:👉, HTML.markup(HTTP::Referer[self], env)]} if HTTP::Referer[self]),
+                        ({class: :referers,                                                                              # 👈 referring graph(s)
+                          c: [HTML.markup(HTTP::Referer[self], env), :👈]} if HTTP::Referer[self]),
 
                         (property '#source', doc['#source'] if doc.has_key? '#source'),                                  # 👉 source graph(s)
                        ]},
