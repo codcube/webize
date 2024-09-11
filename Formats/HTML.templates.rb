@@ -239,71 +239,100 @@ module Webize
                    env[:links].map{|type, resource|
                      {_: :link, rel: type, href: CGI.escapeHTML(Resource.new(resource).env(env).href)}}]},
 
-              {_: :body,
-               c: [({_: :img, class: :favicon,
-                     src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href} if env[:links].has_key? :icon),
+              {_: :body, c: [
 
-                   {class: :toolbox,
-                    c: [{_: :a, id: :rootpath, href: Resource.new(join('/')).env(env).href, c: '&nbsp;' * 3}, "\n",      # 👉 root node
-  
-                        ({_: :a, id: :rehost, href: Webize::Resource(['//', ReHost[host], path].join, env).href,         # 👉 alternate UI
-                          c: {_: :img, src: ['//', ReHost[host], '/favicon.ico'].join}} if ReHost.has_key? host),
+                 # icon
+                 if env[:links].has_key? :icon
+                   {_: :img, class: :favicon,
+                    src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href}
+                 end,
 
-                        {_: :a, id: :UI, href: host ? uri : URI.qs(env[:qs].merge({'notransform'=>nil})), c: :🧪}, "\n", # 👉 original UI/format
+                 {class: :toolbox, c: [
 
-                        {_: :a, id: :cache, href: '/' + POSIX::Node(self).fsPath, c: :📦}, "\n",                         # 👉 cache location
+                    # 👉 toplevel node
+                    {_: :a, id: :rootpath,
+                     href: Resource.new(join('/')).env(env).href, c: '&nbsp;' * 3}, "\n",
+                    
+                    # 👉 alternate UI
+                    ({_: :a, id: :rehost,
+                      href: Webize::Resource(['//', ReHost[host], path].join, env).href,
+                      c: {_: :img, src: ['//', ReHost[host], '/favicon.ico'].join}} if ReHost.has_key? host),
 
-                        ({_: :a, id: :block, href: '/block/' + host.sub(/^(www|xml)\./,''), class: :dimmed,              # 👉 block domain
-                          c: :🛑} if host && !deny_domain?), "\n",
+                    # 👉 original UI/format
+                    {_: :a, id: :UI, c: :🧪,
+                     href: host ? uri : URI.qs(env[:qs].merge({'notransform'=>nil}))}, "\n",
 
-                        {_: :span, class: :path, c: parts.map{|p|
-                           bc += '/' + p                                                                                 # 👉 path breadcrumbs
-                           ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
-                                  href: Resource.new(join(bc)).env(env).href,
-                                  c: CGI.escapeHTML(Webize::URI(Rack::Utils.unescape p).basename || '')}]}}, "\n",
+                    # 👉 cache
+                    {_: :a, id: :cache, c: :📦,
+                     href: '/' + POSIX::Node(self).fsPath}, "\n",
 
-                        ([{_: :form, c: env[:qs].map{|k,v|                                                               # 🔍 search box
-                             {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}},                   # hidden search parameters
-                          "\n"] if env[:qs].has_key? 'q'),
+                    # 👉 block domain
+                    ({_: :a, id: :block, c: :🛑,
+                      href: '/block/' + host.sub(/^(www|xml)\./,''),
+                      class: :dimmed} if host && !deny_domain?), "\n",
 
-                        env[:feeds].uniq.map{|feed|                                                                      # 👉 feed(s)
-                          feed = Resource.new(feed).env env
-                          [{_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'f' + Digest::SHA2.hexdigest(feed.uri)}. # 👉 feed
-                             update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {}), "\n"]},
+                    # 👉 path breadcrumbs
+                    {_: :span, class: :path, c: parts.map{|p|
+                       bc += '/' + p
+                       ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
+                              href: Resource.new(join(bc)).env(env).href,
+                              c: CGI.escapeHTML(Webize::URI(Rack::Utils.unescape p).basename || '')}]}}, "\n",
 
-                        (:🔌 if offline?),                                                                               # 🔌 offline status
+                    # 🔍 search box
+                    ([{_: :form, c: env[:qs].map{|k,v|
+                         {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}}, # search parameters
+                      "\n"] if env[:qs].has_key? 'q'),
 
-                        {_: :span, class: :stats,
-                         c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time                           # ⏱️ elapsed time
-                             [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)},
+                    # 👉 feed(s)
+                    env[:feeds].uniq.map{|feed|
+                      feed = Resource.new(feed).env env
+                      [{_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'f' + Digest::SHA2.hexdigest(feed.uri)}.
+                         update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {}), "\n"]},
 
-                        ({class: :referers,                                                                              # 👈 referring graph(s)
-                          c: [HTML.markup(HTTP::Referer[self], env), :👈]} if HTTP::Referer[self]),
+                    # 🔌 offline status
+                    (:🔌 if offline?),
 
-                        (property '#source', doc['#source'] if doc.has_key? '#source'),                                  # 👉 source graph(s)
-                       ]},
+                    # ⏱️ elapsed time
+                    {_: :span, class: :stats,
+                     c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time
+                         [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)},
 
-                   (['<br>', {class: :warning, c: env[:warnings]}] unless env[:warnings].empty?),                        # ⚠️ warnings
+                    # 👈 referring graph(s)
+                    ({class: :referers,
+                      c: [HTML.markup(HTTP::Referer[self], env), :👈]} if HTTP::Referer[self]),
 
-                   link[:up,'&#9650;'],                                                                                  # 👉 containing node
+                    # 👉 source graph(s)
+                    (property '#source', doc['#source'] if doc.has_key? '#source'),
+                  ]},
 
-                   ({class: :redirectors,                                                                                # 👉 redirecting node(s)
-                     c: [:➡️, {_: :table,
-                              c: HTTP::Redirector[self].map{|r|
-                                {_: :tr,
-                                 c: [{_: :td, c: {_: :a, href: r.href, c: r.host}},
-                                     {_: :td, c: ({_: :a, href: '/block/' + r.host.sub(/^(www|xml)\./,''), id: 'block' + Digest::SHA2.hexdigest(r.uri),
-                                                   c: :🛑} unless r.deny_domain?)}]}}}]} if HTTP::Redirector[self]),
+                 # ⚠️ warnings
+                 (['<br>', {class: :warning, c: env[:warnings]}] unless env[:warnings].empty?),
 
-                   if doc.has_key? Contains
-                     doc[Contains].map{|v| HTML.markup v, env }
-                   end, # child nodes
+                 # 👉 containing node
+                 link[:up,'&#9650;'],
 
-                   keyval(doc, skip: ['#source', Contains]), # document attributes
+                 # 👉 redirecting node(s)
+                 ({class: :redirectors,
+                   c: [:➡️, {_: :table,
+                            c: HTTP::Redirector[self].map{|r|
+                              {_: :tr,
+                               c: [{_: :td, c: {_: :a, href: r.href, c: r.host}},
+                                   {_: :td, c: ({_: :a, href: '/block/' + r.host.sub(/^(www|xml)\./,''), id: 'block' + Digest::SHA2.hexdigest(r.uri),
+                                                 c: :🛑} unless r.deny_domain?)}]}}}]} if HTTP::Redirector[self]),
 
-                   link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],                                  # 👉 previous, contained and next node(s)
+                 # contained nodes
+                 if doc.has_key? Contains
+                   doc[Contains].map{|v| HTML.markup v, env }
+                 end,
 
-                   {_: :script, c: Code::SiteJS}]}]}]
+                 # document attributes
+                 keyval(doc, skip: ['#source', Contains]),
+
+                 # 👉 previous, contained and next node(s)
+                 link[:prev,'&#9664;'], link[:down,'&#9660;'], link[:next,'&#9654;'],
+
+                 # script
+                 {_: :script, c: Code::SiteJS}]}]}]
       end
 
       def interactions counter

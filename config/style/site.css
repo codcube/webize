@@ -23,7 +23,7 @@
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .quote > .quote > .quote {background-color: #777}
 .quote > .quote {background-color: #aaa}
-.redirectors, .referers {border: 1px dotted #888; border-radius: 0}
+.redirectors, .referers {border: 1px dotted #888; border-radius: 0; float: right}
 .resource {border: 1px solid #333; border-radius: .62em; background-color: #181818; color: #fff; margin: 1px}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
