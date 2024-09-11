@@ -35,8 +35,9 @@ module Webize
 
     def file_triples graph
       # provenance and naming
-      graph << RDF::Statement.new(env[:base], RDF::URI('#graph'), self) unless env[:base] == self # source-graph triple
-     #graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#File'))
+      graph << RDF::Statement.new(env[:base], RDF::URI('#source'), self) unless env[:base] == self # source-graph reference
+
+      #graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#File'))
       graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename
 
       # fs metadata
