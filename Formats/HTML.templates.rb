@@ -369,7 +369,9 @@ module Webize
                  id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}
         end
 
-        color = if r.has_key? '#new'              # new/updated resource highlight
+        color = if r.has_key? '#color'            # specified color
+                  r['#color'][0]
+                elsif r.has_key? '#new'           # new/updated resource highlight
                   '#8aa'
                 elsif r.has_key?(To) && Identifiable.member?(r[To][0].class)
                   '#' + Digest::SHA2.hexdigest(   # message-destination / group color
@@ -382,7 +384,9 @@ module Webize
                   end
                 end
 
-        shown = ['#new', 'uri', Title, Contains]  # properties we handle before delegating to generic keyval render
+        shown = ['#color', '#new',
+                 'uri',
+                 Title, Contains]  # properties we handle before delegating to generic keyval render
 
         [{_: name,                                # node
           c: [({class: :title,                    # title
@@ -402,7 +406,7 @@ module Webize
              ]}.
            update(id ? {id: id} : {}).
            update((id && type == :div) ? {class: :resource} : {}).
-           update(color ? {style: "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} 1px, transparent 1px, transparent 28px); border-color: #{color}"} : {}), "\n"]
+           update(color ? {style: "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} 1px, transparent 1px, transparent 16px); border-color: #{color}"} : {}), "\n"]
       end
     end
   end
