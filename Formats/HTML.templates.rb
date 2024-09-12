@@ -384,7 +384,7 @@ module Webize
                   end
                 end
 
-        shown = ['#color', '#new',
+        shown = ['#color', '#style', '#new',
                  'uri',
                  Title, Contains]  # properties we handle before delegating to generic keyval render
 
@@ -406,6 +406,7 @@ module Webize
              ]}.
            update(id ? {id: id} : {}).
            update((id && type == :div) ? {class: :resource} : {}).
+           update(r.has_key?('#style') ? {style: r['#style'][0]} : {}).
            update(color ? {style: "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} 1px, transparent 1px, transparent 16px); border-color: #{color}"} : {}), "\n"]
       end
     end

@@ -44,6 +44,7 @@ module Webize
             domains[host] ||= (
               yield tld, Contains, host
               yield host, Title, subject.host
+              yield host, '#style', 'background-color: black'
               yield host, Type, RDF::URI(Container))
 
             yield host, Schema + 'item', subject
