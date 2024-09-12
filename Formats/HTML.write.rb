@@ -1,3 +1,5 @@
+require_relative 'HTML.template.rb' # writer templates (pure Ruby, no additional template language)
+
 module Webize
   module HTML
 

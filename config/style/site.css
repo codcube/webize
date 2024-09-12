@@ -33,7 +33,7 @@
 .title:visited {background-color: #ccc; color: #000}
 .toolbox .path a {color: #ddd; font-weight: normal}
 .toolbox .path {color: #666}
-.toolbox .tabular {display: block; font-size: .9em}
+.toolbox .tabular {display: block; font-size: .96em}
 .toolbox form input {background-color: #282828; color: #eee; border-radius: .5em; border-width: 0; margin: 0; padding: 0; width: 24ex}
 .toolbox img {max-height: 1.2em}
 .toolbox svg {height: 1em; width: 1em}

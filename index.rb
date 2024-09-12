@@ -3,13 +3,13 @@ require 'linkeddata'
 {Formats: %w(
 Config
 URI
-HTML.read Bookmarks
+HTML.read
 HTML.write
-HTML.templates
 MIME
 POSIX
 Archive
 Audio
+Bookmarks
 Code
 CSS
 CSV

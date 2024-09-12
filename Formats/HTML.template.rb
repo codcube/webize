@@ -1,7 +1,7 @@
 require_relative 'HTML.template.document.rb' # document template
 require_relative 'HTML.template.resource.rb' # resource template
 
-module Webize                                # misc templates
+module Webize                                # templates
   module HTML
     class Property
  
@@ -42,7 +42,7 @@ module Webize                                # misc templates
           end}
       end
 
-      # graph index - we're adding triples at a late stage just before view rendering. to use these pointers via Turtle, we'll add a 'graph annotation pass' eventually
+      # graph index - we're adding triples at a late stage just before rendering. to use these pointers via Turtle, we'll want a 'graph annotation pass' eventually
       def graph_index nodes
 
         nodes.map{|node|
