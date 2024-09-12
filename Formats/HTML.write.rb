@@ -90,9 +90,8 @@ module Webize
 
     end
 
-    # markup-generation function for all types
+    # markup-generation function for all Ruby types
     def self.markup o, env
-      # can we use Ruby pattern-matching features to define each of these separately?
       case o
       when Array
         o.map{|_|
@@ -104,7 +103,7 @@ module Webize
           markup (RDF::URI o['uri']), env
         else
           # loop-elimination and deduplication:
-          # mark up node and point to its in-doc representation fragment on subsequent calls
+          # point to in-doc representation of fragment on subsequent calls
           id = o.__id__
           if env[:fragments].has_key? id                # existing representation?
             if uri = o['uri']                           # identified?
