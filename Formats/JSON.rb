@@ -163,8 +163,7 @@ id ID _id id_str @id)
       end
     end
 
-    # Graph -> JSON
-    # similar to Graph#to_h, we'll switch to that if its bnode and cyclic-structure shapes are compatible
+    # RDF::Graph -> JSON (serializable representation in native ruby values)
     def self.fromGraph graph
 
       index = {}                                  # (URI -> node) table

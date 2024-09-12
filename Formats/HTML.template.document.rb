@@ -2,7 +2,6 @@ module Webize
   module HTML
     class Node
       def document doc
-        bc = String.new             # breadcrumb trail
 
         bgcolor = if env[:deny]     # blocked?
                     if deny_domain? # domain color
@@ -16,7 +15,8 @@ module Webize
                     '#000'
                   end
 
-        link = -> key, content { # <Link> markup
+        # <link> markup-generator lambda
+        link = -> key, content {
           if url = env[:links] && env[:links][key]
             [{_: :a, href: Resource.new(url).env(env).href, id: key, class: :icon, c: content},
              "\n"]
@@ -69,6 +69,7 @@ module Webize
                       class: :dimmed} if host && !deny_domain?), "\n",
 
                     # 👉 path breadcrumbs
+                    bc = String.new,       # breadcrumb trail
                     {_: :span, class: :path, c: parts.map{|p|
                        bc += '/' + p
                        ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
@@ -77,7 +78,7 @@ module Webize
 
                     # 🔍 search box
                     ([{_: :form, c: env[:qs].map{|k,v|
-                         {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}}, # search parameters
+                         {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}}, # parameters
                       "\n"] if env[:qs].has_key? 'q'),
 
                     # 👉 feed(s)
@@ -92,7 +93,7 @@ module Webize
                     # ⏱️ elapsed time
                     {_: :span, class: :stats,
                      c: (elapsed = Time.now - env[:start_time] if env.has_key? :start_time
-                         [{_: :span, c: '%.1f' % elapsed}, :⏱️, "\n"] if elapsed > 1)},
+                         [:⏱️, {_: :span, c: '%.1f' % elapsed}, "\n"] if elapsed > 1)},
 
                     # 👈 referring graph(s)
                     ({class: :referers,
