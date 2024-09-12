@@ -28,15 +28,18 @@ module Webize
           subject = HTTP::Node(subject,{}).unproxyURI if %w(l localhost x).member? subject.host
 
           if subject.host
-            # TLD container
+            # TLD
             tldname = subject.host.split('.')[-1]
             tld = RDF::URI '#TLD_' + tldname
             tlds[tld] ||= (
               yield links, Contains, tld
               yield tld, Type, RDF::URI(Container)
-              yield tld, Title, tldname)
+              yield tld, Title, tldname
+              yield tld, '#color',
+                    '#' + Digest::SHA2.hexdigest(tldname)[0..5]
+            )
 
-            # hostname container
+            # host
             host = RDF::URI '#host_' + subject.host
             domains[host] ||= (
               yield tld, Contains, host
