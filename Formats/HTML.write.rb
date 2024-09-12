@@ -90,7 +90,7 @@ module Webize
 
     end
 
-    # markup-generation function for any type. is there a clean way to add #markup to every class or is that monkey-patching/namespace-pollution?
+    # markup-generation function for all types
     def self.markup o, env
       # can we use Ruby pattern-matching features to define each of these separately?
       case o
@@ -123,7 +123,10 @@ module Webize
         o
       when NilClass
         o
-      when RDF::Graph # show all nodes reachable from base URI <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
+      when RDF::Graph
+        # nodes must be reachable from base URI to be in resulting markup
+        # similar to a "concise bounded description" but not necessarily concise, just reachable
+        # see <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
         graph = JSON.fromGraph(o)[env[:base]] || {} # graph data
         graph[Type] = [Document]                    # type as graph document
         markup graph, env                           # markup graph document
