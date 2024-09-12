@@ -42,8 +42,7 @@ module Webize
           end}
       end
 
-      # graph index - we're essentially adding more triples at a late stage just before view rendering
-      # if we want to use these pointers via Turtle, we'll want a 'graph annotation pass' earlier
+      # graph index - we're adding triples at a late stage just before view rendering. to use these pointers via Turtle, we'll add a 'graph annotation pass' eventually
       def graph_index nodes
 
         nodes.map{|node|

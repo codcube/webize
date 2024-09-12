@@ -24,12 +24,12 @@
 .quote > .quote > .quote {background-color: #777}
 .quote > .quote {background-color: #aaa}
 .redirectors, .referers {border: 1px dotted #888; border-radius: 0; float: right}
-.resource {border: 1px solid #333; border-radius: .62em; background-color: #181818; color: #fff; margin: 1px}
+.resource {border: 1px solid #333; border-radius: .62em; margin: 1px}
 .stats > span {font-size: .96em; color: #eee}
 .stats {background-color: #000; border-radius: 0 0 .5em .5em}
 .title > .identifier {color: #000; background-color: #929292; border-radius: .3em}
-.title {border-radius: .5em 0 .2em 0; margin: 0; max-width: 80ex; float: left}
-.title, .title > span {background-color: #fff; color: #000}
+.title > span {background-color: #000; color: #ccc; margin: 0; font-size: 1.05em; border: 1px dotted #555; border-radius: .4em .4em .2em .2em; padding: .05em}
+.title {display: block; margin: 0}
 .title:visited {background-color: #ccc; color: #000}
 .toolbox .path a {color: #ddd; font-weight: normal; font-size: .88em}
 .toolbox .path {color: #666}
