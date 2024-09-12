@@ -13,7 +13,10 @@ module Webize
 
     class Property < Resource # representation of attribute/edge/field/key/predicate/property
 
-      def markup content       # property URI -> representation generator method
+      # URI -> method table
+      Markup = Webize.configHash 'HTML/property'
+
+      def markup content       # property URI -> representation generator method mapper
         if Markup.has_key? uri # typed render
           send Markup[uri], content
         else                   # generic render
@@ -26,7 +29,10 @@ module Webize
 
     class Node < Resource # representation of node/object/resource/thing
 
-      def self.markup o, env # type URI -> representation generator method
+      # URI -> method table
+      Markup = Webize.configHash 'HTML/resource'
+
+      def self.markup o, env # resource-type URI -> representation generator method mapper
         Node.new(env[:base]).env(env).        # representation instance
           send o[Type] &&                     # has RDF type attribute?
                Markup[o[Type].map{|t|
