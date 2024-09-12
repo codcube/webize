@@ -11,7 +11,7 @@ module Webize
     StatusColor.keys.map{|s|
       StatusColor[s.to_i] = StatusColor[s]}
 
-    # representation of attribute/edge/field/key/predicate/property
+    # representation of attribute aka edge aka field aka key aka predicate aka property
 
     class Property < Resource
 
@@ -30,7 +30,8 @@ module Webize
 
     end
 
-    # representation of node/object/resource/thing
+    # representation of node aka object aka resource aka thing
+
     class Node < Resource
 
       # URI -> method table
@@ -56,13 +57,15 @@ module Webize
     class Writer < RDF::Writer
 
       # OUT dataflow
-      # class --method-->
+      # class              --method-->
 
-      # RDF::Graph --JSON#fromGraph-->
-      # RDF representation in Ruby values --Node#markup--> or --Property#markup-->
-      # DOM representation in Ruby values --Writer#render-->
-      # HTML --Protocols-->
+      # RDF::Graph         --JSON#fromGraph-->
+      # RDF representation --Node#markup--> and --Property#markup-->
+      # DOM representation --Writer#render-->
+      # HTML               --Protocols-->
       # message receiver: caller, client, User Agent
+
+      # "RDF representation" is our native representation in ruby values, see <JSON.rb> for documentation
 
       format Format
 
