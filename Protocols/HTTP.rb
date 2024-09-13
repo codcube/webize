@@ -296,12 +296,12 @@ module Webize
     end
 
     # fetch resource and cache upstream/original and derived graph data
-    # yes this is big, much of it to deal with the mess in the wild with MIME/charset data only inside the document,
-    # rather than HTTP headers, requiring readahead sniffing. and normalizing name symbols to be what's in Ruby's list,
-    # and fixing erroneous MIMEs and file extensions that won't map back to the right MIME if stored at upstream-derived path, and dealing with
-    # the slightly odd choice of Exception handling flow being used for common HTTP Response statuses, and supporting conneg aware or unaware,
-    # and proxy-mode (thru) fetches vs data-only fetches for aggregation/merging scenarios. add some hints for the renderer and logger,
-    # and cache all the things. maybe we can split it all up somehow, especially so we can try other HTTP libraries more easily.
+    # much of this code deals with the mess in the wild with MIME/charset or other metadata often only inside the document,
+    # rather than HTTP headers, requiring readahead sniffing. add some normalizing of name symbols to be what's in Ruby's list,
+    # fix erroneous MIMEs and file extensions that won't map back to the right MIME if stored at upstream-supplied path, and work with
+    # the slightly odd choice of exception-handler flow being used for common HTTP Response statuses, while supporting conneg-unaware clients/servers,
+    # and proxy-mode (thru) fetches vs data-only fetches in aggregation/merging scenarios. add some hints for the renderer and logger,
+    # and cache all the things. maybe we can split this up somehow, especially so we can try other HTTP libraries more easily.
 
     URI_OPEN_OPTS = {open_timeout: 16,
                      read_timeout: 32,
