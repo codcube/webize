@@ -185,12 +185,11 @@ module Webize                                # templates
 
         links.map{|ref|
           ref = Webize::URI(ref['uri']) if ref.class == Hash
-          {_: :span, class: :link,
-           c: [{_: :a, href: ref,
-                class: ref.host == host ? 'local' : 'global',
-                c: [title,
-                    {_: :span, c: CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '')}]},
-               content, attrs]}} if links
+          [{_: :a, href: ref,
+            class: ref.host == host ? 'local' : 'global',
+            c: [title, content,
+                {_: :span, class: :uri, c: CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '')}]},
+           attrs]} if links
       end
 
       # paragraph

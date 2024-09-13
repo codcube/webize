@@ -49,7 +49,7 @@ a.date {white-space: nowrap; color: #ccc; background-color: #000; font-weight: n
 a.fragref {padding: .1em .3em .1em .3em; border-radius: .3em; font-size: 1.3em; border: 1px dotted #fef}
 a.from, a.to {color: #000}
 a.from:visited, a.to:visited {color: #fff}
-a.global > span, a.local > span {color: #ddd; font-weight: normal; font-size: 0.83em; float: right}
+a.global > span.uri, a.local > span.uri {color: #ddd; font-weight: normal; font-size: 0.83em; float: right}
 a.global {background-color: #004}
 a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
@@ -80,8 +80,8 @@ hr {margin: 1px 0 1px 0}
 img, video, table, td {max-width: 100%; border-radius: .4em}
 li:nth-child(even) {background-color: #000; color: #fff}
 li:nth-child(odd) {background-color: #222; color: #fff}
-p {border: 1px dotted #555; margin: 2px 2px 2px 12px; max-width: 100ex}
-p::before {content: '¶'; color: #888; position: absolute; left: 0}
+p {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
+p::before {content: '¶'; color: #666; margin-left: -12px}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, dl, h1, h2, h3, h4, h5, h6, img {margin: 0}
 svg, img[src*="svg"] {background-color: #fff; color: #000; min-width: 64px; max-width: 256px; max-height: 256px}
