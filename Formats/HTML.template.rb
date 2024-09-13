@@ -185,7 +185,7 @@ module Webize                                # templates
 
         links.map{|ref|
           ref = Webize::URI(ref['uri']) if ref.class == Hash
-          {class: :link,
+          {_: :span, class: :link,
            c: [{_: :a, href: ref,
                 class: ref.host == host ? 'local' : 'global',
                 c: [title,
@@ -198,6 +198,7 @@ module Webize                                # templates
         unless para['uri']
           para['uri'] = '#p_' + Digest::SHA2.hexdigest(rand.to_s)
         end
+        para.delete Type # hide typetag, use CSS ::before to denote ¶
         resource para, :p
       end
 
@@ -212,6 +213,8 @@ module Webize                                # templates
       end
 
       def keyval kv, skip: []
+        return if (kv.keys - skip).empty? # nothing to render
+
         [{_: :dl,
           c: kv.map{|k, vs|
             {c: [{_: :dt, c: property(Type, [k])}, "\n",

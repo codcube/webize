@@ -59,8 +59,7 @@ a.pointer {margin: 0; padding: 0; background-color: #000; border-radius: .5em; f
 a.pointer:visited {background-color: #555}
 a.to {float: right; margin: 0}
 audio {width: 80ex; float: right}
-blockquote, blockquote > p, .greentext, .original, .quote, .quote-text, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em}
-blockquote, ol, p, ul {max-width: 80ex}
+blockquote, blockquote > p, .greentext, .original, .quote, .quote-text, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em; max-width: 80ex}
 blockquote::before, .quote::before {content: '>'; float: left}
 body {font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans; padding: 0; margin: 0}
 body, cite, dfn, figcaption, h1, h2, h3, h4, h5, h6, p, pre, span {background-color: #000; color: #fff}
@@ -72,7 +71,7 @@ dd dd dd {max-width: 128em}
 dd dd {max-width: 256em}
 dd {display: table-cell; max-width: 384em; border-width: 0 0 1px 0; border-style: dotted; border-color: #222}
 div {border: 1px solid #33; border-radius: 8px}
-div, form, table {display: inline-block}
+div, form, table, p {display: inline-block}
 dl > div {display: table-row}
 dl {display: table; border-radius: .8em}
 dt {display: table-cell; text-align: right}
@@ -81,8 +80,8 @@ hr {margin: 1px 0 1px 0}
 img, video, table, td {max-width: 100%; border-radius: .4em}
 li:nth-child(even) {background-color: #000; color: #fff}
 li:nth-child(odd) {background-color: #222; color: #fff}
-p {border-width: 1px; border-style: dotted; border-color: #000 #222 #333 #222; margin: 2px 2px 2px 12px}
-p::before {content: '¶'; color: #888; position: absolute; left: -10px}
+p {border: 1px dotted #555; margin: 2px 2px 2px 12px; max-width: 100ex}
+p::before {content: '¶'; color: #888; position: absolute; left: 0}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, blockquote, dl, h1, h2, h3, h4, h5, h6, img {margin: 0}
 svg, img[src*="svg"] {background-color: #fff; color: #000; min-width: 64px; max-width: 256px; max-height: 256px}
