@@ -88,7 +88,7 @@ module Webize                                # templates
 
     class Node
 
-      # absolute barebones generic resource markup. the actual resource renderer wraps this and adds some links, specially-handles Title and so on
+      # absolute barebones generic resource markup. the full resource renderer wraps this and adds some links, specially-handles Title and so on
       def keyval kv, skip: []
         return if (kv.keys - skip).empty? # nothing to render
 

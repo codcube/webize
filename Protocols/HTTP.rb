@@ -145,7 +145,7 @@ module Webize
       File.open([Webize::ConfigPath, :blocklist, :domain].join('/'), 'a'){|list|
         list << domain << "\n"} # add to blocklist
       URI.blocklist             # read blocklist
-      [302, {'Location' => Node(['//', domain].join).href}, []]
+      redirect Node(['//', domain].join).href
     end
 
     def clientETags
@@ -176,7 +176,7 @@ module Webize
 
       qs = ['?', env['QUERY_STRING']] if env['QUERY_STRING'] && !env['QUERY_STRING'].empty?
 
-      [302,{'Location' => [loc, pattern, qs].join},[]] # redirect to date-dir
+      redirect [loc, pattern, qs].join # redirect to timeslice
     end
 
     def debug? = ENV['CONSOLE_LEVEL'] == 'debug'
@@ -264,7 +264,7 @@ module Webize
           [s,h,b]}                        # response
       else                                # redirect to no-query location
         Console.logger.info "dropping query from #{uri}"
-        [302, {'Location' => Node(['//', host, path].join).href}, []]
+        redirect Node(['//', host, path].join).href
       end
     end
 
@@ -506,8 +506,9 @@ module Webize
       return unproxy.hostGET if p.index('.') && p != 'favicon.ico' # remote node - proxy URI sans scheme
       return dateDir if %w{m d h y}.member? p # redirect to current year/month/day/hour container
       return block parts[1] if p == 'block'   # block domain
-      return fetch uris if extname == '.u' && query == 'fetch' # remote node(s) - enumerated in URI list
-      fetchLocal                              # local node
+      return redirect '/d?f=msg*' if path == '/mail' # email inbox
+      return fetch uris if extname == '.u' && query == 'fetch' # remote node(s) in URI list
+      fetchLocal                                               # local node
     end
 
     def HEAD = self.GET.yield_self{|s, h, _|
@@ -642,6 +643,8 @@ module Webize
       [202, {'Access-Control-Allow-Credentials' => 'true',
              'Access-Control-Allow-Origin' => origin}, []]
     end
+
+    def redirect(location) = [302, {'Location' => location}, []]
 
     # return graph in requested format
     def respond repositories, defaultFormat = 'text/html'
