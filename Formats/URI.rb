@@ -51,15 +51,8 @@ module Webize
 
     def graph = URI.new split('#')[0]
 
-    def local_id
-      if in_request_graph?
-        fragment
-      else
-        'r' + Digest::SHA2.hexdigest(to_s)
-      end
-    end
-
     def no_scheme = uri.split('//',2)[1]
+
     def parts = path ? (path.split('/') - ['']) : []
 
     # Hash → querystring

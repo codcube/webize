@@ -66,6 +66,10 @@ module Webize
     # is URI canonical location in request graph?
     def in_request_graph? = on_host? && on_path?
 
+    # local aka fragment identifier
+    # synthesize a derived local identifier if remote resource
+    def local_id = in_request_graph? ? fragment : 'r' + Digest::SHA2.hexdigest(to_s)
+
     # test for canonical location on base host/path - unspecified matches due to relative resolution
     def on_host? = !host || env[:base].host == host # unspecified or matching host
     def on_path? = !path || env[:base].path == path # unspecified or matching path

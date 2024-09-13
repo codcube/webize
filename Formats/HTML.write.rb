@@ -108,8 +108,8 @@ module Webize
           if env[:fragments].has_key? id                # existing representation?
             if uri = o['uri']                           # identified?
               uri = Webize::Resource uri, env           # global identifier
-              {_: :a, href: '#' + uri.local_id,         # local representation identifier
-               class: :fragref, c: :↜}                  # representation reference
+              {_: :a, href: '#' + (uri.local_id||''),   # local representation identifier
+               class: :fragref, c: :↜}                 # representation reference
             else
               nil                                       # blank node (no identifier)
             end
