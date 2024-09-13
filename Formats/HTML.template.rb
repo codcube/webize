@@ -1,4 +1,5 @@
 require_relative 'HTML.template.document.rb' # document template
+require_relative 'HTML.template.domnode.rb'  # document-nodes templates
 require_relative 'HTML.template.resource.rb' # resource template
 
 module Webize                                # templates
