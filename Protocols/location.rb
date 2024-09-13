@@ -47,12 +47,12 @@ module Webize
   end
   class Resource
 
-    # resolve reference for current browsing context
+    # resource reference in current browsing context
     def href
-      return '#' + fragment if fragment && in_doc?        # relative fragment
-      return uri unless host                              # relative path
-      return proxy_ref if env[:proxy_refs] && !proxy_ref? # proxy locator
-      uri                                                 # identifier URI as locator URL (default)
+      return '#' + fragment if fragment && in_request_graph? # relative fragment
+      return to_s unless host                                # relative path
+      return proxy_ref if env[:proxy_refs] && !proxy_ref?    # proxy locator
+      to_s                                                   # URI (identifier) == URL (locator)
     end
 
     # set scheme to HTTP. only advised for peer nodes on local/private/VPN networks
@@ -60,14 +60,15 @@ module Webize
       return self if scheme == 'http'
       _ = dup.env env
       _.scheme = 'http'
-       _.env[:base] = _
+      _.env[:base] = _
     end
 
-    # is URI in request graph?
-    def in_doc? = on_host? && env[:base].path == path
+    # is URI canonical location in request graph?
+    def in_request_graph? = on_host? && on_path?
 
-    # is URI on request host?
-    def on_host? = env[:base].host == host
+    # test for canonical location on base host/path - unspecified matches due to relative resolution
+    def on_host? = !host || env[:base].host == host # unspecified or matching host
+    def on_path? = !path || env[:base].path == path # unspecified or matching path
 
     def offline? = ENV.has_key? 'OFFLINE'
 

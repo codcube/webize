@@ -52,10 +52,10 @@ module Webize
     def graph = URI.new split('#')[0]
 
     def local_id
-      if in_doc?
-        fragment || ''
+      if in_request_graph?
+        fragment
       else
-        'r' + Digest::SHA2.hexdigest(uri)
+        'r' + Digest::SHA2.hexdigest(to_s)
       end
     end
 
