@@ -182,7 +182,7 @@ module Webize
     end
   end
 
-  class POSIX::Node
+  module MIME
     # audio-file triples via taglib
     def audio_triples graph
       require 'taglib'
