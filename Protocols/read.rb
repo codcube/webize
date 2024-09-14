@@ -2,12 +2,12 @@ module Webize
   module MIME
 
     # local cache node URI -> data
-    def read
+    def readFS
       (File.open POSIX::Node(self).fsPath).read
     end
 
     # (MIME, data) -> RDF::Repository
-    def readRDF format = fileMIME, content = read
+    def readRDF format, content
       repository = RDF::Repository.new.extend Webize::Cache       # add repository behaviours to instance via #extend TODO subclass?
 
       case format                                                 # content type:TODO needless reads? stop media reads earlier
@@ -25,8 +25,8 @@ module Webize
           r = reader.new(content, base_uri: self){|_|repository << _} # read RDF
 
           # base URI can be updated by in-band declarations in document
-          puts [:req_base, env[:base], :doc_base, self, :base, r.base_uri].join " " unless self == r.base_uri
-          # repository << RDF::Statement.new(env[:base], RDF::URI(Contains), r.base_uri) unless env[:base] == r.base_uri # containment triple
+          #puts [:req_base, env[:base], :doc_base, self, :base, r.base_uri].join " " unless self == r.base_uri
+          repository << RDF::Statement.new(env[:base], RDF::URI(Contains), r.base_uri) unless env[:base] == r.base_uri # containment triple
 
           if r.respond_to?(:read_RDFa?) && r.read_RDFa? # read RDFa
             begin

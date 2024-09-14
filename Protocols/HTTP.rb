@@ -441,18 +441,10 @@ module Webize
                               env[:notransform] ||                         # (A → B) MIME transform and (A → A) intra-MIME reformat disabled by client
                                 format.match?(MIME::FixedFormat) ||        # (A → B) MIME transform disabled by server
       (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) intra-MIME reformat disabled by server
-
-      repos = (nodes || storage.nodes).map{|x|          # node(s) to fetch
-        if x.file?                                      # file?
-          x.file_triples x.readRDF#.persist env # fetch file + fs-metadata
-        elsif x.directory?                              # directory?
-          x.dir_triples RDF::Repository.new             # fetch directory metadata
-        end}
-
-      dirMeta                                           # 👉 container-adjacent nodes
-      timeMeta unless host                              # 👉 timeslice-adjacent nodes
-
-      respond repos                                     # response
+      repos = (nodes || storage.nodes).map &:read                          # read nodes
+      dirMeta                                                              # 👉 container-adjacent nodes
+      timeMeta unless host                                                 # 👉 timeslice-adjacent nodes
+      respond repos                                                        # response repository-set
     end
 
     def fetchRemote **opts
