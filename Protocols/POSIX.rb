@@ -1,207 +1,27 @@
 # coding: utf-8
-%w(fileutils pathname shellwords).map{|d| require d }
-module Webize
 
+# external dependencies
+%w(fileutils pathname shellwords).map{|d|
+  require d}
+
+# internal components
+%w(io names search).map{|s|
+  require_relative "POSIX/${s}.rb"}
+
+module Webize
   module POSIX
+
     def self.Node uri, env=nil
       env ? Node.new(uri).env(env) : Node.new(uri)
     end
-  end
-  class POSIX::Node < Resource
-    include MIME
-    HomePage = 'start/{bookmarks.u,homepage.🐢}'
 
-    def dirname = node.dirname
+    class Node < Resource
+      include MIME
 
-    def extension = File.extname realpath
-
-    # create containing dir(s) and return locator
-    def document
-      mkdir
-      doc = fsPath
-      if doc[-1] == '/' # dir/ -> dir/index
-        doc + 'index'
-      else              # file -> file
-        doc
+      def Node uri
+        POSIX::Node.new(uri).env env
       end
+
     end
-
-    def Node uri
-      POSIX::Node.new(uri).env env
-    end
-
-    # find filesystem nodes and map to URI space
-    # (URI, env) -> [URI, URI, ..]
-    def nodes
-      q = env[:qs]                                # query params
-      if directory?
-        if q['f'] && !q['f'].empty?               # FIND exact
-          find q['f']
-        elsif q['find'] && !q['find'].empty?      # FIND substring matches
-          find '*' + q['find'] + '*'
-        elsif q['q'] && !q['q'].empty?            # GREP
-          grep
-        elsif !host && path == '/'
-          (Pathname.glob Webize::ConfigRelPath.join(HomePage)).map{|n|
-            Node n }
-        elsif !dirURI?                            # LS dir
-          [self]                                  # minimal (no trailing-slash)
-        else                                      # detailed (trailing-slash)
-          [self,
-           *Node(join '{index,readme,README}*').glob] # directory index
-        end
-      elsif file?                                 # LS file
-        [self]
-      elsif fsPath.match? GlobChars               # GLOB
-        if q['q'] && !q['q'].empty?               # GREP inside GLOB
-          if (g = pathGlob).empty?
-            []
-          else
-            from_names pathGrep g[0..999]
-          end
-        else                                      # parametric GLOB
-          glob
-        end
-      else                                        # default set
-        from_names Pathname.glob fsPath + '.*'
-      end
-    end
-
-    # URI -> pathname
-    def fsPath
-      if !host                                ## local URI
-        if parts.empty?
-          %w(.)
-        elsif parts[0] == 'msg'                # Message-ID -> sharded containers
-          id = Digest::SHA2.hexdigest Rack::Utils.unescape_path parts[1]
-          ['mail', id[0..1], id[2..-1]]
-        else                                   # path map
-          parts.map{|part| Rack::Utils.unescape_path part}
-        end
-      else                                    ## global URI
-        [host.split('.').reverse,              # domain-name containers
-         if (path && path.size > 496) || parts.find{|p|p.size > 127}
-           hash = Digest::SHA2.hexdigest uri   # huge name, hash and shard
-           [hash[0..1], hash[2..-1]]
-         else                                  # query hash to basename in sibling file or directory child
-           (query ? Node(join dirURI? ? query_digest : [basename, query_digest, extname].join('.')) : self).parts.map{|part|
-             Rack::Utils.unescape_path part}   # path map
-         end,
-         (dirURI? && !query) ? '' : nil].      # preserve trailing slash on directory name
-          flatten.compact
-      end.join('/')
-    end
-
-    # create containing dir(s)
-    def mkdir
-      dir = cursor = dirURI? ? fsPath.sub(/\/$/,'') : File.dirname(fsPath) # strip slash from cursor (blocking filename doesn't have one)
-      until cursor == '.'                # cursor at root?
-        if File.file?(cursor) || File.symlink?(cursor)
-          FileUtils.rm cursor            # unlink file/link blocking location
-          puts '🧹 ' + cursor            # log fs-sweep
-        end
-        cursor = File.dirname cursor     # up to parent container
-      end
-      FileUtils.mkdir_p dir              # make container
-    end
-
-    def realpath
-      File.realpath fsPath
-    end
-
-    def write o
-      FileUtils.mkdir_p dirname
-      File.open(fsPath,'w'){|f| f << o }
-      self
-    end
-
-    # URI -> boolean
-
-    def directory? = node.directory?
-    def exist? = node.exist?
-    def file? = node.file?
-    def symlink? = node.symlink?
-
-    # URI -> [URI,URI..]
-
-    def find(q) = from_names pathFind q
-    def glob = from_names pathGlob
-    def grep = from_names pathGrep
-
-    # [path, path..] -> [URI, URI..]
-
-    def from_names ps
-      base = host ? self : RDF::URI('/')
-      pathbase = host ? host.size : 0
-      ps.map{|p|
-        Node base.join p.to_s[pathbase..-1].gsub(':','%3A').gsub(' ','%20').gsub('#','%23')}
-    end
-
-    def mtime = node.mtime
-
-    # URI -> Pathname
-
-    def node = Pathname.new fsPath
-
-    # URI -> [path,path..]
-
-    def pathFind(q) = (IO.popen(['find', fsPath, '-iname', q]).read.lines.map &:chomp rescue [])
-
-    def pathGlob = Pathname.glob fsPath
-
-    def pathGrep files = nil
-      files = [fsPath] if !files || files.empty?
-      q = env[:qs]['q'].to_s
-      return [] if q.empty?
-      IO.popen(['grep', '-ril', q, *files]).read.lines.map &:chomp rescue []
-    end
-
-    def readDir graph = RDF::Repository.new
-
-      # enforce trailing slash on directory URI
-      return Node(join basename + '/').readDir graph unless dirURI?
-
-      graph << RDF::Statement.new(env[:base], RDF::URI(Contains), self) unless self == env[:base] # provenance for non-canonical directory source
-      graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601) # directory timestamp
-      graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename   # directory name
-
-      (nodes = node.children).map{|child|                              # child nodes
-        name = child.basename.to_s                                     # node name
-        next if name[0] == '.'                                         # invisible child
-
-        contains = RDF::URI(child.directory? ? '#childDir' : '#entry') # containment property
-        c = Node join name.gsub(' ','%20').gsub('#','%23')             # child node
-
-        graph << RDF::Statement.new(c, RDF::URI(Title), name)
-
-        if nodes.size > 32 # alpha binning of large directories - TODO generic alpha binning in graph-summarizer
-          char = c.basename[0].downcase
-          bin = Node join char + '*'
-          graph << RDF::Statement.new(self, RDF::URI(Contains), bin)
-          graph << RDF::Statement.new(bin, RDF::URI(Title), char)
-          graph << RDF::Statement.new(bin, contains, c)  # directory entry in alpha-bin
-        else
-          graph << RDF::Statement.new(self, contains, c) # directory entry
-        end}
-
-      graph
-    end
-
-    def readFile
-      graph = readRDF fileMIME, readStorage # file data
-
-      # file metadata
-      stat = File.stat fsPath
-      graph << RDF::Statement.new(env[:base], RDF::URI('#source'), self) # source provenance
-      graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#File'))
-      graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename
-      graph << RDF::Statement.new(self, RDF::URI('http://www.w3.org/ns/posix/stat#size'), stat.size)
-      graph << RDF::Statement.new(self, RDF::URI(Date), stat.mtime.iso8601)
-
-      graph
-    end
-
-    def size = node.size
-
   end
 end

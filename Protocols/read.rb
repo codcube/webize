@@ -1,18 +1,6 @@
 module Webize
   module MIME
 
-    def read
-      if file?
-        readFile
-      elsif directory?
-        readDir
-      end
-    end
-
-    def readStorage
-      (File.open POSIX::Node(self).fsPath).read # TODO read from blob-store, mem-cache etc
-    end
-
     # (MIME, data) -> RDF::Repository
     def readRDF format, content
       repository = RDF::Repository.new.extend Webize::Cache       # add repository behaviours to instance via #extend TODO subclass?
