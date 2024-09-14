@@ -6,7 +6,6 @@ URI
 HTML.read
 HTML.write
 MIME
-POSIX
 Archive
 Audio
 Bookmarks

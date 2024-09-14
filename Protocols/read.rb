@@ -9,9 +9,8 @@ module Webize
       end
     end
 
-    # local cache node URI -> data
     def readStorage
-      (File.open POSIX::Node(self).fsPath).read
+      (File.open POSIX::Node(self).fsPath).read # TODO read from blob-store, mem-cache etc
     end
 
     # (MIME, data) -> RDF::Repository
