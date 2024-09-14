@@ -34,10 +34,10 @@ module Webize
 
           {_: :table, class: :tabular,       # table
            c: [({_: :thead,
-                 c: {_: :tr, c: keys.map{|p| # table heading
-                       p = Webize::URI(p)
+                 c: {_: :tr, c: keys.map{|k| # table heading
+                       p = Webize::URI(k)
                        slug = p.display_name
-                       icon = Icons[p.uri] || slug
+                       icon = Icons[p.uri] || slug unless k == 'uri'
                        [{_: :th,             # ☛ sorted columns
                          c: {_: :a, c: icon,
                              href: URI.qs(env[:qs].merge({'sort' => p.uri,

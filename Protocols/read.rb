@@ -8,7 +8,7 @@ module Webize
 
     # (MIME, data) -> RDF::Repository
     def readRDF format = fileMIME, content = read
-      repository = RDF::Repository.new.extend Webize::Cache
+      repository = RDF::Repository.new.extend Webize::Cache       # add repository behaviours to instance via #extend TODO subclass?
 
       case format                                                 # content type:TODO needless reads? stop media reads earlier
       when /octet.stream/                                         #  blob
@@ -24,7 +24,7 @@ module Webize
         if reader ||= RDF::Reader.for(content_type: format)       # find reader
           r = reader.new(content, base_uri: self){|_|repository << _} # read RDF
 
-          repository << RDF::Statement.new(env[:base], RDF::URI(Contains), r.base_uri) unless env[:base] == r.base_uri # containment triple
+         # repository << RDF::Statement.new(env[:base], RDF::URI(Contains), r.base_uri) unless env[:base] == r.base_uri # containment triple
 
           if r.respond_to?(:read_RDFa?) && r.read_RDFa? # read RDFa
             begin

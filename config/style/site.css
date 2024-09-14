@@ -24,10 +24,9 @@
 .quote > .quote > .quote {background-color: #777}
 .quote > .quote {background-color: #aaa}
 .redirectors, .referers {border: 1px dotted #888; border-radius: 0}
-.resource {border: 1px solid #333; border-radius: .62em; margin: .6em .1em .1em .1em}
-.title > .identifier {color: #000; background-color: #929292; border-radius: .3em}
-.title > span {background-color: #aaa; color: #000; margin: 0; font-size: 1.05em; border: 1px solid #555; border-radius: .4em .4em .2em .2em; padding: .05em}
-.title {display: block; margin: -.6em 0 0 0}
+.resource {border: 1px solid #333; border-radius: 0 .62em .62em .62em; margin: 1em .1em .1em .1em; vertical-align: top}
+.title > span {background-color: #aaa; color: #000; margin: 0; border: 1px solid #555; border-radius: .4em .4em .2em 0}
+.title {display: block; margin: -1em 0 0 -1px; padding: 0}
 .title:visited {background-color: #ccc; color: #000}
 .toolbox .path a {color: #ddd; font-weight: normal}
 .toolbox .path {color: #666}
@@ -56,7 +55,7 @@ a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
 a.local {background-color: #002}
 a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
 a.pointer {margin: 0; padding: 0; background-color: #000; border-radius: .5em; font-weight: normal; float: right}
-a.pointer:visited {background-color: #555}
+a.pointer:visited {background: repeating-linear-gradient(45deg, #555, #555 2px, #000 2px, #000 4px)}
 a.to {float: right; margin: 0}
 audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .original, .quote, .quote-text, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em; max-width: 80ex}
@@ -70,11 +69,10 @@ code {color: #000; background-color: #eee; padding: .1em}
 dd dd dd {max-width: 128em}
 dd dd {max-width: 256em}
 dd {display: table-cell; max-width: 384em; border-width: 0 0 1px 0; border-style: dotted; border-color: #222}
-div {border: 1px solid #33; border-radius: 8px}
 div, form, table, p {display: inline-block}
 dl > div {display: table-row}
 dl {display: table; border-radius: .8em}
-dt {display: table-cell; text-align: right}
+dt {display: table-cell; text-align: right; vertical-align: top}
 h1, h2, h3, h4, h5, h6 {border-radius: .4em}
 hr {margin: 1px 0 1px 0}
 img, video, table, td {max-width: 100%; border-radius: .4em}

@@ -134,7 +134,11 @@ module Webize
 
       def each_statement &fn
         list = @base + '#list'                                     # list URI
-        fn.call RDF::Statement.new @base, RDF::URI(Contains), list # point to list from doc base
+
+        # link list to request base
+        fn.call RDF::Statement.new @base.env[:base], RDF::URI(Contains), list
+        fn.call RDF::Statement.new list, RDF::URI(Title), @base.basename
+
         linkCount = 0                                              # stats
 
         @doc.lines.shuffle.map(&:chomp).map{|line| # each line:
