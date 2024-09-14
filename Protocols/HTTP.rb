@@ -441,9 +441,10 @@ module Webize
                               env[:notransform] ||                         # (A → B) MIME transform and (A → A) intra-MIME reformat disabled by client
                                 format.match?(MIME::FixedFormat) ||        # (A → B) MIME transform disabled by server
       (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) intra-MIME reformat disabled by server
-      repos = (nodes || storage.nodes).map &:read                          # read nodes
+      nodes ||= storage.nodes                                              # default node set if unspecified
+      repos = nodes.map &:read                                             # read node(s)
       dirMeta                                                              # 👉 container-adjacent nodes
-      timeMeta unless host                                                 # 👉 timeslice-adjacent nodes
+      timeMeta                                                             # 👉 timeslice-adjacent nodes
       respond repos                                                        # response repository-set
     end
 
@@ -705,6 +706,8 @@ module Webize
 
     # URI -> HTTP headers
     def timeMeta
+      return if host # some remote hosts have these dirs, but not enough to bother looking
+
       n = nil # next-page locator
       p = nil # prev-page locator
 
