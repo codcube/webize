@@ -55,12 +55,16 @@ module Webize
     end
 
     def readBlob
-      (File.open POSIX::Node(self).fsPath).read
+      (File.open POSIX::Node(self).fsPath).
+        read
     end
 
     def write o
-      FileUtils.mkdir_p dirname
-      File.open(fsPath,'w'){|f| f << o }
+      FileUtils.mkdir_p dirname # create containing dirs
+
+      File.open(fsPath,'w'){|f|
+        f << o }
+
       self
     end
 
