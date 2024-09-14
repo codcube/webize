@@ -70,10 +70,8 @@ code {color: #000; background-color: #eee; padding: .1em}
 dd dd dd {max-width: 128em}
 dd dd {max-width: 256em}
 dd {display: table-cell; max-width: 384em; border-width: 0 0 1px 0; border-style: dotted; border-color: #222}
-div, form, table, p {display: inline-block}
-dl > div {display: table-row}
-dl {display: table; border-radius: .8em}
-dt {display: table-cell; text-align: right; vertical-align: top}
+div, dl, form, ol, ul, table, p {display: inline-block}
+dt {text-align: right; vertical-align: top}
 h1, h2, h3, h4, h5, h6 {border-radius: .4em}
 hr {margin: 1px 0 1px 0}
 img, video, table, td {max-width: 100%; border-radius: .4em}

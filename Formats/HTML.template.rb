@@ -16,8 +16,8 @@ module Webize
 
         [{_: :dl,
           c: kv.map{|k, vs|
-            {c: [{_: :dt, c: property(Type, [k])}, "\n",
-                 {_: :dd, c: property(k, vs)}, "\n"]} unless skip.member? k
+            [{_: :dt, c: property(Type, [k])}, "\n",
+             {_: :dd, c: property(k, vs)}, "\n"] unless skip.member? k
           }},
          "\n"]
       end
