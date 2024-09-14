@@ -1,8 +1,16 @@
 module Webize
   module MIME
 
+    def read
+      if file?
+        readFile
+      elsif directory?
+        readDir
+      end
+    end
+
     # local cache node URI -> data
-    def readFS
+    def readStorage
       (File.open POSIX::Node(self).fsPath).read
     end
 

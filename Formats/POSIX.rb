@@ -3,10 +3,10 @@ module Webize
 
   class POSIX::Node < Resource
 
-    def dir_triples graph
+    def readDir graph = RDF::Repository.new
 
       # enforce trailing slash on directory URI
-      return Node(join basename + '/').dir_triples graph unless dirURI?
+      return Node(join basename + '/').readDir graph unless dirURI?
 
       graph << RDF::Statement.new(env[:base], RDF::URI(Contains), self) unless self == env[:base] # provenance for non-canonical directory source
       graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601) # directory timestamp
@@ -33,7 +33,7 @@ module Webize
       graph
     end
 
-    def file_triples graph
+    def file graph = RDF::Repository.new
       # provenance and naming
       graph << RDF::Statement.new(env[:base], RDF::URI('#source'), self) # source-graph reference
 
