@@ -4,10 +4,6 @@
 %w(fileutils pathname shellwords).map{|d|
   require d}
 
-# internal components
-%w(io names search).map{|s|
-  require_relative "POSIX/#{s}.rb"}
-
 module Webize
   module POSIX
 
@@ -27,3 +23,8 @@ module Webize
     end
   end
 end
+
+
+# components
+%w(io names search stat).map{|s|
+  require_relative "POSIX/#{s}.rb"}
