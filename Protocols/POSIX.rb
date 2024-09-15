@@ -6,11 +6,12 @@
 
 # internal components
 %w(io names search).map{|s|
-  require_relative "POSIX/${s}.rb"}
+  require_relative "POSIX/#{s}.rb"}
 
 module Webize
   module POSIX
 
+    # constructor - optional environment
     def self.Node uri, env=nil
       env ? Node.new(uri).env(env) : Node.new(uri)
     end
@@ -18,6 +19,7 @@ module Webize
     class Node < Resource
       include MIME
 
+      # constructor - existing environment context
       def Node uri
         POSIX::Node.new(uri).env env
       end
