@@ -122,13 +122,7 @@ module Webize
       head
     end
 
-    def linkHeader
-      return unless env.has_key? :links
-      env[:links].map{|type,uri|
-        "<#{uri}>; rel=#{type}"}.join(', ')
-    end
-
-    def link_icon
+    def icon
       return unless env[:links].has_key? :icon
       fav = POSIX::Node join '/favicon.ico'                                 # default location
       icon = env[:links][:icon] = POSIX::Node env[:links][:icon], env       # icon location
@@ -137,6 +131,12 @@ module Webize
         fav.mkdir                                                           # create container
         FileUtils.ln_s (icon.node.relative_path_from fav.dirname), fav.node # link icon to default location
       end
+    end
+
+    def linkHeader
+      return unless env.has_key? :links
+      env[:links].map{|type,uri|
+        "<#{uri}>; rel=#{type}"}.join(', ')
     end
 
     def normalize_charset c
