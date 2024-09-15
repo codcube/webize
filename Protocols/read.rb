@@ -19,24 +19,10 @@ module Webize
         if reader ||= RDF::Reader.for(content_type: format)       # find reader
           r = reader.new(content, base_uri: self){|_|repository << _} # read RDF
 
-          # note: base URI may update via in-document declarations
+          # base URI may be overriden by document declarations
           # reference non-canonical base from canonical base
           repository << RDF::Statement.new(env[:base], RDF::URI(Contains), r.base_uri) unless r.base_uri == self
 
-          if r.respond_to?(:read_RDFa?) && r.read_RDFa? # read RDFa
-            begin
-              RDF::RDFa::Reader.new(content, base_uri: self){|g|
-                g.each_statement{|statement|
-                  if predicate = Webize::MetaMap[statement.predicate.to_s]
-                    next if predicate == :drop
-                    statement.predicate = RDF::URI(predicate)
-                  end
-                  repository << statement
-                }}
-            rescue
-              (logger.debug "⚠️ RDFa::Reader failed on #{uri}")
-            end
-          end
         else
           logger.warn ["⚠️ no RDF reader for " , format].join # reader not found
         end
