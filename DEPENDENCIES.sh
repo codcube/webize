@@ -22,9 +22,9 @@ command -v xbps-install && sudo xbps-install -S base-devel libltdl-devel libress
 command -v bundle || gem install bundler
 bundle install && rm Gemfile.lock
 
-# bundle install may tell you it needs sudo, then if you use sudo, tell you to not install as root. so which it? we'll go with #2. put something like this in your shell .rc file:
-# export GEM_HOME="$(ruby -e 'puts Gem.user_dir')"
-# export PATH="$GEM_HOME/bin:$PATH"
+# bundle: install may tell you it needs sudo, then if you use sudo, tell you to not install as root. so which it? we'll go with #2. put something like this in your shell .rc file:
+#  export GEM_HOME="$(ruby -e 'puts Gem.user_dir')"
+#  export PATH="$GEM_HOME/bin:$PATH"
 
 # Nokogiri: if installed gem isn't working, say on bionic/musl libc (Termux/Alpine), ARM64/RISC-V architecture, or bleeding-edge git/dev-version Ruby, or especially the trifecta of these, there's some more things to try:
 # build nokogiri from source:
@@ -33,10 +33,11 @@ bundle install && rm Gemfile.lock
 # if this fails, try specifying the platform:
 #  gem install --platform aarch64-linux-musl nokogiri
 # if this throws ld errors, be sure gcompat is installed:
-#  gem install --platform aarch64-linux-musl nokogiri
+#  sudo apk add gcompat
 # if it's still not working, maybe there's a distro supplied version:
-#  gem install --platform aarch64-linux-musl nokogiri
-# if that one's not working, maybe ask on IRC or Issues tracker for help, with detailed diagnostic info from something like (if you managed to get some version installed):
+#  sudo apk add ruby-nokogiri
+# if that one's not working, maybe ask on IRC or issues tracker for help, with detailed diagnostic info from something like (if you managed to get some version installed):
 #  nokogiri -v
-# and of course info on bundler is useful too, maybe the entire Gemfile.lock
-#   bundle platform
+# some info on bundler may be useful too:
+#  bundle platform
+#  Gemfile.lock
