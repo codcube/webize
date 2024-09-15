@@ -25,7 +25,7 @@ bundle install && rm Gemfile.lock
 # bundle: install may tell you it needs sudo, then if you use sudo, tell you to not install as root. so which is it? we'll go with #2. put something like this in your shell .rc file:
 #  export GEM_HOME="$(ruby -e 'puts Gem.user_dir')"
 #  export PATH="$GEM_HOME/bin:$PATH"
-# well now you have ruby launching every time you open a shell, which is probably not what you want. you could hardcode it but that will break on every ruby update. maybe there's a way to to fiddle with files in /etc to make it default to user dir. Fedora apparently did it somehow
+# well now you have ruby launching every time you open a shell, which is probably not what you want. you could hardcode it but that will break on every ruby update. maybe there's a way to fiddle with files in /etc to make it default to user_dir. Fedora apparently did it somehow
 
 # Nokogiri: if installed gem isn't working, say on bionic/musl libc (Termux/Alpine), ARM64/RISC-V architecture, or bleeding-edge git/dev-version Ruby, or especially the trifecta of these, there's some more things to try:
 # build nokogiri from source:
