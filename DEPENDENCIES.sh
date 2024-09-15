@@ -22,6 +22,21 @@ command -v xbps-install && sudo xbps-install -S base-devel libltdl-devel libress
 command -v bundle || gem install bundler
 bundle install && rm Gemfile.lock
 
-# Nokogiri: if gems are broken on bionic/musl libc, ARM/RISC-V arch and/or bleeding-edge Ruby, build locally:
+# bundle install may tell you it needs sudo, then if you use sudo, tell you to not install as root. so which it? we'll go with #2. put something like this in your shell .rc file:
+# export GEM_HOME="$(ruby -e 'puts Gem.user_dir')"
+# export PATH="$GEM_HOME/bin:$PATH"
+
+# Nokogiri: if installed gem isn't working, say on bionic/musl libc (Termux/Alpine), ARM64/RISC-V architecture, or bleeding-edge git/dev-version Ruby, or especially the trifecta of these, there's some more things to try:
+# build nokogiri from source:
 #  gem uninstall nokogiri -a
 #  gem install --platform=ruby nokogiri -- --use-system-libraries
+# if this fails, try specifying the platform:
+#  gem install --platform aarch64-linux-musl nokogiri
+# if this throws ld errors, be sure gcompat is installed:
+#  gem install --platform aarch64-linux-musl nokogiri
+# if it's still not working, maybe there's a distro supplied version:
+#  gem install --platform aarch64-linux-musl nokogiri
+# if that one's not working, maybe ask on IRC or Issues tracker for help, with detailed diagnostic info from something like (if you managed to get some version installed):
+#  nokogiri -v
+# and of course info on bundler is useful too, maybe the entire Gemfile.lock
+#   bundle platform
