@@ -1,7 +1,10 @@
 # coding: utf-8
 
-# external dependencies
-%w(fileutils pathname shellwords).map{|d|
+# dependencies
+%w(
+fileutils
+pathname
+shellwords).map{|d|
   require d}
 
 module Webize
@@ -24,7 +27,10 @@ module Webize
   end
 end
 
-
 # components
-%w(io names search stat).map{|s|
+%w(
+io
+names
+search
+stat).map{|s|
   require_relative "POSIX/#{s}.rb"}
