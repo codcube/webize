@@ -19,9 +19,8 @@ module Webize
         if reader ||= RDF::Reader.for(content_type: format)       # find reader
           r = reader.new(content, base_uri: self){|_|repository << _} # read RDF
 
-          # base URI may change due to document declarations
-          repository << RDF::Statement.new(env[:base], RDF::URI(Contains), r.base_uri) unless r.base_uri == self # reference non-canonical base from canonical base
-          #puts [:req_base, env[:base], :doc_base, self, :base, r.base_uri].join " "
+          # note: base URI may change due to document declarations
+          repository << RDF::Statement.new(env[:base], RDF::URI(Contains), r.base_uri) unless r.base_uri == env[:base] # reference non-canonical base from canonical base
 
           if r.respond_to?(:read_RDFa?) && r.read_RDFa? # read RDFa
             begin
