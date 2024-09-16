@@ -146,9 +146,6 @@ rss rss.xml
             subject.query = nil if subject.query&.match?(/utm[^a-z]/)
             subject.fragment = nil if subject.fragment&.match?(/utm[^a-z]/)
 
-            #puts [@base.env[:base], subject].join "\t"
-            yield @base.env[:base], Contains, subject # containment triple
-
             # type tag
             yield subject, Type,
                   Webize::URI(if subject.host == 'www.youtube.com'
@@ -158,9 +155,6 @@ rss rss.xml
                           else
                             Post
                            end)
-
-            # addressee aka recipient aka destination. currently that means the blog itself
-            #yield subject, To, @base
 
             # media links
             inner.scan(reMedia){|e|
