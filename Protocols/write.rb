@@ -12,8 +12,13 @@ module Webize
         next unless g = graph.name     # named graph:
         g = POSIX::Node g              # graph URI
         f = [g.document, :🐢].join '.' # 🐢 location
-        next if File.exist? f          # cache hit (mint a new graph URI to store a new version)
-                                       # TODO automagic graph-version-URI minting and RDF indexing (with append-only URI lists)
+
+        if File.exist? f          # cache hit (mint a new graph URI to store a new version)
+          # TODO automagic graph-version-URI minting and RDF indexing (with append-only URI lists)
+          graph << RDF::Statement.new(env[:base], RDF::URI('#archive'), g)# link to existing content
+          next
+        end
+
         RDF::Writer.for(:turtle).open(f, base_uri: g, prefixes: Prefixes){|f|f << graph} # cache 🐢
 
         log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] # canonical location
@@ -44,6 +49,7 @@ module Webize
           end
         end
 
+        graph << RDF::Statement.new(env[:base], RDF::URI(Contains), g)# link update to graph
         graph << RDF::Statement.new(g, RDF::URI('#new'), true)# mark as updated
         Console.logger.info log.join ' '                      # log message
       }

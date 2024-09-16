@@ -9,19 +9,6 @@ module Webize
          c: as.map{|a| [(HTML.markup a, env), ' ']}}
       end
 
-      def buttons resources
-        [{_: :style, c: "a.button {background-color: ##{Digest::SHA2.hexdigest(uri)[0..5]}; color: white}"},
-
-         resources.map{|r|
-           uri = Webize::Resource r['uri'], env
-
-           {_: :a,
-            href: uri.href,
-            id: 'b' + Digest::SHA2.hexdigest(rand.to_s),
-            class: :button,
-            c: uri.display_name}}]
-      end
-
       def cache locations
         locations.map{|l|
           {_: :a, href: '/' + l.fsPath, c: :📦}}

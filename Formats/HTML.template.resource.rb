@@ -1,6 +1,23 @@
 module Webize
   module HTML
+    class Property
+
+      def buttons resources
+        [{_: :style, c: "a.button {background-color: ##{Digest::SHA2.hexdigest(uri)[0..5]}; color: white}"},
+
+         resources.map{|r|
+           uri = Webize::Resource r['uri'], env
+
+           {_: :a,
+            href: uri.href,
+            id: 'b' + Digest::SHA2.hexdigest(rand.to_s),
+            class: :button,
+            c: uri.display_name}}]
+      end
+
+    end
     class Node
+
       def resource r, type = :div
         name = type == :head ? :div : type        # node name
 
