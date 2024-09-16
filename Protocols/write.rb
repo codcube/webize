@@ -15,7 +15,7 @@ module Webize
 
         if File.exist? f          # cache hit (mint a new graph URI to store a new version)
           # TODO automagic graph-version-URI minting and RDF indexing (with append-only URI lists)
-          graph << RDF::Statement.new(env[:base], RDF::URI('#archive'), g)# link to existing content
+          graph << RDF::Statement.new(env[:base], RDF::URI('#archive'), g)# link to archived content
           next
         end
 
@@ -49,7 +49,7 @@ module Webize
           end
         end
 
-        graph << RDF::Statement.new(env[:base], RDF::URI(Contains), g)# link update to graph
+        graph << RDF::Statement.new(env[:base], RDF::URI(Contains), g)# link to updated content
         graph << RDF::Statement.new(g, RDF::URI('#new'), true)# mark as updated
         Console.logger.info log.join ' '                      # log message
       }
