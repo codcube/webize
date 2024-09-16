@@ -28,7 +28,7 @@ module Webize
     end
 
     # fetch resource and cache upstream/original and derived graph data
-    # much of this code deals with the mess in the wild with MIME/charset or other metadata often only inside the document,
+    # much of this code deals with the mess in the wild of MIME/charset and other metadata only available inside the document,
     # rather than HTTP headers, requiring readahead sniffing. add some normalizing of name symbols to be what's in Ruby's list,
     # fix erroneous MIMEs and file extensions that won't map back to the right MIME if stored at upstream-supplied path, and work with
     # the slightly odd choice of exception-handler flow being used for common HTTP Response statuses, while supporting conneg-unaware clients/servers,
@@ -37,7 +37,7 @@ module Webize
 
     URI_OPEN_OPTS = {open_timeout: 16,
                      read_timeout: 32,
-                     redirect: false} # don't have HTTP library invisibly follow redirects. we use this data to make clients/servers/proxies relocation-aware
+                     redirect: false} # don't invisibly follow redirects in HTTP-library code, return this data to us and clients/proxies so they can update URL bars, source links on 301s etc
 
     def fetchHTTP thru: true                                           # thread origin HTTP response through to caller?
       start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
