@@ -214,7 +214,7 @@ module Webize
     # fetch URIs from uri-list
     def uris
       return [] unless extname == '.u'
-      readRDF.query(RDF::Query::Pattern.new :s, RDF::URI(Contains), :o).objects
+      storage.read.query(RDF::Query::Pattern.new :s, RDF::URI('#graph'), :o).objects
     end
 
   end
