@@ -17,12 +17,14 @@ module Webize
         repository << RDF::Statement.new(self, RDF::URI(Title), basename)
       else
         if reader ||= RDF::Reader.for(content_type: format)       # find reader
-          r = reader.new(content, base_uri: self){|_|repository << _} # read RDF
+          r = reader.new(content, base_uri: env[:base]){|_|       # create reader
+            repository << _} # read RDF
 
           # base URI may be overriden by document declarations
-          # reference non-canonical base from canonical base
-          repository << RDF::Statement.new(env[:base], RDF::URI(Contains), r.base_uri) unless r.base_uri == self
-
+          if env[:base] != r.base_uri
+            # reference non-canonical base from canonical base
+            repository << RDF::Statement.new(env[:base], RDF::URI(Contains), r.base_uri)
+          end
         else
           logger.warn ["⚠️ no RDF reader for " , format].join # reader not found
         end
