@@ -55,8 +55,8 @@ a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
 a.local {background-color: #002}
 a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
-a.pointer {margin: 0; padding: 0; background-color: #000; border-radius: .5em; font-weight: normal; float: right}
-a.pointer:visited {background-color: #335}
+a.pointer {margin: 0; padding: 0; border: 1px solid #000; border-radius: .5em; font-weight: normal; float: right}
+a.pointer:visited {border-color: #aaf}
 a.to {float: right; margin: 0}
 audio {width: 80ex; float: right}
 blockquote, blockquote > p, .greentext, .original, .quote, .quote-text, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em; max-width: 80ex}

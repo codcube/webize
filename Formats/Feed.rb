@@ -160,7 +160,7 @@ rss rss.xml
                            end)
 
             # addressee aka recipient aka destination. currently that means the blog itself
-            yield subject, To, @base
+            #yield subject, To, @base
 
             # media links
             inner.scan(reMedia){|e|
