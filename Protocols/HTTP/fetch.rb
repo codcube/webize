@@ -120,6 +120,7 @@ module Webize
       raise unless e.respond_to?(:io) && e.io.respond_to?(:status) # raise non-HTTP-response errors
       status = e.io.status[0].to_i                          # status
       repository ||= RDF::Repository.new
+      repository << RDF::Statement.new(env[:base], RDF::URI('#source'), self) # source provenance
       repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) # HTTP status in RDF
       head = headers e.io.meta                              # headers
       case status.to_s
