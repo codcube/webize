@@ -23,6 +23,7 @@ module Webize
       def index_table(nodes) = table nodes, skip: [Contains]
 
       def table graph, skip: []
+        graph = graph.select{|g| g.respond_to? :keys}
         case graph.size
         when 0 # empty
           nil
