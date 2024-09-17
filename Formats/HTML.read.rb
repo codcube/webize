@@ -179,12 +179,17 @@ module Webize
                 when RelURI # URI string -> RDF::URI
                   o = Webize::Resource(@base.join(o), @env).relocate
                 when JSON::Array
-                  ::JSON.parse(o).map{|e|
-                    yield subject, p, e if e}
-                  o = nil
+                  begin
+                    ::JSON.parse(o).map{|e|
+                      yield subject, p, e if e}
+                    o = nil
+                  rescue
+                    puts "not a JSON array: #{o}"
+                  end
                 when JSON::Outer # webize JSON in value field
                   o = JSON::Reader.new(o, base_uri: @base).scan_node &f rescue o
                 end
+
                 o = @base.join o if p == Link && o.class == String
 
                 yield subject, p, o if o
