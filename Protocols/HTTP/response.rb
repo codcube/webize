@@ -123,13 +123,6 @@ module Webize
         'Last-Modified' => Time.now.httpdate,
         'Link' => linkHeader},
 
-       # graph stats
-       # count = out.size
-       # out << RDF::Statement.new(dataset, RDF::URI(Size), count) unless count == 0                                # dataset size (triples)
-       # if newest = query(timestamp).objects.sort[-1]                                                              # dataset timestamp
-       #   out << RDF::Statement.new(dataset, RDF::URI(Date), newest)
-       # end
-
        # body
        head? ? nil : [if writer = RDF::Writer.for(content_type: format)
                       writer.buffer(base_uri: self,
