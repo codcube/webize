@@ -113,22 +113,26 @@ module Webize
 
     def GET
       return hostGET if host                  # remote node
-      ps = parts                              # parse path
-      p = ps[0]                               # find first node in path
+
+      ps = parts                              # path nodes
+      p = ps[0]                               # first node
+
       return fetchLocal unless p              # local node - empty or root path
       return unproxy.hostGET if p[-1] == ':' && ps.size > 1        # remote node - proxy URI with scheme
       return unproxy.hostGET if p.index('.') && p != 'favicon.ico' # remote node - proxy URI sans scheme
       return dateDir if %w{m d h y}.member? p # current year/month/day/hour container
       return block parts[1] if p == 'block'   # block domain
       return redirect '/d?f=msg*' if path == '/mail' # email inbox
+
       if extname == '.u'                      # URI list
         case query
         when 'fetch'
           return fetch uris                   # remote node(s)
         when 'load'
-          return fetchLocal nodes             # cached node(s)
+          return fetchLocal uris              # cached node(s)
         end
       end
+
       fetchLocal                              # local node(s)
     end
 
