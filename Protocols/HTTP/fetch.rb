@@ -98,7 +98,7 @@ module Webize
             FileUtils.touch doc, mtime: mtime if mtime
           end
 
-          repository = (readRDF format, body).persist(env, summarize: !thru)      # read RDF and update cache
+          repository = (readRDF format, body).persist(env, summarize: false)      # read RDF and update cache
           repository << RDF::Statement.new(env[:base], RDF::URI('#source'), self) # source provenance
           repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) # HTTP status in RDF
           repository << RDF::Statement.new(self, RDF::URI('#format'), format) # format
