@@ -99,6 +99,7 @@ module Webize
           end
 
           repository = (readRDF format, body).persist env               # read RDF and update cache
+          repository << RDF::Statement.new(env[:base], RDF::URI('#source'), self) # source provenance
           repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) unless status==200 # HTTP status in RDF
           repository << RDF::Statement.new(self, RDF::URI('#format'), format) # format
           repository << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch time (wall clock)
