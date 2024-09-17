@@ -41,15 +41,20 @@ module Webize
     end
 
     def readFile
-      graph = readRDF fileMIME, readBlob # file data
+      graph = readRDF fileMIME, readBlob # read and parse stored data
 
-      # file metadata
+      # storage metadata
       stat = File.stat fsPath
       graph << RDF::Statement.new(env[:base], RDF::URI('#source'), self) # source provenance
       graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#File'))
       graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename
       graph << RDF::Statement.new(self, RDF::URI('http://www.w3.org/ns/posix/stat#size'), stat.size)
       graph << RDF::Statement.new(self, RDF::URI(Date), stat.mtime.iso8601)
+
+      # graph metadata
+      graph.each_graph{|g| # graph containment triple
+        next unless g.name
+        graph << RDF::Statement.new(env[:base], RDF::URI(Contains), g.name)}
 
       graph
     end
