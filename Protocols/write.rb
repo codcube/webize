@@ -1,7 +1,8 @@
 module Webize
   module Cache
 
-     def persist env # Repository -> 🐢(s)
+    # Repository -> 🐢(s)
+     def persist env, summarize: false
                                                           # query pattern for:
       timestamp = RDF::Query::Pattern.new :s, RDF::URI(Date), :o  # timestamp
       creator = RDF::Query::Pattern.new :s, RDF::URI(Creator), :o # sender
@@ -49,7 +50,7 @@ module Webize
           end
         end
 
-        graph << RDF::Statement.new(env[:base], RDF::URI(Contains), g)# link to updated content
+        graph << RDF::Statement.new(env[:base], RDF::URI(summarize ? '#entry' : Contains), g)# link to updated content
         graph << RDF::Statement.new(g, RDF::URI('#new'), true)# mark as updated
         Console.logger.info log.join ' '                      # log message
       }

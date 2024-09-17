@@ -20,7 +20,7 @@ module Webize
       end
 
       # table of nodes without inlining contained/child nodes - useful for directories etc where child-node data is loaded and points back to parent, leading to large, even infinite(!) tables. one way to stop recursion before it hits the toplevel loop-detector in #markup
-      def index_table(nodes) = table nodes, skip: [Contains]
+      def index_table(nodes) = table nodes, skip: [Abstract, Contains, Content]
 
       def table graph, skip: []
         graph = graph.select{|g| g.respond_to? :keys}
