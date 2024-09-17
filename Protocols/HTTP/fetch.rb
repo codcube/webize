@@ -129,6 +129,7 @@ module Webize
           logger.warn "➡️ #{uri} → #{location}"
           env[:warnings].push [{_: :a, href: href, c: uri}, '➡️',
                                {_: :a, href: dest.href, c: dest.uri}, '<br>']
+          repository
         elsif no_scheme == dest.no_scheme
           if scheme == 'https' && dest.scheme == 'http'     # 🔒downgrade redirect
             logger.warn "🛑 downgrade redirect #{dest}"
