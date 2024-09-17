@@ -56,7 +56,8 @@ module Webize
     end
     class Node
 
-      TabularChild = %w(head ol ul) # display children of these node types in tabular format
+      # display children of these node types in tabular format
+      TabularChild = %w(form head ol ul select)
 
     end
   end
