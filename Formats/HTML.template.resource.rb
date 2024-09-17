@@ -19,7 +19,9 @@ module Webize
     class Node
 
       def resource r, type = :div
-        name = type == :head ? :div : type        # node name
+                                                 # node name
+        name = [:form, :head, :select].
+                 member?(type) ? :div : type
 
         if uri = r['uri']                         # identified node:
           uri = Webize::Resource(uri, env)        # URI

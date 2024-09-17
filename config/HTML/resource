@@ -1,4 +1,5 @@
 http://mw.logbook.am/webize/Node#a a
+http://mw.logbook.am/webize/Node#form form
 http://mw.logbook.am/webize/Node#h1 h1
 http://mw.logbook.am/webize/Node#h2 h2
 http://mw.logbook.am/webize/Node#h3 h3
@@ -9,6 +10,7 @@ http://mw.logbook.am/webize/Node#head head
 http://mw.logbook.am/webize/Node#li li
 http://mw.logbook.am/webize/Node#ol ol
 http://mw.logbook.am/webize/Node#p p
+http://mw.logbook.am/webize/Node#select select
 http://mw.logbook.am/webize/Node#table table
 http://mw.logbook.am/webize/Node#td td
 http://mw.logbook.am/webize/Node#tfoot tfoot
