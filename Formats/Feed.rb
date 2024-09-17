@@ -83,7 +83,7 @@ rss rss.xml
         send(*f){|s,p,o|
           p = MetaMap[p] if MetaMap.has_key? p # map to predicate URI
           o = Webize.date o if p.to_s == Date  # normalize date format
-          o = o.relocate if o.class == Webize::URI && o.relocate? # relocate object URI
+          o = Webize::Resource(o, @base.env).relocate if o.class == Webize::URI && o.relocate? # relocate object URI
           unless p == :drop
             logger.warn ['no RDF predicate found:', p, o].join ' ' unless p.match? /^https?:/
             yield s, p, o
