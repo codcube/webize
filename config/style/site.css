@@ -57,8 +57,8 @@ a.pointer {margin: 0; padding: 0; border: 1px solid #000; border-radius: .5em; f
 a.pointer:visited {border-color: #aaf}
 a.to {float: right; margin: 0}
 audio {width: 80ex; float: right}
-blockquote {border-radius: .4em; margin: 2px 2px 2px 12px}
-blockquote::before {content: '❝'; color: #aaa; margin-left: -12px}
+blockquote {border-radius: .4em; margin: 2px 2px 2px 12px; border: .1em solid #aaa; background-color: #282828; color: #fff}
+blockquote::before {content: '❝'; color: #aaa; margin-left: -14px; font-size: 1.5em}
 body {font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans; padding: 0; margin: 0}
 body, cite, dfn, figcaption, h1, h2, h3, h4, h5, h6, p, pre, span {background-color: #000; color: #fff}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
@@ -81,11 +81,10 @@ pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, dl, h1, h2, h3, h4, h5, h6, img {margin: 0}
 span.quote > .quote > .quote {background-color: #777}
 span.quote > .quote {background-color: #aaa}
-span.quote {border-radius: .1em .4em .4em .1em; padding-left: .25em; max-width: 80ex}
-span.quote, blockquote {background-color: #ccc; color: #000}
+span.quote {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em; max-width: 80ex}
 span.quote::before {content: '>'; float: left}
 svg, img[src*="svg"] {background-color: #fff; color: #000; min-width: 64px; max-width: 256px; max-height: 256px}
-table {border-spacing: 1px; border: 1px dotted pink}
+table {border-spacing: 1px; border: 1px solid #444}
 table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 0; border-style: dotted}
 table.tabular {border: 1px dotted #555}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0}
