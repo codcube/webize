@@ -18,13 +18,19 @@ module Webize
     end
     class Node
 
-      # add a resource identifier if necessary
-      def identifiedResource r, type
-        unless r['uri']
-          r['uri'] = '#r_' + Digest::SHA2.hexdigest(rand.to_s)
+      # strip typetag from resource  TODO strip more? e.g. attrs causing dl inside elements where block content isn't allowed (typetag is most common case of this)
+      def bareResource re, type
+        re.delete Type # typetag denoted w/ CSS ::before
+        resource re, type
+      end
+
+      # add an identifier if nonexistent
+      def identifiedResource re, type
+        unless re['uri']
+          re['uri'] = '#r_' + Digest::SHA2.hexdigest(rand.to_s)
         end
-        r.delete Type # typetag denoted in HTML with CSS ::before
-        resource r, type
+        re.delete Type # typetag denoted w/ CSS ::before
+        resource re, type
       end
 
       def resource r, type = :div

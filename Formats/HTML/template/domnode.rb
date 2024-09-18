@@ -20,21 +20,25 @@ module Webize
       def h6(node) = resource node, :h6
 
       # table elements
-      def table(node) = resource node, :table
-      def thead(node) = resource node, :thead
-      def tfoot(node) = resource node, :tfoot
-      def th(node) = resource node, :th
-      def tr(node) = resource node, :tr
-      def td(node) = resource node, :td
+      def table(node) = bareResource node, :table
+      def thead(node) = bareResource node, :thead
+      def tbody(node) = bareResource node, :tbody
+      def tfoot(node) = bareResource node, :tfoot
+      def th(node) = bareResource node, :th
+      def tr(node) = bareResource node, :tr
+      def td(node) = bareResource node, :td
 
       # form elements
       def form(node) = resource node, :form
       def select(node) = resource node, :select
 
-      # text blocks
+      # text elements
+      def b(node) = bareResource node, :b
       def blockquote(node) = identifiedResource node, :blockquote
       def cite(node) = identifiedResource node, :cite
+      def em(node) = bareResource node, :em
       def p(node) = identifiedResource node, :p
+      def strong(node) = bareResource node, :strong
 
       # anchor
       def a _
