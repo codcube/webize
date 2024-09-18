@@ -2,15 +2,6 @@ module Webize
   module HTML
     class Node
 
-      # basic DOM nodes - parameterize generic renderer with name
-
-      def head(node) = resource node, :head
-
-      # list elements
-      def ul(node) = resource node, :ul
-      def ol(node) = resource node, :ol
-      def li(node) = resource node, :li
-
       # headings
       def h1(node) = resource node, :h1
       def h2(node) = resource node, :h2
@@ -18,15 +9,6 @@ module Webize
       def h4(node) = resource node, :h4
       def h5(node) = resource node, :h5
       def h6(node) = resource node, :h6
-
-      # table elements
-      def table(node) = bareResource node, :table
-      def thead(node) = bareResource node, :thead
-      def tbody(node) = bareResource node, :tbody
-      def tfoot(node) = bareResource node, :tfoot
-      def th(node) = bareResource node, :th
-      def tr(node) = bareResource node, :tr
-      def td(node) = bareResource node, :td
 
       # form elements
       def form(node) = resource node, :form

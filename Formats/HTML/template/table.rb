@@ -60,6 +60,20 @@ module Webize
       # display children of these node types in tabular format
       TabularChild = %w(form head ol ul select)
 
+      # list elements
+      def ul(node) = resource node, :ul
+      def ol(node) = resource node, :ol
+      def li(node) = resource node, :li
+
+      # table elements
+      def table(node) = bareResource node, :table
+      def thead(node) = bareResource node, :thead
+      def tbody(node) = bareResource node, :tbody
+      def tfoot(node) = bareResource node, :tfoot
+      def th(node) = bareResource node, :th
+      def tr(node) = bareResource node, :tr
+      def td(node) = bareResource node, :td
+
     end
   end
 end

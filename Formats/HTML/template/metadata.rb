@@ -1,5 +1,10 @@
 module Webize
   module HTML
+    class Node
+
+      def head(node) = resource node, :head
+
+    end
     class Property
 
       # property-markup methods
