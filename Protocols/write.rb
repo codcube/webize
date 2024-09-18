@@ -12,7 +12,8 @@ module Webize
       each_graph.map{|graph|           # for each
         next unless g = graph.name     # named graph:
         g = POSIX::Node g              # graph URI
-        f = [g.document, :🐢].join '.' # 🐢 location
+        docBase = g.document           # document path
+        f = [docBase, :🐢].join '.' # 🐢 location
 
         if File.exist? f          # cache hit (mint a new graph URI to store a new version)
           # TODO automagic graph-version-URI minting and RDF indexing (with append-only URI lists)
@@ -20,11 +21,20 @@ module Webize
           next
         end
 
-        RDF::Writer.for(:turtle).
+        RDF::Writer.for(:turtle).                      # graph -> 🐢
           open(f, base_uri: g, prefixes: Prefixes){|f|
-          f << graph} # cache 🐢
-        summary = RDF::Graph.new
-        summaryDoc = [g.document, :abstract, :🐢].join '.' # summary-🐢 location
+          f << graph}
+
+        summary = RDF::Graph.new                       # summary graph
+        graph.each_statement{|s|
+          next unless [Creator, Date, Image, Link, To, Title, Video].member? s.predicate.to_s
+          summary << s}
+
+        summaryDoc = [docBase, :summary, :🐢].join '.' # summary 🐢 location
+
+        RDF::Writer.for(:turtle).                      # summary -> 🐢
+          open(summaryDoc, base_uri: g, prefixes: Prefixes){|f|
+          f << summary}
 
         log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] # canonical location
 
