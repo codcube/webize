@@ -188,7 +188,7 @@ module Webize
         end
       when Hash
 
-        void = [:img, :input, :link, :meta].member? x[:_]
+        void = [:br, :hr, :img, :input, :link, :meta].member? x[:_]
 
         '<' + (x[:_] || 'div').to_s +                        # open tag
           (x.keys - [:_,:c]).map{|a|                         # attr name
