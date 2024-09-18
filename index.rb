@@ -3,8 +3,7 @@ require 'linkeddata'
 {Formats: %w(
 Config
 URI
-HTML.read
-HTML.write
+HTML
 MIME
 Archive
 Audio
