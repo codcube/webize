@@ -1,4 +1,9 @@
 module Webize
+  class Resource
+
+    def read = storage.read
+
+  end
   class POSIX::Node
 
     def read

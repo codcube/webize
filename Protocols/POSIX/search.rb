@@ -58,5 +58,15 @@ module Webize
       IO.popen(['grep', '-ril', q, *files]).read.lines.map &:chomp rescue []
     end
 
+    # find URIs in uri-list resource
+    def uris
+      return [] unless extname == '.u'
+      pattern = RDF::Query::Pattern.new :s, RDF::URI('#graph'), :o
+
+      storage.read.query(pattern).objects.map do |o|
+        Webize::Resource o, env
+      end
+    end
+
   end
 end

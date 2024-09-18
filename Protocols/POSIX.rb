@@ -25,6 +25,13 @@ module Webize
 
     end
   end
+
+  class Resource
+
+    def storage = POSIX::Node self, env
+
+  end
+
 end
 
 # components

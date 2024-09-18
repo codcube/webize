@@ -217,15 +217,6 @@ module Webize
 
       opts[:thru] == false ? repository : notfound
     end
-
-    def storage = POSIX::Node self, env
-
-    # fetch URIs from uri-list
-    def uris
-      return [] unless extname == '.u'
-      storage.read.query(RDF::Query::Pattern.new :s, RDF::URI('#graph'), :o).objects
-    end
-
   end
 end
 
