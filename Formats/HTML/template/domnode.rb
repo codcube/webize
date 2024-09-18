@@ -31,6 +31,11 @@ module Webize
       def form(node) = resource node, :form
       def select(node) = resource node, :select
 
+      # text blocks
+      def blockquote(node) = identifiedResource node, :blockquote
+      def cite(node) = identifiedResource node, :cite
+      def p(node) = identifiedResource node, :p
+
       # anchor
       def a _
         _.delete Type
@@ -56,15 +61,6 @@ module Webize
             c: [title, content,
                 {_: :span, class: :uri, c: CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '')}]},
            attrs]} if links
-      end
-
-      # paragraph
-      def p para
-        unless para['uri']
-          para['uri'] = '#p_' + Digest::SHA2.hexdigest(rand.to_s)
-        end
-        para.delete Type # hide typetag, use CSS ::before to denote ¶
-        resource para, :p
       end
 
     end

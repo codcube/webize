@@ -18,6 +18,15 @@ module Webize
     end
     class Node
 
+      # add a resource identifier if necessary
+      def identifiedResource r, type
+        unless r['uri']
+          r['uri'] = '#r_' + Digest::SHA2.hexdigest(rand.to_s)
+        end
+        r.delete Type # typetag denoted in HTML with CSS ::before
+        resource r, type
+      end
+
       def resource r, type = :div
                                                  # node name
         name = [:form, :head, :select].

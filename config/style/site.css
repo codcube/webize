@@ -21,8 +21,6 @@
 .name {background-color: #888; color: #000; font-size: .8em; vertical-align: top}
 .preembed .icon {position: absolute; left: 45%; top: 32%; font-size: 8em; color: #f00}
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
-.quote > .quote > .quote {background-color: #777}
-.quote > .quote {background-color: #aaa}
 .redirectors, .referers {border: 1px dotted #888; border-radius: 0}
 .resource {border: 1px solid #333; border-radius: 0 .62em .62em .62em; margin: 1em .1em .1em .1em; vertical-align: top}
 .title > span {background-color: #aaa; color: #000; margin: 0; border: 1px solid #555; border-radius: .4em .4em .2em 0}
@@ -59,13 +57,15 @@ a.pointer {margin: 0; padding: 0; border: 1px solid #000; border-radius: .5em; f
 a.pointer:visited {border-color: #aaf}
 a.to {float: right; margin: 0}
 audio {width: 80ex; float: right}
-blockquote, blockquote > p, .greentext, .original, .quote, .quote-text, .q, .QuotedText {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em; max-width: 80ex}
-blockquote::before, .quote::before {content: '>'; float: left}
+blockquote {border-radius: .4em; margin: 2px 2px 2px 12px}
+blockquote::before {content: '❝'; color: #aaa; margin-left: -12px}
 body {font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans; padding: 0; margin: 0}
 body, cite, dfn, figcaption, h1, h2, h3, h4, h5, h6, p, pre, span {background-color: #000; color: #fff}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
+cite {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
+cite::before {content: '📚'; color: #666; margin-left: -12px}
 code {color: #000; background-color: #eee; padding: .1em}
 dd {border-width: 0 0 1px 0; border-style: dotted; border-color: #222}
 div, dl, form, ol, ul, table, p {display: inline-block}
@@ -78,7 +78,12 @@ li:nth-child(odd) {background-color: #222; color: #fff}
 p {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
 p::before {content: '¶'; color: #666; margin-left: -12px}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
-pre, ul, ol, blockquote, dl, h1, h2, h3, h4, h5, h6, img {margin: 0}
+pre, ul, ol, dl, h1, h2, h3, h4, h5, h6, img {margin: 0}
+span.quote > .quote > .quote {background-color: #777}
+span.quote > .quote {background-color: #aaa}
+span.quote {border-radius: .1em .4em .4em .1em; padding-left: .25em; max-width: 80ex}
+span.quote, blockquote {background-color: #ccc; color: #000}
+span.quote::before {content: '>'; float: left}
 svg, img[src*="svg"] {background-color: #fff; color: #000; min-width: 64px; max-width: 256px; max-height: 256px}
 table {border-spacing: 1px; border: 1px dotted pink}
 table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 0; border-style: dotted}

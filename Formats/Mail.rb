@@ -148,7 +148,7 @@ module Webize
           if p.main_type == 'image'           # image attachments
             yield mail, Image, file, graph    # image link in RDF
             yield mail, Contains,             # image link in HTML
-                  HTML.render({_: :a, href: file.uri, c: [{_: :img, src: file.uri}, p.filename]}), graph # render HTML
+                  RDF::Literal(HTML.render({_: :a, href: file.uri, c: [{_: :img, src: file.uri}, p.filename]}), datatype: RDF.HTML), graph # render HTML
           end }
 
         yield mail, SIOC+'user_agent', m['X-Mailer'].to_s, graph if m['X-Mailer']
