@@ -58,6 +58,9 @@ module Webize
       IO.popen(['grep', '-ril', q, *files]).read.lines.map &:chomp rescue []
     end
 
+  end
+  class Resource
+
     # find URIs in uri-list resource
     def uris
       return [] unless extname == '.u'
