@@ -3,9 +3,9 @@ module Webize
 
     # URI -> [URI,URI..]
 
-    def find(q) = from_names pathFind q
-    def glob = from_names pathGlob
-    def grep = from_names pathGrep
+    def find(q) = fromNames pathFind q
+    def glob = fromNames pathGlob
+    def grep = fromNames pathGrep
 
 
     # find filesystem nodes and map to URI space
@@ -35,13 +35,13 @@ module Webize
           if (g = pathGlob).empty?
             []
           else
-            from_names pathGrep g[0..999]
+            fromNames pathGrep g[0..999]
           end
         else                                      # parametric GLOB
           glob
         end
       else                                        # default set
-        from_names Pathname.glob fsPath + '.*'
+        fromNames Pathname.glob fsPath + '.*'
       end
     end
 

@@ -19,7 +19,7 @@ module Webize
     def extension = File.extname realpath
 
     # [pathname, ..] -> [URI, ..]
-    def from_names ps
+    def fromNames ps
       base = host ? self : RDF::URI('/')
       pathbase = host ? host.size : 0
       ps.map{|p|
