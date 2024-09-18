@@ -20,7 +20,7 @@ module Webize
 
       EmptyText = /\A[\n\t\s]+\Z/
       SRCSET = /\s*(\S+)\s+([^,]+),*/
-      StripTags = /<\/?(br|em|font|hr|nobr|noscript|span|wbr)[^>]*>/i
+      StripTags = /<\/?(font|noscript)[^>]*>/i
       StyleAttr = /^on|border|color|style|theme/i
 
       def initialize(input = $stdin, options = {}, &block)

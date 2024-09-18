@@ -1,6 +1,7 @@
 http://mw.logbook.am/webize/Node#a a
 http://mw.logbook.am/webize/Node#b b
 http://mw.logbook.am/webize/Node#blockquote blockquote
+http://mw.logbook.am/webize/Node#br br
 http://mw.logbook.am/webize/Node#cite cite
 http://mw.logbook.am/webize/Node#div div
 http://mw.logbook.am/webize/Node#em em
@@ -12,6 +13,7 @@ http://mw.logbook.am/webize/Node#h4 h4
 http://mw.logbook.am/webize/Node#h5 h5
 http://mw.logbook.am/webize/Node#h6 h6
 http://mw.logbook.am/webize/Node#head head
+http://mw.logbook.am/webize/Node#hr hr
 http://mw.logbook.am/webize/Node#li li
 http://mw.logbook.am/webize/Node#ol ol
 http://mw.logbook.am/webize/Node#p p

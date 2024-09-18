@@ -2,6 +2,10 @@ module Webize
   module HTML
     class Node
 
+      # page breaks
+      def br(node) = bareResource node, :br
+      def hr(node) = bareResource node, :hr
+
       # headings
       def h1(node) = resource node, :h1
       def h2(node) = resource node, :h2
