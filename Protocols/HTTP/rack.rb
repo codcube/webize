@@ -126,16 +126,18 @@ module Webize
       return block parts[1] if p == 'block'   # block domain
       return redirect '/d?f=msg*' if path == '/mail' # email
 
-      if extname == '.u'         # URI list
+      if extname == '.u' # URI list
         case query
-        when 'fetch'
-          return fetch uris      # remote node(s)
-        when 'load'
-          return fetchLocal uris # cached node(s)
+        when 'fetch'     # remote node(s)
+          return fetch uris
+        when 'list'      # node list
+          return fetchLocal uris.map &:preview
+        when 'load'      # cached node(s)
+          return fetchLocal uris
         end
       end
 
-      fetchLocal                 # local node(s)
+      fetchLocal         # local node(s)
     end
 
     def OPTIONS
