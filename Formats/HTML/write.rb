@@ -207,6 +207,3 @@ module Webize
     end
   end
 end
-
-# built-in writer templates (pure Ruby, no additional template language)
-require_relative 'HTML.template.rb'
