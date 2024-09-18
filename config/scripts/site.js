@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function(){
     var first = null;
     var last = null;
     // make resources, anchors and paragraphs traversible via keyboard-nav
-    document.querySelectorAll('.resource[id], a[id], p[id]').map(function(e){
+    document.querySelectorAll('.resource[id], a[id], br[id], p[id]').map(function(e){
 	if(!first)     // first node
 	    first = this;	
 	if(last){      // link to previous node

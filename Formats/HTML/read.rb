@@ -21,7 +21,7 @@ module Webize
       EmptyText = /\A[\n\t\s]+\Z/
       SRCSET = /\s*(\S+)\s+([^,]+),*/
       StripTags = /<\/?(font|noscript)[^>]*>/i
-      StyleAttr = /^on|border|color|style|theme/i
+      StyleAttr = /^on|border|color|dir|style|theme/i
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
