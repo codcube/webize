@@ -19,7 +19,7 @@ module Webize
       # enforce trailing slash on directory URI
       return Node(join basename + '/').readDir graph unless dirURI?
 
-      graph << RDF::Statement.new(env[:base], RDF::URI(Contains), self) unless self == env[:base] # provenance for non-canonical directory source
+      graph << RDF::Statement.new(env[:base], RDF::URI('#source'), self) # source provenance
       graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601) # directory timestamp
       graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename   # directory name
 
