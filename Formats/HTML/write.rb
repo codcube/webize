@@ -10,6 +10,7 @@ module Webize
     StatusColor = Webize.configHash 'style/color/status'
     StatusColor.keys.map{|s|
       StatusColor[s.to_i] = StatusColor[s]}
+    VoidElement = Webize.configList('HTML/void').map{|e| e.to_sym }
 
     # representation of attribute aka edge aka field aka key aka predicate aka property
 
@@ -188,7 +189,7 @@ module Webize
         end
       when Hash
 
-        void = [:br, :hr, :img, :input, :link, :meta].member? x[:_]
+        void = VoidElement.member? x[:_]
 
         '<' + (x[:_] || 'div').to_s +                        # open tag
           (x.keys - [:_,:c]).map{|a|                         # attr name
