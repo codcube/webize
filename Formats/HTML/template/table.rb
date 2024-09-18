@@ -2,7 +2,7 @@ module Webize
   module HTML
     class Property
 
-      # graph index - we're adding triples at a late stage just before rendering. to use these pointers via Turtle, we'll want a 'graph annotation pass' eventually
+      # graph index - we're adding triples just before rendering. to use these pointers via Turtle, we'll want a 'graph annotation pass' earlier
       def graph_index nodes
 
         nodes.map{|node|
@@ -19,7 +19,7 @@ module Webize
         index_table nodes
       end
 
-      # table of nodes without inlining contained/child nodes - useful for directories etc where child-node data is loaded and points back to parent, leading to large, even infinite(!) tables. one way to stop recursion before it hits the toplevel loop-detector in #markup
+      # table without inlining of child/contained nodes - useful for nodes where child-node points to parent, leading to large, even infinite(!) tables
       def index_table(nodes) = table nodes, skip: [Abstract, Contains, Content]
 
       def table graph, skip: []

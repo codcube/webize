@@ -2,7 +2,12 @@ module Webize
   module HTML
     class Node
 
+      # document header
       def head(node) = resource node, :head
+
+      # form elements
+      def form(node) = resource node, :form
+      def select(node) = resource node, :select
 
     end
     class Property

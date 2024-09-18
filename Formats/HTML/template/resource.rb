@@ -18,6 +18,8 @@ module Webize
     end
     class Node
 
+      def div(node) = bareResource node, :div
+
       # strip typetag from resource  TODO strip more? e.g. attrs causing dl inside elements where block content isn't allowed (typetag is most common case of this)
       def bareResource re, type
         re.delete Type # typetag denoted w/ CSS ::before

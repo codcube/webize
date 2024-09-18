@@ -10,10 +10,6 @@ module Webize
       def h5(node) = resource node, :h5
       def h6(node) = resource node, :h6
 
-      # form elements
-      def form(node) = resource node, :form
-      def select(node) = resource node, :select
-
       # text elements
       def b(node) = bareResource node, :b
       def blockquote(node) = identifiedResource node, :blockquote
