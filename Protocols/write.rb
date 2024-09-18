@@ -21,6 +21,7 @@ module Webize
         end
 
         RDF::Writer.for(:turtle).open(f, base_uri: g, prefixes: Prefixes){|f|f << graph} # cache 🐢
+#        summary = [g.document, :abstract, :🐢].join '.' # summary-🐢 location
 
         log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] # canonical location
 
