@@ -16,10 +16,6 @@ module Webize
       end
     end
 
-    def preview
-      Webize::URI [document, :summary, :🐢].join '.'
-    end
-
     def extension = File.extname realpath
 
     # [pathname, ..] -> [URI, ..]
