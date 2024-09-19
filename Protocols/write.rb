@@ -60,19 +60,17 @@ module Webize
           summary = RDF::Graph.new  # summary
           graph.each_statement{|s|  # walk graph
             next unless [Creator, Date, Image, Link, To, Title, Video].member? s.predicate.to_s
-            summary << s}           # summary <- statement
+            summary << s}           # summary << statement
 
-          RDF::Writer.for(:turtle). # summary -> 🐢
+          RDF::Writer.for(:turtle). # summary >> 🐢
             open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
             f << summary}
-
-          summary << RDF::Statement.new(env[:base], # response 👉 summary
-                                        RDF::URI(Contains), g)
-          summaries << summary      # repository <- summary
-        else
-          graph << RDF::Statement.new(env[:base],   # response 👉 graph
-                                      RDF::URI(Contains), g)
-          graph << RDF::Statement.new(g, RDF::URI('#new'), true) # tag graph as new/updated
+                                                                           # summarized graph:
+          summary << RDF::Statement.new(env[:base], RDF::URI(Contains), g) # response 👉 summary graph
+          summaries << summary                                             # response graph << summary graph
+        else                                                               # full graph:
+          graph << RDF::Statement.new(env[:base], RDF::URI(Contains), g)   # response 👉 graph
+          graph << RDF::Statement.new(g, RDF::URI('#new'), true)           # tag as new/updated
         end
       }
 
