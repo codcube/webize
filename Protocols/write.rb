@@ -8,7 +8,7 @@ module Webize
       creator = RDF::Query::Pattern.new :s, RDF::URI(Creator), :o # sender
       to = RDF::Query::Pattern.new :s, RDF::URI(To), :o           # receiver
       type = RDF::Query::Pattern.new :s, RDF::URI(Type), :o       # type
-      summaryRepo = RDF::Repository.new
+      summaries = RDF::Repository.new if summarize
 
       each_graph.map{|graph|           # for each
         next unless g = graph.name     # named graph:
@@ -25,18 +25,6 @@ module Webize
         RDF::Writer.for(:turtle).                      # graph -> 🐢
           open(f, base_uri: g, prefixes: Prefixes){|f|
           f << graph}
-
-        if summarize
-          summary = RDF::Graph.new                       # summary graph
-          graph.each_statement{|s|                       # scan for summary data
-            next unless [Creator, Date, Image, Link, To, Title, Video].member? s.predicate.to_s
-            summary << s}                                # statement -> summary graph
-          summaryRepo << summary                         # summary graph -> summary repository
-
-          RDF::Writer.for(:turtle).                      # summary -> 🐢
-            open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
-            f << summary}
-        end
 
         log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] # canonical location
 
@@ -66,12 +54,29 @@ module Webize
           end
         end
 
-        graph << RDF::Statement.new(env[:base], RDF::URI(summarize ? '#entry' : Contains), g)# link to updated content
-        graph << RDF::Statement.new(g, RDF::URI('#new'), true)# mark as updated
         Console.logger.info log.join ' '                      # log message
+
+        if summarize                # summarize?
+          summary = RDF::Graph.new  # summary
+          graph.each_statement{|s|  # walk graph
+            next unless [Creator, Date, Image, Link, To, Title, Video].member? s.predicate.to_s
+            summary << s}           # summary <- statement
+
+          RDF::Writer.for(:turtle). # summary -> 🐢
+            open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
+            f << summary}
+
+          summary << RDF::Statement.new(env[:base], # response 👉 summary
+                                        RDF::URI(Contains), g)
+          summaries << summary      # repository <- summary
+        else
+          graph << RDF::Statement.new(env[:base],   # response 👉 graph
+                                      RDF::URI(Contains), g)
+          graph << RDF::Statement.new(g, RDF::URI('#new'), true) # tag graph as new/updated
+        end
       }
 
-      summarize ? summaryRepo : self
+      summarize ? summaries : self
     end
 
   end
