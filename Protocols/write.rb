@@ -30,10 +30,8 @@ module Webize
           next unless [Creator, Date, Image, Link, To, Title, Video].member? s.predicate.to_s
           summary << s}
 
-        summaryDoc = [docBase, :summary, :🐢].join '.' # summary 🐢 location
-
         RDF::Writer.for(:turtle).                      # summary -> 🐢
-          open(summaryDoc, base_uri: g, prefixes: Prefixes){|f|
+          open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
           f << summary}
 
         log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] # canonical location
