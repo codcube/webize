@@ -67,9 +67,6 @@ module Webize
                                            storage.mtime,
                                            storage.size].join
 
-    def HEAD = self.GET.yield_self{|s, h, _|
-                                   [s, h, []]} # status + header only
-
     def head? = env['REQUEST_METHOD'] == 'HEAD'
 
     # client<>proxy and internal headers not reused on proxy<>origin connection

@@ -30,6 +30,9 @@ module Webize
       fetchLocal         # local node(s)
     end
 
+    def HEAD = self.GET.yield_self{|s, h, _|
+                                   [s, h, []]} # status + header only
+
     def OPTIONS
       env[:deny] = true
       [202, {'Access-Control-Allow-Credentials' => 'true',
