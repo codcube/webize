@@ -55,8 +55,6 @@ module Webize
 
     def parts = path ? (path.split('/') - ['']) : []
 
-    def preview = Webize::URI [document, :preview, :🐢].join '.'
-
     # Hash → querystring
     def self.qs h
       return '?' unless h

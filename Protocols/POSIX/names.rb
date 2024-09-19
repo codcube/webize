@@ -72,4 +72,9 @@ module Webize
     end
 
   end
+  class Resource
+
+    def preview = Webize::URI [storage.document, :preview, :🐢].join '.'
+
+  end
 end
