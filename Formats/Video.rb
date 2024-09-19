@@ -116,7 +116,11 @@ module Webize
                       {class: :icon, c: '&#9654;'}]},                               # ▶ icon
                  {id: player}]                                                      # player
              else                                                                  # generic video
-               [{_: :video, src: v.uri, controls: :true}, '<br>',
+               source = {_: :source, src: v.uri}
+               source[:type] = 'application/x-mpegURL' if v.extname == '.m3u8'
+
+               [{_: :video, controls: :true,
+                 c: source}, '<br>',
                 {_: :a, href: v.uri, c: v.display_name}]
              end,
              (keyval video)]}                                                      # extra attributes
