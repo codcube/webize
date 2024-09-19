@@ -128,10 +128,6 @@ module Webize
                       writer.buffer(base_uri: self,
                                     prefixes: Prefixes) do |w|
                         repositories.map{|r|
-                          unless r.class == RDF::Repository
-                            puts "not a repository: #{r.class} #{self}"
-                            next
-                          end
                           w << r }
                       end
                      else

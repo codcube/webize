@@ -11,6 +11,9 @@ module Webize
         readFile
       elsif directory?
         readDir
+      else
+        puts "no file or directory at #{uri}"
+        RDF::Repository.new
       end
     end
 
