@@ -20,8 +20,6 @@ module Webize
         case query
         when 'fetch'     # remote node(s)
           return fetch uris
-        when 'list'      # node list
-          return fetchLocal uris.map &:preview
         when 'load'      # cached node(s)
           return fetchLocal uris
         end

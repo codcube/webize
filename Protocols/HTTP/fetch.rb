@@ -21,7 +21,8 @@ module Webize
 
       nodes.map{|n|
         semaphore.async{ # URI -> Repository
-          repos << (Node(n).fetchRemote thru: false)}}
+          repos << (Node(n).fetchRemote thru: false,
+                                        summarize: nodes.size > 16)}}
 
       barrier.wait
       respond repos      # HTTP response
@@ -39,7 +40,7 @@ module Webize
                      read_timeout: 32,
                      redirect: false} # don't invisibly follow redirects in HTTP-library code, return this data to us and clients/proxies so they can update URL bars, source links on 301s etc
 
-    def fetchHTTP thru: true                                           # thread origin HTTP response through to caller?
+    def fetchHTTP thru: true, summarize: false                         # return HTTP response to caller? summarize fetched content?
       start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
       doc = storage.document                                           # graph-cache location
       meta = [doc, '.meta'].join                                       # HTTP metadata-cache location
@@ -98,12 +99,13 @@ module Webize
             FileUtils.touch doc, mtime: mtime if mtime
           end
 
-          repository = (readRDF format, body).persist(env, summarize: false)      # read RDF and update cache
+          repository = (readRDF format, body).persist(env, summarize: summarize)  # read RDF and update cache
           repository << RDF::Statement.new(env[:base], RDF::URI('#source'), self) # source provenance
           repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) # HTTP status in RDF
           repository << RDF::Statement.new(self, RDF::URI('#format'), format) # format
           repository << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch time (wall clock)
           repository << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache time (wall clock)
+
           if newest = repository.query(RDF::Query::Pattern.new :s, RDF::URI(Date), :o).objects.sort[-1] # source-graph timestamp
             repository << RDF::Statement.new(self, RDF::URI(Date), newest)
           end

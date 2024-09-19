@@ -8,6 +8,7 @@ module Webize
       creator = RDF::Query::Pattern.new :s, RDF::URI(Creator), :o # sender
       to = RDF::Query::Pattern.new :s, RDF::URI(To), :o           # receiver
       type = RDF::Query::Pattern.new :s, RDF::URI(Type), :o       # type
+      summaryRepo = RDF::Repository.new
 
       each_graph.map{|graph|           # for each
         next unless g = graph.name     # named graph:
@@ -25,14 +26,17 @@ module Webize
           open(f, base_uri: g, prefixes: Prefixes){|f|
           f << graph}
 
-        summary = RDF::Graph.new                       # summary graph
-        graph.each_statement{|s|
-          next unless [Creator, Date, Image, Link, To, Title, Video].member? s.predicate.to_s
-          summary << s}
+        if summarize
+          summary = RDF::Graph.new                       # summary graph
+          graph.each_statement{|s|                       # scan for summary data
+            next unless [Creator, Date, Image, Link, To, Title, Video].member? s.predicate.to_s
+            summary << s}                                # statement -> summary graph
+          summaryRepo << summary                         # summary graph -> summary repository
 
-        RDF::Writer.for(:turtle).                      # summary -> 🐢
-          open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
-          f << summary}
+          RDF::Writer.for(:turtle).                      # summary -> 🐢
+            open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
+            f << summary}
+        end
 
         log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] # canonical location
 
@@ -67,7 +71,7 @@ module Webize
         Console.logger.info log.join ' '                      # log message
       }
 
-      summarize ? summary : self
+      summarize ? summaryRepo : self
     end
 
   end
