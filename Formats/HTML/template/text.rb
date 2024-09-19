@@ -3,10 +3,12 @@ module Webize
     class Node
 
       # page breaks
+
       def br(node) = bareResource node, :br
       def hr(node) = bareResource node, :hr
 
       # headings
+
       def h1(node) = resource node, :h1
       def h2(node) = resource node, :h2
       def h3(node) = resource node, :h3
@@ -15,11 +17,13 @@ module Webize
       def h6(node) = resource node, :h6
 
       # text elements
+
       def b(node) = bareResource node, :b
       def blockquote(node) = identifiedResource node, :blockquote
       def cite(node) = identifiedResource node, :cite
       def em(node) = bareResource node, :em
       def p(node) = identifiedResource node, :p
+      def span(node) = bareResource node, :span
       def strong(node) = bareResource node, :strong
 
       # anchor
