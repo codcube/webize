@@ -1,6 +1,4 @@
-DC.Subject
 DC.keywords
-DC.subject
 KEYWORDS
 KeyWords
 Keywords
@@ -127,7 +125,6 @@ subHeading
 subText
 subheading
 subheadline
-subject
 subsection
 subsections
 subtitle

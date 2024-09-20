@@ -147,3 +147,7 @@ data-track-headline
 data-track-component-title
 data-track-component-name
 data-shortid
+data-subject
+DC.Subject
+DC.subject
+subject
