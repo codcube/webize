@@ -26,31 +26,25 @@ module Webize
       def span(node) = bareResource node, :span
       def strong(node) = bareResource node, :strong
 
-      # anchor
-      def a _
-        _.delete Type
+      # hypertext anchor
+      def a anchor
+        [if anchor.has_key? Link
+         anchor[Link].map{|l| next unless l.class == Hash
 
-        if content = (_.delete Contains)
-          content.map!{|c|
-            HTML.markup c, env}
-        end
+           u = Webize::URI l['uri']
 
-        links = _.delete Link
+           {_: :a, href: u.href,
+            class: u.host == host ? 'local' : 'global',
+            c: [[Title, Contains].map{|t|
+                  next unless anchor.has_key? t
+                  anchor[t].map{|c|
+                    HTML.markup c, env}},
+                {_: :span, class: :uri,
+                 c: CGI.escapeHTML(u.to_s.sub /^https?:..(www.)?/, '')}]}}
+         end,
 
-        if title = (_.delete Title)
-          title.map!{|c|
-            HTML.markup c, env}
-        end
-
-        attrs = keyval _ unless _.empty? # remaining attributes
-
-        links.map{|ref|
-          ref = Webize::URI(ref['uri']) if ref.class == Hash
-          [{_: :a, href: ref,
-            class: ref.host == host ? 'local' : 'global',
-            c: [title, content,
-                {_: :span, class: :uri, c: CGI.escapeHTML(ref.to_s.sub /^https?:..(www.)?/, '')}]},
-           attrs]} if links
+         keyval(anchor,
+                skip: ['uri', Contains, Link, Title, Type])]
       end
 
     end
