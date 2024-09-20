@@ -108,10 +108,6 @@ module Webize
           repository << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch time (wall clock)
           repository << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache time (wall clock)
 
-          if newest = repository.query(RDF::Query::Pattern.new :s, RDF::URI(Date), :o).objects.sort[-1] # source-graph timestamp
-            repository << RDF::Statement.new(self, RDF::URI(Date), newest)
-          end
-
           if !thru
             print MIME.format_icon format
             repository                                                  # response graph w/o HTTP wrapping
