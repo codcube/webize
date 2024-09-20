@@ -73,16 +73,24 @@ module Webize
         # <meta>
         @doc.css('meta').map{|m|
           if k = (m.attr('name') || m.attr('property'))  # predicate
-            if v = (m.attr('content') || m.attr('href')) # object
-              k = MetaMap[k] || k                        # map property-names
-              case v
+            if o = (m.attr('content') || m.attr('href')) # object
+              p = MetaMap[k] || k                        # map property-names
+              case o
               when RelURI
-                v = @base.join v
+                o = @base.join o
               when JSON::Outer
-                v = JSON::Reader.new(v, base_uri: @base).scan_node &f
+                o = JSON::Reader.new(o, base_uri: @base).scan_node &f
               end
-              logger.warn ["no URI for META tag \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
-              yield @base, k, v unless k == :drop
+
+              logger.warn ["no URI for <meta> \e[7m", p, "\e[0m ", o].join unless p.to_s.match? /^(drop|http)/
+
+              if p == :drop
+                puts "\e[38;5;196m-<meta>\e[0m #{k} #{o}"
+              else
+                puts " <meta> #{p} #{o}"
+                yield @base, p, o
+                m.remove
+              end
             end
           elsif m['http-equiv'] == 'refresh'
             if u = m['content'].split('url=')[-1]
