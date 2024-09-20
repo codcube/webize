@@ -43,6 +43,11 @@ module Webize
            id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}
       end
 
+      def label labels
+        labels.map{|l|
+          {_: :span, class: :label, c: HTML.markup(l, env)}}
+      end
+
       def origin locations
         locations.map{|l|
           {_: :a, href: l.uri, c: :↗, class: :origin, target: :_blank}}

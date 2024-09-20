@@ -36,9 +36,11 @@ module Webize
 
            {_: :a, href: u.href,              # reference resolved for current context
             class: u.host == host ? 'local' : 'global', # local or global link styling
-            c: [[Title, Contains].map{|t|               # inner text
-                  next unless anchor.has_key? t
-                  anchor[t].map{|c| HTML.markup c, env}},
+            c: [[Title, Contains].map{|text|            # text attributes
+                  next unless anchor.has_key? text
+
+                  anchor[text].map{|content|            # inner text
+                    HTML.markup content, env}},
 
                 {_: :span, class: :uri,
                  c: CGI.escapeHTML(u.to_s.sub /^https?:..(www.)?/, '')}]}}
