@@ -59,7 +59,7 @@ module Webize
         if summarize                # summarize?
           summary = RDF::Graph.new  # summary
           graph.each_statement{|s|  # walk graph
-            next unless [Creator, Date, Image, Link, To, Title, Video].member? s.predicate.to_s
+            next unless [Creator, Date, Image, Link, To, Title, Type, Video].member? s.predicate.to_s
             summary << s}           # summary << statement
 
           RDF::Writer.for(:turtle). # summary >> 🐢

@@ -51,7 +51,7 @@ module Webize
 
              if env[:deny]                                          # action taken:
                '🛑'                                                 # blocked
-             elsif StatusIcon.has_key? status
+             elsif StatusIcon.has_key?(status) && status != 200
                StatusIcon[status]                                   # status code
              elsif ActionIcon.has_key? env['REQUEST_METHOD']
                ActionIcon[env['REQUEST_METHOD']]                    # HTTP method
