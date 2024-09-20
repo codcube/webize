@@ -66,6 +66,11 @@ module Webize
            end}}
       end
 
+      def status_code code
+        code.map{|status|
+          HTTP::StatusIcon[status.to_i] || status}
+      end
+
       def title titles
         titles.map{|t|
           {_: :span, c: HTML.markup(t, env)}}

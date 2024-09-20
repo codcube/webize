@@ -3,6 +3,7 @@
 #childDir buttons
 #entry index_table
 #graph graph_index
+#httpStatus status_code
 #origin origin
 #source graph_index
 http://purl.org/dc/terms/Audio audio
