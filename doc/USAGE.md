@@ -5,7 +5,7 @@ set the database/cache location. this may move to $HOME/.{cache,local} but is cu
 
     export WEB=$HOME/web
 
-directories in [../bin/](../bin/) are categories of utils for **PATH**. to enable DNS/HTTP server launchers and tools for list maintenance
+directories in [../bin/](../bin/) are categories of utils for **PATH**. to enable DNS/HTTP server launchers and tools for subscription maintenance:
 
     export PATH=$HOME/src/webize/bin/access:$HOME/src/webize/bin/server:$PATH
 
@@ -18,15 +18,15 @@ environment variable **ADDR** the DNS server returns for names in the blocklist 
 
     ADDR=10.10.10.1 dnsd
 
-send all traffic to your server with **http_proxy** set at the client, or the server in chained topologies
+send all traffic to your server with **http_proxy** set at the client, or the server in chained topologies:
 
     HTTP_PROXY=http://localhost:8000 curl -iH "Accept: text/turtle"
 
-when **OFFLINE** is set, requests are serviced from local cache. for an offline, verbosely-logged HTTP server
+when **OFFLINE** is set, requests are serviced from local cache. for an offline, verbosely-logged HTTP server:
 
     CONSOLE_LEVEL=debug OFFLINE=1 httpd
 
-set **UNFILTERED** for DNS and it will let traffic through but highlight new domains as usual. this is a way to find new 'cookieless targeting' startups if you're looking for a job or want to add to your blocklist
+set **UNFILTERED** for DNS and it will let traffic through but highlight new domains as usual. this is a way to find new 'cookieless targeting' startups if you're looking for a job or want to add to your blocklist:
 
     UNFILTERED=1 dnsd
 
