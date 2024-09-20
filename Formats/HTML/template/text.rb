@@ -31,7 +31,7 @@ module Webize
         [if anchor.has_key? Link
          anchor[Link].map{|l| next unless l.class == Hash
 
-           u = Webize::URI l['uri']
+           u = Webize::Resource l['uri'], env
 
            {_: :a, href: u.href,
             class: u.host == host ? 'local' : 'global',
