@@ -35,7 +35,9 @@ module Webize
            u = Webize::Resource l['uri'], env # URI
 
            {_: :a, href: u.href,              # reference resolved for current context
+
             class: u.host == host ? 'local' : 'global', # local or global link styling
+
             c: [[Title, Contains].map{|text|            # text attributes
                   next unless anchor.has_key? text
 
@@ -43,7 +45,11 @@ module Webize
                     HTML.markup content, env}},
 
                 {_: :span, class: :uri,
-                 c: CGI.escapeHTML(u.to_s.sub /^https?:..(www.)?/, '')}]}}
+                 c: [u.host,
+                     CGI.escapeHTML(u.path),
+                     u.query_hash.map{|k,v|
+                       [{_: :span, class: :key, c: k},
+                        v]}]}]}}
          end,
 
          keyval(anchor,
