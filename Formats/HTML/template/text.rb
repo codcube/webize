@@ -48,7 +48,8 @@ module Webize
                  c: [u.host,
                      CGI.escapeHTML(u.path),
                      u.query_hash.map{|k,v|
-                       [{_: :span, class: :key, c: k},
+                       ['<br>',
+                        {_: :span, class: :key, c: k},
                         v]}]}]}}
          end,
 
