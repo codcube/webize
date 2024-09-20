@@ -29,16 +29,17 @@ module Webize
       # hypertext anchor
       def a anchor
         [if anchor.has_key? Link
-         anchor[Link].map{|l| next unless l.class == Hash
+         anchor[Link].map{|l|
+           next unless l.class == Hash
 
-           u = Webize::Resource l['uri'], env
+           u = Webize::Resource l['uri'], env # URI
 
-           {_: :a, href: u.href,
-            class: u.host == host ? 'local' : 'global',
-            c: [[Title, Contains].map{|t|
+           {_: :a, href: u.href,              # reference resolved for current context
+            class: u.host == host ? 'local' : 'global', # local or global link styling
+            c: [[Title, Contains].map{|t|               # inner text
                   next unless anchor.has_key? t
-                  anchor[t].map{|c|
-                    HTML.markup c, env}},
+                  anchor[t].map{|c| HTML.markup c, env}},
+
                 {_: :span, class: :uri,
                  c: CGI.escapeHTML(u.to_s.sub /^https?:..(www.)?/, '')}]}}
          end,
