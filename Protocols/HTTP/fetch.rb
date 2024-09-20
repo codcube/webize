@@ -61,8 +61,9 @@ module Webize
           [206, h, [response.read]]
         else                                                           # massage metadata, cache and return data
           body = HTTP.decompress h, response.read                      # decompress body
-          sha2 = Digest::SHA2.hexdigest body                           # hash body
-          File.open(meta, 'w'){|f| f << h.merge({uri: uri, SHA2: sha2}).to_json} # cache metadata
+
+          File.open(meta, 'w'){|f| f << h.merge({uri: uri}).to_json}   # cache HTTP metadata
+
           format = if (parts[0] == 'feed' || (Feed::Names.member? basename)) && adapt?
                      'application/atom+xml'                            # format defined on feed URI
                    elsif content_type = h['Content-Type']              # format defined in HTTP header
@@ -77,6 +78,7 @@ module Webize
                    else
                      'text/plain'
                    end.downcase                                         # normalize format
+
           if !charset && format.index('html') && metatag = body[0..4096].encode('UTF-8', undef: :replace, invalid: :replace).match(/<meta[^>]+charset=['"]?([^'">]+)/i)
             charset = metatag[1]                                        # detect in-band charset definition
           end

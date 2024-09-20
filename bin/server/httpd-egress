@@ -1,3 +1,0 @@
-#!/bin/sh
-cd $WEB
-UNFILTERED=1 falcon -c ~/src/webize/Protocols/HTTP.ru -n 1 --bind http://localhost:8000

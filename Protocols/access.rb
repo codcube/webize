@@ -38,11 +38,7 @@ module Webize
         d.empty? }                # named leaf exists in tree?
     end
 
-    def filtered_allow? = !unfiltered? && deny_domain? && CDN_doc?
-
     def temp_allow? = query_hash['allow'] == allow_key
-
-    def unfiltered? = ENV.has_key? 'UNFILTERED'
 
   end
 end
