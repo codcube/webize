@@ -65,14 +65,15 @@ module Webize
           RDF::Writer.for(:turtle). # summary >> 🐢
             open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
             f << summary}
-                                                                           # summarized graph:
-          host = RDF::URI('//' + g.host)
-          summary << RDF::Statement.new(env[:base], RDF::URI(Contains), host) # response 👉 host
-          summary << RDF::Statement.new(host, RDF::URI('#graph'), g)          # host 👉 graph
-          summaries << summary                                             # response graph << summary graph
-        else                                                               # full graph:
-          graph << RDF::Statement.new(env[:base], RDF::URI(Contains), g)   # response 👉 graph
-          graph << RDF::Statement.new(g, RDF::URI('#new'), true)           # tag as new/updated
+
+          host = RDF::URI('//' + g.host)                                       # host container
+          summary << RDF::Statement.new(env[:base], RDF::URI(Contains), host)  # base 👉 host container
+          summary << RDF::Statement.new(host, RDF::URI(Title), g.display_host) # host label
+          summary << RDF::Statement.new(host, RDF::URI('#graph'), g)           # host container 👉 summarized graph
+          summaries << summary                                                 # summary graph of graphs
+        else
+          graph << RDF::Statement.new(env[:base], RDF::URI(Contains), g) # base 👉 full graph
+          graph << RDF::Statement.new(g, RDF::URI('#new'), true)         # tag as new/updated
         end
       }
 
