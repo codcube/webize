@@ -64,7 +64,7 @@ blockquote blockquote::before {color: #fff}
 blockquote {border-radius: .48em; margin: 2px 2px 2px 12px; border: .1em solid #888; background-color: #242424; color: #fff}
 blockquote::before {content: '❝'; color: #aaa; margin-left: -14px; font-size: 1.5em}
 body {font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans; padding: 0; margin: 0}
-body, cite, dfn, figcaption, h1, h2, h3, h4, h5, h6, p, pre, span {background-color: #000; color: #fff}
+body, span {background-color: #000; color: #fff}
 body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
 body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
