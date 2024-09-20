@@ -66,7 +66,9 @@ module Webize
             open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
             f << summary}
                                                                            # summarized graph:
-          summary << RDF::Statement.new(env[:base], RDF::URI(Contains), g) # response 👉 summary graph
+          host = RDF::URI('//' + g.host)
+          summary << RDF::Statement.new(env[:base], RDF::URI(Contains), host) # response 👉 host
+          summary << RDF::Statement.new(host, RDF::URI('#graph'), g)          # host 👉 graph
           summaries << summary                                             # response graph << summary graph
         else                                                               # full graph:
           graph << RDF::Statement.new(env[:base], RDF::URI(Contains), g)   # response 👉 graph
