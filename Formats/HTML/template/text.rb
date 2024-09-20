@@ -46,11 +46,12 @@ module Webize
 
                 {_: :span, class: :uri,
                  c: [u.host,
-                     CGI.escapeHTML(u.path),
+                     (CGI.escapeHTML(u.path) if u.path),
                      u.query_hash.map{|k,v|
                        ['<br>',
-                        {_: :span, class: :key, c: k},
-                        v]}]}]}}
+                        {_: :span, class: :key,
+                         c: CGI.escapeHTML(k)},
+                        CGI.escapeHTML(v)]}]}]}}
          end,
 
          keyval(anchor,
