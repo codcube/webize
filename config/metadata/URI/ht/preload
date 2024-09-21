@@ -1,4 +1,6 @@
 preconnect
 prefetch
 preload
+prerender
 dns-prefetch
+modulepreload

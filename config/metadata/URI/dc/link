@@ -45,7 +45,6 @@ data-url-not-encoded
 data-vurl
 dataHref
 dct:references
-dns-prefetch
 dofollow
 embedLinkUrl
 embedUrl
@@ -86,7 +85,6 @@ localLinkUrl
 magazineIssueUrl
 mapsLink
 mobile_url
-modulepreload
 msapplication-starturl
 newPath
 nocaes
@@ -115,10 +113,6 @@ podcastRadioPublic
 podcastSpotify
 podcastTuneIn
 postLink
-preconnect
-prefetch
-preload
-prerender
 preview_url
 profile
 prototype_url
