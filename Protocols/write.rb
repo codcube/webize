@@ -68,7 +68,7 @@ module Webize
 
           host = RDF::URI('//' + (g.host || 'localhost'))                      # host container
           summary << RDF::Statement.new(env[:base], RDF::URI(Contains), host)  # base 👉 host container
-          summary << RDF::Statement.new(host, RDF::URI(Title), g.display_host) # host label
+          summary << RDF::Statement.new(host, RDF::URI(Title), g.display_host || 'localhost') # host label
           summary << RDF::Statement.new(host, RDF::URI('#graph'), g)           # host container 👉 summarized graph
           summaries << summary                                                 # summary graph of graphs
         else
