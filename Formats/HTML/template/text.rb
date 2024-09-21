@@ -50,8 +50,8 @@ module Webize
                      u.query_hash.map{|k,v|
                        ['<br>',
                         {_: :span, class: :key,
-                         c: CGI.escapeHTML(k)},
-                        CGI.escapeHTML(v)]}]}]}}
+                         c: (CGI.escapeHTML k if k)},
+                        (CGI.escapeHTML v if v)]}]}]}}
          end,
 
          keyval(anchor,
