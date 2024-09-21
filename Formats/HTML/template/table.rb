@@ -4,19 +4,15 @@ module Webize
 
       # graph index
       def graph_index nodes, details: false
-
         nodes.map do |node|
-
-          # for remote graphs,
           next unless uri = node['uri']
           uri = Webize::Resource uri, env
-#          next unless uri.host
 
-          # add pointers to upstream and cached resources
+          # pointers to upstream and cached resources
           node.update({'#cache' => [POSIX::Node(uri)],
-                       '#origin' => [uri],
-                      })
+                       '#origin' => [uri]})
 
+          # detailed info
           node.update({'#host' => [uri.host],
                        '#path' => [uri.path]}) if details
         end
