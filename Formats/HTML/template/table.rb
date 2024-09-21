@@ -2,21 +2,30 @@ module Webize
   module HTML
     class Property
 
-      # graph index - we're adding triples just before rendering. to use these pointers via Turtle, we'll want a 'graph annotation pass' earlier
-      def graph_index nodes
+      # graph index
+      def graph_index nodes, details: false
 
-        nodes.map{|node|
+        nodes.map do |node|
+
           # for remote graphs,
           next unless uri = node['uri']
           uri = Webize::Resource uri, env
-          next unless uri.host
+#          next unless uri.host
 
-          # add pointers to upstream, cached (TODO historical) versions
+          # add pointers to upstream and cached resources
           node.update({'#cache' => [POSIX::Node(uri)],
                        '#origin' => [uri],
-                      })}
+                      })
+
+          node.update({'#host' => [uri.host],
+                       '#path' => [uri.path]}) if details
+        end
 
         index_table nodes
+      end
+
+      def graph_index_detailed nodes
+        graph_index nodes, details: true
       end
 
       # table without inlining of child/contained nodes - useful for nodes where child-node points to parent, leading to large, even infinite(!) tables
