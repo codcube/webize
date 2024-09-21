@@ -8,13 +8,14 @@ module Webize
           next unless uri = node['uri']
           uri = Webize::Resource uri, env
 
-          # pointers to upstream and cached resources
-          node.update({'#cache' => [POSIX::Node(uri)],
-                       '#origin' => [uri]})
-
           # detailed info
           node.update({'#host' => [uri.host],
                        '#path' => [uri.path]}) if details
+
+          # pointers to upstream and cached graph
+          node.update({'#cache' => [POSIX::Node(uri)],
+                       '#origin' => [uri]})
+
         end
 
         index_table nodes
