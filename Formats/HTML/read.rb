@@ -116,6 +116,7 @@ module Webize
               puts "\e[38;5;196m-<link>\e[0m #{k} #{o}"
             else
               yield @base, p, o
+              m.remove
             end
           }
 
