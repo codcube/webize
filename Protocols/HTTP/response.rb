@@ -49,11 +49,12 @@ module Webize
       end
 
       ext = File.extname basename if path
+
       type, content = if type == :stylesheet || ext == '.css'
                         ['text/css', '']
                       elsif type == :font || %w(.eot .otf .ttf .woff .woff2).member?(ext)
                         ['font/woff2', HTML::SiteFont]
-                      elsif type == :image || %w(.bmp .ico .gif .jpg .png).member?(ext)
+                      elsif type == :image || %w(.bmp .ico .gif .jpeg .jpg .png).member?(ext)
                         ['image/png', HTML::SiteIcon]
                       elsif type == :script || ext == '.js'
                         ['application/javascript', "// URI: #{uri.match(Gunk) || host}"]

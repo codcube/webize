@@ -24,7 +24,7 @@ module Webize
   class URI < RDF::URI
 
     def basename
-      File.basename path, extname if path
+      File.basename path if path
     end
 
     def dataURI? = scheme == 'data'
