@@ -87,7 +87,7 @@ module Webize
               if p == :drop
                 puts "\e[38;5;196m-<meta>\e[0m #{k} #{o}"
               else
-                puts " <meta> #{p} #{o}"
+                #puts " <meta> #{p} #{o}"
                 yield @base, p, o
                 m.remove
               end
@@ -102,19 +102,24 @@ module Webize
         @doc.css('link[rel][href]').map{|m|
 
           # @href -> object
-          v = HTTP::Node @base.join(m.attr 'href'), @env
+          o = HTTP::Node @base.join(m.attr 'href'), @env
 
           # @rel -> predicate
           m.attr('rel').split(/[\s,]+/).map{|k|
-            @env[:links][:prev] ||= v if k.match? /prev(ious)?/i
-            @env[:links][:next] ||= v if k.downcase == 'next'
-            @env[:links][:icon] ||= v if k.match? /^(fav)?icon?$/i
-            @env[:feeds].push v if k == 'alternate' && ((m['type']&.match?(/atom|feed|rss/)) || (v.path&.match?(/^\/feed\/?$/)))
-            k = MetaMap[k] || k
-            logger.warn ["no URI for LINK tag \e[7m", k, "\e[0m ", v].join unless k.to_s.match? /^(drop|http)/
-            yield @base, k, v unless k == :drop || v.deny?}
+            @env[:links][:prev] ||= o if k.match? /prev(ious)?/i
+            @env[:links][:next] ||= o if k.downcase == 'next'
+            @env[:links][:icon] ||= o if k.match? /^(fav)?icon?$/i
+            @env[:feeds].push o if k == 'alternate' && ((m['type']&.match?(/atom|feed|rss/)) || (o.path&.match?(/^\/feed\/?$/)))
+            p = MetaMap[k] || k
+            logger.warn ["no URI for LINK tag \e[7m", k, "\e[0m ", o].join unless p.to_s.match? /^(drop|http)/
+            if p == :drop
+              puts "\e[38;5;196m-<link>\e[0m #{k} #{o}"
+            else
+              yield @base, p, o
+            end
+          }
 
-          @env[:feeds].push v if Feed::Names.member?(v.basename) || Feed::Extensions.member?(v.extname)}
+          @env[:feeds].push o if Feed::Names.member?(o.basename) || Feed::Extensions.member?(o.extname)}
 
         # <title>
         @doc.css('title').map{|t|
