@@ -64,8 +64,8 @@ module Webize
 
       # graph metadata
       graph.each_graph{|g| # graph containment triple
-        next unless g.name
-        graph << RDF::Statement.new(env[:base], RDF::URI(Contains), g.name)}
+        named_graph = g.name || self
+        graph << RDF::Statement.new(env[:base], RDF::URI(Contains), named_graph)}
 
       graph
     end
