@@ -64,7 +64,7 @@ module Webize
 
       # graph metadata
       graph.each_graph{|g| # graph containment triple
-        named_graph = g.name || self
+        named_graph = g.name || self # graph URI, default is base of doc-graph
         graph << RDF::Statement.new(env[:base], RDF::URI(Contains), named_graph)}
 
       graph
