@@ -35,7 +35,7 @@ module Webize
 
         graph << RDF::Statement.new(c, RDF::URI(Title), name)
 
-        if nodes.size > 32 # alpha binning of large directories - TODO generic alpha binning in graph-summarizer
+        if nodes.size > 96 # alpha binning of large directories
           char = c.basename[0].downcase
           bin = Node join char + '*'
           graph << RDF::Statement.new(self, RDF::URI(Contains), bin)
