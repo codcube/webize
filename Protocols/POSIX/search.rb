@@ -19,9 +19,6 @@ module Webize
           find '*' + q['find'] + '*'
         elsif q['q'] && !q['q'].empty?            # GREP
           grep
-        elsif !host && path == '/'
-          (Pathname.glob Webize::ConfigRelPath.join(HomePage)).map{|n|
-            Node n }
         elsif !dirURI?                            # LS dir
           [self]                                  # minimal (no trailing-slash)
         else                                      # detailed (trailing-slash)

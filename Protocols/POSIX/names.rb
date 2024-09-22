@@ -1,8 +1,6 @@
 module Webize
   class POSIX::Node
 
-    HomePage = 'start/{bookmarks.u,homepage.🐢}'
-
     def dirname = node.dirname
 
     # create containing dir(s) and return locator
