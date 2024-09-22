@@ -11,7 +11,7 @@ module Webize
 
     def imgPath? = path && (ImgExt.member? extname.downcase)
 
-    ddef imgURI? = imgPath? || (dataURI? && path.index('image') == 0)
+    def imgURI? = imgPath? || (dataURI? && path.index('image') == 0)
 
   end
   module MIME
