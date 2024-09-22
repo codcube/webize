@@ -22,16 +22,19 @@ module Webize
       # enforce trailing slash on directory URI
       return Node(join basename + '/').readDir graph unless dirURI?
 
-      graph << RDF::Statement.new(env[:base], RDF::URI('#source'), self) # source provenance
+      graph << RDF::Statement.new(env[:base], RDF::URI('#source'), self)         # source provenance
       graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601) # directory timestamp
       graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename   # directory name
 
-      (nodes = node.children).map{|child|                              # child nodes
-        name = child.basename.to_s                                     # node name
-        next if name[0] == '.'                                         # invisible child
+      (nodes = node.children).map{|child|                   # child nodes
+        name = child.basename.to_s                          # node name
+        next if name[0] == '.'                              # invisible node
 
-        contains = RDF::URI(child.directory? ? '#childDir' : '#entry') # containment property
-        c = Node join name.gsub(' ','%20').gsub('#','%23')             # child node
+        isDir = child.directory?                            # node type
+        name += '/' if isDir
+
+        contains = RDF::URI(isDir ? '#childDir' : '#entry') # containment property
+        c = Node join name.gsub(' ','%20').gsub('#','%23')  # child node
 
         graph << RDF::Statement.new(c, RDF::URI(Title), name)
 
