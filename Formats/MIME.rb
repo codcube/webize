@@ -11,12 +11,12 @@ module Webize
 
     def imgPath? = path && (ImgExt.member? extname.downcase)
 
-    def imgURI? = imgPath? || (dataURI? && path.index('image') == 0)
+    ddef imgURI? = imgPath? || (dataURI? && path.index('image') == 0)
 
   end
   module MIME
 
-    # format URIs https://www.w3.org/ns/formats/
+    # format URIs <https://www.w3.org/ns/formats/>
 
     # formats we prefer to not (content-negotiation) or can not (unimplemented) transform
     FixedFormat = /audio|css|image|octet|script|video|zip/

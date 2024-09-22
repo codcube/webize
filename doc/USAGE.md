@@ -7,14 +7,14 @@ set the database/cache location. this may move to $HOME/.{cache,local} but is cu
 
 directories in [../bin/](../bin/) are categories of utils for **PATH**. to enable DNS/HTTP server launchers and tools for subscription maintenance:
 
-    export PATH=$HOME/src/webize/bin/access:$HOME/src/webize/bin/server:$PATH
+    export PATH=$HOME/src/webize/bin/config:$HOME/src/webize/bin/server:$PATH
 
 now you're ready to launch. the recommended simple solution, in a pair of parallel terminal panes:
 
     dnsd
-    http
+    httpd
 
-environment variable **ADDR** the DNS server returns for names in the blocklist to direct traffic to HTTPD for rewrites. if you have an egress server on your personal LAN as expanded upon elsewhere in the documentation:
+environment variable **ADDR** the DNS server returns for names in the blocklist to direct traffic to httpd for rewrites. if you have an egress server on your personal LAN as expanded upon elsewhere in the documentation:
 
     ADDR=10.10.10.1 dnsd
 
