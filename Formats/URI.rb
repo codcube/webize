@@ -149,7 +149,8 @@ module Webize
               puts "dropping #{u} in URI-list"
             else
               linkCount += 1
-              fn.call RDF::Statement.new list, RDF::URI('#graph'), u
+              member = u.imgURI? ? Image : '#graph'
+              fn.call RDF::Statement.new list, RDF::URI(member), u
               fn.call RDF::Statement.new u, RDF::URI(Title), title || uri
             end
           end}
