@@ -2,9 +2,12 @@ module Webize
   class URI
 
     CDN_doc = Webize.configRegex 'formats/CDN'
+    FontExt = Webize.configList 'formats/font/ext'
     ImgExt = Webize.configList 'formats/image/ext'
 
     def CDN_doc? = host&.match?(CDN_hosts) && path&.match?(CDN_doc)
+
+    def fontURI? = FontExt.member? extname.downcase
 
     def imgPath? = path && (ImgExt.member? extname.downcase)
 

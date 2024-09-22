@@ -9,7 +9,8 @@ module Webize
     end
 
 
-    def deny status = 403, type = nil
+    def deny
+      status = 403
       env[:deny] = true 
       env[:warnings].push({_: :a,
                            id: :allow,
@@ -50,15 +51,15 @@ module Webize
 
       ext = File.extname basename if path
 
-      type, content = if type == :stylesheet || ext == '.css'
+      type, content = if ext == '.css'
                         ['text/css', '']
-                      elsif type == :font || %w(.eot .otf .ttf .woff .woff2).member?(ext)
+                      elsif fontURI?
                         ['font/woff2', HTML::SiteFont]
-                      elsif type == :image || %w(.bmp .ico .gif .jpeg .jpg .png).member?(ext)
+                      elsif imgURI?
                         ['image/png', HTML::SiteIcon]
-                      elsif type == :script || ext == '.js'
+                      elsif ext == '.js'
                         ['application/javascript', "// URI: #{uri.match(Gunk) || host}"]
-                      elsif type == :JSON || ext == '.json'
+                      elsif ext == '.json'
                         ['application/json','{}']
                       else
                         ['text/html; charset=utf-8', RDF::Repository.new.dump(:html, base_uri: self)]
