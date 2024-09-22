@@ -16,17 +16,14 @@ module Webize
         repository << RDF::Statement.new(self, RDF::URI(Type), RDF::URI(Video))
         repository << RDF::Statement.new(self, RDF::URI(Title), basename)
       else
-        if reader ||= RDF::Reader.for(content_type: format)       # find reader
-          r = reader.new(content, base_uri: env[:base]){|_|       # create reader
-            repository << _} # read RDF
-
-          # base URI may be overriden by document declarations
-          if env[:base] != r.base_uri
-            # reference non-canonical base from canonical base
-            repository << RDF::Statement.new(env[:base], RDF::URI(Contains), r.base_uri)
-          end
+        if reader ||= RDF::Reader.for(content_type: format)       # if reader exists for format:
+          base = self                                             # provide doc or request URI as most formats lack HTML/Turtle-style base declaration facilities
+          r = reader.new(content, base_uri: base){|_| repository << _ }            # read RDF
+#          if base != r.base_uri                                                    # base URI override by document declaration?
+#            repository << RDF::Statement.new(base, RDF::URI(Contains), r.base_uri) # reference non-canonical base
+#          end
         else
-          logger.warn ["⚠️ no RDF reader for " , format].join # reader not found
+          logger.warn ["⚠️ no RDF reader for " , format].join
         end
       end
 
