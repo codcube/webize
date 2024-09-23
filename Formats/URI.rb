@@ -136,8 +136,7 @@ module Webize
         list = @base + '#list'                                     # list URI
 
         # link list to request base
-        fn.call RDF::Statement.new @base.env[:base], RDF::URI(Contains), list
-        fn.call RDF::Statement.new list, RDF::URI(Title), @base.basename
+        fn.call RDF::Statement.new @base, RDF::URI(Contains), list
 
         linkCount = 0                                              # stats
 
