@@ -38,12 +38,18 @@ module Webize
 
         graph << RDF::Statement.new(c, RDF::URI(Title), name)
 
+        char = c.basename[0].downcase
         if nodes.size > 192 # alpha binning of large directories
-          char = c.basename[0].downcase
           bin = Node join char + '*'
           graph << RDF::Statement.new(self, RDF::URI(Contains), bin)
           graph << RDF::Statement.new(bin, RDF::URI(Title), char)
           graph << RDF::Statement.new(bin, contains, c)  # directory entry in alpha-bin
+        elsif nodes.size > 32
+          glob = char.match?(/[0-9]/) ? '[0-9]*' : '[a-zA-Z]*'
+          bin = Node join glob
+          graph << RDF::Statement.new(self, RDF::URI(Contains), bin)
+          graph << RDF::Statement.new(bin, RDF::URI(Title), glob[1..3])
+          graph << RDF::Statement.new(bin, contains, c)  # directory entry in alphas or numerics bin
         else
           graph << RDF::Statement.new(self, contains, c) # directory entry
         end}
