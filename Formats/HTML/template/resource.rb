@@ -5,7 +5,7 @@ module Webize
       def buttons resources
         [{_: :style, c: "a.button {background-color: ##{Digest::SHA2.hexdigest(uri)[0..5]}; color: white}"},
 
-         resources.map{|r|
+         resources.sort_by{|r| r['uri'] }.map{|r|
            uri = Webize::Resource r['uri'], env
 
            [{_: :a,
