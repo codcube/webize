@@ -51,7 +51,7 @@ module Webize
                        ['<br>',
                         {_: :span, class: :key,
                          c: (CGI.escapeHTML k if k)},
-                        (CGI.escapeHTML v if v)]}]}]}}
+                        (CGI.escapeHTML v.to_s if v)]}]}]}}
          end,
 
          keyval(anchor,

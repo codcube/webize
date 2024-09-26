@@ -133,7 +133,6 @@ data-hpmde
 data-ias
 data-iatvcap
 data-image-processor-enabled
-data-index
 data-is-images-mode
 data-isdesktop
 data-ispaa
@@ -380,7 +379,6 @@ resolutionMethod
 revisit
 revisit-after
 rootVe
-rows
 scriptUrl
 scrolling
 selected
