@@ -89,7 +89,7 @@ span.quote {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .
 span.quote::before {content: '>'; float: left}
 svg, img[src*="svg"] {background-color: #fff; color: #000; min-width: 64px; max-width: 256px; max-height: 256px}
 table {border-spacing: 1px; border: 1px solid #444}
-table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 0; border-style: dotted}
+table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 0; border-style: dotted; vertical-align: top}
 table.tabular {border: 1px dotted #555}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}

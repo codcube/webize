@@ -83,20 +83,25 @@ module Webize
             charset = metatag[1]                                        # detect in-band charset definition
           end
           charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset identifier
-          body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
-          format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # HTML served as XML
 
-          if (formats = RDF::Format.content_types[format]) &&           # content type
-             (extensions = formats.map(&:file_extension).flatten) &&    # suffixes for content type
-             !extensions.member?((File.extname(doc)[1..-1]||'').to_sym) # upstream suffix in mapped set?
-            doc = [(link = doc), '.', extensions[0]].join               # append valid suffix. invalid path becomes link source for findability
-            FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) || File.symlink?(link) # link upstream path to local path
+          body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
+          body = HTML.cachestamp body, self if format == 'text/html'    # stamp with in-band cache metadata
+
+          format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # allow (X)HTML to be served as XML
+
+          if ext = File.extname(doc)[1..-1]                             # name suffix
+            ext = ext.to_sym
           end
 
-          File.open(doc, 'w'){|f|                                       # update cache
-            f << (format == 'text/html' ? (HTML.cachestamp body, self) : body) } # set cache metadata in body if HTML
+          if (formats = RDF::Format.content_types[format]) &&           # content-type definitions
+             !(exts = formats.map(&:file_extension).flatten).member?(ext) # valid suffix for content type?
+            doc = [(link = doc), '.', exts[0]].join                       # append suffix, link from original name
+            FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) || File.symlink?(link)
+          end
 
-          if h['Last-Modified']                                         # set timestamp on filesystem
+          File.open(doc, 'w'){|f|f << body }                            # cache fetched representation
+
+          if h['Last-Modified']                                         # preserve origin timestamp
             mtime = Time.httpdate h['Last-Modified'] rescue nil
             FileUtils.touch doc, mtime: mtime if mtime
           end
