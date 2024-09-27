@@ -7,7 +7,7 @@ module Webize
 
     def CDN_doc? = host&.match?(CDN_hosts) && path&.match?(CDN_doc)
 
-    def fontURI? = FontExt.member? extname.downcase
+    def fontURI? = FontExt.member? extname&.downcase
 
     def imgPath? = path && (ImgExt.member? extname.downcase)
 
