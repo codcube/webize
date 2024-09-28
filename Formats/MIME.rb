@@ -38,7 +38,7 @@ module Webize
     end
 
     def fileMIMEprefix
-      name = basename.downcase # normalize case
+      name = (File.basename path, extname).downcase # strip suffix and normalize case
       if TextFiles.member?(name) && extname.empty?
         'text/plain'           # well-known textfile name
       elsif name == 'msg'

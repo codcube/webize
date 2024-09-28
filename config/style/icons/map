@@ -108,6 +108,7 @@ http://usefulinc.com/ns/doap#license ⚖️
 http://www.w3.org/1999/02/22-rdf-syntax-ns#type 📕
 http://www.w3.org/1999/xhtml/vocab#bookmark 🔖
 http://www.w3.org/1999/xhtml/vocab#stylesheet 🎨
+http://www.w3.org/1999/xhtml/vocab#script 📜
 http://www.w3.org/2000/01/rdf-schema#Resource 🌐
 http://www.w3.org/2000/01/rdf-schema#label 🏷
 http://www.w3.org/2000/01/rdf-schema#subClassOf ⊂
