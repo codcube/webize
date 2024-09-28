@@ -206,6 +206,11 @@ module Webize
 
                 o = @base.join o if p == Link && o.class == String
 
+                if p == Label # tokenize attr
+                  o.split(/\s/).map{|label| yield subject, p, label }
+                  o = nil
+                end
+
                 yield subject, p, o if o
               end
             end
