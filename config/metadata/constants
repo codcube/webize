@@ -9,8 +9,8 @@ Date     http://purl.org/dc/terms/date
 Document http://xmlns.com/foaf/0.1/Document
 From     http://rdfs.org/sioc/ns#has_creator
 Image    http://purl.org/dc/terms/Image
-Label	 http://www.w3.org/2000/01/rdf-schema#label
 LDP	 http://www.w3.org/ns/ldp#
+Label	 http://www.w3.org/2000/01/rdf-schema#label
 Link     http://purl.org/dc/terms/link
 Post     http://rdfs.org/sioc/ns#Post
 RDFs	 http://www.w3.org/2000/01/rdf-schema#
@@ -22,3 +22,4 @@ To       http://rdfs.org/sioc/ns#addressed_to
 Type     http://www.w3.org/1999/02/22-rdf-syntax-ns#type
 Video    http://purl.org/dc/terms/Video
 W3	 http://www.w3.org/ns/
+XHV	 http://www.w3.org/1999/xhtml/vocab#

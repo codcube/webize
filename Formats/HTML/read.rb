@@ -65,10 +65,16 @@ module Webize
 
         # strip upstream UI
         @doc.css('style').remove                                       # drop stylesheets
-        @doc.traverse{|e|
-          e.respond_to?(:attribute_nodes) && e.attribute_nodes.map{|a| # visit attributes
+
+        @doc.traverse{|e|                                              # elements
+          e.respond_to?(:attribute_nodes) && e.attribute_nodes.map{|a| # attributes
             attr = a.name                                              # attribute name
-            a.unlink if attr.match? StyleAttr }}                       # drop attribute
+            a.unlink if attr.match? StyleAttr }}                       # drop style attributes
+
+        @doc.css('script[src]').map{|s|                                # drop scripts
+          yield @base, XHV + 'script', @base.join(s['src'])
+          s.remove
+        }
 
         # <meta>
         @doc.css('meta').map{|m|
@@ -85,9 +91,9 @@ module Webize
               logger.warn ["no URI for <meta> \e[7m", p, "\e[0m ", o].join unless p.to_s.match? /^(drop|http)/
 
               if p == :drop
-                puts "\e[38;5;196m-<meta>\e[0m #{k} #{o}"
+                # puts "\e[38;5;196m-<meta>\e[0m #{k} #{o}"
               else
-                #puts " <meta> #{p} #{o}"
+                # puts " <meta> #{p} #{o}"
                 yield @base, p, o
                 m.remove
               end
