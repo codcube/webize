@@ -116,3 +116,6 @@ data-entity-uuid
 data-td-block-uid
 data-spot-id
 data-mailchimp-list-ids
+test_id
+testid
+data-test-id
