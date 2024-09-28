@@ -473,3 +473,6 @@ data-a11y-dialog-hide
 data-font
 data-rocket-defer
 data-wp-strategy
+data-analytics-payload
+data-analytics
+data-js
