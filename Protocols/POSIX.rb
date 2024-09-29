@@ -36,8 +36,10 @@ end
 
 # components
 %w(
-io
 names
+read
 search
-stat).map{|s|
+stat
+write
+).map{|s|
   require_relative "POSIX/#{s}.rb"}

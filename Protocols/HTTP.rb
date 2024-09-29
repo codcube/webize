@@ -37,12 +37,11 @@ end
 
 # components
 %w(
-compression
-fetch
 metadata
 method
 proxy
 rack
-response
+read
+write
 ).map{|s|
   require_relative "HTTP/#{s}.rb"}
