@@ -129,6 +129,16 @@ module Webize
       end
     end
 
+    def hostGET
+      return [301, {'Location' => relocate.href}, []] if relocate? # relocated node
+      if path == '/feed' && adapt? && Feed::Subscriptions[host]    # aggregate feed node - doesn't exist on origin server
+        return fetch Feed::Subscriptions[host]
+      end
+      dirMeta              # 👉 adjacent nodes
+      return deny if deny? # blocked node
+      fetch                # remote node
+    end
+
     def notfound
       env[:origin_status] = 404
       respond [RDF::Repository.new]
