@@ -167,63 +167,59 @@ module Webize
           # attributes
           node.attribute_nodes.map{|attr|
 
+            # raw attributes
             p = attr.name
             o = attr.value
 
-            case p
-            when 'srcset'
-              o.scan(SRCSET).map{|uri, _|
-               yield subject, Image, @base.join(uri)}
-            else # generic attribute emitter
+            # apply attribute map and blocklist
+            p = MetaMap[p] if MetaMap.has_key? p
 
-              # apply attribute map and blocklist
-              p = MetaMap[p] if MetaMap.has_key? p
+            next if p == :drop # blocked attr
 
-              if p == :drop
-               #puts ['drop:', subject, attr.name, o].join ' '
+            # unmapped predicates
+            unless p.match? HTTPURI
+              case p
+              when /^aria/i
+                p = 'https://www.w3.org/ns/aria#' + p.sub(/^aria[-_]/i,'')
+              when /type/i
+                p = Type
               else
-
-                # unmapped predicate?
-                unless p.match? HTTPURI
-                  case p
-                  when /^aria/i
-                    p = 'https://www.w3.org/ns/aria#' + p.sub(/^aria[-_]/i,'')
-                  when /type/i
-                    p = Type
-                  else
-                    logger.warn ["no URI for DOM attr \e[7m", p, "\e[0m ", o[0..255]].join
-                  end
-                end
-
-                case o
-                when RelURI # URI string -> RDF::URI
-                  o = Webize::Resource(@base.join(o), @env).relocate
-                when JSON::Array
-                  begin
-                    ::JSON.parse(o).map{|e|
-                      yield subject, p, e if e}
-                    o = nil
-                  rescue
-                    puts "not a JSON array: #{o}"
-                  end
-                when JSON::Outer # webize JSON in value field
-                  o = JSON::Reader.new(o, base_uri: @base).scan_node &f rescue o
-                end
-
-                o = @base.join o if p == Link && o.class == String
-
-                if p == Label # tokenize attr
-                  o.split(/\s/).map{|label| yield subject, p, label }
-                  o = nil
-                end
-
-                yield subject, p, o if o
+                logger.warn ["no URI for DOM attr \e[7m", p, "\e[0m ", o[0..255]].join
               end
             end
 
+            # object webize
+            case o
+            when RelURI # URI in string -> RDF::URI
+              o = Webize::Resource(@base.join(o), @env).relocate
+            when JSON::Array
+              begin
+                ::JSON.parse(o).map{|e|
+                  yield subject, p, e if e}
+                o = nil
+              rescue
+                puts "not a JSON array: #{o}"
+              end
+            when JSON::Outer # JSON value
+              o = JSON::Reader.new(o, base_uri: @base).scan_node &f rescue o
+            end
 
+            o = @base.join o if p == Link && o.class == String
 
+            case p
+            when Schema + 'srcSet'
+              o.scan(SRCSET).map{|uri, _|
+                yield subject, Image, @base.join(uri)}
 
+              o = nil
+            when Label # tokenize label attr
+              o.split(/\s/).map{|label|
+                yield subject, p, label }
+
+              o = nil
+            end
+
+            yield subject, p, o if o
           } if node.respond_to? :attribute_nodes
 
           # child nodes
