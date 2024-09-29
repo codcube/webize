@@ -39,7 +39,6 @@ data-psl
 data-spl
 data-sub-href
 data-surl
-data-target
 data-url
 data-url-not-encoded
 data-vurl
@@ -141,7 +140,6 @@ src
 static_url
 syndicationURL
 taboola:url
-target
 template
 text_url
 ugc
