@@ -82,39 +82,40 @@ id ID _id id_str @id)
 
           # predicates
           predicate = MetaMap[k] || k # map predicate URI
+          next if predicate == :drop
 
-          unless predicate == :drop
+          unless predicate.match? HTTPURI
+            @unmapped.push predicate # unmapped predicate for logger + data-reconciliator
+            predicate = Schema + predicate
+          end
 
-            # warn on unmapped predicate. chatty w/ JSON-in-wild's vast array of non-URI attribute names
-            unless predicate.match? HTTPURI
-              @unmapped.push predicate
-              predicate = Schema + predicate
-            end
+          # objects
+          (v.class == Array ? v : [v]).flatten.map{|o|
 
-            # objects
-            (v.class == Array ? v : [v]).flatten.compact.map{|o|
-
-              object = case o
-                       when Hash
-                         scan_node o, graph, &f  # recursion on object node
-                       when String
-                         if predicate == Date # normalize date
-                           Webize.date o
-                         elsif o.match? RelURI # URI in String
-                           @base.join o        # String -> RDF::URI
-                         elsif o.match? Outer  # JSON in String
-                           Reader.new(o, base_uri: @base).scan_node &f
-                         else
-                           RDF::Literal o      # String -> RDF::Literal
-                         end
+            object = case o
+                     when Hash
+                       scan_node o, graph, &f  # recursion on object node
+                     when String
+                       if predicate == Date # normalize date
+                         Webize.date o
+                       elsif predicate == Schema + 'srcSet'
+                         o.scan(SRCSET).map{|uri, _|
+                           yield subject, Webize::URI(Image), @base.join(uri), graph}
+                         nil
+                       elsif o.match? RelURI # URI in String
+                         @base.join o        # String -> RDF::URI
+                       elsif o.match? Outer  # JSON in String
+                         Reader.new(o, base_uri: @base).scan_node &f
                        else
-                         o
+                         RDF::Literal o      # String -> RDF::Literal
                        end
+                     else
+                       o
+                     end
 
-              # output triple
-              yield subject, Webize::URI(predicate), object, graph
-            }
-          end}
+            # output triple
+            yield subject, Webize::URI(predicate), object, graph if object
+          }}
 
         subject # return child reference to caller / parent-node
       end

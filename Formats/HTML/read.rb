@@ -188,7 +188,7 @@ module Webize
               end
             end
 
-            # object webize
+            # object
             case o
             when RelURI # URI in string -> RDF::URI
               o = Webize::Resource(@base.join(o), @env).relocate
