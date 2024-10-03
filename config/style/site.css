@@ -30,7 +30,6 @@
 .toolbox .stats, .toolbox .redirectors, .toolbox .referers {float: right}
 .toolbox .tabular {display: block; font-size: .96em}
 .toolbox form input {background-color: #282828; color: #eee; border-radius: .5em; border-width: 0; margin: 0; padding: 0; width: 24ex}
-.toolbox img {max-height: 1.2em}
 .toolbox svg {height: 1em; width: 1em}
 .toolbox {border-width: 0 1px 1px 1px; border-style: solid; border-color: #555; border-radius: 0 0 .62em .62em; vertical-align: top}
 .type {background-color: #222; color: #aaa}
