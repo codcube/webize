@@ -38,6 +38,7 @@
 .warning a {background-color: #fff; color: #000}
 .warning {background-color: #ff0; color: #000; padding: .2em; margin: .3em; border-radius: .5em}
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}
+a > span {background-color: inherit}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px; min-width: 1em; min-height: 1em}
 a, a > span { max-width: 40em }
 a.blocked {border: 1px solid white}
@@ -54,6 +55,7 @@ a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
 a.pointer {margin: 0; padding: 0; border: 1px solid #000; border-radius: .5em; font-weight: normal; float: right}
 a.pointer:visited {border-color: #aaf}
 a.to {float: right; margin: 0}
+a:visited span {background-color: black}
 audio {width: 80ex; float: right}
 blockquote blockquote blockquote blockquote {background-color: #aaa; color: #000}
 blockquote blockquote blockquote blockquote::before {color: #aaa}
