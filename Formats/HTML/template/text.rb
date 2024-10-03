@@ -25,6 +25,7 @@ module Webize
       def p(node) = identifiedResource node, :p
       def span(node) = bareResource node, :span
       def strong(node) = bareResource node, :strong
+      def sup(node) = bareResource node, :sup
 
       # hypertext anchor
       def a anchor
