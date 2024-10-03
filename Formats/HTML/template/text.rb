@@ -29,6 +29,10 @@ module Webize
 
       # hypertext anchor
       def a anchor
+        if id = anchor['uri'] # identified anchor
+          anchor_id = Webize::Resource(id, env).local_id
+        end
+
         [if anchor.has_key? Link
          anchor[Link].map{|l|
            next unless l.class == Hash
@@ -52,7 +56,8 @@ module Webize
                        ['<br>',
                         {_: :span, class: :key,
                          c: (CGI.escapeHTML k if k)},
-                        (CGI.escapeHTML v.to_s if v)]}]}]}}
+                        (CGI.escapeHTML v.to_s if v)]}]}]}.
+             update(id ? (id = nil; {id: anchor_id}) : {})} # show ID on first link only if multiple targets
          end,
 
          keyval(anchor,
