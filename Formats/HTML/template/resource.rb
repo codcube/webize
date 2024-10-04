@@ -99,7 +99,7 @@ module Webize
                 c: r[Title].map{|t|
                   HTML.markup t, env}}.           # attach link to title if exists
                  update(ref || {}) if r.has_key? Title),
-              "\n", keyval(r, skip: shown),       # keyval render remaining fields
+              "\n", keyval(r, inline: [:a,:svg].member?(type), skip: shown), # keyval render of remaining fields
               if r[Contains]                      # child nodes
                 if TabularChild.member? type.to_s # tabular view of child nodes
                   property Schema + 'item', r[Contains]
