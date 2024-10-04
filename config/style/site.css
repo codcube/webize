@@ -13,7 +13,7 @@
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
 .image .caption {border-width: 1px 0 0 0; border-radius: 0 0 .4em .4em; border-style: solid; border-color: #444; background-color: #000; color: #ccc; font-size: .9em}
 .image {border: 1px solid #333; border-radius: .3em; margin: .125em}
-.label > span {background-color: #000; color: #aaa; border: 1px solid #555; border-radius: .28em; font-size: .96em}
+.label > span {background-color: #000; color: #bbb; border: 1px solid #444; border-radius: .28em; font-size: .96em; font-weight: normal}
 .link {border: 1px dotted #0cf; margin: 1px}
 .name {background-color: #888; color: #000; font-size: .8em; vertical-align: top}
 .preembed .icon {position: absolute; left: 45%; top: 32%; font-size: 8em; color: #f00}
@@ -43,7 +43,7 @@ a.date {white-space: nowrap; color: #ccc; background-color: #000; font-weight: n
 a.fragref {padding: .1em .3em .1em .3em; border-radius: .3em; font-size: 1.3em; border: 1px dotted #fef}
 a.from, a.to {color: #000}
 a.from:visited, a.to:visited {color: #fff}
-a.global > span.uri, a.local > span.uri {color: #ddd; font-weight: normal; font-size: 0.83em; float: right}
+a.global > span.uri, a.local > span.uri {color: #ddd; font-weight: normal; font-size: 0.83em}
 a.global {background-color: #004}
 a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}

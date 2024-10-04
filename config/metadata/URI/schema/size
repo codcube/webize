@@ -1,8 +1,10 @@
-fileSize
-size
 contentLength
-track_count
-items
 data-content-len
 data-image-size
+data-img-size
+data-orig-size
 data-size
+fileSize
+items
+size
+track_count

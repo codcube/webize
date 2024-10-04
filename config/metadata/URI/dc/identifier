@@ -120,3 +120,5 @@ test_id
 testid
 data-test-id
 data-stream-id
+player-id
+data-bsp-contentid
