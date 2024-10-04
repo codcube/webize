@@ -36,6 +36,18 @@ module Webize
         resource re, type
       end
 
+      # key/value data template. the resource renderer wraps this, adding self-referential link(s), identifier and title heading
+      def keyval kv, skip: []
+        return if (kv.keys - skip).empty? # nothing to render
+
+        [{_: :dl,
+          c: kv.map{|k, vs|
+            [{_: :dt, c: property(Type, [k])}, "\n",
+             {_: :dd, c: property(k, vs)}, "\n"] unless skip.member? k
+          }},
+         "\n"]
+      end
+
       def resource r, type = :div
                                                  # node name
         name = [:form, :head, :select].
