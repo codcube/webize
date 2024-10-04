@@ -69,6 +69,9 @@ module Webize
               keyval(image, skip: [Abstract, Type, 'uri'])]},
          ' ']
       end
+
+      def svg(node) = bareResource node, :svg
+
     end
   end
 

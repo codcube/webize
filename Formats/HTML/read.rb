@@ -19,6 +19,7 @@ module Webize
       format Format
 
       EmptyText = /\A[\n\t\s]+\Z/
+      OpaqueNode = %w(svg)
       SRCSET = /\s*(\S+)\s+([^,]+),*/
       StripTags = /<\/?(font|noscript)[^>]*>/i
       StyleAttr = /^on|border|color|dir|style|theme/i
@@ -223,8 +224,8 @@ module Webize
           } if node.respond_to? :attribute_nodes
 
           # child nodes
-          if depth > 30 || node.name == 'svg' # opaque HTML literal
-            yield subject, Contains, RDF::Literal(node.to_html, datatype: RDF.HTML)
+          if depth > 30 || OpaqueNode.member?(node.name) # HTML literal
+            yield subject, Contains, RDF::Literal(node.inner_html, datatype: RDF.HTML)
           else
             node.children.map{|child|
               if child.text? || child.cdata? # text literal
