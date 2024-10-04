@@ -37,13 +37,15 @@ module Webize
       end
 
       # key/value data template. the resource renderer wraps this, adding self-referential link(s), identifier and title heading
-      def keyval kv, skip: []
+      def keyval kv, inline: false, skip: []
         return if (kv.keys - skip).empty? # nothing to render
 
-        [{_: :dl,
+        list, key, val = inline ? %w(span span span) : %w(dl dt dd) # element types
+
+        [{_: list, class: :kv,
           c: kv.map{|k, vs|
-            [{_: :dt, c: property(Type, [k])}, "\n",
-             {_: :dd, c: property(k, vs)}, "\n"] unless skip.member? k
+            [{_: key, class: :key, c: property(Type, [k])}, "\n",
+             {_: val, class: :val, c: property(k, vs)}, "\n"] unless skip.member? k
           }},
          "\n"]
       end

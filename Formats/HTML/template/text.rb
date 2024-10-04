@@ -61,7 +61,7 @@ module Webize
              update(id ? (id = nil; {id: anchor_id}) : {})} # show ID on first link only if multiple targets
          end,
 
-         keyval(anchor,
+         keyval(anchor, inline: true,
                 skip: ['uri', Contains, Link, Title, Type])]
       end
 
