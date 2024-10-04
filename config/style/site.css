@@ -13,7 +13,6 @@
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
 .image .caption {border-width: 1px 0 0 0; border-radius: 0 0 .4em .4em; border-style: solid; border-color: #444; background-color: #000; color: #ccc; font-size: .9em}
 .image {border: 1px solid #333; border-radius: .3em; margin: .125em}
-.key {background-color: #fff; color: #000}
 .label > span {background-color: #000; color: #aaa; border: 1px solid #555; border-radius: .28em; font-size: .96em}
 .link {border: 1px dotted #0cf; margin: 1px}
 .name {background-color: #888; color: #000; font-size: .8em; vertical-align: top}
@@ -32,7 +31,6 @@
 .toolbox form input {background-color: #282828; color: #eee; border-radius: .5em; border-width: 0; margin: 0; padding: 0; width: 24ex}
 .toolbox svg {height: 1em; width: 1em}
 .toolbox {border-width: 0 1px 1px 1px; border-style: solid; border-color: #555; border-radius: 0 0 .62em .62em; vertical-align: top}
-.type {background-color: #222; color: #aaa}
 .video {max-width: 80em}
 .warning a {background-color: #fff; color: #000}
 .warning {background-color: #ff0; color: #000; padding: .2em; margin: .3em; border-radius: .5em}
@@ -54,6 +52,7 @@ a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
 a.pointer {margin: 0; padding: 0; border: 1px solid #000; border-radius: .5em; font-weight: normal; float: right}
 a.pointer:visited {border-color: #aaf}
 a.to {float: right; margin: 0}
+a.type {background-color: #222; color: #aaa}
 a:visited span {background-color: black}
 audio {width: 80ex; float: right}
 blockquote blockquote blockquote blockquote {background-color: #aaa; color: #000}
@@ -84,6 +83,7 @@ p {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-w
 p::before {content: '¶'; color: #666; margin-left: -12px}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, dl, h1, h2, h3, h4, h5, h6, img {margin: 0; padding: 0}
+span.key {background-color: #fff; color: #000}
 span.quote > .quote > .quote {background-color: #777}
 span.quote > .quote {background-color: #aaa}
 span.quote {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em; max-width: 80ex}
