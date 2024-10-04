@@ -44,8 +44,17 @@ module Webize
 
         [{_: list, class: :kv,
           c: kv.map{|k, vs|
-            [{_: key, class: :key, c: property(Type, [k])}, "\n",
-             {_: val, class: :val, c: property(k, vs)}, "\n"] unless skip.member? k
+            next if skip.member? k
+
+            [{_: key,
+              class: :key,
+              c: Property.new(Type).env(env).
+                rdf_type([k], inline: inline)},
+             "\n",
+
+             {_: val,
+              class: :val,
+              c: property(k, vs)}, "\n"]
           }},
          "\n"]
       end

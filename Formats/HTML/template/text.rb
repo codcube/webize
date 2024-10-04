@@ -30,39 +30,41 @@ module Webize
 
       # hypertext anchor
       def a anchor
+        return resource anchor, :a unless anchor.has_key? Link
+
         if id = anchor['uri'] # identified anchor
           anchor_id = Webize::Resource(id, env).local_id
         end
 
-        [if anchor.has_key? Link
-         anchor[Link].map{|l|
-           next unless l.class == Hash
+        anchor[Link].map{|l|
+          next unless l.class == Hash
 
-           u = Webize::Resource l['uri'], env # URI
+          u = Webize::Resource l['uri'], env # URI
 
-           {_: :a, href: u.href,              # reference resolved for current context
+          {_: :a, href: u.href,              # reference resolved for current context
 
-            class: u.host == host ? 'local' : 'global', # local or global link styling
+           class: u.host == host ? 'local' : 'global', # local or global link styling
 
-            c: [[Title, Contains].map{|text|            # text attributes
-                  next unless anchor.has_key? text
+           c: [[Title, Contains].map{|text|            # text attributes
+                 next unless anchor.has_key? text
 
-                  anchor[text].map{|content|            # inner text
-                    HTML.markup content, env}},
+                 anchor[text].map{|content|            # inner text
+                   HTML.markup content, env}},
 
-                {_: :span, class: :uri,
-                 c: [u.host,
-                     (CGI.escapeHTML(u.path) if u.path),
-                     u.query_hash.map{|k,v|
-                       ['<br>',
-                        {_: :span, class: :key,
-                         c: (CGI.escapeHTML k if k)},
-                        (CGI.escapeHTML v.to_s if v)]}]}]}.
-             update(id ? (id = nil; {id: anchor_id}) : {})} # show ID on first link only if multiple targets
-         end,
+               {_: :span, class: :uri,
+                c: [u.host,
+                    (CGI.escapeHTML(u.path) if u.path),
+                    u.query_hash.map{|k,v|
+                      ['<br>',
+                       {_: :span, class: :key,
+                        c: (CGI.escapeHTML k if k)},
+                       (CGI.escapeHTML v.to_s if v)]}]},
 
-         keyval(anchor, inline: true,
-                skip: ['uri', Contains, Link, Title, Type])]
+               keyval(anchor,
+                      inline: true,
+                      skip: ['uri', Contains, Link, Title, Type])
+              ]}.
+            update(id ? (id = nil; {id: anchor_id}) : {})} # show ID on first link only if multiple targets
       end
 
     end

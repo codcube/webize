@@ -53,13 +53,13 @@ module Webize
           {_: :a, href: l.uri, c: :↗, class: :origin, target: :_blank}}
       end
 
-      def rdf_type types
+      def rdf_type types, inline: false
         types.map{|t|
           t = Webize::Resource t.class == Hash ? t['uri'] : t, env
-          {_: :a, class: :type, href: t.href,
-           c: if t.uri == Contains
-            nil
-          elsif Icons.has_key? t.uri
+          {_: inline ? :span : :a,
+           class: :type,
+           href: t.href,
+           c: if Icons.has_key? t.uri
             Icons[t.uri]
           else
             t.display_name
