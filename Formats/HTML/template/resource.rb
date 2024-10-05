@@ -69,9 +69,8 @@ module Webize
          "\n"]
       end
 
-      def resource r, type = :div
-                                                 # node name
-        name = [:form, :head, :select].
+      def resource r, type = :div, inline: false
+        name = [:form, :head, :select].           # node name
                  member?(type) ? :div : type
 
         if uri = r['uri']                         # identified node:
@@ -109,7 +108,7 @@ module Webize
                 c: r[Title].map{|t|
                   HTML.markup t, env}}.           # attach link to title if exists
                  update(ref || {}) if r.has_key? Title),
-              "\n", keyval(r, inline: [:a,:svg].member?(type), skip: shown), # keyval render of remaining fields
+              "\n", keyval(r, inline: inline, skip: shown), # keyval render remaining fields
               if r[Contains]                      # child nodes
                 if TabularChild.member? type.to_s # tabular view of child nodes
                   property Schema + 'item', r[Contains]

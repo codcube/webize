@@ -70,7 +70,7 @@ module Webize
          ' ']
       end
 
-      def svg(node) = bareResource node, :svg
+      def svg(node) = inlineResource node, :svg
 
     end
   end

@@ -30,7 +30,7 @@ module Webize
 
       # hypertext anchor
       def a anchor
-        return resource anchor, :a unless anchor.has_key? Link
+        return inlineResource anchor, :a unless anchor.has_key? Link
 
         if id = anchor['uri'] # identified anchor
           anchor_id = Webize::Resource(id, env).local_id
