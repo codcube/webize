@@ -21,9 +21,11 @@ module Webize
 
       def div(node) = bareResource node, :div
 
-      # strip typetag from resource
+      # don't show type metadata, just show resource itself
+      # i.e DL DT DD is not rendered, which is disallowed inside many DOM node types
+      # a typetag is often denoted via CSS ::before declarations
       def bareResource re, type
-        re.delete Type # typetag denoted w/ CSS ::before
+        re.delete Type
         resource re, type
       end
 
