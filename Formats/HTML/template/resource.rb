@@ -21,15 +21,23 @@ module Webize
 
       def div(node) = bareResource node, :div
 
-      # don't show type metadata, just show resource itself
-      # i.e DL DT DD is not rendered, which is disallowed inside many DOM node types
-      # a typetag is often denoted via CSS ::before declarations
+      # don't show typetag, unless denoted w/ CSS ::before declaration
+      # when sticking to the barebones/stock/generic metadata fields, this means
+      # DL DT DD is not rendered, which is disallowed inside many DOM node types
       def bareResource re, type
         re.delete Type
         resource re, type
       end
 
-      # add an identifier if nonexistent
+      # if you want to render extensive (meta)data with SPAN instead of DL/DT/DD, use this
+      # the browser silently moves block children outside a node only allowing inline children - rearranging DOM tree without so much as a warning in devtools in stock configuration
+      # some research and a HTML linter session is on order - maybe it parses CSS first, then consults display: inline declarations to decide whether to tree-rearrange? TODO investigate
+      def inlineResource re, type
+        re.delete Type
+        resource re, type, inline: true
+      end
+
+      # mint an identifier if nonexistent TODO check dc:identifier field as well as default 'uri'
       def identifiedResource re, type
         unless re['uri']
           re['uri'] = '#r_' + Digest::SHA2.hexdigest(rand.to_s)
