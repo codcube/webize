@@ -4,8 +4,8 @@ module Webize
 
       # page breaks
 
-      def br(node) = bareResource node, :br
-      def hr(node) = bareResource node, :hr
+      def br(node) = inlineResource node, :br
+      def hr(node) = inlineResource node, :hr
 
       # headings
 
@@ -18,15 +18,15 @@ module Webize
 
       # text elements
 
-      def b(node) = bareResource node, :b
+      def b(node) = inlineResource node, :b
       def blockquote(node) = identifiedResource node, :blockquote
       def cite(node) = identifiedResource node, :cite
-      def em(node) = bareResource node, :em
+      def em(node) = inlineResource node, :em
       def p(node) = identifiedResource node, :p
-      def span(node) = bareResource node, :span
-      def strong(node) = bareResource node, :strong
-      def sup(node) = bareResource node, :sup
-      def u(node) = bareResource node, :u
+      def span(node) = inlineResource node, :span
+      def strong(node) = inlineResource node, :strong
+      def sup(node) = inlineResource node, :sup
+      def u(node) = inlineResource node, :u
 
       # hypertext anchor
       def a anchor
