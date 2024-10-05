@@ -59,6 +59,7 @@ module Webize
           {_: inline ? :span : :a,
            class: :type,
            href: t.href,
+           title: t.uri,
            c: if Icons.has_key? t.uri
             Icons[t.uri]
           else
