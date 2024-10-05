@@ -70,7 +70,10 @@ module Webize
          ' ']
       end
 
-      def svg(node) = inlineResource node, :svg
+      def svg node
+        node.delete Label
+        inlineResource node, :svg
+      end
 
     end
   end
@@ -168,33 +171,33 @@ module Webize
     end
   end
 
-  # module SVG
-  #   class Format < RDF::Format
-  #     content_type 'image/svg+xml', :extension => :svg
-  #     reader { Reader }
-  #   end
-  #   class Reader < RDF::Reader
-  #     format Format
+  module SVG
+    class Format < RDF::Format
+      content_type 'image/svg+xml', :extension => :svg
+      reader { Reader }
+    end
+    class Reader < RDF::Reader
+      format Format
 
-  #     def initialize(input = $stdin, options = {}, &block)
-  #       @base = options[:base_uri]
-  #       @body = input.respond_to?(:read) ? input.read : input
-  #       @options = options
-  #       if block_given?
-  #         case block.arity
-  #         when 0 then instance_eval(&block)
-  #         else block.call(self)
-  #         end
-  #       end
-  #       nil
-  #     end
+      def initialize(input = $stdin, options = {}, &block)
+        @base = options[:base_uri]
+        @body = input.respond_to?(:read) ? input.read : input
+        @options = options
+        if block_given?
+          case block.arity
+          when 0 then instance_eval(&block)
+          else block.call(self)
+          end
+        end
+        nil
+      end
 
-  #     def each_triple &block; each_statement{|s| block.call *s.to_triple} end
+      def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
-  #     def each_statement &fn
-  #     end
-  #   end
-  # end
+      def each_statement &fn
+      end
+    end
+  end
 
   module WebP
     class Format < RDF::Format
