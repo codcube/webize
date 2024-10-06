@@ -1,5 +1,6 @@
-require_relative 'template/document.rb' # HTML document
-require_relative 'template/metadata.rb' # basic metadata fields
-require_relative 'template/resource.rb' # generic resource
-require_relative 'template/table.rb'    # tabular layout
-require_relative 'template/text.rb'  # DOM nodes
+require_relative 'template/document.rb' # document
+require_relative 'template/graphic.rb'  # graphic elements
+require_relative 'template/metadata.rb' # metadata fields
+require_relative 'template/resource.rb' # resource
+require_relative 'template/table.rb'    # tabular layouts
+require_relative 'template/text.rb'     # text elements
