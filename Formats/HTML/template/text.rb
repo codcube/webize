@@ -22,6 +22,7 @@ module Webize
       def blockquote(node) = identifiedResource node, :blockquote
       def cite(node) = identifiedResource node, :cite
       def em(node) = inlineResource node, :em
+      def i(node) = inlineResource node, :i
       def p(node) = identifiedResource node, :p
       def span(node) = inlineResource node, :span
       def strong(node) = inlineResource node, :strong
