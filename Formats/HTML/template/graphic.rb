@@ -18,7 +18,8 @@ module Webize
       def img image
         return puts "not an image resource: #{image.class} #{image}" unless image.class == Hash
 
-        [{class: :image,
+        [{_: :span,
+          class: :image,
           c: [if image.has_key? 'uri'
               {_: :img,
                src: Webize::Resource((env[:base].join image['uri']), env).href,
