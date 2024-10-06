@@ -16,25 +16,19 @@ module Webize
       Markup[Image] = :img
 
       def img image
-        unless image.class == Hash
-          puts "not an image resource: #{image.class} #{image}"
-          image = {'uri' => image.to_s}
-        end
-
-        src = Webize::Resource((env[:base].join image['uri']), env).href
+        return puts "not an image resource: #{image.class} #{image}" unless image.class == Hash
 
         [{class: :image,
-          c: [{_: :img, src: src},
-
-              if image.has_key? Abstract
-                ['<br>',
-                 {class: :caption,
-                  c: image[Abstract].map{|a|
-                    [(HTML.markup a,env), ' ']}}]
+          c: [if image.has_key? 'uri'
+              {_: :img,
+               src: Webize::Resource((env[:base].join image['uri']), env).href,
+               alt: (image[Abstract] ||
+                     image[Title]).to_s}
               end,
 
-              keyval(image, inline: true,
-                     skip: [Abstract, Type, 'uri'])]},
+              keyval(image,
+                     inline: true,
+                     skip: [Type, 'uri'])]},
          ' ']
       end
 
