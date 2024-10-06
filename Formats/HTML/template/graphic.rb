@@ -5,8 +5,9 @@ module Webize
       Markup[Image] = :img
 
       def img images
-        images.map{|i|
-          Node.new(env[:base]).env(env).img i}
+        images.map do |i|
+          Node.new(env[:base]).env(env).img i
+        end
       end
 
     end
