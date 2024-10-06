@@ -23,8 +23,7 @@ module Webize
         src = Webize::Resource((env[:base].join image['uri']), env).href
 
         [{class: :image,
-          c: [{_: :a, href: src,
-               c: {_: :img, src: src}},
+          c: [{_: :img, src: src},
 
               if image.has_key? Abstract
                 ['<br>',
@@ -33,7 +32,8 @@ module Webize
                     [(HTML.markup a,env), ' ']}}]
               end,
 
-              keyval(image, skip: [Abstract, Type, 'uri'])]},
+              keyval(image, inline: true,
+                     skip: [Abstract, Type, 'uri'])]},
          ' ']
       end
 
