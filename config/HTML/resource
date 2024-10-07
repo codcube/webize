@@ -19,8 +19,10 @@ http://mw.logbook.am/webize/Node#img img
 http://mw.logbook.am/webize/Node#li li
 http://mw.logbook.am/webize/Node#ol ol
 http://mw.logbook.am/webize/Node#p p
+http://mw.logbook.am/webize/Node#picture picture
 http://mw.logbook.am/webize/Node#select select
 http://mw.logbook.am/webize/Node#span span
+http://mw.logbook.am/webize/Node#source source
 http://mw.logbook.am/webize/Node#strong strong
 http://mw.logbook.am/webize/Node#sup sup
 http://mw.logbook.am/webize/Node#svg svg
