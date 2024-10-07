@@ -175,7 +175,7 @@ module Webize
             # apply attribute map and blocklist
             p = MetaMap[p] if MetaMap.has_key? p
 
-            next if p == :drop # blocked attr
+            next if p == :drop || o.empty? # attr not emitted as RDF
 
             # unmapped predicates
             unless p.match? HTTPURI
