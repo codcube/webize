@@ -58,9 +58,7 @@ module Webize
                          id = Digest::SHA2.hexdigest Rack::Utils.unescape_path parts[1]
                          ['mail', id[0..1], id[2..-1]] # sharded-hash container
                        else # path map
-                         parts.map do |part|
-                           Rack::Utils.unescape_path part
-                         end
+                         unescape_parts
                        end
 
     def fsNamesGlobal = [domains,            # domain-name container
@@ -68,9 +66,16 @@ module Webize
                            hash = Digest::SHA2.hexdigest uri # oversize path or segment(s), calculate hash of URI
                            [hash[0..1], hash[2..-1]]         # sharded-hash container
                          else
-                           (query ? Node(join dirURI? ? query_digest : [basename, query_digest, extname].join('.')) : self).parts.map{|part|
-                             Rack::Utils.unescape_path part} # path map
+                           if query
+                             Webize::URI join fsNamesQuery.join '.'
+                           else
+                             self
+                           end.unescape_parts # path map
                          end].flatten.compact
+
+    def fsNamesQuery = [File.basename(path, extname),         # basename
+                        Digest::SHA2.hexdigest(query)[0..16], # query hash
+                        extname]                              # extension
 
     # URI -> pathname
     def fsPath
@@ -91,8 +96,6 @@ module Webize
       }.join("&")
     end
 
-    def query_digest = Digest::SHA2.hexdigest(query)[0..15]
-
     def query_hash = query_values || {}
 
     def split(*a) = uri.split *a
@@ -103,6 +106,10 @@ module Webize
        parts.map{|p| p.split re},
        (query&.split re),
        (fragment&.split re)]
+    end
+
+    def unescape_parts = parts.map do |part|
+      Rack::Utils.unescape_path part
     end
 
     alias_method :uri, :to_s
