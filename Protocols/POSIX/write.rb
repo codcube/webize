@@ -1,27 +1,33 @@
 module Webize
   class POSIX::Node
 
-    # sweep blocking files where dirs are going to go
+    # make containing directory for node, sweeping any blocking files
     def mkdir
-      dir = cursor = dirURI? ? fsPath.sub(/\/$/,'') : File.dirname(fsPath) # strip slash from cursor (any blocking filename won't have one)
-      until cursor == '.'                # cursor at root?
-        if File.file? cursor
-          FileUtils.rm cursor            # unlink file/link blocking location
-          puts '🧹 ' + cursor            # log fs-sweep
+      cursor = dir = File.dirname fsPath # cursor at dir to be created
+
+      until cursor == '.'                # until cursor at PWD:
+        if File.file?(cursor) ||         # blocking file/symlink?
+           File.symlink?(cursor)
+          FileUtils.rm cursor            # unlink name
+          puts '🧹 ' + cursor            # log sweep operation
         end
-        cursor = File.dirname cursor     # up to parent container
+        cursor = File.dirname cursor     # move cursor up a level
       end
-      FileUtils.mkdir_p dir              # make container
+
+      FileUtils.mkdir_p dir              # make directory
     end
 
+    # write file, creating containing directory if needed
     def write o
-      FileUtils.mkdir_p dirname # make containing dir(s)
+      mkdir unless File.directory? dirname
 
-      File.open(fsPath,'w'){|f|
-        f << o }
+      File.open(fsPath, 'w') do |f|
+        f << o
+      end
 
       self
     end
 
   end
 end
+   
