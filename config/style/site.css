@@ -11,7 +11,8 @@
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
-.image {border: 1px solid #0f0; display: inline-block}
+.image {border: 1px dotted #555; display: inline-block}
+.key, .type {background-color: #222; color: #aaa}
 .label > span {background-color: #000; color: #bbb; border: 1px solid #444; border-radius: .28em}
 .link {border: 1px dotted #0cf; margin: 1px}
 .name {background-color: #888; color: #000; font-size: .8em; vertical-align: top}
@@ -34,7 +35,10 @@
 .warning a {background-color: #fff; color: #000}
 .warning {background-color: #ff0; color: #000; padding: .2em; margin: .3em; border-radius: .5em}
 :target, :target > span {background-color: #2ef !important; color: #000 !important; opacity: 1.0}
-a .kv, a .uri {font-weight: normal; font-size: 0.88em}
+a .key {background-color: #226; color: #fff; border-radius: .2em}
+a .kv {font-size: 0.92em}
+a .kv, a .uri {font-weight: normal}
+a .uri {color: #ccc; font-size: 0.86em}
 a > span {background-color: inherit}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px; min-width: 1em; min-height: 1em}
 a, a > span { max-width: 40em }
@@ -43,7 +47,6 @@ a.date {white-space: nowrap; color: #ccc; background-color: #000; font-weight: n
 a.fragref {padding: .1em .3em .1em .3em; border-radius: .3em; font-size: 1.3em; border: 1px dotted #fef}
 a.from, a.to {color: #000}
 a.from:visited, a.to:visited {color: #fff}
-a.global > span.uri, a.local > span.uri {color: #ddd}
 a.global {background-color: #004}
 a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
@@ -52,7 +55,6 @@ a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
 a.pointer {margin: 0; padding: 0; border: 1px solid #000; border-radius: .5em; font-weight: normal; float: right}
 a.pointer:visited {border-color: #aaf}
 a.to {float: right; margin: 0}
-a.type {background-color: #222; color: #aaa}
 a:visited span.uri {background-color: black}
 audio {width: 80ex; float: right}
 blockquote blockquote blockquote blockquote {background-color: #aaa; color: #000}
@@ -83,7 +85,6 @@ p {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-w
 p::before {content: '¶'; color: #666; margin-left: -12px}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
 pre, ul, ol, dl, h1, h2, h3, h4, h5, h6, img {margin: 0; padding: 0}
-span.key {background-color: #ccc; color: #000; border-radius: .2em}
 span.quote > .quote > .quote {background-color: #777}
 span.quote > .quote {background-color: #aaa}
 span.quote {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em; max-width: 80ex}
