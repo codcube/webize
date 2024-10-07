@@ -33,6 +33,8 @@ module Webize
       def a anchor
         return inlineResource anchor, :a unless anchor.has_key? Link
 
+        anchor.delete XHV + 'target' # strip upstream link behaviour
+
         if id = anchor['uri'] # identified anchor
           anchor_id = Webize::Resource(id, env).local_id
         end

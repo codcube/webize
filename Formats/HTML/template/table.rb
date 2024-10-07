@@ -28,6 +28,7 @@ module Webize
       # table without inlining of child/contained nodes - useful for nodes where child-node points to parent, leading to large, even infinite(!) tables
       def index_table(nodes) = table nodes, skip: [Abstract, Contains, Content]
 
+      # table layout: resource <> row, property <> column
       def table graph, skip: []
         graph = graph.select{|g| g.respond_to? :keys}
         case graph.size
@@ -79,6 +80,33 @@ module Webize
       def th(node) = bareResource node, :th
       def tr(node) = bareResource node, :tr
       def td(node) = bareResource node, :td
+
+      # table layout: resource <> table, property <> row
+      def keyval kv, inline: false, skip: []
+        return if (kv.keys - skip).empty? # nothing to render
+
+        list, key, val = inline ? %w(span span span) : %w(dl dt dd) # element types
+
+        [{_: list, class: :kv,
+          c: kv.map{|k, vs|
+            next if skip.member? k
+
+            [inline ? '<br>' : nil,
+
+             {_: key,
+              class: :key,
+              c: Property.new(Type).env(env).
+                rdf_type([k], inline: inline)},
+             "\n",
+
+             {_: val,
+              class: :val,
+              c: property(k, vs.class == Array ? vs : [vs])},
+
+             "\n"]
+          }},
+         "\n"]
+      end
 
     end
   end
