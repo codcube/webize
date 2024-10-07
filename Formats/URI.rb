@@ -29,6 +29,8 @@ module Webize
 
     def dataURI? = scheme == 'data'
 
+    def dirname = File.dirname fsPath
+
     def dirURI? = !path || path[-1] == '/'
 
     def display_host
@@ -48,6 +50,32 @@ module Webize
     def domains = host.split('.').reverse
 
     def extname = (File.extname path if path)
+
+    def fsNamesLocal = if parts.empty?
+                         %w(.)
+                       elsif parts[0] == 'msg' # message
+                         # calculate hash of message identifier
+                         id = Digest::SHA2.hexdigest Rack::Utils.unescape_path parts[1]
+                         ['mail', id[0..1], id[2..-1]] # sharded-hash container
+                       else # path map
+                         parts.map do |part|
+                           Rack::Utils.unescape_path part
+                         end
+                       end
+
+    def fsNamesGlobal = [domains,            # domain-name container
+                         if (path && path.size > 496) || parts.find{|p|p.size > 127}
+                           hash = Digest::SHA2.hexdigest uri # oversize path or segment(s), calculate hash of URI
+                           [hash[0..1], hash[2..-1]]         # sharded-hash container
+                         else
+                           (query ? Node(join dirURI? ? query_digest : [basename, query_digest, extname].join('.')) : self).parts.map{|part|
+                             Rack::Utils.unescape_path part} # path map
+                         end].flatten.compact
+
+    # URI -> pathname
+    def fsPath
+      (host ? fsNamesGlobal : fsNamesLocal).join '/'
+    end
 
     def graph = URI.new split('#')[0]
 

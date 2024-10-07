@@ -1,19 +1,15 @@
 module Webize
   class POSIX::Node
 
-    def dirname = node.dirname
-
-    # create containing dir(s) and return locator
+    # document path,
+    # also document as a verb due to side effect of container creation
     def document
       mkdir
-      doc = fsPath
-      if doc[-1] == '/' # dir/ -> dir/index
-        doc + 'index'
-      else              # file -> file
-        doc
-      end
+      fsPath
     end
 
+    # follow symlinks to find real filename extension. IO-dependent cousin to pure name-based #extname in URI.rb
+    # we use this in few enough places that maybe we should inline it at calling sites to not introduce confusion
     def extension = File.extname realpath
 
     # [pathname, ..] -> [URI, ..]
@@ -22,31 +18,6 @@ module Webize
       pathbase = host ? host.size : 0
       ps.map{|p|
         Node base.join p.to_s[pathbase..-1].gsub(':','%3A').gsub(' ','%20').gsub('#','%23')}
-    end
-
-    # URI -> pathname
-    def fsPath
-      if !host                                ## local URI
-        if parts.empty?
-          %w(.)
-        elsif parts[0] == 'msg'                # Message-ID -> sharded containers
-          id = Digest::SHA2.hexdigest Rack::Utils.unescape_path parts[1]
-          ['mail', id[0..1], id[2..-1]]
-        else                                   # path map
-          parts.map{|part| Rack::Utils.unescape_path part}
-        end
-      else                                    ## global URI
-        [host.split('.').reverse,              # domain-name containers
-         if (path && path.size > 496) || parts.find{|p|p.size > 127}
-           hash = Digest::SHA2.hexdigest uri   # huge name, hash and shard
-           [hash[0..1], hash[2..-1]]
-         else                                  # query hash to basename in sibling file or directory child
-           (query ? Node(join dirURI? ? query_digest : [basename, query_digest, extname].join('.')) : self).parts.map{|part|
-             Rack::Utils.unescape_path part}   # path map
-         end,
-         (dirURI? && !query) ? '' : nil].      # preserve trailing slash on directory name
-          flatten.compact
-      end.join('/')
     end
 
     # URI -> Pathname

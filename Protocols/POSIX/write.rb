@@ -30,4 +30,3 @@ module Webize
 
   end
 end
-   
