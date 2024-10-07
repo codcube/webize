@@ -77,7 +77,7 @@ module Webize
                 end
 
         shown = ['#color', '#style', '#new',
-                 'uri',
+                 'uri', XHV + 'namespace',
                  Title, Contains]  # properties we handle before delegating to generic keyval render
 
         [{_: name,                                # node
@@ -99,6 +99,7 @@ module Webize
            update(id ? {id: id} : {}).
            update((id && type == :div) ? {class: :resource} : {}).
            update(r.has_key?('#style') ? {style: r['#style'][0]} : {}).
+           update(r.has_key?(XHV + 'namespace') ? {xmlns: r[XHV + 'namespace'][0]['uri']} : {}).
            update(color ? {style: "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} 1px, transparent 1px, transparent 16px); border-color: #{color}"} : {}), "\n"]
       end
     end
