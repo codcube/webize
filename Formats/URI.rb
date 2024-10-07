@@ -53,15 +53,14 @@ module Webize
 
     def fsNamesLocal = if parts.empty?
                          %w(.)
-                       elsif parts[0] == 'msg' # message
-                         # calculate hash of message identifier
-                         id = Digest::SHA2.hexdigest Rack::Utils.unescape_path parts[1]
-                         ['mail', id[0..1], id[2..-1]] # sharded-hash container
-                       else # path map
+                       elsif parts[0] == 'msg'                                          # message
+                         id = Digest::SHA2.hexdigest Rack::Utils.unescape_path parts[1] #  calculate hash of message identifier
+                         ['mail', id[0..1], id[2..-1]]                                  #  sharded-hash container
+                       else                                                             # path map
                          unescape_parts
                        end
 
-    def fsNamesGlobal = [domains,            # domain-name container
+    def fsNamesGlobal = [domains,                            # domain-name container
                          if (path && path.size > 496) || parts.find{|p|p.size > 127}
                            hash = Digest::SHA2.hexdigest uri # oversize path or segment(s), calculate hash of URI
                            [hash[0..1], hash[2..-1]]         # sharded-hash container
@@ -70,12 +69,12 @@ module Webize
                              Webize::URI join fsNamesQuery.join '.'
                            else
                              self
-                           end.unescape_parts # path map
+                           end.unescape_parts                # path map
                          end].flatten.compact
 
-    def fsNamesQuery = [File.basename(path, extname),         # basename
-                        Digest::SHA2.hexdigest(query)[0..16], # query hash
-                        extname]                              # extension
+    def fsNamesQuery = [File.basename(path, extname),        # basename
+                        Digest::SHA2.hexdigest(query)[0..9], # query hash
+                        extname]                             # extension
 
     # URI -> pathname
     def fsPath
