@@ -54,17 +54,11 @@ module Webize
 
                {_: :span, class: :uri,
                 c: [u.host,
-                    (CGI.escapeHTML(u.path) if u.path),
-                    u.query_hash.map{|k,v|
-                      ['<br>',
-                       {_: :span, class: :key,
-                        c: (CGI.escapeHTML k if k)},
-                       (CGI.escapeHTML v.to_s if v)]}]},
+                    (CGI.escapeHTML(u.path) if u.path)]},
 
-               keyval(anchor,
+               keyval(anchor.merge(u.query_hash),
                       inline: true,
-                      skip: ['uri', Contains, Link, Title, Type])
-              ]}.
+                      skip: ['uri', Contains, Link, Title, Type])]}.
             update(id ? (id = nil; {id: anchor_id}) : {})} # show ID on first link only if multiple targets
       end
 

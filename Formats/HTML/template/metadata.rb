@@ -56,15 +56,21 @@ module Webize
       def rdf_type types, inline: false
         types.map{|t|
           t = Webize::Resource t.class == Hash ? t['uri'] : t, env
-          {_: inline ? :span : :a,
-           class: :type,
-           href: t.href,
-           title: t.uri,
-           c: if Icons.has_key? t.uri
-            Icons[t.uri]
+          content = if Icons.has_key? t.uri
+                      Icons[t.uri]
+                    else
+                      t.display_name
+                    end
+          if inline
+            content
           else
-            t.display_name
-           end}}
+            {_: :a,
+             class: :type,
+             href: t.href,
+             title: t.uri,
+             c: content}
+          end
+        }
       end
 
       def status_code code
