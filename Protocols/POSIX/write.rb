@@ -3,18 +3,18 @@ module Webize
 
     # make containing directory for node, sweeping any blocking files
     def mkdir
-      cursor = dir = File.dirname fsPath # cursor at dir to be created
+      cursor = dirname               # start cursor at dirname
 
-      until cursor == '.'                # until cursor at PWD:
-        if File.file?(cursor) ||         # blocking file/symlink?
+      until cursor == '.'            # until cursor at PWD:
+        if File.file?(cursor) ||     # blocking file/symlink?
            File.symlink?(cursor)
-          FileUtils.rm cursor            # unlink name
-          puts '🧹 ' + cursor            # log sweep operation
+          FileUtils.rm cursor        # unlink name
+          puts '🧹 ' + cursor        # log sweep operation
         end
-        cursor = File.dirname cursor     # move cursor up a level
+        cursor = File.dirname cursor # move cursor up a level
       end
 
-      FileUtils.mkdir_p dir              # make directory
+      FileUtils.mkdir_p dirname      # make directory
     end
 
     # write file, creating containing directory if needed
