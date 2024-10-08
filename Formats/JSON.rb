@@ -48,7 +48,6 @@ id ID _id id_str @id)
         @base = options[:base_uri]
         @doc = ::JSON.parse input.respond_to?(:read) ? input.read : input
         @options = options
-        @unmapped = []
 
         if block_given?
           case block.arity
@@ -85,7 +84,7 @@ id ID _id id_str @id)
           next if predicate == :drop
 
           unless predicate.match? HTTPURI
-            @unmapped.push predicate # unmapped predicate for logger + data-reconciliator
+            puts ["unmapped JSON attr \e[7m", predicate, "\e[0m v"].join}.join ' '
             predicate = Schema + predicate
           end
 
@@ -130,14 +129,10 @@ id ID _id id_str @id)
 
         out = scan_node &f # scan base node
 
-        unless @unmapped.empty?
-          puts @unmapped.uniq.map{|u|
-            ["\e[7m", u, "\e[0m "].join}.join ' '
-        end
-
-        # point to document base from request base
+        # request graph 👉 document graph
         yield @base.env[:base], Webize::URI(Contains), @base unless @base == @base.env[:base]
-        # point to JSON base from document base
+
+        # document graph 👉 JSON node
         yield @base, Webize::URI(Contains), out              unless @base == out
       end
     end
