@@ -25,10 +25,10 @@ module Webize
         graph_index nodes, details: true
       end
 
-      # table without inlining of child/contained nodes - useful for nodes where child-node points to parent, leading to large, even infinite(!) tables
+      # tabular list of nodes and thier metadata sans main content
       def index_table(nodes) = table nodes, skip: [Abstract, Contains, Content]
 
-      # table layout: resource <> row, property <> column
+      # table layout: graph <> table, resource <> row, property <> column
       def table graph, skip: []
         graph = graph.select{|g| g.respond_to? :keys}
         case graph.size
