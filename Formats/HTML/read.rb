@@ -223,18 +223,16 @@ module Webize
             when Schema + 'srcSet'
               o.scan(SRCSET).map{|uri, _|
                 yield subject, Image, @base.join(uri)}
-
               o = nil
             when Label # tokenize label attr
               o.split(/\s/).map{|label|
                 yield subject, p, label }
-
               o = nil
             when Link
               o = @base.join o
             end if o.class == String
 
-
+            # emit triple
             yield subject, p, o if o
           } if node.respond_to? :attribute_nodes
 

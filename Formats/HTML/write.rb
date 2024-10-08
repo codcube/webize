@@ -160,7 +160,10 @@ module Webize
         end
       when RDF::URI
         o = Resource.new(o).env env
-        {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
+#        puts o if o.dataURI?
+        {_: :a,
+         href: o.href,
+         c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       when String
         CGI.escapeHTML o
       when Time
