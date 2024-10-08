@@ -84,7 +84,7 @@ id ID _id id_str @id)
           next if predicate == :drop
 
           unless predicate.match? HTTPURI
-            puts ["unmapped JSON attr \e[7m", predicate, "\e[0m v"].join}.join ' '
+            puts ["unmapped JSON attr \e[7m", predicate, "\e[0m ", v].join
             predicate = Schema + predicate
           end
 
