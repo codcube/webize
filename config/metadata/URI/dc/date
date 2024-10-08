@@ -217,3 +217,5 @@ indexedAt
 data-published-date
 data-modified-date
 gtmPublishedDate
+publishTime
+updateTime
