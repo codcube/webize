@@ -123,3 +123,5 @@ data-stream-id
 player-id
 data-bsp-contentid
 data-stream-ucsid
+gtmBspStoryId
+bspStoryId
