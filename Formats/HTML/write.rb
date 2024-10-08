@@ -143,6 +143,10 @@ module Webize
         o
       when NilClass
         o
+      when Webize::Resource
+        puts "DATA-URI #{o}" if o.dataURI?
+        puts "IMG #{o}" if o.imgPath?
+        {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       when RDF::Graph
         # markup nodes visible via reference from base. this is broader than a concise bounded description: <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
         graph = JSON.fromGraph(o)[env[:base]] || {} # graph to tree, rooted at base URI
@@ -164,10 +168,6 @@ module Webize
         Property.new(Date).env(env).markup o
       when TrueClass
         {_: :input, type: :checkbox, checked: true}
-      when Webize::Resource
-        puts "DATA-URI #{o}" if o.dataURI?
-        puts "IMG #{o}" if o.imgPath?
-        {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       when Webize::URI
         markup Webize::Resource(o, env), env
       else
