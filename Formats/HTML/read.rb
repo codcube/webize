@@ -182,6 +182,17 @@ module Webize
               case p
               when /^aria/i
                 p = 'https://www.w3.org/ns/aria#' + p.sub(/^aria[-_]/i,'')
+              when 'src'
+                p = case node.name
+                    when 'audio'
+                      Audio
+                    when 'img'
+                      Image
+                    when 'video'
+                      Video
+                    else
+                      Link
+                    end
               when /type/i
                 p = Type
               else
