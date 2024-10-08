@@ -20,8 +20,8 @@ module Webize
   module JSON
 
     Array = /^\[.*\]$/
-    Inner = /^[^{'"]*(['"])?({.*})[^}]*$/
-    Outer = /^{.*}$/
+    Inner = /^[^{'"]*(['"])?({.*})[^}]*$/m
+    Outer = /^{.*}$/m
 
     class Format < RDF::Format
       content_type 'application/json',
