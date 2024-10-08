@@ -4,3 +4,5 @@ embeds
 post
 data-text
 data-text-expanded
+brightspot-dataLayer
+gtm-dataLayer
