@@ -111,7 +111,7 @@ module Webize
       doc.to_html                                  # output doc
     end
 
-    # markup-generation function for all Ruby types
+    # markup-generator for all Ruby types
     def self.markup o, env
       case o
       when Array
@@ -144,12 +144,10 @@ module Webize
       when NilClass
         o
       when RDF::Graph
-        # nodes must be reachable from base URI to be in resulting markup
-        # similar to a "concise bounded description" but not necessarily concise, just reachable
-        # see <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
-        graph = JSON.fromGraph(o)[env[:base]] || {} # graph data
-        graph[Type] = [Document]                    # type as graph document
-        markup graph, env                           # markup graph document
+        # markup nodes visible via reference from base. this is broader than a concise bounded description: <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
+        graph = JSON.fromGraph(o)[env[:base]] || {} # graph to tree, rooted at base URI
+        graph[Type] = [Document]                    # type graph as document
+        markup graph, env                           # markup document
       when RDF::Repository
         :repository
       when RDF::Literal
@@ -159,11 +157,7 @@ module Webize
           {_: :span, c: (CGI.escapeHTML o.to_s)}
         end
       when RDF::URI
-        o = Resource.new(o).env env
-#        puts o if o.dataURI?
-        {_: :a,
-         href: o.href,
-         c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
+        markup Resource(o, env), env
       when String
         CGI.escapeHTML o
       when Time
@@ -171,10 +165,11 @@ module Webize
       when TrueClass
         {_: :input, type: :checkbox, checked: true}
       when Webize::Resource
+        puts "DATA-URI #{o}" if o.dataURI?
+        puts "IMG #{o}" if o.imgPath?
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       when Webize::URI
-        o = Resource.new(o).env env
-        {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
+        markup Resource(o, env), env
       else
         puts "⚠️ markup undefined for type #{o.class}"
         {_: :span, c: CGI.escapeHTML(o.to_s)}
