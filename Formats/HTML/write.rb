@@ -157,7 +157,7 @@ module Webize
           {_: :span, c: (CGI.escapeHTML o.to_s)}
         end
       when RDF::URI
-        markup Resource(o, env), env
+        markup Webize::Resource(o, env), env
       when String
         CGI.escapeHTML o
       when Time
@@ -169,7 +169,7 @@ module Webize
         puts "IMG #{o}" if o.imgPath?
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       when Webize::URI
-        markup Resource(o, env), env
+        markup Webize::Resource(o, env), env
       else
         puts "⚠️ markup undefined for type #{o.class}"
         {_: :span, c: CGI.escapeHTML(o.to_s)}
