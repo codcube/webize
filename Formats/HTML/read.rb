@@ -31,7 +31,6 @@ module Webize
         @options = options
 
         @isBookmarks = @in.index(BookmarkDoctype) == 0
-
         if block_given?
           case block.arity
           when 0 then instance_eval(&block)
@@ -178,6 +177,7 @@ module Webize
             next if p == :drop || o.empty? # attr not emitted as RDF
 
             # predicate
+
             unless p.match? HTTPURI
               case p
               when /^aria/i
@@ -201,6 +201,7 @@ module Webize
             end
 
             # object
+
             case o
             when DataURI
               o = Webize::Resource o, @env
@@ -232,6 +233,7 @@ module Webize
             when Link
               o = @base.join o
             end if o.class == String
+
 
             yield subject, p, o if o
           } if node.respond_to? :attribute_nodes
