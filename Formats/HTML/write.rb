@@ -144,9 +144,7 @@ module Webize
       when NilClass
         o
       when Webize::Resource # above RDF::URI because RDF::URI === Webize::Resource('base',{})
-        if o.dataURI? || o.imgPath?
-          puts o, caller[0..12]
-        end
+        #puts o, caller[0..14] if o.dataURI? || o.imgPath?
         {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
       when RDF::Graph
         # markup nodes visible via reference from base. this is broader than a concise bounded description: <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>

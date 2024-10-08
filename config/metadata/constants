@@ -8,6 +8,7 @@ DC       http://purl.org/dc/terms/
 Date     http://purl.org/dc/terms/date
 Document http://xmlns.com/foaf/0.1/Document
 From     http://rdfs.org/sioc/ns#has_creator
+HT	 http://www.w3.org/2011/http#
 Image    http://purl.org/dc/terms/Image
 LDP	 http://www.w3.org/ns/ldp#
 Label	 http://www.w3.org/2000/01/rdf-schema#label

@@ -186,11 +186,14 @@ module Webize
                 p = case node.name
                     when 'audio'
                       Audio
-                    when 'img'
+                    when 'iframe'
+                      XHV + 'iframe'
+                    when /ima?ge?/
                       Image
                     when 'video'
                       Video
                     else
+                      puts "LINK #{node.name} #{o}"
                       Link
                     end
               when /type/i
