@@ -177,7 +177,7 @@ module Webize
 
             next if p == :drop || o.empty? # attr not emitted as RDF
 
-            # unmapped predicates
+            # predicate
             unless p.match? HTTPURI
               case p
               when /^aria/i
@@ -202,7 +202,9 @@ module Webize
 
             # object
             case o
-            when RelURI # URI in string -> RDF::URI
+            when DataURI
+              o = Webize::Resource o, @env
+            when RelURI
               o = Webize::Resource(@base.join(o), @env).relocate
             when JSON::Array
               begin
@@ -216,8 +218,6 @@ module Webize
               o = JSON::Reader.new(o, base_uri: @base).scan_node &f rescue o
             end
 
-            o = @base.join o if p == Link && o.class == String
-
             case p
             when Schema + 'srcSet'
               o.scan(SRCSET).map{|uri, _|
@@ -229,7 +229,9 @@ module Webize
                 yield subject, p, label }
 
               o = nil
-            end
+            when Link
+              o = @base.join o
+            end if o.class == String
 
             yield subject, p, o if o
           } if node.respond_to? :attribute_nodes

@@ -6,6 +6,7 @@ module Webize
   Gunk = Webize.configRegex 'blocklist/regex'
   RegexChars = /[\^\(\)\|\[\]\$]/
   HTTPURI = /^https?:/
+  DataURI = /^data:\S*$/
   RelURI = /^(http|\/|#)\S*$/
 
   # define URI constants
