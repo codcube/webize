@@ -232,7 +232,7 @@ module Webize
               when DataURI         # data URI
                 o = Webize::Resource o, @env
               when RelURI          # resolve + relocate URI
-                hrefize[]
+                href[]
               when JSON::Array     # parse JSON array
                 begin
                   ::JSON.parse(o).map{|e|
