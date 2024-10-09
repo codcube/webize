@@ -1,3 +1,6 @@
+
+
+
 module Webize
   module HTML
 
@@ -204,26 +207,32 @@ module Webize
             end
 
             # object
+            href = -> { # webize reference in string value
+              o = Webize::Resource(@base.join(o), @env).relocate}
 
             case p                 # objects of specific predicate:
+            when Audio
+              href[]
+            when Image
+              href[]
             when Schema + 'srcSet' # parse @srcset
               o.scan(SRCSET).map{|uri, _|
                 yield subject, Image, @base.join(uri)}
-
               next
             when Label             # tokenize @label
               o.split(/\s/).map{|label|
                 yield subject, p, label }
-
               next
             when Link              # resolve + relocate @link to URI (untyped reference)
-              o = Webize::Resource(@base.join(o), @env).relocate
+              href[]
+            when Video
+              href[]
             else                   # objects of any predicate:
               case o
               when DataURI         # data URI
                 o = Webize::Resource o, @env
               when RelURI          # resolve + relocate URI
-                o = Webize::Resource(@base.join(o), @env).relocate
+                hrefize[]
               when JSON::Array     # parse JSON array
                 begin
                   ::JSON.parse(o).map{|e|
