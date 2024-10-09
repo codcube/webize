@@ -207,8 +207,9 @@ module Webize
             end
 
             # object
-            href = -> { # webize reference in string value
-              o = Webize::Resource(@base.join(o), @env).relocate}
+            href = -> {            # resolve reference in string value
+              o = Webize::Resource(@base.join(o), @env).
+                    relocate}
 
             case p                 # objects of specific predicate:
             when Audio
@@ -223,7 +224,7 @@ module Webize
               o.split(/\s/).map{|label|
                 yield subject, p, label }
               next
-            when Link              # resolve + relocate @link to URI (untyped reference)
+            when Link              # @link untyped reference
               href[]
             when Video
               href[]
