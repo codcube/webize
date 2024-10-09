@@ -91,7 +91,7 @@ module Webize
               logger.warn ["no URI for <meta> \e[7m", p, "\e[0m ", o].join unless p.to_s.match? /^(drop|http)/
 
               if p == :drop
-                # puts "\e[38;5;196m-<meta>\e[0m #{k} #{o}"
+              # puts "\e[38;5;196m-<meta>\e[0m #{k} #{o}"
               else
                 # puts " <meta> #{p} #{o}"
                 yield @base, p, o
@@ -205,38 +205,41 @@ module Webize
 
             # object
 
-            case o
-            when DataURI
-              o = Webize::Resource o, @env
-            when RelURI
-              o = Webize::Resource(@base.join(o), @env).relocate
-            when JSON::Array
-              begin
-                ::JSON.parse(o).map{|e|
-                  yield subject, p, e if e}
-                o = nil
-              rescue
-                puts "not a JSON array: #{o}"
-              end
-            when JSON::Outer # JSON value
-              o = JSON::Reader.new(o, base_uri: @base).scan_node &f rescue o
-            end
-
-            case p
-            when Schema + 'srcSet'
+            case p                 # objects of specific predicate:
+            when Schema + 'srcSet' # parse @srcset
               o.scan(SRCSET).map{|uri, _|
                 yield subject, Image, @base.join(uri)}
-              o = nil
-            when Label # tokenize label attr
+
+              next
+            when Label             # tokenize @label
               o.split(/\s/).map{|label|
                 yield subject, p, label }
-              o = nil
-            when Link
-              o = @base.join o
-            end if o.class == String
+
+              next
+            when Link              # resolve + relocate @link to URI (untyped reference)
+              o = Webize::Resource(@base.join(o), @env).relocate
+            else                   # objects of any predicate:
+              case o
+              when DataURI         # data URI
+                o = Webize::Resource o, @env
+              when RelURI          # resolve + relocate URI
+                o = Webize::Resource(@base.join(o), @env).relocate
+              when JSON::Array     # parse JSON array
+                begin
+                  ::JSON.parse(o).map{|e|
+                    yield subject, p, e if e}
+                  next
+                rescue
+                  puts "not a JSON array: #{o}"
+                end
+              when JSON::Outer     # parse JSON object
+                o = JSON::Reader.new(o, base_uri: @base).scan_node &f rescue o
+              end
+
+            end
 
             # emit triple
-            yield subject, p, o if o
+            yield subject, p, o
           } if node.respond_to? :attribute_nodes
 
           # child nodes
