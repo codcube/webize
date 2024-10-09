@@ -232,6 +232,7 @@ module Webize
               when DataURI         # data URI
                 o = Webize::Resource o, @env
               when RelURI          # resolve + relocate URI
+                puts "URI #{p} #{o}" # we want to find all data that hits this to href-map on predicate w/o object-regex-sniffing
                 href[]
               when JSON::Array     # parse JSON array
                 begin
