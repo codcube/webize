@@ -72,7 +72,7 @@ body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
 cite {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
 cite::before {content: '📚'; color: #666; margin-left: -12px}
-code {color: #000; background-color: #eee; padding: .1em}
+code, code > span {color: #000; background-color: #eee; padding: .1em}
 dd {border-width: 0 0 1px 0; border-style: dotted; border-color: #222}
 div, dl, form, ol, ul, table, p {display: inline-block}
 dt {float: left; vertical-align: top; border-width: 0 0 1px 0; border-style: dotted; border-color: #444}
