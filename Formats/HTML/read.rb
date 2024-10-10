@@ -274,7 +274,7 @@ module Webize
                   case child.inner_text
                   when EmptyText
                   else
-                    yield subject, Contains, child.inner_text.strip
+                    yield subject, Contains, child.inner_text
                   end
                 end
               else # child node
