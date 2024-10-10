@@ -172,22 +172,25 @@ module Webize
         # link list to request base
         fn.call RDF::Statement.new @base, RDF::URI(Contains), list
 
-        linkCount = 0                                              # stats
+        linkCount = 0                              # statistics
+        query = @base.env[:qs]['q']&.downcase      # query argument
 
         @doc.lines.shuffle.map(&:chomp).map{|line| # each line:
-          unless line.empty? || line.match?(/^#/)  # skip empty or commented line
-            uri, title = line.split ' ', 2         # URI and optional title (String)
-            u = Webize::URI(uri)                   # URI                    (RDF)
-            if u.deny?
-              puts "➕ allow host #{u.host} in URI list"
-              URI::AllowHosts.push u.host
-            end
-            linkCount += 1
-            img = u.imgURI?
-            member = img ? Image : '#graph'
-            fn.call RDF::Statement.new list, RDF::URI(member), u
-            fn.call RDF::Statement.new u, RDF::URI(Title), title || uri unless img
-          end}
+          next if line.empty?            # skip empty line
+          next if line.match?(/^#/)      # skip commented line
+          next if query && !line.downcase.index(query) # skip line not macthhing query argument
+          uri, title = line.split ' ', 2 # URI and optional title (String)
+          u = Webize::URI(uri)           # URI                    (RDF)
+          if u.deny?
+            puts "➕ host \e[7m#{u.host}\e[0m in URI list"
+            URI::AllowHosts.push u.host
+          end
+          linkCount += 1
+          img = u.imgURI?
+          member = img ? Image : '#graph'
+          fn.call RDF::Statement.new list, RDF::URI(member), u
+          fn.call RDF::Statement.new u, RDF::URI(Title), title || uri unless img
+        }
 
         fn.call RDF::Statement.new list, RDF::URI(Size), linkCount
       end
