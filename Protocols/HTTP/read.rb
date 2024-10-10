@@ -246,6 +246,46 @@ module Webize
       opts[:thru] == false ? repository : notfound
     end
 
+    def GET
+      return hostGET if host     # remote node
+
+      ps = parts                 # path nodes
+      p = ps[0]                  # first node
+
+      return fetchLocal unless p # local node - void or root path
+                                 # proxy URI
+      return unproxy.hostGET if (p[-1] == ':' && ps.size > 1) || # remote node, URI w/ scheme
+                                (p.index('.') && p != 'favicon.ico') #            sans scheme
+
+      return dateDir if %w{m d h y}.member? p # current year/month/day/hour contents
+      return block parts[1] if p == 'block'   # block domain
+      return redirect '/d?f=msg*' if path == '/mail' # email
+
+      if extname == '.u' # URI list
+        case query
+        when 'fetch'     # remote node(s)
+          return fetch uris
+        when 'load'      # cached node(s)
+          return fetchLocal uris
+        end
+      end
+
+      fetchLocal         # local node(s)
+    end
+
+    def HEAD = self.GET.yield_self{|s, h, _|
+                                   [s, h, []]} # status + header only
+
+    def hostGET
+      return [301, {'Location' => relocate.href}, []] if relocate? # relocated node
+      if path == '/feed' && adapt? && Feed::Subscriptions[host]    # aggregate feed node - doesn't exist on origin server
+        return fetch Feed::Subscriptions[host]
+      end
+      dirMeta              # 👉 adjacent nodes
+      return deny if deny? # blocked node
+      fetch                # remote node
+    end
+
   end
 end
 

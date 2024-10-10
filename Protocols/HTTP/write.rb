@@ -8,6 +8,19 @@ module Webize
       h['Expires'] = (Time.now + 3e7).httpdate if format.match?(FixedFormat) # give immutable cache a long expiry
       [s, h, b]}
 
+    def OPTIONS
+      env[:deny] = true
+      [202, {'Access-Control-Allow-Credentials' => 'true',
+             'Access-Control-Allow-Headers' => %w().join(', '),
+             'Access-Control-Allow-Origin' => origin}, []]
+    end
+
+    def POST
+      env[:deny] = true
+      [202, {'Access-Control-Allow-Credentials' => 'true',
+             'Access-Control-Allow-Origin' => origin}, []]
+    end
+
     # return graph in requested format
     def respond repositories, defaultFormat = 'text/html'
       format = selectFormat defaultFormat
