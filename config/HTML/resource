@@ -3,6 +3,7 @@ http://mw.logbook.am/webize/Node#b b
 http://mw.logbook.am/webize/Node#blockquote blockquote
 http://mw.logbook.am/webize/Node#br br
 http://mw.logbook.am/webize/Node#cite cite
+http://mw.logbook.am/webize/Node#code code
 http://mw.logbook.am/webize/Node#div div
 http://mw.logbook.am/webize/Node#em em
 http://mw.logbook.am/webize/Node#form form
@@ -19,6 +20,7 @@ http://mw.logbook.am/webize/Node#img img
 http://mw.logbook.am/webize/Node#li li
 http://mw.logbook.am/webize/Node#ol ol
 http://mw.logbook.am/webize/Node#p p
+http://mw.logbook.am/webize/Node#pre pre
 http://mw.logbook.am/webize/Node#picture picture
 http://mw.logbook.am/webize/Node#select select
 http://mw.logbook.am/webize/Node#span span
