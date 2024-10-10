@@ -179,15 +179,14 @@ module Webize
             uri, title = line.split ' ', 2         # URI and optional title (String)
             u = Webize::URI(uri)                   # URI                    (RDF)
             if u.deny?
-              puts "dropping #{u} in URI-list"
-            else
-              linkCount += 1
-              img = u.imgURI?
-              member = img ? Image : '#graph'
-
-              fn.call RDF::Statement.new list, RDF::URI(member), u
-              fn.call RDF::Statement.new u, RDF::URI(Title), title || uri unless img
+              puts "➕ allow host #{u.host} in URI list"
+              URI::AllowHosts.push u.host
             end
+            linkCount += 1
+            img = u.imgURI?
+            member = img ? Image : '#graph'
+            fn.call RDF::Statement.new list, RDF::URI(member), u
+            fn.call RDF::Statement.new u, RDF::URI(Title), title || uri unless img
           end}
 
         fn.call RDF::Statement.new list, RDF::URI(Size), linkCount

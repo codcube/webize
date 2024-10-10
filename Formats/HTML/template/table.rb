@@ -5,7 +5,9 @@ module Webize
       # graph index
       def graph_index nodes, details: false
         nodes.map do |node|
+          (puts 'not a node?', node; next) unless node.class == Hash
           next unless uri = node['uri']
+
           uri = Webize::Resource uri, env
 
           # detailed info
