@@ -36,10 +36,7 @@ module Webize
       def picture(p) = inlineResource p, :span
       def source(s) = inlineResource s, :span
 
-      def svg node
-        node.delete Label
-        inlineResource node, :svg
-      end
+      def svg = unlabeledResource node, :svg
 
     end
   end

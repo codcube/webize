@@ -21,12 +21,16 @@ module Webize
 
       def div(node) = bareResource node, :div
 
-      # don't show typetag, unless denoted w/ CSS ::before declaration
-      # when sticking to the barebones/stock/generic metadata fields, this means
-      # DL DT DD is not rendered, which is disallowed inside many DOM node types
+      # strip RDF typetag. note: type is often still denoted with CSS ::before declaration, but that doesn't introduce metadata-table child node which is use case for this
       def bareResource re, type
         re.delete Type
         resource re, type
+      end
+
+      # strip RDF-typetag and label metadata-attributes
+      def unlabeledResource re, type
+        re.delete Label
+        inlineResource re, type
       end
 
       # if you want to render extensive (meta)data with SPAN instead of DL/DT/DD, use this
@@ -80,27 +84,27 @@ module Webize
                  'uri', XHV + 'namespace',
                  Title, Contains]  # properties we handle before delegating to generic keyval render
 
-        [{_: name,                                # node
-          c: [({class: :title,                    # title
-                c: r[Title].map{|t|
-                  HTML.markup t, env}}.           # attach link to title if exists
-                 update(ref || {}) if r.has_key? Title),
-              "\n", keyval(r, inline: inline, skip: shown), # keyval render remaining fields
-              if r[Contains]                      # child nodes
-                if TabularChild.member? type.to_s # tabular view of child nodes
-                  property Schema + 'item', r[Contains]
-                else
-                  r[Contains].map{|c|             # generic inlining of child nodes
-                    HTML.markup c, env}
-                end
-              end,
-              origin_ref,                         # origin pointer
-             ]}.
-           update(id ? {id: id} : {}).
-           update((id && type == :div) ? {class: :resource} : {}).
-           update(r.has_key?('#style') ? {style: r['#style'][0]} : {}).
-           update(r.has_key?(XHV + 'namespace') ? {xmlns: r[XHV + 'namespace'][0]['uri']} : {}).
-           update(color ? {style: "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} 1px, transparent 1px, transparent 16px); border-color: #{color}"} : {}), "\n"]
+        {_: name,                                # node
+         c: [({class: :title,                    # title
+               c: r[Title].map{|t|
+                 HTML.markup t, env}}.           # attach link to title if exists
+                update(ref || {}) if r.has_key? Title),
+             keyval(r, inline: inline, skip: shown), # keyval metadata fields
+             if r[Contains]                      # child nodes
+               if TabularChild.member? type.to_s # tabular view of child nodes
+                 property Schema + 'item', r[Contains]
+               else
+                 r[Contains].map{|c|             # generic inlining of child nodes
+                   HTML.markup c, env}
+               end
+             end,
+             origin_ref,                         # origin pointer
+            ]}.
+          update(id ? {id: id} : {}).
+          update((id && type == :div) ? {class: :resource} : {}).
+          update(r.has_key?('#style') ? {style: r['#style'][0]} : {}).
+          update(r.has_key?(XHV + 'namespace') ? {xmlns: r[XHV + 'namespace'][0]['uri']} : {}).
+          update(color ? {style: "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} 1px, transparent 1px, transparent 16px); border-color: #{color}"} : {})
       end
     end
   end

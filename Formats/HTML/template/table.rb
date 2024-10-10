@@ -89,25 +89,20 @@ module Webize
 
         list, key, val = inline ? %w(span span span) : %w(dl dt dd) # element types
 
-        [{_: list, class: :kv,
-          c: kv.map{|k, vs|
-            next if skip.member? k
+        {_: list, class: :kv,
+         c: kv.map{|k, vs|
+           next if skip.member? k
 
-            [inline ? '<br>' : nil,
+           [inline ? '<br>' : nil,
 
-             {_: key,
-              class: :key,
-              c: Property.new(Type).env(env).
-                rdf_type([k], inline: inline)},
-             "\n",
+            {_: key,
+             class: :key,
+             c: Property.new(Type).env(env).
+               rdf_type([k], inline: inline)},
 
-             {_: val,
-              class: :val,
-              c: property(k, vs.class == Array ? vs : [vs])},
-
-             "\n"]
-          }},
-         "\n"]
+            {_: val,
+             class: :val,
+             c: property(k, vs.class == Array ? vs : [vs])}]}}
       end
 
     end

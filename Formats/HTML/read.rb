@@ -32,7 +32,6 @@ module Webize
         @env = @base.respond_to?(:env) ? @base.env : HTTP.env
         @in = input.respond_to?(:read) ? input.read : input.to_s
         @options = options
-
         @isBookmarks = @in.index(BookmarkDoctype) == 0
         if block_given?
           case block.arity

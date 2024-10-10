@@ -29,17 +29,8 @@ module Webize
       def sup(node) = inlineResource node, :sup
       def u(node) = inlineResource node, :u
 
-      def pre content
-        content.delete Label
-       # ["<br>\n",
-        (bareResource content, :pre)
-        #]
-      end
-
-      def code content
-        content.delete Label
-        bareResource content, :code
-      end
+      def pre(content) = unlabeledResource content, :pre
+      def code(content) = bareResource content, :code
 
       # hypertext anchor
       def a anchor
