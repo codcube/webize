@@ -84,7 +84,6 @@ favicon
 featured_image
 fluid-icon
 forem:logo
-header
 header_icon
 header_static
 http://ogp.me/ns#image
@@ -228,3 +227,7 @@ data-wp-image
 data-img-retina-url
 smallImageUrl
 square_220
+highResolutionImages
+lowResolutionImage
+adCreativeImage
+videoPreviewImageSrc

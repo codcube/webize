@@ -130,3 +130,8 @@ data-hs-link-id
 gtmStoryOrgId
 gtmStationOrgId
 X-Amz-CF-ID
+data-csa-c-item-id
+data-csa-c-slot-id
+data-csa-c-content-id
+campaignId
+adId
