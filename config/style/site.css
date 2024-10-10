@@ -78,7 +78,7 @@ dl.kv {float: right}
 dt {float: left; vertical-align: top; border-width: 0 0 1px 0; border-style: dotted; border-color: #444}
 form, ol, ul, table, p {display: inline-block}
 h1, h1 > span {background-color: #ccc; color: #000}
-h1, h2, h3, h4, h5, h6 {clear: both}
+h1, h2, h3, h4, h5, h6 {clear: both; padding: 0 0 0 .2em}
 h2, h2 > span {background-color: #aaa; color: #000}
 h3, h3 > span {background-color: #888; color: #000}
 h4, h4 > span {background-color: #666; color: #000}
@@ -91,7 +91,7 @@ li:nth-child(odd) {background-color: #222; color: #fff}
 p {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
 p::before {content: '¶'; color: #666; margin-left: -12px}
 pre, code {white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono}
-pre, ul, ol, dl, h1, h2, h3, h4, h5, h6, img {margin: 0; padding: 0}
+pre, ul, ol, dl, img {margin: 0; padding: 0}
 span.quote > .quote > .quote {background-color: #777}
 span.quote > .quote {background-color: #aaa}
 span.quote {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em; max-width: 80ex}

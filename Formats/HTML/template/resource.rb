@@ -46,8 +46,7 @@ module Webize
         unless re['uri']
           re['uri'] = '#r_' + Digest::SHA2.hexdigest(rand.to_s)
         end
-        re.delete Type # typetag denoted w/ CSS ::before
-        resource re, type
+        bareResource re, type
       end
 
       def resource r, type = :div, inline: false
