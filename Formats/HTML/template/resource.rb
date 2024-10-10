@@ -43,9 +43,8 @@ module Webize
 
       # mint an identifier if nonexistent TODO check dc:identifier field as well as default 'uri'
       def identifiedResource re, type
-        unless re['uri']
-          re['uri'] = '#r_' + Digest::SHA2.hexdigest(rand.to_s)
-        end
+        re['uri'] ||= ['#', type,'_',
+                       Digest::SHA2.hexdigest(rand.to_s)].join
         bareResource re, type
       end
 
