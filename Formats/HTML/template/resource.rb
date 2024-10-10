@@ -21,21 +21,19 @@ module Webize
 
       def div(node) = bareResource node, :div
 
-      # strip RDF typetag. note: type is often still denoted with CSS ::before declaration, but that doesn't introduce metadata-table child node which is use case for this
+      # strip RDF typetag, denoted with CSS ::before as alternative to metadata child-node(s)
       def bareResource re, type
         re.delete Type
         resource re, type
       end
 
-      # strip RDF-typetag and label metadata-attributes
+      # strip RDF-typetag and label metadata
       def unlabeledResource re, type
         re.delete Label
         inlineResource re, type
       end
 
-      # if you want to render extensive (meta)data with SPAN instead of DL/DT/DD, use this
-      # the browser silently moves block children outside a node only allowing inline children - rearranging DOM tree without so much as a warning in devtools in stock configuration
-      # some research and a HTML linter session is on order - maybe it parses CSS first, then consults display: inline declarations to decide whether to tree-rearrange? TODO investigate
+      # render resource metadata with SPAN instead of DL/DT/DD
       def inlineResource re, type
         re.delete Type
         resource re, type, inline: true
