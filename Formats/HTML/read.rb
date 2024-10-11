@@ -80,30 +80,33 @@ module Webize
 
         # <meta>
         @doc.css('meta').map{|m|
-          if k = (m.attr('name') || m.attr('property'))  # predicate
-            if o = (m.attr('content') || m.attr('href')) # object
-              p = MetaMap[k] || k                        # map property-names
-              case o
+          if k = (m.attr('itemprop') ||  # predicate
+                  m.attr('name') ||
+                  m.attr('property'))
+
+            if o = (m.attr('content') || # object
+                    m.attr('href'))
+
+              p = MetaMap[k] || k        # map predicate
+
+              case o                     # map object
               when RelURI
                 o = @base.join o
               when JSON::Outer
                 o = JSON::Reader.new(o, base_uri: @base).scan_node &f
               end
 
-              logger.warn ["no URI for <meta> \e[7m", p, "\e[0m ", o].join unless p.to_s.match? /^(drop|http)/
+              logger.warn ["META no URI \e[7m", p, "\e[0m ", o].join unless p.to_s.match? /^(drop|http)/
 
-              if p == :drop
-              # puts "\e[38;5;196m-<meta>\e[0m #{k} #{o}"
-              else
-                # puts " <meta> #{p} #{o}"
-                yield @base, p, o
-                m.remove
-              end
+              yield @base, p, o unless p == :drop
+              m.remove
             end
           elsif m['http-equiv'] == 'refresh'
             if u = m['content'].split('url=')[-1]
               yield @base, Link, RDF::URI(u)
             end
+          else
+            puts "META #{m}"
           end}
 
         # <link>

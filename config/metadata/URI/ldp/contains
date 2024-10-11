@@ -13,6 +13,14 @@ mutations
 onTap
 options
 params
+dialogMessages
+reelShelfRenderer
+videoDescriptionInfocardsSectionRenderer
+structuredDescriptionVideoLockupRenderer
+compactInfocardRenderer
+creatorCustomUrlButtons
+webCommandMetadata
+commandMetadata
 popup
 post
 record
