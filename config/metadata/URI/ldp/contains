@@ -1,4 +1,5 @@
 record
+cards
 embed
 embeds
 post
@@ -8,7 +9,10 @@ brightspot-dataLayer
 gtm-dataLayer
 data-targeting-data
 mainEntityOfPage
+mutations
 onTap
+options
+popup
 reelWatchEndpoint
 shortsLockupViewModel
 innertubeCommand
