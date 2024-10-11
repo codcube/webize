@@ -12,6 +12,7 @@ mainEntityOfPage
 mutations
 onTap
 options
+params
 popup
 post
 record

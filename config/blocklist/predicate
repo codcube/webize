@@ -73,6 +73,8 @@ crossorigin
 csrf-param
 csrf-token
 token
+style
+serializedContextData
 sequenceParams
 curr_heat_score
 current-catalog-service-hash
