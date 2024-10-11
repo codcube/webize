@@ -119,7 +119,7 @@ module Webize
           if (formats = RDF::Format.content_types[format]) &&           # content-type definitions
              !(exts = formats.map(&:file_extension).flatten).member?(ext) # valid suffix for content type?
             doc = [(link = doc), '.', exts[0]].join                       # append suffix, link from original name
-            FileUtils.ln_s File.basename(doc), link unless dirURI? || File.exist?(link) || File.symlink?(link)
+            FileUtils.ln_s File.basename(doc), link unless File.exist?(link) || File.symlink?(link)
           end
 
           File.open(doc, 'w'){|f|f << body }                            # cache fetched representation

@@ -37,8 +37,9 @@ end
 
 # components
 %w(
+access
+location
 metadata
-method
 proxy
 rack
 read
