@@ -20,6 +20,7 @@ module Webize
     rdfs: RDFs,
     schema: Schema,
     sioc: SIOC,
+    xhv: XHV
   }
 
   class URI < RDF::URI

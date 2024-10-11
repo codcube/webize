@@ -108,11 +108,11 @@ module Webize
                 yield @base, Link, RDF::URI(u)
               end
             else
-              puts "HTTP-EQUIV #{eq}"
+              #puts "HTTP-EQUIV #{eq}"
             end
             m.remove
           else
-            puts "META #{m}"
+            #puts "META #{m}"
           end}
 
         # <link>

@@ -63,7 +63,7 @@ blockquote blockquote blockquote {background-color: #000; color: #fff}
 blockquote blockquote blockquote::before {color: #000}
 blockquote blockquote {background-color: #fff; color: #000}
 blockquote blockquote::before {color: #fff}
-blockquote {border-radius: .48em; margin: 2px 2px 2px 12px; border: .1em solid #888; background-color: #242424; color: #fff}
+blockquote {border-radius: .48em; margin: 2px 2px 2px 12px; border: .1em solid #333; background-color: #222; color: #fff}
 blockquote::before {content: '❝'; color: #aaa; margin-left: -14px; font-size: 1.5em}
 body {font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans; padding: 0; margin: 0}
 body, span {background-color: #000; color: #fff}
