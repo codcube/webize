@@ -74,7 +74,7 @@ module Webize
 
     def fsNamesQuery = [File.basename(path, extname),        # basename
                         Digest::SHA2.hexdigest(query)[0..9], # query hash
-                        extname]                             # extension
+                        extname] - ['']                      # extension
 
     # URI -> pathname
     def fsPath
