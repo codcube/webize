@@ -101,6 +101,7 @@ table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 
 table.tabular {border: 1px dotted #555}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
+td[property="http://purl.org/dc/terms/Image"] {min-width: 128px}
 th {background-color: #383838; color: #fff}
 th:first-child {border-radius: .3em 0 0 .3em}
 th:last-child {border-radius: 0 .3em .3em 0}

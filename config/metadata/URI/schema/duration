@@ -8,3 +8,4 @@ data-default-duration
 data-duration
 audio_length
 data-stream-duration
+durationMillis

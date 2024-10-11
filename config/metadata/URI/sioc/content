@@ -88,3 +88,17 @@ innerHtml
 data-content
 data-placeholder
 paragraph
+innertubeCommand
+dialogMessages
+reelShelfRenderer
+videoDescriptionInfocardsSectionRenderer
+structuredDescriptionVideoLockupRenderer
+compactInfocardRenderer
+creatorCustomUrlButtons
+webCommandMetadata
+commandMetadata
+reelWatchEndpoint
+shortsLockupViewModel
+watchEndpointSupportedOnesieConfig
+html5PlaybackOnesieConfig
+thumbnailDetails
