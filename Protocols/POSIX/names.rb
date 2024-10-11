@@ -1,19 +1,18 @@
 module Webize
   class POSIX::Node
 
-    # URI name methods. filesystem syscall/io allowed here unlike the 'pure functions' of URI.rb
+    # URI name methods. filesystem syscall/io allowed here, unlike the pure functions im URI.rb
 
-    # (IO) document path (noun) and verb due to side effect of container creation
+    # (IO) document path (noun) and container initialization (verb)
     def document
       mkdir
       fsPath
     end
 
-    # (IO) follow symlinks to real file and return its extension
+    # (IO) follow symlinks and return name-extension
     def extension = File.extname realpath
 
-    # (pure) map filesystem paths to URIs
-    # [path, ...] -> [URI, ...]
+    # (pure) [pathname] -> [URI]
     def fromNames ps
       base = host ? self : RDF::URI('/')
       pathbase = host ? host.size : 0
@@ -21,10 +20,10 @@ module Webize
         Node base.join p.to_s[pathbase..-1].gsub(':','%3A').gsub(' ','%20').gsub('#','%23')}
     end
 
-    # (pure) URI -> Pathname
+    # (pure) URI -> pathname
     def node = Pathname.new fsPath
 
-    # (IO) follow symlinks to real file
+    # (IO) follow symlinks to real location
     def realpath
       File.realpath fsPath
     end
