@@ -101,10 +101,16 @@ module Webize
               yield @base, p, o unless p == :drop
               m.remove
             end
-          elsif m['http-equiv'] == 'refresh'
-            if u = m['content'].split('url=')[-1]
-              yield @base, Link, RDF::URI(u)
+          elsif eq = m['http-equiv']
+            case eq
+            when 'refresh'
+              if u = m['content'].split('url=')[-1]
+                yield @base, Link, RDF::URI(u)
+              end
+            else
+              puts "HTTP-EQUIV #{eq}"
             end
+            m.remove
           else
             puts "META #{m}"
           end}

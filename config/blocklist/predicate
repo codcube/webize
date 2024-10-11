@@ -10,6 +10,7 @@ bold
 fontFamilyName
 styleRunExtensions
 styleRunColorMapExtension
+feedbackToken
 getReportFormEndpoint
 continuation
 data-js-reload
