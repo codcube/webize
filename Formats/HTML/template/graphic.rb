@@ -33,6 +33,7 @@ module Webize
          ' ']
       end
 
+      def figure(f) = inlineResource f, :figure
       def picture(p) = inlineResource p, :span
       def source(s) = inlineResource s, :span
 

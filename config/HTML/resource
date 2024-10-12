@@ -6,6 +6,7 @@ http://mw.logbook.am/webize/Node#cite cite
 http://mw.logbook.am/webize/Node#code code
 http://mw.logbook.am/webize/Node#div div
 http://mw.logbook.am/webize/Node#em em
+http://mw.logbook.am/webize/Node#figure figure
 http://mw.logbook.am/webize/Node#form form
 http://mw.logbook.am/webize/Node#h1 h1
 http://mw.logbook.am/webize/Node#h2 h2
@@ -42,3 +43,4 @@ http://purl.org/dc/terms/Image img
 http://purl.org/dc/terms/Video videotag
 http://schema.org/InteractionCounter interactions
 http://xmlns.com/foaf/0.1/Document document
+ImageObject img
