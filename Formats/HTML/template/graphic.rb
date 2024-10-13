@@ -21,10 +21,17 @@ module Webize
         [{_: :span,
           class: :image,
           c: [if image.has_key? 'uri'
-              {_: :img,
-               src: Webize::Resource((env[:base].join image['uri']), env).href,
-               alt: (image[Abstract] ||
-                     image[Title]).to_s}
+
+              src = Webize::Resource env[:base].join(image['uri']), env
+
+              if src.deny?
+                {_: :span, class: :blocked_image, c: :🖼️}
+              else
+                {_: :img,
+                 src: src.href,
+                 alt: (image[Abstract] ||
+                       image[Title]).to_s}
+              end
               end,
 
               keyval(image,
