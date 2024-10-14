@@ -179,7 +179,8 @@ module Webize
         @doc.lines.shuffle.map(&:chomp).map{|line| # each line:
           next if line.empty?            # skip empty line
           next if line.match?(/^#/)      # skip commented line
-          next if query && !line.downcase.index(query) # skip line not macthhing query argument
+          next if query &&               # skip entry not matching query argument
+                  !line.downcase.index(query)
           uri, title = line.split ' ', 2 # URI and optional title (String)
           u = Webize::URI(uri)           # URI                    (RDF)
           if u.deny?
