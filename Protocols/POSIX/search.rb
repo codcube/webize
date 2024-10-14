@@ -44,7 +44,7 @@ module Webize
 
     # URI -> [path,path..]
 
-    def pathFind(q) = (IO.popen(['find', fsPath, '-iname', q]).read.lines.map &:chomp rescue [])
+    def pathFind(q) = IO.popen(['find', fsPath, '-iname', q]).read.lines.map &:chomp
 
     def pathGlob = Pathname.glob fsPath
 
@@ -52,7 +52,7 @@ module Webize
       files = [fsPath] if !files || files.empty?
       q = env[:qs]['q'].to_s
       return [] if q.empty?
-      IO.popen(['grep', '-ril', q, *files]).read.lines.map &:chomp rescue []
+      IO.popen(['grep', '-ril', q, *files]).read.lines.map &:chomp
     end
 
   end
