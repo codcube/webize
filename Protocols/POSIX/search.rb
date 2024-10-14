@@ -49,9 +49,14 @@ module Webize
     def pathGlob = Pathname.glob fsPath
 
     def pathGrep files = nil
-      files = [fsPath] if !files || files.empty?
-      q = env[:qs]['q'].to_s
-      return [] if q.empty?
+      return [] if (q = env[:qs]['q'].to_s).empty? # query arg is required
+
+      files = if !files || files.empty?            # default search space is current container
+                [fsPath]
+              else
+                files
+              end.map &:to_s
+
       IO.popen(['grep', '-ril', q, *files]).read.lines.map &:chomp
     end
 
