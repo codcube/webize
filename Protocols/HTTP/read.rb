@@ -23,15 +23,16 @@ module Webize
   end
 
   class HTTP::Node
-    # fetch node(s) from local or remote host
+
+    # fetch node(s) from local or remote storage
     def fetch nodes = nil
 
-      # local fetch (filesystem)
-      return fetchLocal nodes if offline? # offline mode
+      # local
+      return fetchLocal nodes if offline? # offline
       return fileResponse if storage.file? && fileMIME.match?(FixedFormat) && !basename.match?(/index/i)# cache hit
 
-      # remote fetch (network)
-      return fetchMany nodes if nodes # multiple node(s)
+      # network
+      return fetchMany nodes if nodes # node(s)
              fetchRemote              # node
     end
 
