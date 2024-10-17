@@ -120,8 +120,11 @@ http://www.w3.org/2004/02/skos/core#Concept 🧠
 http://www.w3.org/2011/http#Content-Length 📏
 http://www.w3.org/2011/http#Content-Type 🧱
 http://www.w3.org/2011/http#Date ⌚
+http://www.w3.org/2011/http#ETag 🔖
+http://www.w3.org/2011/http#Expires ⌛
 http://www.w3.org/2011/http#Last-Modified 🗓️
 http://www.w3.org/2011/http#Referer 👉
+http://www.w3.org/2011/http#Server 🖥️
 http://www.w3.org/2011/http#cache-control 📦
 http://www.w3.org/2011/http#content-length 📏
 http://www.w3.org/2011/http#content-type 🧱
