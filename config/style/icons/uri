@@ -117,12 +117,14 @@ http://www.w3.org/2000/01/rdf-schema#Resource 🌐
 http://www.w3.org/2000/01/rdf-schema#label 🏷
 http://www.w3.org/2000/01/rdf-schema#subClassOf ⊂
 http://www.w3.org/2004/02/skos/core#Concept 🧠
+http://www.w3.org/2011/http#Cache-Control 📦
 http://www.w3.org/2011/http#Content-Length 📏
 http://www.w3.org/2011/http#Content-Type 🧱
 http://www.w3.org/2011/http#Date ⌚
 http://www.w3.org/2011/http#ETag 🔖
 http://www.w3.org/2011/http#Expires ⌛
 http://www.w3.org/2011/http#Last-Modified 🗓️
+http://www.w3.org/2011/http#Link 🔗
 http://www.w3.org/2011/http#Referer 👉
 http://www.w3.org/2011/http#Server 🖥️
 http://www.w3.org/2011/http#cache-control 📦
@@ -131,6 +133,7 @@ http://www.w3.org/2011/http#content-type 🧱
 http://www.w3.org/2011/http#etag 🔖
 http://www.w3.org/2011/http#expires ⌛
 http://www.w3.org/2011/http#last-modified 🗓️
+http://www.w3.org/2011/http#link 🔗
 http://www.w3.org/2011/http#preload 🐰
 http://www.w3.org/2011/http#referer 👉
 http://www.w3.org/2011/http#server 🖥️
