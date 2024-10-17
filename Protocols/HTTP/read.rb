@@ -137,8 +137,8 @@ module Webize
 
           repository = (readRDF format, body).persist(env, summarize: summarize)  # read RDF, cache graph(s)
           repository << RDF::Statement.new(env[:base], RDF::URI('#source'), self) # graph-list entry
-          repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) # HTTP status RDF
-          h.map{|k,v| repository << RDF::Statement.new(self, RDF::URI(HT+k), v)} # HTTP headers RDF
+          repository << RDF::Statement.new(self, RDF::URI(HT + 'status'), status) # HTTP status RDF
+          h.map{|k,v| repository << RDF::Statement.new(self, RDF::URI(HT+k), v)}  # HTTP headers RDF
           repository << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch timing
           repository << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache timing
 

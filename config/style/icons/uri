@@ -4,7 +4,6 @@
 #entry ☰
 #fTime 🐕
 #graph ⚙️
-#httpStatus 🏁
 #origin 🌍
 #pTime ⚙️
 #sort ↨
@@ -137,6 +136,7 @@ http://www.w3.org/2011/http#link 🔗
 http://www.w3.org/2011/http#preload 🐰
 http://www.w3.org/2011/http#referer 👉
 http://www.w3.org/2011/http#server 🖥️
+http://www.w3.org/2011/http#status 🏁
 http://www.w3.org/ns/ldp#Container 📁
 http://www.w3.org/ns/ldp#contains 📁
 http://www.w3.org/ns/ldp#next ▶
