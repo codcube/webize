@@ -4,7 +4,7 @@
 #entry ☰
 #fTime 🐕
 #graph ⚙️
-#httpStatus 🔖
+#httpStatus 🏁
 #origin 🌍
 #pTime ⚙️
 #sort ↨
@@ -119,7 +119,17 @@ http://www.w3.org/2000/01/rdf-schema#subClassOf ⊂
 http://www.w3.org/2004/02/skos/core#Concept 🧠
 http://www.w3.org/2011/http#Content-Length 📏
 http://www.w3.org/2011/http#Content-Type 🧱
+http://www.w3.org/2011/http#Date ⌚
+http://www.w3.org/2011/http#Last-Modified 🗓️
+http://www.w3.org/2011/http#Referer 👉
+http://www.w3.org/2011/http#content-length 📏
+http://www.w3.org/2011/http#content-type 🧱
+http://www.w3.org/2011/http#etag 🔖
+http://www.w3.org/2011/http#expires ⌛
+http://www.w3.org/2011/http#last-modified 🗓️
 http://www.w3.org/2011/http#preload 🐰
+http://www.w3.org/2011/http#referer 👉
+http://www.w3.org/2011/http#server 🖥️
 http://www.w3.org/ns/ldp#Container 📁
 http://www.w3.org/ns/ldp#contains 📁
 http://www.w3.org/ns/ldp#next ▶
