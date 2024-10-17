@@ -1,11 +1,13 @@
-#sort ↨
 #archive 📦
 #cache 📦
 #childDir 📂
 #entry ☰
+#fTime 🐕
 #graph ⚙️
 #httpStatus 🔖
 #origin 🌍
+#pTime ⚙️
+#sort ↨
 #source ⚙️
 ArticleGQL 📝
 article 📰
@@ -115,6 +117,8 @@ http://www.w3.org/2000/01/rdf-schema#Resource 🌐
 http://www.w3.org/2000/01/rdf-schema#label 🏷
 http://www.w3.org/2000/01/rdf-schema#subClassOf ⊂
 http://www.w3.org/2004/02/skos/core#Concept 🧠
+http://www.w3.org/2011/http#Content-Length 📏
+http://www.w3.org/2011/http#Content-Type 🧱
 http://www.w3.org/2011/http#preload 🐰
 http://www.w3.org/ns/ldp#Container 📁
 http://www.w3.org/ns/ldp#contains 📁
