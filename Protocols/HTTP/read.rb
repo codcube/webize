@@ -62,15 +62,24 @@ module Webize
 
     def fetchHTTP thru: true, summarize: false                         # return HTTP response to caller? summarize fetched content?
       start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
+
       doc = storage.document                                           # graph-cache location
       meta = [doc, '.meta'].join                                       # HTTP metadata-cache location
-      cache_headers = {}
-      if File.exist? meta
-        metadata = ::JSON.parse File.open(meta).read
+
+      cache_headers = {}                                               # conditional-request headers
+      if File.exist? meta                                              # cached metadata (HEAD) for resource?
+        metadata = ::JSON.parse File.open(meta).read                   # read metadata and set header fields
         cache_headers['If-None-Match'] = metadata['ETag'] if metadata['ETag']
         cache_headers['If-Modified-Since'] = metadata['Last-Modified'] if metadata['Last-Modified']
       end
-      ::URI.open(uri, headers.merge(URI_OPEN_OPTS).merge(cache_headers)) do |response|
+
+      head = headers.                                                  # request headers
+               merge(URI_OPEN_OPTS).                                   # configure open-URI
+               merge(cache_headers)                                    # cache headers
+                                                                       # accept graph data from origin when client is not content-negotiation aware
+      head['Accept'] = ['text/turtle', head['Accept']].join ',' unless env[:notransform] || !head.has_key?('Accept') || head['Accept'].match?(/text\/turtle/)
+
+      ::URI.open(uri, head) do |response|
         fetch_time = Time.now                                          # fetch timing
         h = headers response.meta                                      # response header
         case status = response.status[0].to_i                          # response status

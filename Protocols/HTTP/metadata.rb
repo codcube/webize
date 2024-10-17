@@ -92,10 +92,6 @@ module Webize
           head[key] = (v.class == Array && v.size == 1 && v[0] || v) unless SingleHopHeaders.member? key.downcase # set header
         end}
 
-      # accept graph data from origin even if client is oblivious
-      #  ?notransform disables this, delivering upstream data-browser/UI code rather than graph data
-      head['Accept'] = ['text/turtle', head['Accept']].join ',' unless env[:notransform] || head['Accept']&.match?(/text\/turtle/)
-
       head['Content-Type'] = 'application/json' if %w(api.mixcloud.com).member? host
 
       head['Last-Modified']&.sub! /((ne|r)?s|ur)?day/, '' # abbr day name to 3-letter variant
