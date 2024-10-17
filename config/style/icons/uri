@@ -122,6 +122,7 @@ http://www.w3.org/2011/http#Content-Type 🧱
 http://www.w3.org/2011/http#Date ⌚
 http://www.w3.org/2011/http#Last-Modified 🗓️
 http://www.w3.org/2011/http#Referer 👉
+http://www.w3.org/2011/http#cache-control 📦
 http://www.w3.org/2011/http#content-length 📏
 http://www.w3.org/2011/http#content-type 🧱
 http://www.w3.org/2011/http#etag 🔖
