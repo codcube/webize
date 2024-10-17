@@ -511,3 +511,6 @@ disabled
 old-position
 jstcache
 isAccessibleForFree
+data-hover-delay
+data-tncms-track-event
+data-tncms-track-dmp

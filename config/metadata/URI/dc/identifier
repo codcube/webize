@@ -137,3 +137,5 @@ data-csa-c-content-id
 campaignId
 adId
 productID
+data-comment-id
+data-uuid
