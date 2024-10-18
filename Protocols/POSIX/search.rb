@@ -25,8 +25,8 @@ module Webize
            *Node(join [trailing ? '../' : nil,    # static index - basename
                        basename,
                        '.{html,ttl,🐢}'].join).glob,
-
-           *Node(join [trailing ? nil : basename, # static index - well-known names
+                                                  # static index - well-known names
+           *Node(join [trailing ? nil : [basename, '/'],
                        '{index,readme,README}*'].join).glob]
         end
       elsif file?                                 # LS (file)
