@@ -32,6 +32,12 @@ module Webize
       def pre(content) = unlabeledResource content, :pre
       def code(content) = bareResource content, :code
 
+      def comment c
+        {_: :span, class: :comment,
+         c: ['//', c[Contains].map{|content|
+               HTML.markup content, env}]}
+      end
+
       # hypertext anchor
       def a anchor
         return inlineResource anchor, :a unless anchor.has_key? Link

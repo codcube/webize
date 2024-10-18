@@ -4,10 +4,11 @@
 #prev, #next, #up, #down {font-size: 2em; border-style: solid; border-color: #777; color: #bbb; padding: .2em .8em .2em .8em; position: fixed}
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
-.abstract {border-radius: .5em .5em 0 0; display: block; background-color: #bbb; color: #000}
+.abstract {border-radius: .5em .5em 0 0; border: 1px solid #888; background: repeating-linear-gradient(-45deg, #888, #888 1px, transparent 1px, transparent 32px)}
 .blocked {background: repeating-linear-gradient(315deg, #f00, #f00 6em, transparent 6em, transparent 8em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
 .columns {column-width: 83ex; column-gap: 0}
+.comment, .comment span {background-color: #333; color: #ccc; border-radius: .3em}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
@@ -52,8 +53,8 @@ a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
 a.local {background-color: #002}
 a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
-a.pointer {margin: 0; padding: 0; border: 1px solid #000; border-radius: .5em; font-weight: normal; float: right}
-a.pointer:visited {border-color: #aaf}
+a.pointer {margin: 0; padding: 0; background-color: #000; color: #fff; border-radius: .5em; font-weight: normal; float: right}
+a.pointer:visited {background-color: #aaf}
 a.to {float: right; margin: 0}
 a:visited span.uri {background-color: black}
 audio {width: 80ex; float: right}
@@ -78,7 +79,7 @@ dl {display: inline-block}
 dt {float: left; vertical-align: top; border-width: 0 0 1px 0; border-style: dotted; border-color: #444}
 form, ol, ul, table, p {display: inline-block}
 h1, h1 > span {background-color: #ccc; color: #000}
-h1, h2, h3, h4, h5, h6 {clear: both; padding: 0 0 0 .2em}
+h1, h2, h3, h4, h5, h6 {clear: both; padding: 0 0 0 .2em; border-radius: .2em}
 h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv {float: right}
 h2, h2 > span {background-color: #aaa; color: #000}
 h3, h3 > span {background-color: #888; color: #000}

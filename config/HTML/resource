@@ -4,6 +4,7 @@ http://mw.logbook.am/webize/Node#blockquote blockquote
 http://mw.logbook.am/webize/Node#br br
 http://mw.logbook.am/webize/Node#cite cite
 http://mw.logbook.am/webize/Node#code code
+http://mw.logbook.am/webize/Node#comment comment
 http://mw.logbook.am/webize/Node#div div
 http://mw.logbook.am/webize/Node#em em
 http://mw.logbook.am/webize/Node#figure figure
