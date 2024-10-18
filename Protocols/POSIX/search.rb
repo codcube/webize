@@ -61,7 +61,7 @@ module Webize
                 files
               end.map &:to_s
 
-      IO.popen(['grep', '-ril', q, *files]).read.lines.map &:chomp
+      IO.popen(['grep', '-ril', '--exclude-dir=.*', q, *files]).read.lines.map &:chomp
     end
 
   end
