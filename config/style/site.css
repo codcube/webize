@@ -8,13 +8,14 @@
 .blocked {background: repeating-linear-gradient(315deg, #f00, #f00 6em, transparent 6em, transparent 8em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
 .columns {column-width: 83ex; column-gap: 0}
-.comment, .comment span {background-color: #333; color: #ccc; border-radius: .3em}
+.comment span {background-color: #333; color: #fff}
+.comment {background-color: #333; color: #aaa; border-radius: .3em}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
 .image {border: 1px dotted #555; display: inline-block}
 .key, .type {background-color: #222; color: #aaa}
-.label > span {background-color: #000; color: #bbb; border: 1px solid #444; border-radius: .28em}
+.label > span {background-color: #000; color: #ddd; border: 1px solid #444; border-radius: .28em}
 .link {border: 1px dotted #0cf; margin: 1px}
 .name {background-color: #888; color: #000; font-size: .8em; vertical-align: top}
 .preembed .icon {position: absolute; left: 45%; top: 32%; font-size: 8em; color: #f00}
@@ -78,9 +79,9 @@ dd {border-width: 0 0 1px 0; border-style: dotted; border-color: #222; max-width
 dl {display: inline-block}
 dt {float: left; vertical-align: top; border-width: 0 0 1px 0; border-style: dotted; border-color: #444}
 form, ol, ul, table, p {display: inline-block}
+h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv {float: right}
 h1, h1 > span {background-color: #ccc; color: #000}
 h1, h2, h3, h4, h5, h6 {clear: both; padding: 0 0 0 .2em; border-radius: .2em}
-h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv {float: right}
 h2, h2 > span {background-color: #aaa; color: #000}
 h3, h3 > span {background-color: #888; color: #000}
 h4, h4 > span {background-color: #666; color: #000}
