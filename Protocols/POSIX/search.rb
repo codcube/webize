@@ -19,13 +19,13 @@ module Webize
           find '*' + q['find'] + '*'
         elsif q['q'] && !q['q'].empty?            # GREP
           grep
-        elsif !dirURI?                            # LS dir
-          [self]                                  # minimal (no trailing-slash)
-        else                                      # detailed (trailing-slash)
+        else                                      # LS (dir)
           [self,
-           *Node(join '{index,readme,README}*').glob] # directory index
+           *Node(join [basename,
+                       '.{html,ttl,🐢}'].join).glob,  # static index - basename
+           *Node(join '{index,readme,README}*').glob] # static index - well-known names
         end
-      elsif file?                                 # LS file
+      elsif file?                                 # LS (file)
         [self]
       elsif fsPath.match? GlobChars               # GLOB
         if q['q'] && !q['q'].empty?               # GREP inside GLOB
