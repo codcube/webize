@@ -79,6 +79,7 @@ dt {float: left; vertical-align: top; border-width: 0 0 1px 0; border-style: dot
 form, ol, ul, table, p {display: inline-block}
 h1, h1 > span {background-color: #ccc; color: #000}
 h1, h2, h3, h4, h5, h6 {clear: both; padding: 0 0 0 .2em}
+h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv {float: right}
 h2, h2 > span {background-color: #aaa; color: #000}
 h3, h3 > span {background-color: #888; color: #000}
 h4, h4 > span {background-color: #666; color: #000}

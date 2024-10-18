@@ -262,7 +262,7 @@ module Webize
           if depth > 30 || OpaqueNode.member?(node.name) # HTML literal
             yield subject, Contains, RDF::Literal(node.inner_html, datatype: RDF.HTML)
           elsif node.name == 'comment'
-            yield subject, Content, node.inner_text
+            yield subject, Contains, node.inner_text
           else
             node.children.map{|child|
               if child.text? || child.cdata? # text literal
