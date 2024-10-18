@@ -90,7 +90,7 @@ rss rss.xml
           end}
       end
 
-      def raw_triples
+      def raw_triples &f
         # identifier patterns
         reRDFabout = /about=["']?([^'">\s]+)/         # RDF @about
         reLink = /<link>([^<]+)/                      # <link> element
@@ -189,7 +189,7 @@ rss rss.xml
                   when isURL
                     Webize::URI o
                   when isHTML
-                    RDF::Literal o, datatype: RDF.HTML
+                    HTML::Reader.new(o, base_uri: @base).scan_fragment &f
                   else
                     o
                   end

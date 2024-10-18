@@ -47,8 +47,141 @@ module Webize
                                      graph_name: graph)}
       end
 
-      def read_RDFa? = false
-      #def read_RDFa? = !@isBookmarks
+      def scan_fragment &f
+        scan_node Nokogiri::HTML.fragment(@in.gsub StripTags, ''), &f
+      end
+
+      def scan_node node, depth = 0, &f
+        # subject identity
+        subject = if node['id']   # identified node
+                    RDF::URI '#' + CGI.escape(node.remove_attribute('id').value)
+                  else
+                    RDF::Node.new # blank node
+                  end
+
+        # type
+        yield subject, Type, RDF::URI(DOMnode + node.name)
+
+        # attributes
+        node.attribute_nodes.map{|attr|
+
+          # raw attributes
+          p = attr.name
+          o = attr.value
+
+          # apply attribute map and blocklist
+          p = MetaMap[p] if MetaMap.has_key? p
+
+          next if p == :drop || o.empty? # attr not emitted as RDF
+
+          # predicate
+
+          unless p.match? HTTPURI
+            case p
+            when /^aria/i
+              p = 'https://www.w3.org/ns/aria#' + p.sub(/^aria[-_]/i,'')
+            when 'src'
+              p = case node.name
+                  when 'audio'
+                    Audio
+                  when 'iframe'
+                    XHV + 'iframe'
+                  when /ima?ge?/
+                    Image
+                  when 'video'
+                    Video
+                  else
+                    puts "LINK #{node.name} #{o}"
+                    Link
+                  end
+            when /type/i
+              p = Type
+            else
+              logger.warn ["no URI for DOM attr \e[7m", p, "\e[0m ", o[0..255]].join
+            end
+          end
+
+          # object
+          href = -> {            # resolve reference in string value
+            o = Webize::Resource(@base.join(o), @env).
+                  relocate}
+
+          case p                 # objects of specific predicate:
+          when Audio
+            href[]
+          when Image
+            href[]
+          when Schema + 'srcSet' # parse @srcset
+            o.scan(SRCSET).map{|uri, _|
+              yield subject, Image, @base.join(uri)}
+            next
+          when Label             # tokenize @label
+            o.split(/\s/).map{|label|
+              yield subject, p, label }
+            next
+          when Link              # @link untyped reference
+            href[]
+          when Video
+            href[]
+          else                   # objects of any predicate:
+            case o
+            when DataURI         # data URI
+              o = Webize::Resource o, @env
+            when RelURI          # resolve + relocate URI
+              #puts "URI #{p} #{o}" # ideally we don't hit this and href-map on predicate instead of regex-sniffing
+              href[]
+            when JSON::Array     # parse JSON array
+              begin
+                ::JSON.parse(o).map{|e|
+                  yield subject, p, e if e}
+                next
+              rescue
+                puts "not a JSON array: #{o}"
+              end
+            when JSON::Outer     # parse JSON object
+              o = JSON::Reader.new(o, base_uri: @base).scan_node &f rescue o
+            end
+
+          end
+
+          # emit triple
+          yield subject, p, o
+        } if node.respond_to? :attribute_nodes
+
+        # child nodes
+        if depth > 30 || OpaqueNode.member?(node.name) # HTML literal
+          yield subject, Contains, RDF::Literal(node.inner_html, datatype: RDF.HTML)
+        elsif node.name == 'comment'
+          yield subject, Contains, node.inner_text
+        else
+          node.children.map{|child|
+            if child.text? || child.cdata? # text literal
+              if node.name == 'script'     # script node
+                if m = child.inner_text.match(JSON::Inner) # content looks JSONish (TODO better detection, we optimistically feed a lot of stuff to the parser)
+                  stringified = !m[1].nil? # serialized to string value?
+                  text = m[2]              # raw JSON data
+                  begin                    # read as JSON
+                    json = stringified ? (::JSON.load %Q("#{text}")) : text
+                    json_node = JSON::Reader.new(json, base_uri: @base).scan_node &f
+                    yield subject, Contains, json_node # emit JSON node
+                  rescue
+                    # puts "SCRIPT #{child.inner_text[0..255]} " # parse failure
+                  end
+                end
+              else
+                case child.inner_text
+                when EmptyText
+                else
+                  yield subject, Contains, child.inner_text
+                end
+              end
+            else # child node
+              yield subject, Contains, (scan_node child, depth + 1, &f)
+            end}
+        end
+
+        subject # send node to caller for parent/child relationship triples
+      end
 
       def scan_document &f
 
@@ -160,139 +293,7 @@ module Webize
             nodes[id] = true           # mark first occurrence
           end}
 
-        # node scanner
-        scan_node = -> node, depth = 0 {
-          # subject identity
-          subject = if node['id']   # identified node
-                      RDF::URI '#' + CGI.escape(node.remove_attribute('id').value)
-                    else
-                      RDF::Node.new # blank node
-                    end
-
-          # type
-          yield subject, Type, RDF::URI(DOMnode + node.name)
-
-          # attributes
-          node.attribute_nodes.map{|attr|
-
-            # raw attributes
-            p = attr.name
-            o = attr.value
-
-            # apply attribute map and blocklist
-            p = MetaMap[p] if MetaMap.has_key? p
-
-            next if p == :drop || o.empty? # attr not emitted as RDF
-
-            # predicate
-
-            unless p.match? HTTPURI
-              case p
-              when /^aria/i
-                p = 'https://www.w3.org/ns/aria#' + p.sub(/^aria[-_]/i,'')
-              when 'src'
-                p = case node.name
-                    when 'audio'
-                      Audio
-                    when 'iframe'
-                      XHV + 'iframe'
-                    when /ima?ge?/
-                      Image
-                    when 'video'
-                      Video
-                    else
-                      puts "LINK #{node.name} #{o}"
-                      Link
-                    end
-              when /type/i
-                p = Type
-              else
-                logger.warn ["no URI for DOM attr \e[7m", p, "\e[0m ", o[0..255]].join
-              end
-            end
-
-            # object
-            href = -> {            # resolve reference in string value
-              o = Webize::Resource(@base.join(o), @env).
-                    relocate}
-
-            case p                 # objects of specific predicate:
-            when Audio
-              href[]
-            when Image
-              href[]
-            when Schema + 'srcSet' # parse @srcset
-              o.scan(SRCSET).map{|uri, _|
-                yield subject, Image, @base.join(uri)}
-              next
-            when Label             # tokenize @label
-              o.split(/\s/).map{|label|
-                yield subject, p, label }
-              next
-            when Link              # @link untyped reference
-              href[]
-            when Video
-              href[]
-            else                   # objects of any predicate:
-              case o
-              when DataURI         # data URI
-                o = Webize::Resource o, @env
-              when RelURI          # resolve + relocate URI
-                #puts "URI #{p} #{o}" # ideally we don't hit this and href-map on predicate instead of regex-sniffing
-                href[]
-              when JSON::Array     # parse JSON array
-                begin
-                  ::JSON.parse(o).map{|e|
-                    yield subject, p, e if e}
-                  next
-                rescue
-                  puts "not a JSON array: #{o}"
-                end
-              when JSON::Outer     # parse JSON object
-                o = JSON::Reader.new(o, base_uri: @base).scan_node &f rescue o
-              end
-
-            end
-
-            # emit triple
-            yield subject, p, o
-          } if node.respond_to? :attribute_nodes
-
-          # child nodes
-          if depth > 30 || OpaqueNode.member?(node.name) # HTML literal
-            yield subject, Contains, RDF::Literal(node.inner_html, datatype: RDF.HTML)
-          elsif node.name == 'comment'
-            yield subject, Contains, node.inner_text
-          else
-            node.children.map{|child|
-              if child.text? || child.cdata? # text literal
-                if node.name == 'script'     # script node
-                  if m = child.inner_text.match(JSON::Inner) # content looks JSONish (TODO better detection, we optimistically feed a lot of stuff to the parser)
-                    stringified = !m[1].nil? # serialized to string value?
-                    text = m[2]              # raw JSON data
-                    begin                    # read as JSON
-                      json = stringified ? (::JSON.load %Q("#{text}")) : text
-                      json_node = JSON::Reader.new(json, base_uri: @base).scan_node &f
-                      yield subject, Contains, json_node # emit JSON node
-                    rescue
-                      # puts "SCRIPT #{child.inner_text[0..255]} " # parse failure
-                    end
-                  end
-                else
-                  case child.inner_text
-                  when EmptyText
-                  else
-                    yield subject, Contains, child.inner_text
-                  end
-                end
-              else # child node
-                yield subject, Contains, scan_node[child, depth + 1]
-              end}
-          end
-
-          subject} # send node to caller for parent/child relationship triples
-
-        yield @base, Contains, scan_node[@doc] # scan doc
+        yield @base, Contains, (scan_node @doc, &f) # scan document
       end
     end
   end
