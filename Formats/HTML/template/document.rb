@@ -124,7 +124,13 @@ module Webize
                  end,
 
                  # document attributes
-                 keyval(doc, skip: ['#source', Contains]),
+                 keyval(doc, skip: [
+                          '#source',
+                          Contains,
+                          HT + 'preload',
+                          XHV + 'script',
+                          XHV + 'stylesheet',
+                        ]),
 
                  # 👉 previous, contained and next node(s)
                  link[:prev,'&#9664;'],

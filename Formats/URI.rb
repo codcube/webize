@@ -67,6 +67,7 @@ module Webize
                            [hash[0..1], hash[2..-1]]         # sharded-hash container
                          else
                            if query
+                            # puts :qqq, fsNamesQuery
                              Webize::URI join fsNamesQuery.join '.'
                            else
                              self
