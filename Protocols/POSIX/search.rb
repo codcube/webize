@@ -20,8 +20,10 @@ module Webize
         elsif q['q'] && !q['q'].empty?            # GREP
           grep
         else                                      # LS (dir)
+          trailing = dirURI?
           [self,
-           *Node(join [basename,
+           *Node(join [trailing ? '../' : nil,
+                       basename,
                        '.{html,ttl,🐢}'].join).glob,  # static index - basename
            *Node(join '{index,readme,README}*').glob] # static index - well-known names
         end
