@@ -22,10 +22,12 @@ module Webize
         else                                      # LS (dir)
           trailing = dirURI?
           [self,
-           *Node(join [trailing ? '../' : nil,
+           *Node(join [trailing ? '../' : nil,    # static index - basename
                        basename,
-                       '.{html,ttl,🐢}'].join).glob,  # static index - basename
-           *Node(join '{index,readme,README}*').glob] # static index - well-known names
+                       '.{html,ttl,🐢}'].join).glob,
+
+           *Node(join [trailing ? nil : basename, # static index - well-known names
+                       '{index,readme,README}*'].join).glob]
         end
       elsif file?                                 # LS (file)
         [self]
