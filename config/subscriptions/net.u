@@ -1,4 +1,3 @@
-https://www.scattered-thoughts.net/atom.xml
 http://jamaica-star.com/feed/ent.xml
 http://mcld.co.uk/blog/feeds/mcld_blog.atom
 http://mcld.co.uk/blog/feeds/mcld_blog.rss
@@ -25,10 +24,12 @@ https://blog.okfn.org/feed/
 https://blog.saeloun.com/feed.xml
 https://blogs.lse.ac.uk/impactofsocialsciences/feed/
 https://boitam.eu/@milouse.rss
+https://bsky.app/profile/did:plc:ulsvrqhqegjw5gh7lxyav4yq/rss
 https://changelog.complete.org/comments/feed
 https://changelog.complete.org/feed
 https://chanzuckerberg.com/feed/
 https://citizensandtech.org/feed/
+https://clintonlindsay.com/feed/
 https://coar-repositories.org/feed/
 https://codata.org/feed/
 https://communitynets.org/rss.xml
@@ -185,6 +186,7 @@ https://www.deemjournal.com/stories?format=rss
 https://www.digital-science.com/feed/
 https://www.erudit.org/en/rss.xml
 https://www.exascaleproject.org/feed/
+https://www.flickr.com/services/feeds/photos_public.gne?id=16315439@N05&lang=en-us&format=atom
 https://www.flickr.com/services/feeds/photos_public.gne?id=91981316%40N06&lang=en-us&format=atom
 https://www.frdr-dfdr.ca/repo/feed/rss_2.0/site
 https://www.hifa.org/news/rss
@@ -206,6 +208,7 @@ https://www.reddit.com/r/chromeos/new.rss
 https://www.researchsoft.org/feed.xml
 https://www.reset.tech/index.xml
 https://www.ronfanfair.com/home?format=rss
+https://www.scattered-thoughts.net/atom.xml
 https://www.scholcommlab.ca/feed/
 https://www.scivision.dev/index.xml
 https://www.softwareheritage.org/feed/
@@ -222,5 +225,3 @@ https://www.ukri.org/news/feed/
 https://www.web3isgoinggreat.com/feed.xml
 https://xeiaso.net/blog.rss
 https://zverok.space/feed.xml
-https://www.flickr.com/services/feeds/photos_public.gne?id=16315439@N05&lang=en-us&format=atom
-https://bsky.app/profile/did:plc:ulsvrqhqegjw5gh7lxyav4yq/rss

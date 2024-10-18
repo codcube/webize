@@ -8,8 +8,8 @@
 .blocked {background: repeating-linear-gradient(315deg, #f00, #f00 6em, transparent 6em, transparent 8em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
 .columns {column-width: 83ex; column-gap: 0}
-.comment span {background-color: #333; color: #fff}
-.comment {background-color: #333; color: #aaa; border-radius: .3em}
+.comment span {background-color: #333; color: #fff; font-weight: normal}
+.comment {background-color: #333; color: #888; font-weight: bold; border-radius: .3em}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
