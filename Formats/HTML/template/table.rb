@@ -1,3 +1,4 @@
+
 module Webize
   module HTML
     class Property
@@ -28,7 +29,7 @@ module Webize
       end
 
       # eliminate most inlining to output a basic tabular list of resources i.e. don't include "main content" and containment pointers
-      def index_table(nodes) = table nodes, skip: [Abstract, Contains, Content, SIOC + 'has_container']
+      def index_table(nodes) = table nodes, skip: [Abstract, Contains, Content, SIOC + 'has_container', SIOC + 'reply_of']
 
       # table layout: graph <> table, resource <> row, property <> column
       def table graph, skip: []
