@@ -24,6 +24,7 @@ module Webize
       def em(node) = inlineResource node, :em
       def i(node) = inlineResource node, :i
       def p(node) = identifiedResource node, :p
+      def script(code) = resource code, :code
       def span(node) = inlineResource node, :span
       def strong(node) = inlineResource node, :strong
       def sup(node) = inlineResource node, :sup

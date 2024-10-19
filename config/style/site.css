@@ -75,11 +75,12 @@ body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
 cite {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
 cite::before {content: '📚'; color: #666; margin-left: -12px}
+code {border-width: 1px 0 1px 0; border-style: dotted; border-color: #eee}
 code > span { color: #000; background-color: #eee; padding: 0 0 0 .2em;}
 dd {border-width: 0 0 1px 0; border-style: dotted; border-color: #222; max-width: 100ex}
 dl, form, ol, ul, table, p, .resource {display: inline-block}
 dt {float: left; vertical-align: top; border-width: 0 0 1px 0; border-style: dotted; border-color: #444}
-h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv {float: right}
+h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv, code .kv {float: right}
 h1 .kv {font-size: .5em}
 h2 .kv {font-size: .75em}
 h1, h1 > span {background-color: #ccc; color: #000}
