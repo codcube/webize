@@ -44,12 +44,12 @@ module Webize
                                      graph_name: graph)}
       end
 
-      # scan document-fragment (multiple DOM nodes)
+      # scan document fragment
       def scan_fragment &f
         scan_node Nokogiri::HTML.fragment(@in.gsub StripTags, ''), &f
       end
 
-      # scan a DOM node
+      # recursive DOM-node scanner
       def scan_node node, depth = 0, &f
 
         # subject identity

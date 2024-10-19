@@ -74,9 +74,9 @@ rss rss.xml
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        map_predicates(:raw_triples){|s,p,o|
-          fn.call RDF::Statement.new((s = Webize::URI.new(s)), Webize::URI.new(p), o,
-                                     graph_name: s)}
+        map_predicates(:raw_triples){|s, p, o, graph = @base|
+          fn.call RDF::Statement.new(s, Webize::URI.new(p), o,
+                                     graph_name: graph)}
       end
 
       def map_predicates *f
@@ -146,6 +146,8 @@ rss rss.xml
             subject.query = nil if subject.query&.match?(/utm[^a-z]/)
             subject.fragment = nil if subject.fragment&.match?(/utm[^a-z]/)
 
+            graph = subject.graph
+
             # type tag
             yield subject, Type,
                   Webize::URI(if subject.host == 'www.youtube.com'
@@ -154,7 +156,7 @@ rss rss.xml
                             Image
                           else
                             Post
-                           end)
+                           end), graph
 
             # media links
             inner.scan(reMedia){|e|
@@ -169,9 +171,10 @@ rss rss.xml
                     else
                       Atom + rel
                     end
-                yield subject, p, o unless subject == o # emit link unless self-referential
+                yield subject, p, o, graph
               end}
 
+            # generic SGML/XML node
             inner.gsub(reGroup,'').scan(reElement){|e| # parse node to (prefix, name, content) tuple
               p = (x[e[0] && e[0].chop] || RSS) + e[1] # map optionally-prefixed node name to attribute URI
               o = e[3]                                 # node content
@@ -189,12 +192,12 @@ rss rss.xml
                   when isURL
                     Webize::URI o
                   when isHTML
-                    HTML::Reader.new(o, base_uri: @base).scan_fragment &f
+                    HTML::Reader.new(o, base_uri: graph).scan_fragment &f
                   else
                     o
                   end
 
-              yield subject, p, o                      # map node to RDF triple
+              yield subject, p, o, graph
             }
           end}
       end
