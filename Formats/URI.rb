@@ -29,6 +29,11 @@ module Webize
       File.basename path if path
     end
 
+    # basename sans extension
+    def barename
+      File.basename path, extname if path
+    end
+
     def dataURI? = scheme == 'data'
 
     def dirname = File.dirname fsPath
@@ -74,7 +79,7 @@ module Webize
                            end.unescape_parts                # path map
                          end].flatten
 
-    def fsNamesQuery = [File.basename(path, extname),        # basename
+    def fsNamesQuery = [barename,                            # basename sans extension
                         Digest::SHA2.hexdigest(query)[0..9], # query hash
                         extname] - ['']                      # extension
 
