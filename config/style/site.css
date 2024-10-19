@@ -8,7 +8,7 @@
 .blocked {background: repeating-linear-gradient(315deg, #f00, #f00 6em, transparent 6em, transparent 8em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
 .columns {column-width: 83ex; column-gap: 0}
-.comment span {background-color: #333; color: #fff; font-weight: normal}
+.comment span {background-color: #333; color: #eee; font-weight: normal}
 .comment {background-color: #333; color: #888; font-weight: bold; border-radius: .3em}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
@@ -21,7 +21,7 @@
 .preembed .icon {position: absolute; left: 45%; top: 32%; font-size: 8em; color: #f00}
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .redirectors, .referers {border: 1px dotted #888; border-radius: 0}
-.resource {border: 1px solid #333; border-radius: 0 .62em .62em .62em; margin: 1em .1em .1em .1em; vertical-align: top}
+.resource {border: 1px solid #333; border-radius: 0 .62em .62em .62em; margin: 1em .1em .1em .1em; max-width: 127ex; vertical-align: top}
 .title > span {background-color: #aaa; color: #000; margin: 0; border: 1px solid #555; border-radius: .4em .4em .2em 0}
 .title {display: block; margin: -1em 0 0 -1px; padding: 0}
 .title:visited {background-color: #ccc; color: #000}
@@ -54,7 +54,7 @@ a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
 a.local {background-color: #002}
 a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
-a.pointer {margin: 0; padding: 0; background-color: #000; color: #fff; border-radius: .5em; font-weight: normal; float: right}
+a.pointer {margin: 0; padding: 0; background-color: transparent; color: #fff; border-radius: .5em; font-weight: normal; float: right}
 a.pointer:visited {background-color: #aaf}
 a.to {float: right; margin: 0}
 a:visited span.uri {background-color: black}
@@ -74,11 +74,10 @@ body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
 cite {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
 cite::before {content: '📚'; color: #666; margin-left: -12px}
-code, code > span {color: #000; background-color: #eee}
+code {color: #000; background-color: #eee}
 dd {border-width: 0 0 1px 0; border-style: dotted; border-color: #222; max-width: 100ex}
-dl {display: inline-block}
 dt {float: left; vertical-align: top; border-width: 0 0 1px 0; border-style: dotted; border-color: #444}
-form, ol, ul, table, p {display: inline-block}
+dl, form, ol, ul, table, p, .resource {display: inline-block}
 h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv {float: right}
 h1, h1 > span {background-color: #ccc; color: #000}
 h1, h2, h3, h4, h5, h6 {clear: both; padding: 0 0 0 .2em; border-radius: .2em}
