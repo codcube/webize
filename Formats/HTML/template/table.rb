@@ -27,8 +27,8 @@ module Webize
         graph_index nodes, details: true
       end
 
-      # tabular list of nodes and thier metadata sans main content
-      def index_table(nodes) = table nodes, skip: [Abstract, Contains, Content]
+      # eliminate most inlining to output a basic tabular list of resources i.e. don't include "main content" and containment pointers
+      def index_table(nodes) = table nodes, skip: [Abstract, Contains, Content, SIOC + 'has_container']
 
       # table layout: graph <> table, resource <> row, property <> column
       def table graph, skip: []
