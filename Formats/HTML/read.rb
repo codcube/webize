@@ -167,6 +167,8 @@ module Webize
                   rescue
                     yield subject, Contains, child.inner_text.gsub(/\n/,'').gsub(/\s+/,' ')[0..127]
                   end
+                else
+                  yield subject, Contains, child.inner_text.gsub(/\n/,'').gsub(/\s+/,' ')[0..127]
                 end
               else
                 case child.inner_text

@@ -21,9 +21,9 @@
 .preembed .icon {position: absolute; left: 45%; top: 32%; font-size: 8em; color: #f00}
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .redirectors, .referers {border: 1px dotted #888; border-radius: 0}
-.resource {border: 1px solid #333; border-radius: 0 .62em .62em .62em; margin: 1em .1em .1em .1em; max-width: 127ex; vertical-align: top}
-.title > span {background-color: #aaa; color: #000; margin: 0; border: 1px solid #555; border-radius: .4em .4em .2em 0}
-.title {display: block; margin: -1em 0 0 -1px; padding: 0}
+.resource {border: 1px solid #333; border-radius: 0 .62em .62em .62em; margin: .1em; max-width: 127ex; vertical-align: top}
+.title > span {background-color: #aaa; color: #000; margin: 0; border: 1px solid #555; border-radius: .2em}
+.title {display: block; padding: 0}
 .title:visited {background-color: #ccc; color: #000}
 .toolbox .path a {color: #ddd; font-weight: normal}
 .toolbox .path a:last-child {color: #000; background-color: #fff; font-weight: bold; border-radius: 0 0 .3em .3em; margin-top: 0}
