@@ -85,7 +85,12 @@ module Webize
                c: r[Title].map{|t|
                  HTML.markup t, env}}.           # attach link to title if exists
                 update(ref || {}) if r.has_key? Title),
-             keyval(r, inline: inline, skip: shown), # keyval metadata fields
+
+             origin_ref,                         # origin pointer
+
+             keyval(r, inline: inline,           # key/val metadata
+                    skip: shown),
+
              if r[Contains]                      # child nodes
                if TabularChild.member? type.to_s # tabular view of child nodes
                  property Schema + 'item', r[Contains]
@@ -94,7 +99,6 @@ module Webize
                    HTML.markup c, env}
                end
              end,
-             origin_ref,                         # origin pointer
             ]}.
           update(id ? {id: id} : {}).
           update((id && type == :div) ? {class: :resource} : {}).
