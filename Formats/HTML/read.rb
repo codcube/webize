@@ -165,7 +165,7 @@ module Webize
                     json_node = JSON::Reader.new(json, base_uri: @base).scan_node &f
                     yield subject, Contains, json_node # emit JSON node
                   rescue
-                    # puts "SCRIPT #{child.inner_text[0..255]} " # parse failure
+                    yield subject, Contains, child.inner_text.gsub(/\n/,'').gsub(/\s+/,' ')[0..127]
                   end
                 end
               else
