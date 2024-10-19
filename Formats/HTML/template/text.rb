@@ -34,8 +34,10 @@ module Webize
 
       def comment c
         {_: :span, class: :comment,
-         c: ['//', c[Contains].map{|content|
-               HTML.markup content, env}]}
+         c: ['&lt;!--',
+             c[Contains].map{|content|
+               HTML.markup content, env},
+             '--&gt;']}
       end
 
       # hypertext anchor

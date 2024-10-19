@@ -8,7 +8,8 @@
 .blocked {background: repeating-linear-gradient(315deg, #f00, #f00 6em, transparent 6em, transparent 8em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
 .columns {column-width: 83ex; column-gap: 0}
-.comment, .comment span {background-color: #2cf; color: #000; border-radius: .3em}
+.comment {background-color: #000; color: #6ef; font-weight: bold}
+.comment span {background-color: #6ef; color: #000; font-weight: normal; border-radius: .26em}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
@@ -55,7 +56,7 @@ a.local {background-color: #002}
 a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
 a.pointer, td[property="uri"] a {margin: 0; padding: 0; background-color: #222; color: #fff; border-radius: .5em; font-weight: normal; float: right}
 a.pointer:visited, td[property="uri"] a:visited {background-color: #338}
-h1 a.pointer, h2 a.pointer, h3 a.pointer {position: absolute; right: -1.2em}
+h1 a.pointer, h2 a.pointer, h3 a.pointer {position: absolute; right: -1.4em}
 a.to {float: right; margin: 0}
 a:visited span.uri {background-color: black}
 audio {width: 80ex; float: right}
