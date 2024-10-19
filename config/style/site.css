@@ -54,8 +54,8 @@ a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
 a.local {background-color: #002}
 a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
-a.pointer {margin: 0; padding: 0; background-color: transparent; color: #fff; border-radius: .5em; font-weight: normal; float: right}
-a.pointer:visited {background-color: #aaf}
+a.pointer, td[property="uri"] a {margin: 0; padding: 0; background-color: #222; color: #fff; border-radius: .5em; font-weight: normal; float: right}
+a.pointer:visited, td[property="uri"] a:visited {background-color: #aaf}
 a.to {float: right; margin: 0}
 a:visited span.uri {background-color: black}
 audio {width: 80ex; float: right}
