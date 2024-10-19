@@ -19,11 +19,11 @@ module Webize
       format Format
 
       def initialize(input = $stdin, options = {}, &block)
+        @base = options[:base_uri]
         @options = options
-
-        @html = HTML::Reader.new( # initialize HTML reader with its input the output of (Markdown -> HTML) transform
-          ::Redcarpet::Markdown.new(Renderer, fenced_code_blocks: true).
-            render(input.respond_to?(:read) ? input.read : input), base_uri: options[:base_uri])
+        @html = HTML::Reader.new(                                        # initialize HTML reader
+          ::Redcarpet::Markdown.new(Renderer, fenced_code_blocks: true). # initialize Markdown -> HTML transformer
+            render(input.respond_to?(:read) ? input.read : input), base_uri: options[:base_uri]) # Markdown -> HTML
 
         if block_given?
           case block.arity
@@ -37,8 +37,10 @@ module Webize
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        @html.scan_fragment{|s, p, o, g = nil|
-          fn.call RDF::Statement.new(s, Webize::URI(p), o, :graph_name => g)}
+        fragment = @html.scan_fragment{|s, p, o, graph = @base|
+          fn.call RDF::Statement.new(s, Webize::URI(p), o, graph_name: graph)}
+
+        fn.call RDF::Statement.new(@base, Webize::URI(Contains), fragment, graph_name: @base)
       end
     end
   end

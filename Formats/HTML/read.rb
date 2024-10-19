@@ -1,8 +1,5 @@
 module Webize
   module HTML
-
-    DOMnode = 'http://mw.logbook.am/webize/Node#' # node-schema base URI
-
     class Format < RDF::Format
 
       content_type 'text/html;q=0.8',
@@ -47,11 +44,14 @@ module Webize
                                      graph_name: graph)}
       end
 
+      # scan document-fragment (multiple DOM nodes)
       def scan_fragment &f
         scan_node Nokogiri::HTML.fragment(@in.gsub StripTags, ''), &f
       end
 
+      # scan a DOM node
       def scan_node node, depth = 0, &f
+
         # subject identity
         subject = if node['id']   # identified node
                     RDF::URI '#' + CGI.escape(node.remove_attribute('id').value)
@@ -60,7 +60,7 @@ module Webize
                   end
 
         # type
-        yield subject, Type, RDF::URI(DOMnode + node.name)
+        yield subject, Type, RDF::URI(XHV + node.name)
 
         # attributes
         node.attribute_nodes.map{|attr|
