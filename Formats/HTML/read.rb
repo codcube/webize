@@ -139,7 +139,7 @@ module Webize
                 puts "not a JSON array: #{o}"
               end
             when JSON::Outer     # parse JSON object
-              o = JSON::Reader.new(o, base_uri: @base).scan_node &f rescue o
+              o = JSON::Reader.new(o, base_uri: @base).scan_fragment &f rescue o
             end
 
           end
@@ -162,7 +162,7 @@ module Webize
                   text = m[2]              # raw JSON data
                   begin                    # read as JSON
                     json = stringified ? (::JSON.load %Q("#{text}")) : text
-                    json_node = JSON::Reader.new(json, base_uri: @base).scan_node &f
+                    json_node = JSON::Reader.new(json, base_uri: @base).scan_fragment &f
                     yield subject, Contains, json_node # emit JSON node
                   rescue
                     yield subject, Contains, child.inner_text.gsub(/\n/,'').gsub(/\s+/,' ')[0..255]
@@ -225,7 +225,7 @@ module Webize
               when RelURI
                 o = @base.join o
               when JSON::Outer
-                o = JSON::Reader.new(o, base_uri: @base).scan_node &f
+                o = JSON::Reader.new(o, base_uri: @base).scan_fragment &f
               end
 
               logger.warn ["META no URI \e[7m", p, "\e[0m ", o].join unless p.to_s.match? /^(drop|http)/

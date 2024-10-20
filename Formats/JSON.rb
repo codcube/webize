@@ -65,8 +65,20 @@ id ID _id id_str @id)
           fn.call RDF::Statement.new(s, p, o,
                                      graph_name: graph)}
       end
-      
-      def scan_node node = @doc, graph = @base, &f
+
+      def scan_document &f
+        out = scan_node @doc.class == Array ? {'uri' => @base.to_s, Contains => @doc} : @doc, &f # scan base node
+
+        # request graph 👉 document graph
+        yield @base.env[:base], Webize::URI(Contains), @base
+
+        # document graph 👉 JSON node
+        yield @base, Webize::URI(Contains), out
+      end
+
+      def scan_fragment(&f) = scan_node @doc, @base, &f
+
+      def scan_node node, graph, &f
 
         # subject
         subject = if id = Identifier.find{|i| node.has_key? i}  # search for identifier
@@ -104,7 +116,7 @@ id ID _id id_str @id)
                        elsif o.match? RelURI # URI in String
                          @base.join o        # String -> RDF::URI
                        elsif o.match? Outer  # JSON in String
-                         Reader.new(o, base_uri: @base).scan_node &f
+                         Reader.new(o, base_uri: @base).scan_fragment &f
                        else
                          RDF::Literal o      # String -> RDF::Literal
                        end
@@ -119,22 +131,6 @@ id ID _id id_str @id)
         subject # return child reference to caller / parent-node
       end
 
-      def scan_document &f
-
-        # if input is Array, wrap it in a node
-        if @doc.class == Array
-          @doc = {'uri' => @base,
-                  Contains => @doc}
-        end
-
-        out = scan_node &f # scan base node
-
-        # request graph 👉 document graph
-        yield @base.env[:base], Webize::URI(Contains), @base unless @base == @base.env[:base]
-
-        # document graph 👉 JSON node
-        yield @base, Webize::URI(Contains), out              unless @base == out
-      end
     end
 
     class Writer < RDF::Writer
