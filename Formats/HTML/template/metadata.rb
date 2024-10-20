@@ -45,6 +45,7 @@ module Webize
 
       def label labels
         labels.map{|l|
+          next unless l.class == RDF::Literal
           {_: :span, class: :label, c: HTML.markup(l, env)}}
       end
 
