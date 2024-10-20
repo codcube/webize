@@ -72,8 +72,8 @@ id ID _id id_str @id)
 
         # document graph 👉 JSON node
         yield @base, Webize::URI(Contains),
-              scan_node(@doc.class == Array ? {'uri' => @base.to_s,
-                                               Contains => @doc} : @doc, @base &f)
+              scan_node(@doc.class == ::Array ? {'uri' => @base.to_s,
+                                                 Contains => @doc} : @doc, @base, &f)
       end
 
       def scan_fragment &f
@@ -103,7 +103,7 @@ id ID _id id_str @id)
           end
 
           # objects
-          (v.class == Array ? v : [v]).flatten.map{|o|
+          (v.class == ::Array ? v : [v]).flatten.map{|o|
 
             object = case o
                      when Hash
@@ -119,6 +119,8 @@ id ID _id id_str @id)
                          @base.join o        # String -> RDF::URI
                        elsif o.match? Outer  # JSON in String
                          Reader.new(o, base_uri: @base).scan_fragment &f
+                       elsif o.match? /^<.*>$/ # HTML in String
+                         HTML::Reader.new(o, base_uri: @base).scan_fragment &f
                        else
                          RDF::Literal o      # String -> RDF::Literal
                        end
