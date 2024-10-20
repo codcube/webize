@@ -69,7 +69,6 @@ id
 idAttr
 instapp:owner_user_id
 itemid
-key
 moat-id
 nodeId
 pageId
@@ -94,7 +93,6 @@ data-client-id
 data-fid
 page-category-id
 item-id
-data-key
 about
 correlation-id
 serverrenderid
