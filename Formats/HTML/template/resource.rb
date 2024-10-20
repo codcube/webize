@@ -21,9 +21,8 @@ module Webize
 
       def div(node) = inlineResource node, :div
 
-      # strip RDF typetag, denoted with CSS ::before as alternative to metadata child-node(s)
-      def bareResource re, type
-        re.delete Type
+      def blockResource re, type
+        re.delete Type # strip RDF typetag, denoted with CSS ::before as alternative to metadata child-node(s)
         resource re, type
       end
 
@@ -43,7 +42,7 @@ module Webize
       def identifiedResource re, type
         re['uri'] ||= ['#', type,'_',
                        Digest::SHA2.hexdigest(rand.to_s)].join
-        bareResource re, type
+        blockResource re, type
       end
 
       def resource r, type = :div, inline: false

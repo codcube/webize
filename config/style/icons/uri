@@ -5,7 +5,7 @@
 #fTime 🐕
 #graph ⚙️
 #origin 🌍
-#pTime ⚙️
+#pTime 🔨
 #sort ↨
 #source ⚙️
 ArticleGQL 📝
@@ -122,15 +122,18 @@ http://www.w3.org/2011/http#Content-Length 📏
 http://www.w3.org/2011/http#Content-Type 🧱
 http://www.w3.org/2011/http#Date ⌚
 http://www.w3.org/2011/http#ETag 🔖
+http://www.w3.org/2011/http#EditURI 📝
 http://www.w3.org/2011/http#Expires ⌛
 http://www.w3.org/2011/http#Last-Modified 🗓️
 http://www.w3.org/2011/http#Link 🔗
 http://www.w3.org/2011/http#Referer 👉
 http://www.w3.org/2011/http#Server 🖥️
 http://www.w3.org/2011/http#Set-Cookie 🍪
+http://www.w3.org/2011/http#X-Powered-By ⚙️
 http://www.w3.org/2011/http#cache-control 📦
 http://www.w3.org/2011/http#content-length 📏
 http://www.w3.org/2011/http#content-type 🧱
+http://www.w3.org/2011/http#edituri 📝
 http://www.w3.org/2011/http#etag 🔖
 http://www.w3.org/2011/http#expires ⌛
 http://www.w3.org/2011/http#last-modified 🗓️
@@ -140,6 +143,7 @@ http://www.w3.org/2011/http#referer 👉
 http://www.w3.org/2011/http#server 🖥️
 http://www.w3.org/2011/http#set-cookie 🍪
 http://www.w3.org/2011/http#status 🏁
+http://www.w3.org/2011/http#x-powered-by ⚙️
 http://www.w3.org/ns/ldp#Container 📁
 http://www.w3.org/ns/ldp#contains 📁
 http://www.w3.org/ns/ldp#next ▶

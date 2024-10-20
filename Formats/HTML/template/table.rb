@@ -76,13 +76,13 @@ module Webize
       def li(node) = resource node, :li
 
       # table elements
-      def table(node) = bareResource node, :table
-      def thead(node) = bareResource node, :thead
-      def tbody(node) = bareResource node, :tbody
-      def tfoot(node) = bareResource node, :tfoot
-      def th(node) = bareResource node, :th
-      def tr(node) = bareResource node, :tr
-      def td(node) = bareResource node, :td
+      def table(node) = blockResource node, :table
+      def thead(node) = blockResource node, :thead
+      def tbody(node) = blockResource node, :tbody
+      def tfoot(node) = blockResource node, :tfoot
+      def th(node) = blockResource node, :th
+      def tr(node) = blockResource node, :tr
+      def td(node) = blockResource node, :td
 
       # table layout: resource <> table, property <> row
       def keyval kv, inline: false, skip: []

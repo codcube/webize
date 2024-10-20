@@ -24,7 +24,7 @@ module Webize
       def cite(node) = identifiedResource node, :cite
       def em(node) = inlineResource node, :em
       def i(node) = inlineResource node, :i
-      def p(node) = identifiedResource node, :p
+      def p(node) = inlineResource node, :p
       def script(code) = resource code, :code
       def span(node) = inlineResource node, :span
       def strong(node) = inlineResource node, :strong
@@ -32,7 +32,7 @@ module Webize
       def u(node) = inlineResource node, :u
 
       def pre(content) = unlabeledResource content, :pre
-      def code(content) = bareResource content, :code
+      def code(content) = blockResource content, :code
 
       def comment c
         {_: :span, class: :comment,
