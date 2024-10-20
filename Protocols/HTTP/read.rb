@@ -158,7 +158,7 @@ module Webize
       status = e.io.status[0].to_i                          # status
       repository ||= RDF::Repository.new
       repository << RDF::Statement.new(env[:base], RDF::URI('#source'), self) # source provenance
-      repository << RDF::Statement.new(self, RDF::URI('#httpStatus'), status) # HTTP status in RDF
+      repository << RDF::Statement.new(self, RDF::URI(HT + 'status'), status) # HTTP status in RDF
       head = headers e.io.meta                              # headers
       case status.to_s
       when /30[12378]/                                      # redirects

@@ -3,7 +3,6 @@
 #childDir buttons
 #entry index_table
 #graph graph_index
-#httpStatus status_code
 #origin origin
 #source graph_index
 http://purl.org/dc/terms/Audio audio
@@ -22,4 +21,5 @@ http://www.w3.org/1999/xhtml/vocab#script graph_index_detailed
 http://www.w3.org/1999/xhtml/vocab#stylesheet graph_index_detailed
 http://www.w3.org/2000/01/rdf-schema#label label
 http://www.w3.org/2011/http#preload graph_index_detailed
+http://www.w3.org/2011/http#status status_code
 uri identifier
