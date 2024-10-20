@@ -50,9 +50,13 @@ module Webize
                        slug = p.display_name
                        icon = Icons[p.uri] || slug unless k == 'uri'
                        [{_: :th,             # ☛ sorted columns
-                         c: {_: :a, c: icon,
-                             href: URI.qs(env[:qs].merge({'sort' => p.uri,
-                                                          'order' => env[:order] == 'asc' ? 'desc' : 'asc'}))}}, "\n"]}}} if env),
+                         c: {
+                           #_: :a,
+                           _: :span,
+                           c: icon,
+                           #href: URI.qs(env[:qs].merge({'sort' => p.uri,
+                           #order: env[:order] == 'asc' ? 'desc' : 'asc'}))
+                         }}, "\n"]}}} if env),
                {_: :tbody,
                 c: graph.map{|resource|      # resource -> row
                   [{_: :tr, c: keys.map{|k|
