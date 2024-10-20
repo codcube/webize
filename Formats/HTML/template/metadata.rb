@@ -64,11 +64,14 @@ module Webize
           if inline
             content
           else
-            {_: :a,
-             class: :type,
-             href: t.href,
-             title: t.uri,
-             c: content}
+            {
+              #_: :a,
+              _: :span,
+              class: :type,
+              #href: t.href,
+              title: t.uri,
+              c: content,
+            }
           end
         }
       end

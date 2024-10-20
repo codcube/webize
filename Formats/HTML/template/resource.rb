@@ -19,7 +19,7 @@ module Webize
     end
     class Node
 
-      def div(node) = inlineResource node, :div
+      def div(node) = blockResource node, :div
 
       def blockResource re, type
         re.delete Type # strip RDF typetag, denoted with CSS ::before as alternative to metadata child-node(s)
