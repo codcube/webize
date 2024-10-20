@@ -1,4 +1,5 @@
 Abstract http://purl.org/dc/terms/abstract
+Aria	 https://www.w3.org/ns/aria#
 Audio    http://purl.org/dc/terms/Audio
 Container http://www.w3.org/ns/ldp#Container
 Contains http://www.w3.org/ns/ldp#contains
