@@ -67,16 +67,18 @@ id ID _id id_str @id)
       end
 
       def scan_document &f
-        out = scan_node @doc.class == Array ? {'uri' => @base.to_s, Contains => @doc} : @doc, &f # scan base node
-
         # request graph 👉 document graph
         yield @base.env[:base], Webize::URI(Contains), @base
 
         # document graph 👉 JSON node
-        yield @base, Webize::URI(Contains), out
+        yield @base, Webize::URI(Contains),
+              scan_node(@doc.class == Array ? {'uri' => @base.to_s,
+                                               Contains => @doc} : @doc, @base &f)
       end
 
-      def scan_fragment(&f) = scan_node @doc, @base, &f
+      def scan_fragment &f
+        scan_node @doc, @base, &f
+      end
 
       def scan_node node, graph, &f
 
