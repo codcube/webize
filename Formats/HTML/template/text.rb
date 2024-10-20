@@ -17,7 +17,8 @@ module Webize
       def h6(node) = identifiedResource node, :h6
 
       # text elements
-
+      def abbr(node) = inlineResource node, :abbr
+      def acronym(node) = inlineResource node, :acronym
       def b(node) = inlineResource node, :b
       def blockquote(node) = identifiedResource node, :blockquote
       def cite(node) = identifiedResource node, :cite
