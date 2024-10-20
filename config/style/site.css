@@ -9,7 +9,7 @@
 .bold {font-weight: bold}
 .columns {column-width: 83ex; column-gap: 0}
 .comment {display: block; background-color: #000; color: #6ef; font-weight: bold}
-.comment span {background-color: #6ef; color: #000; font-weight: normal; border-radius: .26em}
+.comment span {background-color: #6ef; color: #000; font-weight: normal; border-radius: .3em; padding: 0; margin: 0}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
@@ -81,7 +81,7 @@ dd {border-width: 0 0 1px 0; border-style: dotted; border-color: #222; max-width
 dl, form, ol, ul, table, p, .resource {display: inline-block}
 dt {float: left; vertical-align: top; border-width: 0 0 1px 0; border-style: dotted; border-color: #444}
 h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv, code .kv {float: right}
-h1 .kv {font-size: .5em}
+h1 .kv {font-size: .6em}
 h2 .kv {font-size: .75em}
 h1, h1 > span {background-color: #ccc; color: #000}
 h1, h2, h3, h4, h5, h6 {clear: both; padding: 0 0 0 .2em; border-radius: .2em; position: relative; margin-right: 1em}
