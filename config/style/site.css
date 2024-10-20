@@ -42,7 +42,7 @@ a .kv {font-size: 0.92em}
 a .kv, a .uri {font-weight: normal}
 a .uri {color: #ccc; font-size: 0.86em}
 a > span {background-color: inherit}
-a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px; min-width: 1em; min-height: 1em}
+a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px; min-width: 1em; min-height: 1em; overflow: hidden}
 a, a > span { max-width: 40em }
 a.blocked {border: 1px solid white}
 a.date {white-space: nowrap; color: #ccc; background-color: #000; font-weight: normal}
@@ -56,7 +56,7 @@ a.local {background-color: #002}
 a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
 a.pointer, td[property="uri"] a {margin: 0; padding: 0; background-color: #222; color: #fff; border-radius: .5em; font-weight: normal; float: right}
 a.pointer:visited, td[property="uri"] a:visited {background-color: #338}
-h1 a.pointer, h2 a.pointer, h3 a.pointer {position: absolute; right: -1.4em}
+h1 a.pointer, h2 a.pointer, h3 a.pointer, h4 a.pointer, h5 a.pointer, h6 a.pointer {position: absolute; right: -1.4em}
 a.to {float: right; margin: 0}
 a:visited span.uri {background-color: black}
 audio {width: 80ex; float: right}
