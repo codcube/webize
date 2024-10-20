@@ -101,7 +101,9 @@ module Webize
 
             {_: val,
              class: :val,
-             c: property(k, vs.class == Array ? vs : [vs])}]}}
+             c: property(k, vs.class == Array ? vs : [vs])},
+
+            inline ? nil : "\n"]}}
       end
 
     end

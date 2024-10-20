@@ -23,7 +23,7 @@ module Webize
 
       def blockResource re, type
         re.delete Type # strip RDF typetag, denoted with CSS ::before as alternative to metadata child-node(s)
-        resource re, type
+        [(resource re, type), "\n"]
       end
 
       # strip RDF-typetag and label metadata
@@ -32,10 +32,9 @@ module Webize
         inlineResource re, type
       end
 
-      # render resource metadata with SPAN instead of DL/DT/DD
       def inlineResource re, type
         re.delete Type
-        resource re, type, inline: true
+        resource re, type, inline: true # metadata with SPAN instead of DL/DT/DD
       end
 
       # mint an identifier if nonexistent TODO check dc:identifier field as well as default 'uri'
