@@ -127,6 +127,7 @@ http://www.w3.org/2011/http#Last-Modified 🗓️
 http://www.w3.org/2011/http#Link 🔗
 http://www.w3.org/2011/http#Referer 👉
 http://www.w3.org/2011/http#Server 🖥️
+http://www.w3.org/2011/http#Set-Cookie 🍪
 http://www.w3.org/2011/http#cache-control 📦
 http://www.w3.org/2011/http#content-length 📏
 http://www.w3.org/2011/http#content-type 🧱
@@ -137,6 +138,7 @@ http://www.w3.org/2011/http#link 🔗
 http://www.w3.org/2011/http#preload 🐰
 http://www.w3.org/2011/http#referer 👉
 http://www.w3.org/2011/http#server 🖥️
+http://www.w3.org/2011/http#set-cookie 🍪
 http://www.w3.org/2011/http#status 🏁
 http://www.w3.org/ns/ldp#Container 📁
 http://www.w3.org/ns/ldp#contains 📁
