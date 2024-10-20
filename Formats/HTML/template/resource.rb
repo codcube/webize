@@ -21,6 +21,13 @@ module Webize
 
       def div(node) = blockResource node, :div
 
+      def docfrag(f) = if f.has_key? 'uri'
+                         div f
+                       else
+                         f[Contains]&.map{|frag|
+                           HTML.markup frag, env}
+                       end
+
       def blockResource re, type
         re.delete Type # strip RDF typetag, denoted with CSS ::before as alternative to metadata child-node(s)
         [(resource re, type), "\n"]

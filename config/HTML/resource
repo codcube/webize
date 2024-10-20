@@ -1,3 +1,9 @@
+ImageObject img
+http://purl.org/dc/terms/Audio audiotag
+http://purl.org/dc/terms/Image img
+http://purl.org/dc/terms/Video videotag
+http://schema.org/InteractionCounter interactions
+http://www.w3.org/1999/xhtml/vocab##document-fragment docfrag
 http://www.w3.org/1999/xhtml/vocab#a a
 http://www.w3.org/1999/xhtml/vocab#abbr abbr
 http://www.w3.org/1999/xhtml/vocab#acronym acronym
@@ -24,12 +30,12 @@ http://www.w3.org/1999/xhtml/vocab#img img
 http://www.w3.org/1999/xhtml/vocab#li li
 http://www.w3.org/1999/xhtml/vocab#ol ol
 http://www.w3.org/1999/xhtml/vocab#p p
-http://www.w3.org/1999/xhtml/vocab#pre pre
 http://www.w3.org/1999/xhtml/vocab#picture picture
+http://www.w3.org/1999/xhtml/vocab#pre pre
 http://www.w3.org/1999/xhtml/vocab#script script
 http://www.w3.org/1999/xhtml/vocab#select select
-http://www.w3.org/1999/xhtml/vocab#span span
 http://www.w3.org/1999/xhtml/vocab#source source
+http://www.w3.org/1999/xhtml/vocab#span span
 http://www.w3.org/1999/xhtml/vocab#strong strong
 http://www.w3.org/1999/xhtml/vocab#sup sup
 http://www.w3.org/1999/xhtml/vocab#svg svg
@@ -42,9 +48,4 @@ http://www.w3.org/1999/xhtml/vocab#thead thead
 http://www.w3.org/1999/xhtml/vocab#tr tr
 http://www.w3.org/1999/xhtml/vocab#u u
 http://www.w3.org/1999/xhtml/vocab#ul ul
-http://purl.org/dc/terms/Audio audiotag
-http://purl.org/dc/terms/Image img
-http://purl.org/dc/terms/Video videotag
-http://schema.org/InteractionCounter interactions
 http://xmlns.com/foaf/0.1/Document document
-ImageObject img
