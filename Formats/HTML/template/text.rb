@@ -60,19 +60,16 @@ module Webize
 
            class: u.host == host ? 'local' : 'global', # local or global link styling
 
-           c: [[Title, Contains].map{|text|            # text attributes
-                 next unless anchor.has_key? text
+           c: [anchor[Contains]&.map{|content|         # inner text
+                 HTML.markup content, env},
 
-                 anchor[text].map{|content|            # inner text
-                   HTML.markup content, env}},
-
-               {_: :span, class: :uri,
+               {_: :span, class: :uri,                 # identifier
                 c: [u.host,
                     (CGI.escapeHTML(u.path) if u.path)]},
 
                keyval(anchor.merge(u.query_hash),
                       inline: true,
-                      skip: ['uri', Contains, Link, Title, Type])]}.
+                      skip: ['uri', Contains, Link, Type])]}.
             update(id ? (id = nil; {id: anchor_id}) : {})} # show ID on first link only if multiple targets
       end
 
