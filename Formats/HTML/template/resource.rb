@@ -22,8 +22,8 @@ module Webize
       def div(node) = blockResource node, :div
 
       def docfrag(f) = if f.has_key? 'uri'
-                         div f
-                       else
+                         div f # fragment <div> with identifier
+                       else    # inlined un-named fragment
                          f[Contains]&.map{|frag|
                            HTML.markup frag, env}
                        end
