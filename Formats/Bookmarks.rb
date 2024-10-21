@@ -11,7 +11,6 @@ module Webize
 
         links = RDF::URI '#links'             # bookmark container
         yield @base.env[:base], Contains, links
-        yield links, Type, RDF::URI(Container)
 
         query = @base.env[:qs]['q']&.downcase # query argument
 
@@ -22,10 +21,10 @@ module Webize
           linkCount += 1                      # increment counter
 
           # commented code is Nokogiri implementation - regex is significantly faster
-         #a = Nokogiri::HTML.fragment(a).css('a')[0] # parse fragment
+          #a = Nokogiri::HTML.fragment(a).css('a')[0] # parse fragment
 
           subject = RDF::URI CGI.unescapeHTML a.match(/href=["']?([^'">\s]+)/i)[1]
-         #subject = RDF::URI a['href']
+          #subject = RDF::URI a['href']
 
           subject = HTTP::Node(subject,{}).unproxyURI if %w(l localhost x).member? subject.host
 
@@ -36,7 +35,6 @@ module Webize
             tld = RDF::URI '#TLD_' + tldname
             tlds[tld] ||= (
               yield links, Contains, tld
-              yield tld, Type, RDF::URI(Container)
               yield tld, Title, tldname
               yield tld, '#color',
                     '#' + Digest::SHA2.hexdigest(tldname)[0..5]
@@ -47,8 +45,7 @@ module Webize
             domains[host] ||= (
               yield tld, Contains, host
               yield host, Title, subject.host
-              yield host, '#style', 'background-color: black'
-              yield host, Type, RDF::URI(Container))
+            )
 
             yield host, Schema + 'item', subject
           end
