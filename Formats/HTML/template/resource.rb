@@ -81,12 +81,13 @@ module Webize
                   end
                 end
 
-        shown = ['#color', '#style', '#new',
+        shown = ['#color', '#new',
                  'uri',
                  Aria + 'hidden',
-                 #XHV + 'namespace',
-                 #Schema + 'height',
-                 #Schema + 'width',
+                 XHV + 'namespace',
+                 Schema + 'height',
+                 Schema + 'width',
+                 Schema + 'version',
                  Title, Contains]  # properties we handle before delegating to generic keyval render
 
         {_: name,                                # node
@@ -111,11 +112,10 @@ module Webize
             ]}.
           update(id ? {id: id} : {}).
           update((id && type == :div) ? {class: :resource} : {}).
-          # update(r.has_key?('#style') ? {style: r['#style'][0]} : {}).
-          # update(r.has_key?(Schema + 'height') ? {height: r[Schema + 'height'][0]} : {}).
-          # update(r.has_key?(Schema + 'width') ? {width: r[Schema + 'width'][0]} : {}).
+          update(r.has_key?(Schema + 'height') ? {height: r[Schema + 'height'][0]} : {}).
+          update(r.has_key?(Schema + 'width') ? {width: r[Schema + 'width'][0]} : {}).
           # update(r.has_key?(XHV + 'viewbox') ? {height: r[XHV + 'viewbox'][0]} : {}).
-          # update((ns = r[XHV + 'namespace']) ? {xmlns: ns[0].class == Hash ? ns[0]['uri'] : ns[0].to_s} : {}).
+          update((ns = r[XHV + 'namespace']) ? {xmlns: ns[0].class == Hash ? ns[0]['uri'] : ns[0].to_s} : {}).
           update(color ? {style: "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} 1px, transparent 1px, transparent 16px); border-color: #{color}"} : {})
       end
     end
