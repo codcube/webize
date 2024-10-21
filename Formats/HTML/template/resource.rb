@@ -84,9 +84,9 @@ module Webize
         shown = ['#color', '#style', '#new',
                  'uri',
                  Aria + 'hidden',
-                 XHV + 'namespace',
-                 Schema + 'height',
-                 Schema + 'width',
+                 #XHV + 'namespace',
+                 #Schema + 'height',
+                 #Schema + 'width',
                  Title, Contains]  # properties we handle before delegating to generic keyval render
 
         {_: name,                                # node
