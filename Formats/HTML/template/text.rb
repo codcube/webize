@@ -44,15 +44,13 @@ module Webize
 
       # hypertext anchor
       def a anchor
-        return inlineResource anchor, :a unless anchor.has_key? Link
+        anchor.delete XHV + 'target' # strip upstream link behaviours
 
-        anchor.delete XHV + 'target' # strip upstream link behaviour
-
-        if id = anchor['uri'] # identified anchor
+        if id = anchor['uri']        # resolve identifier
           anchor_id = Webize::Resource(id, env).local_id
         end
 
-        anchor[Link].map{|l|
+        anchor[Link]&.map{|l| # we allow multiple targets - each renders as its own <a>
           next unless l.class == Hash
 
           u = Webize::Resource l['uri'], env # URI
@@ -71,7 +69,7 @@ module Webize
                keyval(anchor.merge(u.query_hash),
                       inline: true,
                       skip: ['uri', Contains, Link, Type])]}.
-            update(id ? (id = nil; {id: anchor_id}) : {})} # show ID on first link only if multiple targets
+            update(id ? (id = nil; {id: anchor_id}) : {})} # attach id to first link
       end
 
     end
