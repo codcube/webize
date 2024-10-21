@@ -30,7 +30,7 @@ module Webize
                 {_: :img,
                  src: src.href,
                  alt: (image[Abstract] ||
-                       image[Title]).to_s}
+                       image[Title])&.join}
               end
               end,
 
