@@ -5,3 +5,4 @@ html-safe-nonce
 nonce
 accesskey
 data-sitekey
+data-token
