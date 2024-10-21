@@ -50,7 +50,7 @@ module Webize
                        slug = p.display_name
                        icon = Icons[p.uri] || slug unless k == 'uri'
                        [{_: :th,             # ☛ sorted columns
-                         c: {
+                         c: icon && {
                            #_: :a,
                            _: :span,
                            c: icon,

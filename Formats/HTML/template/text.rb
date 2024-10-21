@@ -68,7 +68,7 @@ module Webize
 
                keyval(anchor.merge(u.query_hash),
                       inline: true,
-                      skip: ['uri', Contains, Link, Type])]}.
+                      skip: ['uri', Contains, Link, Type, To])]}.
             update(id ? (id = nil; {id: anchor_id}) : {})} # attach id to first link
       end
 
