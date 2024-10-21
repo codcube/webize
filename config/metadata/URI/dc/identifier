@@ -138,3 +138,5 @@ productID
 data-comment-id
 data-uuid
 data-field-id
+data-id-attr
+data-blog-id
