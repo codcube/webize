@@ -96,7 +96,7 @@ module Webize
                  HTML.markup t, env}}.           # attach link to title if exists
                 update(ref || {}) if r.has_key? Title),
 
-             origin_ref,                         # origin pointer
+             (origin_ref unless inline),         # pointer
 
              keyval(r, inline: inline,           # key/val metadata
                     skip: shown),

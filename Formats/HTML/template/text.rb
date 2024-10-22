@@ -9,12 +9,12 @@ module Webize
 
       # headings
 
-      def h1(node) = identifiedResource node, :h1
-      def h2(node) = identifiedResource node, :h2
-      def h3(node) = identifiedResource node, :h3
-      def h4(node) = identifiedResource node, :h4
-      def h5(node) = identifiedResource node, :h5
-      def h6(node) = identifiedResource node, :h6
+      def h1(node) = inlineResource node, :h1
+      def h2(node) = inlineResource node, :h2
+      def h3(node) = inlineResource node, :h3
+      def h4(node) = inlineResource node, :h4
+      def h5(node) = inlineResource node, :h5
+      def h6(node) = inlineResource node, :h6
 
       # text elements
       def abbr(node) = inlineResource node, :abbr

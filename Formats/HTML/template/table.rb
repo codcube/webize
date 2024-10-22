@@ -72,7 +72,7 @@ module Webize
     class Node
 
       # display children of these node types in tabular format
-      TabularChild = %w(form head ol ul select)
+      TabularChild = %w(form ol ul select)
 
       # list elements
       def ul(node) = resource node, :ul
