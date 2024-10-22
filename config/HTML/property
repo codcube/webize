@@ -2,7 +2,7 @@
 #cache cache
 #childDir buttons
 #entry index_table
-#graph graph_index
+#graph graph_index_detailed
 #origin origin
 #source graph_index
 http://purl.org/dc/terms/Audio audio

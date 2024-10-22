@@ -20,11 +20,10 @@ module Webize
 
           linkCount += 1                      # increment counter
 
-          # commented code is Nokogiri implementation - regex is significantly faster
-          #a = Nokogiri::HTML.fragment(a).css('a')[0] # parse fragment
+          # a = Nokogiri::HTML.fragment(a).css('a')[0] # nokogiri
 
-          subject = RDF::URI CGI.unescapeHTML a.match(/href=["']?([^'">\s]+)/i)[1]
-          #subject = RDF::URI a['href']
+          subject = RDF::URI CGI.unescapeHTML a.match(/href=["']?([^'">\s]+)/i)[1] # regex
+          #subject = RDF::URI a['href']                                            # nokogiri
 
           subject = HTTP::Node(subject,{}).unproxyURI if %w(l localhost x).member? subject.host
 
@@ -47,22 +46,22 @@ module Webize
               yield host, Title, subject.host
             )
 
-            yield host, Schema + 'item', subject
+            yield host, '#graph', subject
           end
 
-          title = CGI.unescapeHTML a.match(/<a[^>]+>([^<]*)/i)[1]
-         #title = a.inner_text
+          title = CGI.unescapeHTML a.match(/<a[^>]+>([^<]*)/i)[1] # regex
+         #title = a.inner_text                                    # nokogiri
 
           yield subject, Title, title.sub(/^localhost\//,'')
-
+                                                                  # regex
           yield subject, Date, Webize.date(a.match(/add_date=["']?([^'">\s]+)/i)[1])
-         #yield subject, Date, Webize.date(a['add_date'])
+         #yield subject, Date, Webize.date(a['add_date'])         # nokogiri
 
-          if icon = a.match(/icon=["']?([^'">\s]+)/i)
-         #if icon = a['icon']
+          if icon = a.match(/icon=["']?([^'">\s]+)/i)             # regex
+         #if icon = a['icon']                                     # nokogiri
 
-            yield subject, Image, RDF::URI(CGI.unescapeHTML icon[1])
-           #yield subject, Image, RDF::URI(icon)
+            yield subject, Image, RDF::URI(CGI.unescapeHTML icon[1]) # regex
+           #yield subject, Image, RDF::URI(icon)                  # nokogiri
           end
         }
 
