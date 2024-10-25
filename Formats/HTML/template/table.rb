@@ -20,7 +20,7 @@ module Webize
                      [{_: :th,       # property heading
                        c: icon && {  # skip empty <span> if unlabeled
                          _: :span,   # <span> property label
-                         title: k
+                         title: k,
                          c: icon,
                        }}, "\n"]}}} if env),
              {_: :tbody,

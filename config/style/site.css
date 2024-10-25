@@ -7,7 +7,8 @@
 .abstract {border-radius: .5em; border: 1px solid #888; background: repeating-linear-gradient(-45deg, #888, #888 1px, transparent 1px, transparent 18px)}
 .blocked {background: repeating-linear-gradient(315deg, #f00, #f00 6em, transparent 6em, transparent 8em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
-.bottom-bar {position: fixed; bottom: 0; width: 100%}
+.bottom-bar {position: fixed; bottom: 0; width: 100%; vertical-align: bottom}
+.bottom-bar .stats {border-width: 1px 1px 0 1px; display: inline-block; border-style: solid; border-color: #555; border-radius: .62em .62em 0 0; font-size: 1.3em}
 .columns {column-width: 83ex; column-gap: 0}
 .comment {display: block; background-color: #000; color: #6ef; font-weight: bold}
 .comment span {background-color: #6ef; color: #000; font-weight: normal; border-radius: .3em; padding: 0; margin: 0}
