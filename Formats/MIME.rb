@@ -9,7 +9,8 @@ module Webize
 
     def fontURI? = FontExt.member? extname&.downcase
 
-    def imgPath? = path && (ImgExt.member? extname.downcase)
+    def imgPath? = path && (ImgExt.member?(extname.downcase) || # image-format extension
+                            path[-5..-1] == '@jpeg') # alternative extension separator
 
     def imgURI? = imgPath? || (dataURI? && path.index('image') == 0)
 
