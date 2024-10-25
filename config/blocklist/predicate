@@ -522,3 +522,7 @@ searchable
 frameborder
 border
 data-recalc-dims
+allowtransparency
+data-has-transparency
+onload
+onsubmit
