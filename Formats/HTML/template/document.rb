@@ -99,8 +99,8 @@ module Webize
                     ({class: :referers,
                       c: [HTML.markup(HTTP::Referer[self], env), :👈]} if HTTP::Referer[self]),
 
-                    # 👉 source graph(s)
-                    (property '#source', doc['#source'] if doc.has_key? '#source'),
+#                    # 👉 source graph(s)
+#                    (property '#source', doc['#source'] ),
                   ]},
 
                  # ⚠️ warnings
@@ -127,10 +127,20 @@ module Webize
                     link[:prev,'&#9664;'],
                     link[:next,'&#9654;'],
                     link[:down,'&#9660;'],
-                    {class: :stats,
-                     c: [{_: :a, href: '#local_graph', c: :📦},
-                         {_: :a, href: '#global_graph', c: :🌍}]},
-                  ]},
+
+                    # source reference(s)
+                    {class: :sources,
+                     c: [
+                       if doc.has_key? '#local_source'
+                         [{_: :a, href: '#local_sources', c: :📦},
+                          doc['#local_source'].size]
+                       end,
+
+                       if doc.has_key? '#remote_source'
+                         [{_: :a, href: '#remote_sources', c: :🌍},
+                          doc['#remote_source'].size]
+                       end
+                     ]}]},
 
                  # script
                  {_: :script, c: Code::SiteJS}]}]}]
