@@ -1,9 +1,9 @@
 #archive buttons
 #cache cache
 #childDir buttons
-#entry index_table
-#global_graph graph_list
-#local_graph graph_list
+#entry table
+#remote_source remote_source
+#local_source local_source
 #origin origin
 http://purl.org/dc/terms/Audio audio
 http://purl.org/dc/terms/Image img
