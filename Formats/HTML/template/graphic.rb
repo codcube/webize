@@ -26,7 +26,7 @@ module Webize
 
               if src.deny?
                 {_: :span, class: :blocked_image, c: :🖼️}
-              else
+              elsif src.imgURI?
                 {_: :img,
                  src: src.href,
                  alt: (image[Abstract] ||
