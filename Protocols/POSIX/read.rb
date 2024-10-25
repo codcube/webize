@@ -69,11 +69,9 @@ module Webize
       graph << RDF::Statement.new(self, RDF::URI(Date), stat.mtime.iso8601)
 
       # graph metadata
-      graph.each_graph{|g| # graph-source triples
+      graph.each_graph{|g|
         named_graph = g.name || self # graph URI
-        graph << RDF::Statement.new(env[:base], RDF::URI('#local_source'), named_graph) # source
-        graph << RDF::Statement.new(env[:base], RDF::URI(Contains), named_graph)  # base -> source
-      }
+        graph << RDF::Statement.new(env[:base], RDF::URI(Contains), named_graph)} # base graph -> graph
 
       graph
     end

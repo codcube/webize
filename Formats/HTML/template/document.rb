@@ -132,12 +132,12 @@ module Webize
                     {class: :sources,
                      c: [
                        if doc.has_key? '#local_source'
-                         [{_: :a, href: '#local_sources', c: :📦},
+                         [{_: :a, id: :local_src, href: '#local_sources', c: :📦},
                           doc['#local_source'].size]
                        end,
 
                        if doc.has_key? '#remote_source'
-                         [{_: :a, href: '#remote_sources', c: :🌍},
+                         [{_: :a, id: :remote_src, href: '#remote_sources', c: :🌍},
                           doc['#remote_source'].size]
                        end
                      ]}]},
