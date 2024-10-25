@@ -1,9 +1,9 @@
-#down {float: right; border-radius: .6em .6em 0 0; border-width: .04em .04em 0 .04em}
+#down {float: right; border-radius: .6em .6em 0 0; border-width: .04em .04em 0 .04em; margin-right: .2em}
 #next {float: right; border-radius: .6em 0 0 0; border-width: .04em 0 0 .04em}
 #prev {float: left; border-radius: 0 .6em 0 0; border-width: .04em .04em 0 0}
 #prev, #next, #up, #down {font-size: 2em; border-style: solid; border-color: #777; color: #bbb; padding: .2em .8em .2em .8em}
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
-#up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em}
+#up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em; position: fixed}
 .abstract {border-radius: .5em; border: 1px solid #888; background: repeating-linear-gradient(-45deg, #888, #888 1px, transparent 1px, transparent 18px)}
 .blocked {background: repeating-linear-gradient(315deg, #f00, #f00 6em, transparent 6em, transparent 8em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
@@ -33,7 +33,7 @@
 .top-bar .tabular {display: block; font-size: .96em}
 .top-bar form input {background-color: #282828; color: #eee; border-radius: .5em; border-width: 0; margin: 0; padding: 0; width: 24ex}
 .top-bar svg {height: 1em; width: 1em}
-.top-bar {border-width: 0 1px 1px 1px; border-style: solid; border-color: #555; border-radius: 0 0 .62em .62em; vertical-align: top}
+.top-bar {border-width: 0 1px 1px 1px; display: inline-block; border-style: solid; border-color: #555; border-radius: 0 0 .62em .62em; vertical-align: top}
 .video {max-width: 80em}
 .warning a {background-color: #fff; color: #000}
 .warning {display: inline-block; background-color: #ff0; color: #000; padding: .2em; margin: .3em; border-radius: .5em}
