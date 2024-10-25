@@ -125,7 +125,7 @@ module Webize
 
                  # document attributes
                  keyval(doc, skip: [
-                          '#source',
+                          '#global_graph', '#local_graph',
                           Contains,
                           HT + 'preload',
                           XHV + 'script',
@@ -138,6 +138,8 @@ module Webize
                     link[:prev,'&#9664;'],
                     link[:next,'&#9654;'],
                     link[:down,'&#9660;'],
+                    {_: :a, href: '#local_graph', c: :📦},
+                    {_: :a, href: '#global_graph', c: :🌍},
                   ]},
 
                  # script
