@@ -23,7 +23,8 @@ module Webize
           puts image
         end
         [{_: :span, class: :image, # wrapping node for image and metadata nodes
-          c: [if i
+          c: [
+            if i
               if i.deny?
                 {_: :span, class: :blocked_image, c: :🖼️}
               elsif i.imgURI?
@@ -32,7 +33,7 @@ module Webize
                  alt: (image[Abstract] ||
                        image[Title])&.join}
               end
-              end,
+            end,
 
               keyval(image,
                      inline: true,
