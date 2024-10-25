@@ -44,7 +44,7 @@ module Webize
                     src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href}
                  end,
 
-                 {class: :toolbox, c: [
+                 {class: 'top-bar', c: [
 
                     # 👉 toplevel node
                     {_: :a, id: :rootpath,
@@ -132,10 +132,13 @@ module Webize
                           XHV + 'stylesheet',
                         ]),
 
-                 # 👉 previous, contained and next node(s)
-                 link[:prev,'&#9664;'],
-                 link[:down,'&#9660;'],
-                 link[:next,'&#9654;'],
+                 {class: 'bottom-bar', c: [
+
+                    # 👉 previous, next and expanded-set node(s)
+                    link[:prev,'&#9664;'],
+                    link[:next,'&#9654;'],
+                    link[:down,'&#9660;'],
+                  ]},
 
                  # script
                  {_: :script, c: Code::SiteJS}]}]}]
