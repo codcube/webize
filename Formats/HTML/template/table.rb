@@ -3,33 +3,6 @@ module Webize
   module HTML
     class Property
 
-      # graph index
-      def graph_index nodes, details: false
-        nodes.map do |node|
-          (puts 'not a node?', node; next) unless node.class == Hash
-          next unless uri = node['uri']
-
-          uri = Webize::Resource uri, env
-
-          # detailed info
-          node.update({'#host' => [uri.host],
-                       '#path' => [uri.path]}) if details
-
-          # pointers to upstream and cached graph
-          node.update({'#cache' => [POSIX::Node(uri)],
-                       '#origin' => [uri]})
-
-        end
-
-        index_table nodes
-      end
-
-      def graph_index_detailed nodes
-        graph_index nodes, details: true
-      end
-      # eliminate most inlining to output a basic tabular list of resources i.e. don't include "main content" and containment pointers
-      def index_table(nodes) = table nodes, skip: [Abstract, Contains, Content, SIOC + 'has_container', SIOC + 'reply_of']
-
       # table layout: graph <> table, resource <> row, property <> column
       def table graph, attrs: nil, skip: []
         graph = graph.select{|g| g.respond_to? :keys} # resources

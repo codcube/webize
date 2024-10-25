@@ -49,6 +49,8 @@ module Webize
           {_: :span, class: :label, c: HTML.markup(l, env)}}
       end
 
+      def local_source(nodes) = table nodes
+
       def origin locations
         locations.map{|l|
           {_: :a, href: l.uri, c: :↗, class: :origin, target: :_blank}}
@@ -75,6 +77,26 @@ module Webize
             }
           end
         }
+      end
+
+      def remote_source nodes
+        nodes.map do |node|
+          (puts 'not a node?', node; next) unless node.class == Hash
+          next unless uri = node['uri']
+
+          uri = Webize::Resource uri, env
+
+          # detailed info
+          node.update({'#host' => [uri.host],
+                       '#path' => [uri.path]}) if details
+
+          # pointers to upstream and cached graph
+          node.update({'#cache' => [POSIX::Node(uri)],
+                       '#origin' => [uri]})
+
+        end
+
+        index_table nodes
       end
 
       def status_code code
