@@ -144,8 +144,11 @@ module Webize
 
           end
 
-          # emit triple
-          yield subject, p, o
+          # emit triples
+          yield subject, p, o # attr-mapped triple
+
+          yield subject, Image, o if p == Link && o.imgURI?
+
         } if node.respond_to? :attribute_nodes
 
         # child nodes
