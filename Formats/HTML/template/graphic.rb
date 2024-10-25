@@ -18,17 +18,17 @@ module Webize
       def img image
         return puts "not an image resource: #{image.class} #{image}" unless image.class == Hash
 
-        [{_: :span,
-          class: :image,
-          c: [if image.has_key? 'uri'
+        if identified = image.has_key? 'uri'
+          i = Webize::Resource env[:base].join(image['uri']), env
+        end
 
-              src = Webize::Resource env[:base].join(image['uri']), env
-
-              if src.deny?
+        [{_: :span, class: :image, # wrapping node for image and metadata nodes
+          c: [if identified
+              if i.deny?
                 {_: :span, class: :blocked_image, c: :🖼️}
-              elsif src.imgURI?
+              elsif i.imgURI?
                 {_: :img,
-                 src: src.href,
+                 src: i.href,
                  alt: (image[Abstract] ||
                        image[Title])&.join}
               end
@@ -36,7 +36,8 @@ module Webize
 
               keyval(image,
                      inline: true,
-                     skip: [Type, 'uri'])]},
+                     skip: [Type, 'uri'])]}.
+           update(identified ? {id: i.local_id} : {}),
          ' ']
       end
 
