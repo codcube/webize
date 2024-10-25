@@ -27,45 +27,37 @@ module Webize
       def graph_index_detailed nodes
         graph_index nodes, details: true
       end
-
       # eliminate most inlining to output a basic tabular list of resources i.e. don't include "main content" and containment pointers
       def index_table(nodes) = table nodes, skip: [Abstract, Contains, Content, SIOC + 'has_container', SIOC + 'reply_of']
 
       # table layout: graph <> table, resource <> row, property <> column
-      def table graph, skip: []
-        graph = graph.select{|g| g.respond_to? :keys}
-        case graph.size
-        when 0 # empty
-          nil
-#        when 1 # key/val render of resource
-#          Node.new(env[:base]).env(env).keyval graph[0], skip: skip
-        else   # tabular render of resources
-          keys = graph.map(&:keys).flatten.uniq -
-                 skip                        # apply property skiplist
+      def table graph, attrs: nil, skip: []
+        graph = graph.select{|g| g.respond_to? :keys} # resources
+        return unless graph.size > 0               # empty graph?
 
-          {_: :table, class: :tabular,       # table
-           c: [({_: :thead,
-                 c: {_: :tr, c: keys.map{|k| # table heading
-                       p = Webize::URI(k)
-                       slug = p.display_name
-                       icon = Icons[p.uri] || slug unless k == 'uri'
-                       [{_: :th,             # ☛ sorted columns
-                         c: icon && {
-                           #_: :a,
-                           _: :span,
-                           c: icon,
-                           #href: URI.qs(env[:qs].merge({'sort' => p.uri,
-                           #order: env[:order] == 'asc' ? 'desc' : 'asc'}))
-                         }}, "\n"]}}} if env),
-               {_: :tbody,
-                c: graph.map{|resource|      # resource -> row
-                  [{_: :tr, c: keys.map{|k|
-                      [{_: :td, property: k,
-                        c: if resource.has_key? k
-                         Property.new(k).env(env).markup resource[k]
-                        end},
-                       "\n" ]}}, "\n" ]}}]}
-        end
+        attrs ||= graph.map(&:keys).flatten.uniq -
+                  skip               # attr skiplist
+
+        {_: :table, class: :tabular, # <table> of resources
+         c: [({_: :thead,            # <thead> of properties
+               c: {_: :tr, c: attrs.map{|k|
+                     p = Webize::URI(k)
+                     slug = p.display_name
+                     icon = Icons[p.uri] || slug unless k == 'uri'
+                     [{_: :th,       # property heading
+                       c: icon && {  # skip empty <span> if unlabeled
+                         _: :span,   # <span> property label
+                         title: k
+                         c: icon,
+                       }}, "\n"]}}} if env),
+             {_: :tbody,
+              c: graph.map{|resource|
+                [{_: :tr, c: attrs.map{|k| # <tr> resource -> row
+                    [{_: :td, property: k, # cell in property column
+                      c: if resource.has_key? k
+                       Property.new(k).env(env).markup resource[k]
+                      end},
+                     "\n" ]}}, "\n" ]}}]}
       end
 
     end
