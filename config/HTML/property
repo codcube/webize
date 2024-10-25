@@ -2,9 +2,9 @@
 #cache cache
 #childDir buttons
 #entry index_table
-#graph graph_index_detailed
+#global_graph graph_index_detailed
+#local_graph graph_index
 #origin origin
-#source graph_index
 http://purl.org/dc/terms/Audio audio
 http://purl.org/dc/terms/Image img
 http://purl.org/dc/terms/Video video

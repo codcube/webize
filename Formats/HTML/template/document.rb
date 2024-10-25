@@ -118,19 +118,8 @@ module Webize
                                    {_: :td, c: ({_: :a, href: '/block/' + r.host.sub(/^(www|xml)\./,''), id: 'block' + Digest::SHA2.hexdigest(r.uri),
                                                  c: :🛑} unless r.deny_domain?)}]}}}]} if HTTP::Redirector[self]),
 
-                 # contained nodes
-                 if doc.has_key? Contains
-                   doc[Contains].map{|v| HTML.markup v, env }
-                 end,
-
-                 # document attributes
-                 keyval(doc, skip: [
-                          '#global_graph', '#local_graph',
-                          Contains,
-                          HT + 'preload',
-                          XHV + 'script',
-                          XHV + 'stylesheet',
-                        ]),
+                 # document-node data
+                 keyval(doc),
 
                  {class: 'bottom-bar', c: [
 
