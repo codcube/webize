@@ -49,7 +49,7 @@ module Webize
           {_: :span, class: :label, c: HTML.markup(l, env)}}
       end
 
-      def local_source(nodes) = table nodes
+      def local_source(nodes) = table nodes, attrs: [Type, 'uri', Title, Size, Date]
 
       def origin locations
         locations.map{|l|
@@ -86,7 +86,7 @@ module Webize
 
           uri = Webize::Resource uri, env
 
-          # detailed info
+          # host/path fields
           node.update({'#host' => [uri.host],
                        '#path' => [uri.path]}) if details
 
