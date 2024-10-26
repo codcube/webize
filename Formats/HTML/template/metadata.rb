@@ -86,13 +86,10 @@ module Webize
 
           uri = Webize::Resource uri, env
 
-          # host/path fields
-          node.update({'#host' => [uri.host],
-                       '#path' => [uri.path]}) if details
-
-          # pointers to upstream and cached graph
-          node.update({'#cache' => [POSIX::Node(uri)],
-                       '#origin' => [uri]})
+          node.update({'#host' => [uri.host],          # host field
+                       '#path' => [uri.path],          # path field
+                       '#cache' => [POSIX::Node(uri)], # 👉 cached graph
+                       '#origin' => [uri]})            # 👉 upstream/original resource
 
         end
 
