@@ -125,3 +125,9 @@ attributedDescriptionBodyText
 structuredDescriptionContentRenderer
 engagementPanelSectionListRenderer
 engagementPanels
+endScreenVideoRenderer
+watchNextEndScreenRenderer
+endScreen
+playerOverlayRenderer
+playerOverlays
+results
