@@ -4,7 +4,7 @@ module Webize
     class Property
 
       # table layout: graph <> table, resource <> row, property <> column
-      def table graph, attrs: nil, skip: []
+      def table graph, attrs: nil, id: nil, skip: []
         graph = graph.select{|g| g.respond_to? :keys} # resources
         return unless graph.size > 0               # empty graph?
 
@@ -30,7 +30,8 @@ module Webize
                       c: if resource.has_key? k
                        Property.new(k).env(env).markup resource[k]
                       end},
-                     "\n" ]}}, "\n" ]}}]}
+                     "\n" ]}}, "\n" ]}}]}.
+          update(id ? {id: id} : {})
       end
 
     end

@@ -49,7 +49,7 @@ module Webize
           {_: :span, class: :label, c: HTML.markup(l, env)}}
       end
 
-      def local_source(nodes) = table nodes, attrs: [Type, 'uri', Title, Size, Date]
+      def local_source(nodes) = table nodes, attrs: [Type, 'uri', Title, Size, Date], id: :local_source
 
       def origin locations
         locations.map{|l|
@@ -93,7 +93,7 @@ module Webize
 
         end
 
-        index_table nodes
+        table nodes, id: :remote_source
       end
 
       def status_code code
