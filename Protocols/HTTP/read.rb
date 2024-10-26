@@ -11,6 +11,8 @@ module Webize
         (Zlib::GzipReader.new StringIO.new body).read
       when /flate|zip/i
         Zlib::Inflate.inflate body
+      when /zstd/i
+        Zstd::Inflate.inflate body
       else
         head['Content-Encoding'] = encoding
         body
