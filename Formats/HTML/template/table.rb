@@ -17,16 +17,16 @@ module Webize
                      p = Webize::URI(k)
                      slug = p.display_name
                      icon = Icons[p.uri] || slug unless k == 'uri'
-                     [{_: :th,       # property heading
+                     [{_: :th,       # <th> heading of property column
                        c: icon && {  # skip empty <span> if unlabeled
-                         _: :span,   # <span> property label
+                         _: :span,   # <span> label of property
                          title: k,
                          c: icon,
                        }}, "\n"]}}} if env),
              {_: :tbody,
               c: graph.map{|resource|
-                [{_: :tr, c: attrs.map{|k| # <tr> resource -> row
-                    [{_: :td, property: k, # cell in property column
+                [{_: :tr, c: attrs.map{|k| # <tr> row of resource
+                    [{_: :td, property: k, # <td> cell of attribute/property
                       c: if resource.has_key? k
                        Property.new(k).env(env).markup resource[k]
                       end},

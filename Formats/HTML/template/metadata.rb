@@ -93,7 +93,7 @@ module Webize
 
         end
 
-        table nodes, id: :remote_source
+        table nodes, id: :remote_source, attrs: ['uri', HT+'status', HT+'Content-Type', HT+'Content-Length', '#fTime', '#pTime', '#host', '#path', '#cache', '#origin', HT+'Server', HT+'X-Powered-By']
       end
 
       def status_code code

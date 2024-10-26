@@ -528,3 +528,5 @@ onload
 onsubmit
 onclick
 intensityScoreNormalized
+data-onclick
+nowrap
