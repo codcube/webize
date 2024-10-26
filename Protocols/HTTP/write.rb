@@ -39,8 +39,8 @@ module Webize
        head? ? nil : [if writer = RDF::Writer.for(content_type: format)
                       writer.buffer(base_uri: self,
                                     prefixes: Prefixes) do |w|
-                        repositories.map{|r|
-                          w << r }
+                        repositories.compact.map{|r|
+                          w << r}
                       end
                      else
                        logger.warn "⚠️ Writer unavailable for #{format}" ; ''
