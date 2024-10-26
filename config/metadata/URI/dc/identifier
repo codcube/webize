@@ -147,3 +147,5 @@ data-story-id
 post_id
 siteID
 postID
+entityKey
+externalVideoId

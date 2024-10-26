@@ -113,3 +113,15 @@ value
 videoDescriptionInfocardsSectionRenderer
 watchEndpointSupportedOnesieConfig
 webCommandMetadata
+chat
+payload
+header
+markers
+markersList
+macroMarkersListEntity
+entityBatchUpdate
+frameworkUpdates
+attributedDescriptionBodyText
+structuredDescriptionContentRenderer
+engagementPanelSectionListRenderer
+engagementPanels

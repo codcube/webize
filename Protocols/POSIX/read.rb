@@ -71,6 +71,7 @@ module Webize
       # graph metadata
       graph.each_graph{|g|
         named_graph = g.name || self # graph URI
+        graph << RDF::Statement.new(env[:base], RDF::URI('#graph'), named_graph)  # graph source
         graph << RDF::Statement.new(env[:base], RDF::URI(Contains), named_graph)} # base graph -> graph
 
       graph
