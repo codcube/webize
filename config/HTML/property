@@ -2,6 +2,7 @@
 #cache cache
 #childDir buttons
 #entry table
+#graph graph_source
 #graph_source graph_source
 #remote_source remote_source
 #local_source local_source
