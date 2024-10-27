@@ -151,3 +151,7 @@ entityKey
 externalVideoId
 data-block-id
 youtube-src-id
+data-photo-ids
+data-photoids
+data-fileid
+data-mentionid
