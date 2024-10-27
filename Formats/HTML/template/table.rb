@@ -7,9 +7,13 @@ module Webize
       def table graph, attrs: nil, id: nil, skip: []
         graph = graph.select{|g| g.respond_to? :keys} # resources
         return unless graph.size > 0               # empty graph?
+        all_attrs = graph.map(&:keys).flatten.uniq # all attributes
 
-        attrs ||= graph.map(&:keys).flatten.uniq -
-                  skip               # attr skiplist
+        attrs = if attrs # union of requested and available attrs
+                  all_attrs % attrs
+                else     # all attrs excluding skiplist
+                  all_attrs - skip
+                end
 
         {_: :table, class: :tabular, # <table> of resources
          c: [({_: :thead,            # <thead> of properties
