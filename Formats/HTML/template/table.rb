@@ -10,7 +10,7 @@ module Webize
         all_attrs = graph.map(&:keys).flatten.uniq # all attributes
 
         attrs = if attrs # union of requested and available attrs
-                  all_attrs % attrs
+                  attrs & all_attrs
                 else     # all attrs excluding skiplist
                   all_attrs - skip
                 end
