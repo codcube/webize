@@ -7,16 +7,15 @@
 .abstract {border-radius: .5em; border: 1px solid #888; background: repeating-linear-gradient(-45deg, #888, #888 1px, transparent 1px, transparent 18px)}
 .blocked {background: repeating-linear-gradient(315deg, #f00, #f00 6em, transparent 6em, transparent 8em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
-.bottom-bar {position: fixed; bottom: 0; width: 100%; vertical-align: bottom}
 .bottom-bar .stats {border-width: 1px 1px 0 1px; display: inline-block; border-style: solid; border-color: #555; border-radius: .62em .62em 0 0; font-size: 1.3em}
+.bottom-bar {position: fixed; bottom: 0; width: 100%; vertical-align: bottom}
 .columns {column-width: 83ex; column-gap: 0}
-.comment {display: block; background-color: #000; color: #6ef; font-weight: bold}
 .comment span {background-color: #6ef; color: #000; font-weight: normal; border-radius: .3em; padding: 0; margin: 0}
+.comment {display: block; background-color: #000; color: #6ef; font-weight: bold}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
 .image {border: 1px dotted #555; display: inline-block}
-.key, .type {background-color: #222; color: #aaa}
 .label > span {background-color: #000; color: #ddd; border: 1px solid #444; font-size: .92em; border-radius: .28em}
 .link {border: 1px dotted #0cf; margin: 1px}
 .name {background-color: #888; color: #000; font-size: .8em; vertical-align: top}
@@ -58,7 +57,6 @@ a.local, a.local .label > span {background-color: #002}
 a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
 a.pointer, td[property="uri"] a {margin: 0; padding: 0; background-color: #222; color: #fff; border-radius: .5em; font-weight: normal; float: right}
 a.pointer:visited, td[property="uri"] a:visited {background-color: #338}
-h1 a.pointer, h2 a.pointer, h3 a.pointer, h4 a.pointer, h5 a.pointer, h6 a.pointer {position: absolute; right: -1.4em}
 a.to {float: right; margin: 0}
 a:visited span.uri {background-color: black}
 audio {width: 80ex; float: right}
@@ -77,23 +75,26 @@ body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
 cite {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
 cite::before {content: '📚'; color: #666; margin-left: -12px}
-code {border-width: 1px 0 1px 0; border-style: dotted; border-color: #eee}
 code > span { color: #000; background-color: #eee; padding: 0 0 0 .2em;}
+code {border-width: 1px 0 1px 0; border-style: dotted; border-color: #eee}
 dd {border-width: 0 0 1px 0; border-style: dotted; border-color: #222}
+dt, dt > span, .key, .type {background-color: #222; color: #ccc}
+dl, dt, dd, img, video, table, tr, td, .resource {max-width: 100%}
 dl, form, ol, ul, table, p, .resource {display: inline-block}
 dt {float: left; vertical-align: top; border-width: 0 0 1px 0; border-style: dotted; border-color: #444}
-h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv, code .kv {float: right}
 h1 .kv {font-size: .6em}
-h2 .kv {font-size: .75em}
+h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv, code .kv {float: right}
+h1 a.pointer, h2 a.pointer, h3 a.pointer, h4 a.pointer, h5 a.pointer, h6 a.pointer {position: absolute; right: -1.4em}
 h1, h1 > span {background-color: #ccc; color: #000}
 h1, h2, h3, h4, h5, h6 {clear: both; padding: 0 0 0 .2em; border-radius: .2em; position: relative; margin-right: 1em}
+h2 .kv {font-size: .75em}
 h2, h2 > span {background-color: #aaa; color: #000}
 h3, h3 > span {background-color: #888; color: #000}
 h4, h4 > span {background-color: #666; color: #000}
 h5, h5 > span {background-color: #444; color: #fff}
 h6, h6 > span {background-color: #222; color: #fff}
 hr {margin: 1px 0 1px 0}
-img, video, td {max-width: 100%; border-radius: .4em}
+img {border-radius: .4em}
 li:nth-child(even) {background-color: #000; color: #fff}
 li:nth-child(odd) {background-color: #222; color: #fff}
 p {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
@@ -108,8 +109,8 @@ table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 
 table.tabular {border: 1px dotted #555}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
-td[property="http://purl.org/dc/terms/Image"] {min-width: 128px}
 td[property="#path"] {max-width: 255px; overflow: hidden}
+td[property="http://purl.org/dc/terms/Image"] {min-width: 128px}
 th {background-color: #383838; color: #fff}
 th:first-child {border-radius: .3em 0 0 .3em}
 th:last-child {border-radius: 0 .3em .3em 0}

@@ -45,9 +45,12 @@ module Webize
       TabularChild = %w(form ol ul select)
 
       # list elements
-      def ul(node) = resource node, :ul
-      def ol(node) = resource node, :ol
+      def dd(node) = inlineResource node, :dd
+      def dl(node) = blockResource node, :dl
+      def dt(node) = inlineResource node, :dt
       def li(node) = resource node, :li
+      def ol(node) = resource node, :ol
+      def ul(node) = resource node, :ul
 
       # table elements
       def table(node) = blockResource node, :table
