@@ -22,6 +22,7 @@ http://www.w3.org/1999/02/22-rdf-syntax-ns#type rdf_type
 http://www.w3.org/1999/xhtml/vocab#script table
 http://www.w3.org/1999/xhtml/vocab#stylesheet table
 http://www.w3.org/2000/01/rdf-schema#label label
+http://www.w3.org/2011/http#Content-Type content_type
 http://www.w3.org/2011/http#preload table
 http://www.w3.org/2011/http#status status_code
 uri identifier
