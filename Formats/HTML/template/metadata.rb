@@ -100,7 +100,14 @@ module Webize
       def graph_source(nodes) = table cache_info(nodes), attrs: ['uri', Title, '#path', Image, Creator, '#cache', '#origin']
 
       # render resource URIs, remote/origin response metadata, and local cache-pointers and transaction timings
-      def remote_source(nodes) = table cache_info(nodes), id: :remote_source, attrs: [HT+'status', 'uri', '#host', '#path', '#cache', '#origin', Title, HT+'Content-Type', HT+'Content-Length', '#fTime', '#pTime', HT+'Server', HT+'X-Powered-By']
+      def remote_source(nodes) = table cache_info(nodes),
+                                       id: :remote_source,
+                                       attrs: [HT+'status',
+                                               'uri', '#host', '#path',
+                                               '#cache', '#origin',
+                                               Title,
+                                               HT+'Content-Type', HT+'Content-Length', HT+'Server', HT+'X-Powered-By',
+                                               '#fTime', '#pTime']
 
       def status_code code
         code.map{|status|
