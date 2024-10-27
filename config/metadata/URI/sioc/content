@@ -133,3 +133,17 @@ playerOverlays
 results
 meta
 data-submit-text
+media_attachments
+card
+gridPlaylistRenderer
+hotkeyDialogSectionOptionRenderer
+hotkeyDialogRenderer
+hotkeyDialog
+desktopTopbarRenderer
+topbar
+sources
+imageBannerViewModel
+banner
+tabRenderer
+pageHeaderRenderer
+pageHeaderViewModel
