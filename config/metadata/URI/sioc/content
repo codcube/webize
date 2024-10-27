@@ -147,3 +147,5 @@ banner
 tabRenderer
 pageHeaderRenderer
 pageHeaderViewModel
+data-copy
+data-options

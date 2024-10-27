@@ -46,6 +46,7 @@ module Webize
 
       # list elements
       def dd(node) = inlineResource node, :dd
+      def dfn(node) = inlineResource node, :dfn
       def dl(node) = blockResource node, :dl
       def dt(node) = inlineResource node, :dt
       def li(node) = resource node, :li
