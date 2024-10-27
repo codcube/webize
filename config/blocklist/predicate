@@ -535,3 +535,5 @@ theme
 theme_token
 referrerpolicy
 hide_collections
+allow
+data-headerbg
