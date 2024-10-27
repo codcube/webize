@@ -23,7 +23,7 @@
 .preembed .icon {position: absolute; left: 45%; top: 32%; font-size: 8em; color: #f00}
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .redirectors, .referers {border: 1px dotted #888; border-radius: 0}
-.resource {border: 1px solid #333; border-radius: 0 .62em .62em .62em; margin: .1em; max-width: 127ex; vertical-align: top}
+.resource {border: 1px solid #333; border-radius: 0 .62em .62em .62em; margin: .1em; vertical-align: top}
 .title > span {background-color: #aaa; color: #000; margin: 0; border: 1px solid #555; border-radius: .2em}
 .title {display: block; padding: 0}
 .title:visited {background-color: #ccc; color: #000}
@@ -79,7 +79,7 @@ cite {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; ma
 cite::before {content: '📚'; color: #666; margin-left: -12px}
 code {border-width: 1px 0 1px 0; border-style: dotted; border-color: #eee}
 code > span { color: #000; background-color: #eee; padding: 0 0 0 .2em;}
-dd {border-width: 0 0 1px 0; border-style: dotted; border-color: #222; max-width: 100ex}
+dd {border-width: 0 0 1px 0; border-style: dotted; border-color: #222}
 dl, form, ol, ul, table, p, .resource {display: inline-block}
 dt {float: left; vertical-align: top; border-width: 0 0 1px 0; border-style: dotted; border-color: #444}
 h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv, code .kv {float: right}
@@ -109,6 +109,7 @@ table.tabular {border: 1px dotted #555}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
 td[property="http://purl.org/dc/terms/Image"] {min-width: 128px}
+td[property="#path"] {max-width: 255px; overflow: hidden}
 th {background-color: #383838; color: #fff}
 th:first-child {border-radius: .3em 0 0 .3em}
 th:last-child {border-radius: 0 .3em .3em 0}
