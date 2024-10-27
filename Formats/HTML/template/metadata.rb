@@ -49,6 +49,7 @@ module Webize
           {_: :span, class: :label, c: HTML.markup(l, env)}}
       end
 
+      # LS - render resource URIs and filesystem metadata in table
       def local_source(nodes) = table nodes, attrs: [Type, 'uri', Title, Size, Date], id: :local_source
 
       def origin locations
@@ -79,22 +80,23 @@ module Webize
         }
       end
 
-      def remote_source nodes
-        nodes.map do |node|
-          (puts 'not a node?', node; next) unless node.class == Hash
-          next unless uri = node['uri']
+      def cache_info(nodes) = nodes.map do |node|
+        next unless node.class == Hash
+        next unless uri = node['uri']
 
-          uri = Webize::Resource uri, env
+        uri = Webize::Resource uri, env
 
-          node.update({'#host' => [uri.host],          # host field
-                       '#path' => [uri.path],          # path field
-                       '#cache' => [POSIX::Node(uri)], # 👉 cached graph
-                       '#origin' => [uri]})            # 👉 upstream/original resource
-
-        end
-
-        table nodes, id: :remote_source, attrs: ['uri', HT+'status', HT+'Content-Type', HT+'Content-Length', '#fTime', '#pTime', '#host', '#path', '#cache', '#origin', HT+'Server', HT+'X-Powered-By']
+        node.update({'#host' => [uri.host],          # host field
+                     '#path' => [uri.path],          # path field
+                     '#cache' => [POSIX::Node(uri)], # 👉 cached graph
+                     '#origin' => [uri]})            # 👉 upstream/original resource
       end
+
+      # generic named-graph list - cache and origin pointers with no network/filesystem-provided metadata
+      def graph_source(nodes) = table cache_info(nodes), attrs: ['uri', Title, '#path', Image, '#cache']
+
+      # render resource URIs, remote/origin response metadata, and local cache-pointers and transaction timings
+      def remote_source(nodes) = table cache_info(nodes), id: :remote_source, attrs: ['uri',  '#cache', '#origin', HT+'status',  '#host', '#path', Title, HT+'Content-Type', HT+'Content-Length', '#fTime', '#pTime', HT+'Server', HT+'X-Powered-By']
 
       def status_code code
         code.map{|status|
