@@ -530,3 +530,6 @@ onclick
 intensityScoreNormalized
 data-onclick
 nowrap
+js
+theme
+theme_token

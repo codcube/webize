@@ -93,7 +93,7 @@ module Webize
       end
 
       # generic graph list - cache and origin pointers sans network/filesystem metadata
-      def graph_source(nodes) = table cache_info(nodes), attrs: ['uri', Title, '#path', Image, '#cache', '#origin']
+      def graph_source(nodes) = table cache_info(nodes), attrs: ['uri', Title, '#path', Image, Creator, '#cache', '#origin']
 
       # render resource URIs, remote/origin response metadata, and local cache-pointers and transaction timings
       def remote_source(nodes) = table cache_info(nodes), id: :remote_source, attrs: ['uri',  '#cache', '#origin', HT+'status',  '#host', '#path', Title, HT+'Content-Type', HT+'Content-Length', '#fTime', '#pTime', HT+'Server', HT+'X-Powered-By']

@@ -66,11 +66,11 @@ module Webize
             open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
             f << summary}
 
-          host = RDF::URI('//' + (g.host || 'localhost'))                      # host container
-          summary << RDF::Statement.new(env[:base], RDF::URI(Contains), host)  # base 👉 host container
+          host = RDF::URI('//' + (g.host || 'localhost'))                     # host container
+          summary << RDF::Statement.new(env[:base], RDF::URI(Contains), host) # base 👉 host container
           summary << RDF::Statement.new(host, RDF::URI(Title), g.display_host || 'localhost') # host label
-          summary << RDF::Statement.new(host, RDF::URI('#entry'), g)           # host container 👉 summarized graph
-          summaries << summary                                                 # summary graph of graphs
+          summary << RDF::Statement.new(host, RDF::URI('#graph_source'), g)   # host container 👉 graph
+          summaries << summary                                                # summary graph
         else
           graph << RDF::Statement.new(env[:base], RDF::URI(Contains), g) # base 👉 full graph
           graph << RDF::Statement.new(g, RDF::URI('#new'), true)         # tag as new/updated
