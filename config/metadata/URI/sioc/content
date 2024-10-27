@@ -149,3 +149,7 @@ pageHeaderRenderer
 pageHeaderViewModel
 data-copy
 data-options
+templateUpdate
+serializedTemplateConfig
+streamingData
+responseContext
