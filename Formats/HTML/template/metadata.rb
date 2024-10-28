@@ -86,10 +86,10 @@ module Webize
 
         uri = Webize::Resource uri, env
 
-        node.update({'#host' => [uri.host],          # host field
-                     '#path' => [uri.path],          # path field
-                     '#cache' => [POSIX::Node(uri)], # 👉 cached graph
-                     '#origin' => [uri]})            # 👉 upstream/original resource
+        node['#host'] = [uri.host] unless env[:base].host == uri.host # host
+        node.update({'#path' => [uri.path],          # path
+                     '#cache' => [POSIX::Node(uri)], # 👉 cache
+                     '#origin' => [uri]})            # 👉 upstream/origin resource
       end
 
       def content_type(types) = types.map do |type|
@@ -97,7 +97,7 @@ module Webize
       end
 
       # generic graph list - cache and origin pointers sans network/filesystem metadata
-      def graph_source(nodes) = table cache_info(nodes), attrs: ['uri', Title, '#path', Image, Creator, '#cache', '#origin']
+      def graph_source(nodes) = table cache_info(nodes), attrs: ['uri', Title, '#host', '#path', Image, Creator, '#cache', '#origin']
 
       # render resource URIs, remote/origin response metadata, and local cache-pointers and transaction timings
       def remote_source(nodes) = table cache_info(nodes),
