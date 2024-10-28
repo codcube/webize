@@ -75,7 +75,7 @@ body.error > pre {margin: auto; max-width: 120ex; white-space: pre-wrap}
 body.error {background: #f00; font-weight: bold}
 cite {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
 cite::before {content: '📚'; color: #666; margin-left: -12px}
-code > span { color: #000; background-color: #eee; padding: 0 0 0 .2em;}
+code > span { color: #6ef; background-color: #111; padding: 0 0 0 .2em;}
 code {border-width: 1px 0 1px 0; border-style: dotted; border-color: #eee}
 dd {border-width: 0 0 1px 0; border-style: dotted; border-color: #222}
 dt, dt > span, .key, .type {background-color: #222; color: #ccc}
