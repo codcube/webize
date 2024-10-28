@@ -130,15 +130,9 @@ module Webize
             when RelURI          # resolve + relocate URI
               #puts "URI #{p} #{o}" # ideally we don't hit this and href-map on predicate instead of regex-sniffing
               href[]
-            when JSON::Array     # parse JSON array
-              begin
-                ::JSON.parse(o).map{|e|
-                  yield subject, p, e if e}
-                next
-              rescue
-                puts "not a JSON array: #{o}"
-              end
-            when JSON::Outer     # parse JSON object
+            when JSON::Array     # JSON array
+              o = JSON::Reader.new(o, base_uri: @base).scan_fragment &f rescue o
+            when JSON::Outer     # JSON object
               o = JSON::Reader.new(o, base_uri: @base).scan_fragment &f rescue o
             end
 

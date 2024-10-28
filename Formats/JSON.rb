@@ -67,19 +67,17 @@ id ID _id id_str @id)
       end
 
       def scan_document &f
-        # request graph 👉 document graph
-        yield @base.env[:base], Webize::URI(Contains), @base
-
-        # document graph 👉 JSON node
-        yield @base, Webize::URI(Contains),
-              scan_node(@doc.class == ::Array ? {'uri' => @base.to_s,
-                                                 Contains => @doc} : @doc, @base, &f)
+        yield @base.env[:base], Webize::URI(Contains), @base  # request graph 👉 document
+        yield @base, Webize::URI(Contains), scan_fragment(&f) # document 👉 JSON tree-in-graph root node
       end
 
+      # scan JSON Array or Object to RDF node suitable for use in a triple (such as document wrapping above)
       def scan_fragment &f
-        scan_node @doc, @base, &f
+        scan_node @doc.class == ::Array ? {'uri' => @base.to_s,
+                                                 Contains => @doc} : @doc, @base, &f
       end
 
+      # recursive JSON object scanner
       def scan_node node, graph, &f
 
         # subject
