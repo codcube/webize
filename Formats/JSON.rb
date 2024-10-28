@@ -73,8 +73,7 @@ id ID _id id_str @id)
 
       # scan JSON Array or Object to RDF node suitable for use in a triple (such as document wrapping above)
       def scan_fragment &f
-        scan_node @doc.class == ::Array ? {'uri' => @base.to_s,
-                                                 Contains => @doc} : @doc, @base, &f
+        scan_node @doc.class == ::Array ? {Contains => @doc} : @doc, @base, &f
       end
 
       # recursive JSON object scanner
@@ -115,7 +114,9 @@ id ID _id id_str @id)
                          nil
                        elsif o.match? RelURI # URI in String
                          @base.join o        # String -> RDF::URI
-                       elsif o.match? Outer  # JSON in String
+                       elsif o.match? Array  # JSON Array in String
+                         Reader.new(o, base_uri: @base).scan_fragment &f
+                       elsif o.match? Outer  # JSON Object in String
                          Reader.new(o, base_uri: @base).scan_fragment &f
                        elsif o.match? /^<.*>$/ # HTML in String
                          HTML::Reader.new(o, base_uri: @base).scan_fragment &f
