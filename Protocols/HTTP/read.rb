@@ -45,7 +45,7 @@ module Webize
       nodes.map{|n|
         semaphore.async{           # fetch URI -> RDF::Repository
           repos << (Node(n).fetchRemote thru: false,
-                                        summarize: nodes.size > 16)}}
+                                        summarize: true)}}
       barrier.wait
       respond repos                # merged-repository HTTP response
     end
