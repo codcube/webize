@@ -7,7 +7,6 @@
 #graph_source 🕸️
 #local_source 💼
 #origin ↗
-#path /
 #pTime 🔨
 #remote_source 🌍
 #sort ↨
@@ -140,8 +139,10 @@ http://www.w3.org/2011/http#content-type 🧱
 http://www.w3.org/2011/http#edituri 📝
 http://www.w3.org/2011/http#etag 🔖
 http://www.w3.org/2011/http#expires ⌛
+http://www.w3.org/2011/http#host 📛
 http://www.w3.org/2011/http#last-modified 🗓️
 http://www.w3.org/2011/http#link 🔗
+http://www.w3.org/2011/http#path /
 http://www.w3.org/2011/http#preload 🐰
 http://www.w3.org/2011/http#referer 👉
 http://www.w3.org/2011/http#server 🖥️
