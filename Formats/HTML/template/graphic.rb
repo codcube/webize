@@ -29,7 +29,8 @@ module Webize
           src: i.href,                     # SRC attribute
           alt: (image[Abstract] ||         # ALT attribute
                 image[Title])&.join},
-         keyval(image, inline: true, skip: ['uri', Type]) # metadata
+         keyval(image, inline: true,       # node metadata
+                skip: ['uri', Type]),
          ' ']
       end
 
