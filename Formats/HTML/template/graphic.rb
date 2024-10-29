@@ -23,17 +23,20 @@ module Webize
         (puts "no Image URI", image; return) unless image.has_key? 'uri' # required URI
 
         i = Webize::Resource env[:base].join(image['uri']), env
-        return :🚫 if i.deny?              # blocked URI
-        if env[:images].has_key? i
-          [{_: :a, href: '#' + i.local_id, c: :🖼️, class: :image_reference},
+        return :🚫 if i.deny?         # blocked URI
+
+        if env[:images].has_key? i     # shown image?
+          [{_: :a, c: :🖼️,             # link to existing image
+            href: '#' + i.local_id,
+            class: :image_reference},
            ' ']
         else
-          env[:images][i] = true
-          [{_: :img, id: i.local_id,         # IMG element
-            src: i.href,                     # SRC attribute
-            alt: (image[Abstract] ||         # ALT attribute
+          env[:images][i] = true       # mark as shown
+          [{_: :img, id: i.local_id,   # IMG element
+            src: i.href,               # SRC attribute
+            alt: (image[Abstract] ||   # ALT attribute
                   image[Title])&.join},
-           keyval(image, inline: true,       # node metadata
+           keyval(image, inline: true, # node metadata
                   skip: ['uri', Type]),
            ' ']
         end
