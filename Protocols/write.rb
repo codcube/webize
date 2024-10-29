@@ -57,9 +57,25 @@ module Webize
         Console.logger.info log.join ' '                      # log message
 
         if summarize                # summarize?
-          summary = RDF::Graph.new  # summary
+          summary = RDF::Graph.new  # summary graph
+          img_exerpt = false
           graph.each_statement{|s|  # walk graph
-            next unless [Creator, Date, Image, Link, To, Title, Type, Video].member? s.predicate.to_s
+            case s.predicate        # summary fields
+            when Creator
+            when Date
+            when Image
+              unless img_exerpt
+                img_exerpt = true
+                summary << RDF::Statement.new(g, RDF::URI(Image), s.object) 
+              end
+            when Link
+            when To
+            when Title
+            when Type
+            when Video
+            else
+              next                   # skipped field
+            end
             summary << s}           # summary << statement
 
           RDF::Writer.for(:turtle). # summary >> 🐢
