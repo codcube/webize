@@ -142,7 +142,6 @@ image_src
 image_thumb
 image_uri
 image_url
-images
 imagesrc
 img
 imgSrc
@@ -182,7 +181,6 @@ photo
 photo_url
 picture
 picture_url
-pictures
 pinterest:image
 pinterest:media
 placeholderImageUrl

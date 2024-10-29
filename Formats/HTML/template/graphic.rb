@@ -19,8 +19,8 @@ module Webize
       Markup[Image] = :img
 
       def img image
-        return unless image.class == Hash  # required resource
-        return unless image.has_key? 'uri' # required URI
+        (puts "not an Image", image; return) unless image.class == Hash  # required resource
+        (puts "no Image URI", image; return) unless image.has_key? 'uri' # required URI
 
         i = Webize::Resource env[:base].join(image['uri']), env
         return :🚫 if i.deny?              # blocked URI
