@@ -16,6 +16,7 @@
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
 .image {border: 1px dotted #555; display: inline-block}
+.image_reference {font-size: 2em}
 .label > span {background-color: #000; color: #ddd; border: 1px solid #444; font-size: .92em; border-radius: .28em}
 .link {border: 1px dotted #0cf; margin: 1px}
 .name {background-color: #888; color: #000; font-size: .8em; vertical-align: top}

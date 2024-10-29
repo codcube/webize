@@ -24,14 +24,19 @@ module Webize
 
         i = Webize::Resource env[:base].join(image['uri']), env
         return :🚫 if i.deny?              # blocked URI
-
-        [{_: :img,                         # IMG element
-          src: i.href,                     # SRC attribute
-          alt: (image[Abstract] ||         # ALT attribute
-                image[Title])&.join},
-         keyval(image, inline: true,       # node metadata
-                skip: ['uri', Type]),
-         ' ']
+        if env[:images].has_key? i
+          [{_: :a, href: '#' + i.local_id, c: :🖼️, class: :image_reference},
+           ' ']
+        else
+          env[:images][i] = true
+          [{_: :img, id: i.local_id,         # IMG element
+            src: i.href,                     # SRC attribute
+            alt: (image[Abstract] ||         # ALT attribute
+                  image[Title])&.join},
+           keyval(image, inline: true,       # node metadata
+                  skip: ['uri', Type]),
+           ' ']
+        end
       end
 
       # container for image and associated metadata
