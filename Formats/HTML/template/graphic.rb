@@ -21,26 +21,26 @@ module Webize
         # no-container: direct @src reference at resource URI
         return unless image.class == Hash
 
-        # identifier of container or image
+        # optional node identifier (blank-node containers allowed)
         i = Webize::Resource env[:base].join(image['uri']), env if image.has_key? 'uri'
 
         [{_: :span, class: :image, # container for <img> and metadata fields
           c: [
-            if i
-              if i.deny?
-                {_: :span, class: :blocked_image, c: :🖼️}
-              elsif i.imgURI?
-                {_: :img,
-                 src: i.href,
-                 alt: (image[Abstract] ||
+            unless container
+              if !i || i.deny? # placeholder if blocked or empty locator
+                {_: :span, c: :🖼️, title: i}
+              else
+                {_: :img,                 # <img> element
+                 src: i.href,             # src attribute
+                 alt: (image[Abstract] || # alt attribute
                        image[Title])&.join}
               end
             end,
 
-              keyval(image,
+              keyval(image,    # metadata and contained images
                      inline: true,
                      skip: [Type, 'uri'])]}.
-           update(i ? {id: i.local_id} : {}),
+           update(i ? {id: i.local_id} : {}), # container URI
          ' ']
       end
 

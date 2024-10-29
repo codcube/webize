@@ -30,7 +30,7 @@ http://www.w3.org/1999/xhtml/vocab#h6 h6
 http://www.w3.org/1999/xhtml/vocab#head head
 http://www.w3.org/1999/xhtml/vocab#hr hr
 http://www.w3.org/1999/xhtml/vocab#i i
-http://www.w3.org/1999/xhtml/vocab#img img
+http://www.w3.org/1999/xhtml/vocab#img imageContainer
 http://www.w3.org/1999/xhtml/vocab#li li
 http://www.w3.org/1999/xhtml/vocab#ol ol
 http://www.w3.org/1999/xhtml/vocab#p p
