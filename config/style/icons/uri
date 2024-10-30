@@ -156,6 +156,7 @@ http://www.w3.org/ns/ldp#prev ◀
 http://www.w3.org/ns/ldp#up ▲
 http://www.w3.org/ns/posix/stat#Directory 📁
 http://www.w3.org/ns/posix/stat#File 📄
+http://www.w3.org/ns/posix/stat#size 📏
 http://xmlns.com/foaf/0.1/Document 📄
 http://xmlns.com/foaf/0.1/Image 🖼️
 http://xmlns.com/foaf/0.1/name 📛
