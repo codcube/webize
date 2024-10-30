@@ -150,10 +150,11 @@ http://www.w3.org/2011/http#set-cookie 🍪
 http://www.w3.org/2011/http#status 🏁
 http://www.w3.org/2011/http#x-powered-by ⚙️
 http://www.w3.org/ns/ldp#Container 📁
-http://www.w3.org/ns/ldp#contains 📁
+http://www.w3.org/ns/ldp#contains 🪣
 http://www.w3.org/ns/ldp#next ▶
 http://www.w3.org/ns/ldp#prev ◀
 http://www.w3.org/ns/ldp#up ▲
+http://www.w3.org/ns/posix/stat#Directory 📁
 http://www.w3.org/ns/posix/stat#File 📄
 http://xmlns.com/foaf/0.1/Document 📄
 http://xmlns.com/foaf/0.1/Image 🖼️

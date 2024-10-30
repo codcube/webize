@@ -25,6 +25,7 @@ module Webize
       graph << RDF::Statement.new(env[:base], RDF::URI('#local_source'), self)   # source graph
       graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601) # directory timestamp
       graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename   # directory name
+      graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#Directory'))
 
       (nodes = node.children).map{|child|                   # child nodes
         name = child.basename.to_s                          # node name
