@@ -64,8 +64,8 @@ module Webize
           graph.each_statement{|s|  # walk graph
             case s.predicate        # summary fields
             when Creator
-              # group by message source
-              # in practice, this means mailing-list, user/channel on platform host, etc
+              # group by message source, perhaps a weblog,
+              # mailing-list, user/channel on a platform host, etc
               group = s.object
             # TODO author indexing
             when Date

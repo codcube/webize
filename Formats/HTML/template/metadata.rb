@@ -26,14 +26,16 @@ module Webize
 
       def creator creators
         creators.map{|creator|
-          if Identifiable.member? creator.class
-            uri = Webize::Resource.new(creator).env env
-            name = uri.display_name
-            color = Digest::SHA2.hexdigest(name)[0..5]
-            {_: :a, class: :from, href: uri.href, style: "background-color: ##{color}", c: name}
-          else
-            HTML.markup creator, env
-          end}
+          [ # colorize by URI
+            if Identifiable.member? creator.class
+              uri = Webize::Resource.new(creator).env env
+              name = uri.display_name
+              color = Digest::SHA2.hexdigest(name)[0..5]
+              {_: :a, class: :from, href: uri.href, style: "background-color: ##{color}", c: name}
+            else
+              HTML.markup creator, env
+            end,
+            ' ']}
       end
 
       def identifier uris
@@ -46,7 +48,8 @@ module Webize
       def label labels
         labels.map{|l|
           next unless l.class == RDF::Literal
-          {_: :span, class: :label, c: HTML.markup(l, env)}}
+          [{_: :span, class: :label, c: HTML.markup(l, env)},
+           ' ']}
       end
 
       # LS - render resource URIs and filesystem metadata in table
@@ -65,19 +68,20 @@ module Webize
                     else
                       t.display_name
                     end
-          if inline
-            content
-          else
-            {
-              #_: :a,
-              _: :span,
-              class: :type,
-              #href: t.href,
-              title: t.uri,
-              c: content,
-            }
-          end
-        }
+          [
+            if inline
+              content
+            else
+              {
+                #_: :a,
+                _: :span,
+                class: :type,
+                #href: t.href,
+                title: t.uri,
+                c: content,
+              }
+            end,
+            ' ']}
       end
 
       def cache_info(nodes) = nodes.map do |node|
@@ -119,19 +123,22 @@ module Webize
 
       def title titles
         titles.map{|t|
-          {_: :span, c: HTML.markup(t, env)}}
+          [{_: :span, c: HTML.markup(t, env)},
+           ' ']}
       end
 
       def to recipients
         recipients.map{|r|
-          if Identifiable.member? r.class
-            uri = Webize::Resource.new(r).env env
-            name = uri.display_name
-            color = Digest::SHA2.hexdigest(name)[0..5]
-            {_: :a, class: :to, href: uri.href, style: "background-color: ##{color}", c: ['&rarr;', name].join}
-          else
-            HTML.markup r, env
-          end}
+          [# colorize by URI
+            if Identifiable.member? r.class
+              uri = Webize::Resource.new(r).env env
+              name = uri.display_name
+              color = Digest::SHA2.hexdigest(name)[0..5]
+              {_: :a, class: :to, href: uri.href, style: "background-color: ##{color}", c: ['&rarr;', name].join}
+            else
+              HTML.markup r, env
+            end,
+            ' ']}
       end
     end
   end
