@@ -64,7 +64,10 @@ module Webize
           graph.each_statement{|s|  # walk graph
             case s.predicate        # summary fields
             when Creator
-              # TODO author indexing
+              # group by message source
+              # in practice, this means mailing-list, user/channel on platform host, etc
+              group = s.object
+            # TODO author indexing
             when Date
               # TODO populate summary timeline
             when Image
@@ -74,9 +77,6 @@ module Webize
             when Link
               # TODO backling indexing
             when To
-              # group by message target
-              # in practice, this means mailing-list, user/channel on platform host, etc
-              group = s.object
             when Title
             when Type
             when Video
