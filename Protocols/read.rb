@@ -26,6 +26,8 @@ module Webize
           repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # env 👉 graph
           repository.each_graph.map{|g|                                        # graph 👉 additional graph(s)
             repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
+          repository.each_subject.map{|s|                                      # graph 👉 subjects
+            repository << RDF::Statement.new(base, RDF::URI(Contains), s) unless s.node?} if format == 'text/turtle'
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
         end
