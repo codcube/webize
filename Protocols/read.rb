@@ -3,7 +3,7 @@ module Webize
 
     # (MIME, data) -> RDF::Repository
     def readRDF format, content
-      repository = RDF::Repository.new.extend Webize::Cache       # add repository behaviours to instance via #extend TODO subclass?
+      repository = RDF::Repository.new.extend Webize::Cache       # instantiate repository with our added behaviours (TODO subclass vs extend? IIRC we had some weird bugs where third-party/stdlib embeded-triplrs didn't think our subclass was a Repo due to strict equiv)
 
       case format                                                 # content type:TODO needless reads? stop media reads earlier
       when /octet.stream/                                         #  blob
@@ -17,10 +17,15 @@ module Webize
         repository << RDF::Statement.new(self, RDF::URI(Title), basename)
       else
         if reader ||= RDF::Reader.for(content_type: format)       # if reader exists for format:
-          r = reader.new(content, base_uri: self){|_| repository << _ }            # read graph
-          if self != r.base_uri                                                    # base URI override by document declaration?
-            repository << RDF::Statement.new(env[:base], RDF::URI(Contains), r.base_uri) # reference graph base from canonical base
-          end
+
+          r = reader.new(content, base_uri: self){|_|             # instantiate reader and reference it
+            repository << _ }                                     # raw data -> RDF
+
+          base = r.base_uri                                       # graph URI - declaratively settable, defaults to doc URI
+          repository << RDF::Statement.new(env[:base], RDF::URI(Contains), self) # env 👉 doc
+          repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # env 👉 graph
+          repository.each_graph.map{|g|                                        # graph 👉 additional graph(s)
+            repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
         end
