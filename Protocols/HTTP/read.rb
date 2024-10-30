@@ -136,7 +136,7 @@ module Webize
             FileUtils.touch doc, mtime: mtime if mtime
           end
 
-          repository = (readRDF format, body).persist(env, self)        # cache RDF
+          repository = readRDF format, body                             # read RDF
                                                                         # remote-source metadata:
           repository << RDF::Statement.new(env[:base], RDF::URI('#remote_source'), self) # graph id
           repository << RDF::Statement.new(self, RDF::URI(HT + 'status'), status) # HTTP status RDF
@@ -144,12 +144,12 @@ module Webize
           repository << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch timing
           repository << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache timing
 
-          if !thru
-            print MIME.format_icon format
-            repository                                                  # response graph w/o HTTP wrapping
-          elsif env[:notransform] || format.match?(FixedFormat)
+          if !thru                                                      # fetchMany scenario, no upstream HTTP response proxying:
+            print MIME.format_icon format                               # denote format/fetch with single character for a bit of feedback
+            repository.persist env, self                                # cache graph-data and return index/abstract/summary/pointers-graph from index process
+          elsif env[:notransform] || format.match?(FixedFormat)         # origin/upstream-server format preference
             staticResponse format, body                                 # HTTP response in upstream format
-          else
+          else                                                          # client format preference
             env[:origin_format] = format                                # note original format for logging/stats
             respond [repository], format                                # HTTP response in content-negotiated format
           end

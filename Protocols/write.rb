@@ -59,7 +59,7 @@ module Webize
 
         summary = RDF::Graph.new  # summary graph
         img = nil                 # exerpted image
-        group = self              # group URI
+        group = base              # group URI
 
         graph.each_statement{|s|  # walk graph
           case s.predicate        # summary fields
