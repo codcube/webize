@@ -144,9 +144,10 @@ module Webize
           repository << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch timing
           repository << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache timing
 
-          if !thru                                                      # fetchMany scenario, no upstream HTTP response proxying:
+          if !thru                                                      # fetchMany scenario, no HTTP response construction until after merging of intermediate fetches:
             print MIME.format_icon format                               # denote format/fetch with single character for a bit of feedback
             repository.persist env, self                                # cache graph-data and return index/abstract/summary/pointers-graph from index process
+                                                                        # webizing proxy 'thru' HTTP response:
           elsif env[:notransform] || format.match?(FixedFormat)         # origin/upstream-server format preference
             staticResponse format, body                                 # HTTP response in upstream format
           else                                                          # client format preference
