@@ -1,6 +1,6 @@
 # WHAT
 
-some suggest we abandon the web, due to its hijacking by industries like adtech or surveillance. we firmly believe this "problem" with the web is rather a distaste with how it's used than an issue with its technical underpinnings. we're creating the [web we want](https://webwewant.org/) in a process of "fix the web in post-production" as we can't control other sites but control our clients and proxies to facilitate format and protocol bridging to tools of the desired capabilities of discovery, integration, remixing, sharing and [archiving](https://newdesigncongress.org/en/report/2022/memory-in-uncertainty/) of [data on the web](http://datacentricmanifesto.org/).
+some suggest we abandon the web, due to its hijacking by industries like adtech or surveillance. we firmly believe this "problem" with the web is rather a distaste with how it's used than an issue with its technical underpinnings. we're creating the [web we want](https://webwewant.org/) in a process of "fix the web in post-production" as we can't control other sites but control our clients and proxies to facilitate format and protocol bridging to tools of the desired capabilities of discovery, integration, remixing, sharing and [archiving](https://newdesigncongress.org/en/report/2022/memory-in-uncertainty/) of [data on the web](http://datacentricmanifesto.org/). it turns out you can '[webize](https://www.w3.org/DesignIssues/Webize.html)' the web itself, as many remote server implementations leave much room for improvement.
 
 # WHY
 
