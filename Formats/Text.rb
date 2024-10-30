@@ -149,10 +149,13 @@ module Webize
           chat_triples &f
         else
           yield @base, Contains,
-                HTML.render({_: :pre,
-                             c: @doc.lines.map{|line|
-                               line.hrefs{|p,o|
-                                 yield @base, p, o}}})
+                RDF::Literal(
+                  HTML.render(
+                    {_: :pre,
+                     c: @doc.lines.map{|line|
+                       line.hrefs{|p,o|
+                         yield @base, p, o}}}),
+                  datatype: RDF.HTML)
         end
       end
     end
