@@ -8,7 +8,7 @@ module Webize
       creator = RDF::Query::Pattern.new :s, RDF::URI(Creator), :o # sender
       to = RDF::Query::Pattern.new :s, RDF::URI(To), :o           # receiver
       type = RDF::Query::Pattern.new :s, RDF::URI(Type), :o       # type
-      summaries = RDF::Repository.new if summarize
+      summaries = RDF::Repository.new if summarize        # summmary graph
 
       each_graph.map{|graph|           # for each
         next unless g = graph.name     # named graph:
