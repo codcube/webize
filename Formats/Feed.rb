@@ -104,7 +104,7 @@ rss rss.xml
 
         # (SG|X)ML element-patterns
         isCDATA = /^\s*<\!\[CDATA/m
-        isHTML = /<[^>]+>.*?<\/[^>]+>/m
+        isHTML = /<[^>]+>|&([a-z+]|#\d+);/m
         reCDATA = /^\s*<\!\[CDATA\[(.*?)\]\]>\s*$/m
         reElement = %r{<([a-z0-9]+:)?([a-z]+)([\s][^>]*)?>(.*?)</\1?\2>}mi
         reGroup = /<\/?media:group>/i
@@ -142,11 +142,14 @@ rss rss.xml
                   ).yield_self{|capture|
                capture && capture[1]}
 
+            # subject
             subject = Webize::URI.new @base.join id
             subject.query = nil if subject.query&.match?(/utm[^a-z]/)
             subject.fragment = nil if subject.fragment&.match?(/utm[^a-z]/)
 
+            # graph
             graph = subject.graph
+            yield graph, Contains, subject
 
             # type tag
             yield subject, Type,
