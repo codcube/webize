@@ -9,7 +9,7 @@ class String
   def hrefs &blk
     # URIs are sometimes wrapped in (). an opening/closing pair is required for capture of (), '"<> never captured. , and . can be used anywhere but end of URL
     pre, link, post = self.partition(/((g(emini|opher)|https?):\/\/(\([^)>\s]*\)|[,.]\S|[^\s),.”\'\"<>\]])+)/)
-    pre.gsub('&','&amp;').gsub('<','&lt;').gsub('>','&gt;').gsub("\n",'<br>') + # pre-match
+    pre.gsub('&','&amp;').gsub('<','&lt;').gsub('>','&gt;') + # pre-match
       (link.empty? && '' ||
        '<a href="' + link.gsub('&','&amp;').gsub('<','&lt;').gsub('>','&gt;') + '">' +
        (resource = Webize::Resource.new(link).relocate
@@ -137,7 +137,7 @@ module Webize
 
       def each_statement &fn
         text_triples{|s, p, o, graph=nil|
-          fn.call RDF::Statement.new(Webize::URI.new(s), Webize::URI.new(p), o,
+          fn.call RDF::Statement.new(s, p, o,
                                      graph_name: graph || @base)}
       end
 
@@ -148,14 +148,16 @@ module Webize
         elsif File.extname(@base) == '.irc'
           chat_triples &f
         else
-          yield @base, Contains,
-                HTML::Reader.new(
-                  HTML.render(
-                    {_: :pre,
-                     c: @doc.lines.map{|line|
-                       line.hrefs{|p,o|
-                         yield @base, p, o}}}),
-                  base_uri: @base).scan_fragment(&f)
+          dom = {_: :pre,
+                 c: @doc.lines.map{|line|
+                   line.hrefs{|p,o|
+                     yield @base, p, o}}}
+
+          html = HTML.render dom
+
+          fragment = HTML::Reader.new(html, base_uri: @base).scan_fragment &f
+
+          yield @base, RDF::URI(Contains), fragment
         end
       end
     end
