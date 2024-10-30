@@ -104,6 +104,7 @@ rss rss.xml
 
         # (SG|X)ML element-patterns
         isCDATA = /^\s*<\!\[CDATA/m
+        isEscapedHTML = /^&lt;/m
         isHTML = /<[^>]+>|&([a-z+]|#\d+);/m
         reCDATA = /^\s*<\!\[CDATA\[(.*?)\]\]>\s*$/m
         reElement = %r{<([a-z0-9]+:)?([a-z]+)([\s][^>]*)?>(.*?)</\1?\2>}mi
@@ -185,10 +186,10 @@ rss rss.xml
               o = case o                               # unescape content
                   when isCDATA                         # CDATA
                     o.sub reCDATA, '\1'
-                  when isHTML                          # raw HTML
-                    o
-                  else                                 # escaped HTML
+                  else isEscapedHTML                   # escaped HTML
                     CGI.unescapeHTML o
+                  else
+                    o
                   end
 
               o = case o                               # object datatype
