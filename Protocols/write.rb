@@ -59,6 +59,7 @@ module Webize
         if summarize                # summarize?
           summary = RDF::Graph.new  # summary graph
           img = nil                 # exerpted image
+          group = nil               # group URI
 
           graph.each_statement{|s|  # walk graph
             case s.predicate        # summary fields
@@ -73,6 +74,9 @@ module Webize
             when Link
               # TODO backling indexing
             when To
+              # group by message target
+              # in practice, this means mailing-list, user/channel on platform host, etc
+              group = s.object
             when Title
             when Type
             when Video
@@ -91,10 +95,9 @@ module Webize
             open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
             f << summary} unless summary.empty?
 
-          host = RDF::URI('//' + (g.host || 'localhost'))                     # host container
-          summary << RDF::Statement.new(env[:base], RDF::URI(Contains), host) # base 👉 host container
-          summary << RDF::Statement.new(host, RDF::URI(Title), g.display_host || 'localhost') # host label
-          summary << RDF::Statement.new(host, RDF::URI('#graph_source'), g)   # host container 👉 graph
+          group ||= RDF::URI('//' + (g.host || 'localhost')) # default grouping per host
+          summary << RDF::Statement.new(env[:base], RDF::URI(Contains), group) # base 👉 summary group
+          summary << RDF::Statement.new(group, RDF::URI('#graph_source'), g)  # group 👉 graph
 
           summaries << summary                                                # summary graph
         else
