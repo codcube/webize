@@ -58,7 +58,7 @@ module Webize
 
         if summarize                # summarize?
           summary = RDF::Graph.new  # summary graph
-          img_exerpt = false
+          img = nil
           graph.each_statement{|s|  # walk graph
             case s.predicate        # summary fields
             when Creator
@@ -66,9 +66,8 @@ module Webize
             when Date
               # TODO populate timeline
             when Image
-              unless img_exerpt     # exerpt an image
-                img_exerpt = true
-                summary << RDF::Statement.new(g, RDF::URI(Image), s.object)
+              unless img && img < s.object # memo largest (by alphanumeric URI) image
+                img = s.object
               end
             when Link
               # TODO backling indexing
@@ -80,7 +79,10 @@ module Webize
             else
               next                  # skipped field
             end
+
+            summary << RDF::Statement.new(g, RDF::URI(Image), img) if img # exerpt image
             next if s.subject != g  # subject graph
+
             summary << s}           # summary << statement
 
           RDF::Writer.for(:turtle). # summary >> 🐢
