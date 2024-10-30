@@ -44,8 +44,7 @@ module Webize
       repos = []                   # repository list
       nodes.map{|n|
         semaphore.async{           # fetch URI -> RDF::Repository
-          repos << (Node(n).fetchRemote thru: false,
-                                        summarize: true)}}
+          repos << (Node(n).fetchRemote thru: false)}}
       barrier.wait
       respond repos                # merged-repository HTTP response
     end
@@ -62,7 +61,7 @@ module Webize
                      read_timeout: 32,
                      redirect: false} # don't invisibly follow redirects in HTTP-library code, return this data to us and clients/proxies so they can update URL bars, source links on 301s etc
 
-    def fetchHTTP thru: true, summarize: false                         # return HTTP response to caller? summarize fetched content?
+    def fetchHTTP thru: true                                           # thread upstream HTTP response through to caller, or simply return fetched data
       start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
 
       doc = storage.document                                           # graph-cache location
@@ -130,15 +129,16 @@ module Webize
             FileUtils.ln_s File.basename(doc), link unless File.exist?(link) || File.symlink?(link)
           end
 
-          File.open(doc, 'w'){|f|f << body }                            # cache fetched representation
+          File.open(doc, 'w'){|f|f << body }                            # cache raw data
 
           if h['Last-Modified']                                         # preserve origin timestamp
             mtime = Time.httpdate h['Last-Modified'] rescue nil
             FileUtils.touch doc, mtime: mtime if mtime
           end
 
-          repository = (readRDF format, body).persist(env, summarize: summarize)  # read RDF, cache graph(s)
-          repository << RDF::Statement.new(env[:base], RDF::URI('#remote_source'), self) # graph-list entry
+          repository = (readRDF format, body).persist(env, self)        # cache RDF
+                                                                        # remote-source metadata:
+          repository << RDF::Statement.new(env[:base], RDF::URI('#remote_source'), self) # graph id
           repository << RDF::Statement.new(self, RDF::URI(HT + 'status'), status) # HTTP status RDF
           h.map{|k,v| repository << RDF::Statement.new(self, RDF::URI(HT+k), v)}  # HTTP headers RDF
           repository << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch timing

@@ -1,14 +1,15 @@
 module Webize
   module Cache
 
+    # cache and index a repository
     # Repository -> 🐢(s)
-     def persist env, summarize: false
+     def persist env, base
                                                           # query pattern for:
       timestamp = RDF::Query::Pattern.new :s, RDF::URI(Date), :o  # timestamp
       creator = RDF::Query::Pattern.new :s, RDF::URI(Creator), :o # sender
       to = RDF::Query::Pattern.new :s, RDF::URI(To), :o           # receiver
       type = RDF::Query::Pattern.new :s, RDF::URI(Type), :o       # type
-      summaries = RDF::Repository.new if summarize        # summmary graph
+      out = RDF::Repository.new                           # output graph
 
       each_graph.map{|graph|           # for each
         next unless g = graph.name     # named graph:
@@ -56,63 +57,60 @@ module Webize
 
         Console.logger.info log.join ' '                      # log message
 
-        if summarize                # summarize?
-          summary = RDF::Graph.new  # summary graph
-          img = nil                 # exerpted image
-          group = nil               # group URI
+        summary = RDF::Graph.new  # summary graph
+        img = nil                 # exerpted image
+        group = self              # group URI
 
-          graph.each_statement{|s|  # walk graph
-            case s.predicate        # summary fields
-            when Creator
-              # group by message source, perhaps a weblog,
-              # mailing-list, user/channel on a platform host, etc
-              group = s.object
-            # TODO author indexing
-            when Date
-              # TODO populate summary timeline
-            when Image
-              unless img && img < s.object # memo largest/newest (alphanumeric URI) image
-                img = s.object
-              end
-            when LDP+'next'
-              s.subject = g # page pointer
-            when LDP+'prev'
-              s.subject = g # page pointer
-            when Link
-              # TODO backling indexing
-            when To
-            when Title
-            when Type
-            when Video
-              s.subject = g
-              #summary << RDF::Statement.new(g, RDF::URI(Video), s.object)
-            else
-              next                  # skipped field
+        graph.each_statement{|s|  # walk graph
+          case s.predicate        # summary fields
+          when Creator
+            # group by message source, perhaps a weblog,
+            # mailing-list, user/channel on a platform host, etc
+            puts "grouping by #{s.object}"
+            group = s.object
+          # TODO author indexing
+          when Date
+          # TODO populate summary timeline
+          when Image
+            unless img && img < s.object # memo largest/newest (alphanumeric URI) image
+              img = s.object
             end
+          when LDP+'next'
+            s.subject = g # page pointer
+          when LDP+'prev'
+            s.subject = g # page pointer
+          when Link
+          # TODO backling indexing
+          when To
+          when Title
+          when Type
+          when Video
+            s.subject = g
+          #summary << RDF::Statement.new(g, RDF::URI(Video), s.object)
+          else
+            next                  # skipped field
+          end
 
-            next if s.subject != g  # summary subject is graph itself
+          next if s.subject != g  # summary subject is graph itself
 
-            summary << s}           # summary << statement
+          summary << s}           # summary << statement
 
-          summary << RDF::Statement.new(g, RDF::URI(Image), img) if img
+        summary << RDF::Statement.new(g, RDF::URI(Image), img) if img
 
-          RDF::Writer.for(:turtle). # summary >> 🐢
-            open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
-            f << summary} unless summary.empty?
+        RDF::Writer.for(:turtle). # summary >> 🐢
+          open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
+          f << summary} unless summary.empty?
 
-          group ||= RDF::URI('//' + (g.host || 'localhost')) # default grouping per host
-          summary << RDF::Statement.new(env[:base], RDF::URI(Contains), group) # base 👉 summary group
-          summary << RDF::Statement.new(group, RDF::URI('#graph_source'), g)  # group 👉 graph
+        summary << RDF::Statement.new(env[:base], RDF::URI(Contains), group) # base 👉 group
+        summary << RDF::Statement.new(group, RDF::URI(Title),                # group label
+                                      group.respond_to?(:display_name) ? group.display_name : group.to_s)
+        summary << RDF::Statement.new(group, RDF::URI('#graph_source'), g)  # group 👉 graph
 
-          summaries << summary                                                # summary graph
-        else
-          graph << RDF::Statement.new(env[:base], RDF::URI(Contains), g) # base 👉 full graph
-          graph << RDF::Statement.new(g, RDF::URI('#new'), true)         # tag as new/updated
-        end
+        out << summary                                                # summary graph
       }
 
-      summarize ? summaries : self
-    end
+      out
+     end
 
   end
 end
