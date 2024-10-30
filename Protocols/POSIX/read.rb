@@ -22,7 +22,7 @@ module Webize
       # enforce trailing slash on directory URI
       return Node(join basename + '/').readDir graph unless dirURI?
 
-      graph << RDF::Statement.new(env[:base], RDF::URI('#local_source'), self)         # source provenance
+      graph << RDF::Statement.new(env[:base], RDF::URI('#local_source'), self)   # source graph
       graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601) # directory timestamp
       graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename   # directory name
 
@@ -30,13 +30,15 @@ module Webize
         name = child.basename.to_s                          # node name
         next if name[0] == '.'                              # invisible node
 
-        isDir = child.directory?                            # node type
-        name += '/' if isDir
+        if isDir = child.directory?                         # node type
+          name += '/'
+        end
 
-        contains = RDF::URI(isDir ? '#childDir' : '#entry') # containment property
+        contains = RDF::URI(isDir ? '#childDir' : '#entry') # containment predicate
         c = Node join name.gsub(' ','%20').gsub('#','%23')  # child node
 
         graph << RDF::Statement.new(c, RDF::URI(Title), name)
+        graph << RDF::Statement.new(c, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#Directory')) if isDir
 
         char = c.basename[0].downcase
         if nodes.size > 192 # alphanumeric bin
