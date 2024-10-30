@@ -186,7 +186,7 @@ rss rss.xml
               o = case o                               # unescape content
                   when isCDATA                         # CDATA
                     o.sub reCDATA, '\1'
-                  else isEscapedHTML                   # escaped HTML
+                  when isEscapedHTML                   # escaped HTML
                     CGI.unescapeHTML o
                   else
                     o
