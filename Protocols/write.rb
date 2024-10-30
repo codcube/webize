@@ -62,30 +62,36 @@ module Webize
           graph.each_statement{|s|  # walk graph
             case s.predicate        # summary fields
             when Creator
+              # TODO author indexing
             when Date
+              # TODO populate timeline
             when Image
-              unless img_exerpt
+              unless img_exerpt     # exerpt an image
                 img_exerpt = true
-                summary << RDF::Statement.new(g, RDF::URI(Image), s.object) 
+                summary << RDF::Statement.new(g, RDF::URI(Image), s.object)
               end
             when Link
+              # TODO backling indexing
             when To
             when Title
             when Type
             when Video
+              summary << RDF::Statement.new(g, RDF::URI(Video), s.object)
             else
-              next                   # skipped field
+              next                  # skipped field
             end
+            next if s.subject != g  # subject graph
             summary << s}           # summary << statement
 
           RDF::Writer.for(:turtle). # summary >> 🐢
             open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
-            f << summary}
+            f << summary} unless summary.empty?
 
           host = RDF::URI('//' + (g.host || 'localhost'))                     # host container
           summary << RDF::Statement.new(env[:base], RDF::URI(Contains), host) # base 👉 host container
           summary << RDF::Statement.new(host, RDF::URI(Title), g.display_host || 'localhost') # host label
           summary << RDF::Statement.new(host, RDF::URI('#graph_source'), g)   # host container 👉 graph
+
           summaries << summary                                                # summary graph
         else
           graph << RDF::Statement.new(env[:base], RDF::URI(Contains), g) # base 👉 full graph
