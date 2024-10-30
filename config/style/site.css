@@ -117,3 +117,5 @@ th {background-color: #383838; color: #fff}
 th:first-child {border-radius: .3em 0 0 .3em}
 th:last-child {border-radius: 0 .3em .3em 0}
 ul, ol, dl, img {margin: 0; padding: 0}
+.resource[host="www.mixcloud.com"] img {display: none}
+.resource[host="www.mixcloud.com"] img:last-child {display: inline-block}

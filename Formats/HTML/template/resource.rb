@@ -70,9 +70,9 @@ module Webize
                   r['#color'][0]
                 elsif r.has_key? '#new'           # new/updated resource highlight
                   '#8aa'
-                elsif r.has_key?(To) && Identifiable.member?(r[To][0].class)
-                  '#' + Digest::SHA2.hexdigest(   # message-destination / group color
-                    Webize::URI.new(r[To][0]).display_name)[0..5]
+                elsif r.has_key? Creator
+                  '#' + Digest::SHA2.hexdigest(   # message source
+                   r[Creator].to_s)[0..5]
                 elsif uri
                   if uri.deny?                    # blocked resource
                     :red
@@ -111,7 +111,7 @@ module Webize
              end,
             ]}.
           update(id ? {id: id} : {}).
-          update((id && type == :div) ? {class: :resource} : {}).
+          update((id && type == :div) ? {class: :resource, host: uri.host} : {}).
           update(r.has_key?(Schema + 'height') ? {height: r[Schema + 'height'][0]} : {}).
           update(r.has_key?(Schema + 'width') ? {width: r[Schema + 'width'][0]} : {}).
           # update(r.has_key?(XHV + 'viewbox') ? {height: r[XHV + 'viewbox'][0]} : {}).
