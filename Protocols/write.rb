@@ -74,13 +74,18 @@ module Webize
               unless img && img < s.object # memo largest/newest (alphanumeric URI) image
                 img = s.object
               end
+            when LDP+'next'
+              s.subject = g # page pointer
+            when LDP+'prev'
+              s.subject = g # page pointer
             when Link
               # TODO backling indexing
             when To
             when Title
             when Type
             when Video
-              summary << RDF::Statement.new(g, RDF::URI(Video), s.object)
+              s.subject = g
+              #summary << RDF::Statement.new(g, RDF::URI(Video), s.object)
             else
               next                  # skipped field
             end

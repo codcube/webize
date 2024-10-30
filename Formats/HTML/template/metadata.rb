@@ -101,19 +101,20 @@ module Webize
       end
 
       # generic graph listing - cache+origin pointers and summary fields
-      def graph_source(nodes) = table cache_info(nodes), attrs: ['uri', Title, '#origin',
-                                                                 HT+'host', HT+'path',
+      def graph_source(nodes) = table cache_info(nodes), attrs: [LDP + 'prev', 'uri',
+                                                                 Title, '#origin',
+                                                                 HT + 'host', HT + 'path',
                                                                  Image, Creator, Date,
-                                                                 '#cache']
+                                                                 '#cache', LDP + 'next']
 
       # render resource URIs, remote/origin response metadata, and local cache-pointers and transaction timings
       def remote_source(nodes) = table cache_info(nodes),
                                        id: :remote_source,
                                        attrs: [HT+'status',
-                                               'uri', HT+'host', HT+'path',
+                                               'uri', HT + 'host', HT + 'path',
                                                '#cache', '#origin',
                                                Title,
-                                               HT+'Content-Type', HT+'Content-Length', HT+'Server', HT+'X-Powered-By',
+                                               HT + 'Content-Type', HT + 'Content-Length', HT + 'Server', HT + 'X-Powered-By',
                                                '#fTime', '#pTime']
 
       def status_code code
@@ -124,7 +125,7 @@ module Webize
       def title titles
         titles.map{|t|
           [{_: :span, c: HTML.markup(t, env)},
-           ' ']}
+           {_: :hr}]}
       end
 
       def to recipients
