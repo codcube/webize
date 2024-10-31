@@ -81,14 +81,14 @@ module Webize
                   end
                 end
 
-        shown = ['#color', '#new',
-                 'uri',
-                 Aria + 'hidden',
-                 XHV + 'namespace',
-                 Schema + 'height',
-                 Schema + 'width',
-                 Schema + 'version',
-                 Title, Contains]  # properties we handle before delegating to generic keyval render
+        skip = ['#color', '#new',
+                'uri',
+                Aria + 'hidden',
+                XHV + 'namespace',
+                Schema + 'height',
+                Schema + 'width',
+                Schema + 'version',
+                Title, Contains]  # properties we handle before delegating to generic keyval render
 
         {_: name,                                # node
          c: [({class: :title,                    # title
@@ -98,17 +98,15 @@ module Webize
 
              (origin_ref unless inline),         # pointer
 
-             keyval(r, inline: inline,           # key/val metadata
-                    skip: shown),
-
-             if r[Contains]                      # child nodes
-               if TabularChild.member? type.to_s # tabular view of child nodes
+             if r[Contains]                      # content nodes
+               if TabularChild.member? type.to_s # tabular view
                  property Schema + 'item', r[Contains]
-               else
-                 r[Contains].map{|c|             # generic inlining of child nodes
-                   HTML.markup c, env}
+               else                              # inline view
+                 r[Contains].map{|c| HTML.markup c, env }
                end
              end,
+
+             keyval(r, inline: inline, skip: skip), # metadata nodes
             ]}.
           update(id ? {id: id} : {}).
           update((id && type == :div) ? {class: :resource, host: uri.host} : {}).

@@ -24,6 +24,8 @@
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .redirectors, .referers {border: 1px dotted #888; border-radius: 0}
 .resource {border: 1px solid #333; border-radius: 0 .62em .62em .62em; margin: .1em; vertical-align: top}
+.resource[host="www.mixcloud.com"] img {display: none}
+.resource[host="www.mixcloud.com"] img:last-child {display: inline-block}
 .title > span {background-color: #aaa; color: #000; margin: 0; border: 1px solid #555; border-radius: .2em}
 .title {display: block; padding: 0}
 .title:visited {background-color: #ccc; color: #000}
@@ -79,10 +81,10 @@ cite::before {content: '📚'; color: #666; margin-left: -12px}
 code > span { color: #6ef; background-color: #111; padding: 0 0 0 .2em;}
 code {border-width: 1px 0 1px 0; border-style: dotted; border-color: #eee}
 dd {border-width: 0 0 1px 0; border-style: dotted; border-color: #222}
-dt, dt > span, .key, .type {background-color: #222; color: #ccc}
 dl, dt, dd, img, video, table, tr, td, .resource {max-width: 100%}
 dl, form, ol, ul, table, p, .resource {display: inline-block}
 dt {float: left; vertical-align: top; border-width: 0 0 1px 0; border-style: dotted; border-color: #444}
+dt, dt > span, .key, .type {background-color: #222; color: #aaa}
 h1 .kv {font-size: .6em}
 h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv, code .kv {float: right}
 h1 a.pointer, h2 a.pointer, h3 a.pointer, h4 a.pointer, h5 a.pointer, h6 a.pointer {position: absolute; right: -1.4em}
@@ -101,14 +103,15 @@ li:nth-child(odd) {background-color: #222; color: #fff}
 p {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
 p::before {content: '¶'; color: #666; margin-left: -12px}
 pre, code {display: block; white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono; margin: 0}
+span.kv {border: 1px solid #666}
 span.quote > .quote > .quote {background-color: #777}
 span.quote > .quote {background-color: #aaa}
 span.quote {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em; max-width: 80ex}
 span.quote::before {content: '>'; float: left}
 table {border-spacing: 1px; border: 1px solid #444}
+table.tabular img {max-height: 320px}
 table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 0; border-style: dotted; vertical-align: top}
 table.tabular {border: 1px dotted #555}
-table.tabular img {max-height: 320px}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
 td[property="#path"] {max-width: 42em; overflow: hidden; white-space: nowrap}
@@ -117,5 +120,3 @@ th {background-color: #383838; color: #fff}
 th:first-child {border-radius: .3em 0 0 .3em}
 th:last-child {border-radius: 0 .3em .3em 0}
 ul, ol, dl, img {margin: 0; padding: 0}
-.resource[host="www.mixcloud.com"] img {display: none}
-.resource[host="www.mixcloud.com"] img:last-child {display: inline-block}
