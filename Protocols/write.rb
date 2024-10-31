@@ -12,9 +12,9 @@ module Webize
       out = RDF::Repository.new                           # output graph
 
       each_graph.map{|graph|           # for each
-        next unless g = graph.name     # named graph:
+        next unless g = graph.name     # named graph
         g = POSIX::Node g              # graph URI
-        docBase = g.document           # document-base locator
+        docBase = g.document           # document base-locator
         f = [docBase, :🐢].join '.'    # 🐢 locator
         next if File.exist? f          # persisted - mint new graph URI to store new version TODO do that here?
 
@@ -61,14 +61,13 @@ module Webize
           when Creator
             unless s.object.node? || s.object.literal?
               # group by message source URI - a weblog, mailing-list, user/channel on platform-host, etc
-              puts "grouping by #{s.object}"
               group = s.object
             end
           # TODO author indexing
           when Date
-          # TODO populate summary timeline
+          # TODO summary timeline
           when Image
-            unless img && img < s.object # memo largest/newest (alphanumeric URI) image
+            unless img && img < s.object # memo largest/newest (alphanumeric URI-sort) image
               img = s.object
             end
           when LDP+'next'
@@ -76,35 +75,34 @@ module Webize
           when LDP+'prev'
             s.subject = g # page pointer
           when Link
-          # TODO backling indexing
+          # TODO backlink indexing
           when To
           when Title
           when Type
           when Video
             s.subject = g
-          #summary << RDF::Statement.new(g, RDF::URI(Video), s.object)
           else
-            next                  # skipped field
+            next
           end
 
-          next if s.subject != g  # summary subject is graph itself
+          next if s.subject != g  # summary subject graph
 
           summary << s}           # summary << statement
 
-        summary << RDF::Statement.new(g, RDF::URI(Image), img) if img
+        summary << RDF::Statement.new(g, RDF::URI(Image), img) if img # image exerpt
 
         RDF::Writer.for(:turtle). # summary >> 🐢
           open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
           f << summary} unless summary.empty?
 
         summary << RDF::Statement.new(env[:base], RDF::URI(Contains), group) # base 👉 group
-        summary << RDF::Statement.new(group, RDF::URI(Title),                # group label
+        summary << RDF::Statement.new(group, RDF::URI(Title),                # group title
                                       group.respond_to?(:display_name) ? group.display_name : group.to_s)
         summary << RDF::Statement.new(group, RDF::URI('#graph_source'), g)  # group 👉 graph
 
         out << summary}           # summary graph
 
-      out                         # all post-index report/summary graphs merged to repository
+      out                         # all report/summary graphs merged to a repository
      end
 
   end

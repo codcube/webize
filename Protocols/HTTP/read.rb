@@ -138,7 +138,7 @@ module Webize
           end
 
           graph = readRDF format, body unless thru && notransform       # parse graph data
-          graph = graph.persist env, self unless thru                   # cache graph if data-only/multi fetch. thru-fetch cleanly maps to one raw file to fetch all cached data again so we have a raw-only cache policy for now (indexing-paranoia fanatics can change this)
+          graph = graph.persist env, self unless thru                   # cache graph if data-only fetch. thru-fetch cleanly maps to one raw file to find all cached data again so it has a raw-only cache policy for now (indexing-fanatics may change this)
           h.map{|k,v|                                                   # HTTP resource metadata to graph
             graph << RDF::Statement.new(self, RDF::URI(HT+k), v)} if graph
 
