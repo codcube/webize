@@ -39,10 +39,10 @@ module Webize
               {_: :body, c: [
 
                  # icon
-                 if env[:links].has_key? :icon
-                   {_: :img, class: :favicon,
-                    src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href}
-                 end,
+                 # if env[:links].has_key? :icon
+                 #   {_: :img, class: :favicon,
+                 #    src: env[:links][:icon].dataURI? ? env[:links][:icon].uri : env[:links][:icon].href}
+                 # end,
 
                  {class: 'top-bar', c: [
 

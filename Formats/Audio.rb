@@ -220,10 +220,7 @@ module Webize
       Markup[Audio] = :audiotag
 
       def audiotag audio
-        unless audio.class == Hash
-          puts "not an audio resource: #{audio.class} #{audio}"
-          audio = {'uri' => audio.to_s}
-        end
+        return puts "not an audio resource: #{audio.class} #{audio}" unless audio.class == Hash
 
         # resolve locator to environment context
         src = Webize::Resource((env[:base].join audio['uri']), env)
@@ -235,7 +232,7 @@ module Webize
 
              {_: :a,          # audio link
               class: :global,
-              href: src.href,
+              href: src.uri,
               c: [:🔊, src.display_name]},
 
              (keyval audio)]} # extra attributes
