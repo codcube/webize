@@ -20,7 +20,9 @@ module Webize
         iframes.map do |i|
           uri = Webize::Resource(i['uri'], env) # URI
           uri.query_hash.map do |_, v|
-            puts v
+            if v.match? HTTPURI
+              {_: :a, href: v, c: v}
+            end
           end
         end
       end

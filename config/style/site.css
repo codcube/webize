@@ -10,7 +10,7 @@
 .bottom-bar .stats {border-width: 1px 1px 0 1px; display: inline-block; border-style: solid; border-color: #555; border-radius: .62em .62em 0 0; font-size: 1.3em}
 .bottom-bar {position: fixed; bottom: 0; width: 100%; vertical-align: bottom}
 .columns {column-width: 83ex; column-gap: 0}
-.comment span {background-color: #6ef; color: #000; font-weight: normal; font-family: monospace; white-space: pre-wrap; border-radius: .3em; padding: 0; margin: 0}
+.comment span {display: inline-block; background-color: #6ef; color: #000; font-weight: normal; font-family: monospace; white-space: pre-wrap; border-radius: .3em; padding: 0; margin: 0}
 .comment {display: block; background-color: #000; color: #6ef; font-weight: bold}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
