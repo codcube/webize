@@ -23,11 +23,9 @@
 .preembed .icon {position: absolute; left: 45%; top: 32%; font-size: 8em; color: #f00}
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .redirectors, .referers {border: 1px dotted #888; border-radius: 0}
-.resource {border: 1px solid #333; border-radius: 0 .62em .62em .62em; margin: .1em; vertical-align: top}
+.resource {border: 1px solid #333; border-radius: .62em; margin: .1em; vertical-align: top}
 .resource[host="www.mixcloud.com"] img {display: none}
 .resource[host="www.mixcloud.com"] img:last-child {display: inline-block}
-.title > span {background-color: #aaa; color: #000; margin: 0; border: 1px solid #555; border-radius: .2em}
-.title {display: block; padding: 0}
 .title:visited {background-color: #ccc; color: #000}
 .top-bar .path a {color: #ddd; font-weight: normal}
 .top-bar .path a:last-child {color: #000; background-color: #fff; font-weight: bold; border-radius: 0 0 .3em .3em; margin-top: 0}
@@ -37,6 +35,7 @@
 .top-bar form input {background-color: #282828; color: #eee; border-radius: .5em; border-width: 0; margin: 0; padding: 0; width: 24ex}
 .top-bar svg {height: 1em; width: 1em}
 .top-bar {border-width: 0 1px 1px 1px; display: inline-block; border-style: solid; border-color: #555; border-radius: 0 0 .62em .62em; vertical-align: top}
+.val div {display: inline-block}
 .video {max-width: 80em}
 .warning a {background-color: #fff; color: #000}
 .warning {display: inline-block; background-color: #ff0; color: #000; padding: .2em; margin: .3em; border-radius: .5em}
@@ -45,7 +44,7 @@ a .key {background-color: #226; color: #fff; border-radius: .2em}
 a .kv {font-size: 0.92em}
 a .kv, a .uri {font-weight: normal}
 a .uri {color: #ccc; font-size: 0.86em}
-a > span {background-color: inherit}
+a > span {background-color: inherit; color: inherit}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px; min-width: 1em; min-height: 1em; overflow: hidden}
 a, a > span { max-width: 40em }
 a.blocked {border: 1px solid white}
@@ -60,6 +59,7 @@ a.local, a.local .label > span {background-color: #002}
 a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
 a.pointer, td[property="uri"] a {margin: 0; padding: 0; background-color: #222; color: #fff; border-radius: .5em; font-weight: normal; float: right}
 a.pointer:visited, td[property="uri"] a:visited {background-color: #338}
+a.title {margin: 0; border-radius: .38em}
 a.to {float: right; margin: 0}
 a:visited span.uri {background-color: black}
 audio {width: 80ex; float: right}
@@ -84,7 +84,7 @@ dd {border-width: 0 0 1px 0; border-style: dotted; border-color: #222}
 dl, dt, dd, img, video, table, tr, td, .resource {max-width: 100%}
 dl, form, ol, ul, table, p, .resource {display: inline-block}
 dt {float: left; vertical-align: top; border-width: 0 0 1px 0; border-style: dotted; border-color: #444}
-dt, dt > span, .key, .type {background-color: #222; color: #aaa}
+dt, dt > span, .key, .type {background-color: #222; color: #bbb}
 h1 .kv {font-size: .6em}
 h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv, code .kv {float: right}
 h1 a.pointer, h2 a.pointer, h3 a.pointer, h4 a.pointer, h5 a.pointer, h6 a.pointer {position: absolute; right: -1.4em}
