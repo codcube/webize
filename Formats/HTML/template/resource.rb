@@ -51,7 +51,7 @@ module Webize
         blockResource re, type
       end
 
-      def resource r, type = :div, inline: false
+      def resource r, type = :div, inline: true
         name = [:form, :head, :select].           # node name
                  member?(type) ? :div : type
 
