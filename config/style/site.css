@@ -85,7 +85,7 @@ dd {border-width: 0 0 1px 0; border-style: dotted; border-color: #222}
 dl, dt, dd, img, video, table, tr, td, .resource {max-width: 100%}
 dl, form, ol, ul, table, p, .resource {display: inline-block}
 dt {float: left; vertical-align: top; border-width: 0 0 1px 0; border-style: dotted; border-color: #444}
-dt, dt > span, .key, .type {background-color: #111; color: #bbb; border: 1px solid #666}
+dt, .key {background-color: #111; color: #bbb; border: 1px solid #666}
 h1 .kv {font-size: .6em}
 h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv, code .kv {float: right}
 h1 a.pointer, h2 a.pointer, h3 a.pointer, h4 a.pointer, h5 a.pointer, h6 a.pointer {position: absolute; right: -1.4em}
