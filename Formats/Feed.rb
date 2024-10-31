@@ -104,8 +104,8 @@ rss rss.xml
 
         # (SG|X)ML element-patterns
         isCDATA = /^\s*<\!\[CDATA/m
-        isEHTML = /&lt;.*&gt;/m
-        isHTML = /<[^>]+>|&([a-z+]|#\d+);/m
+        isEHTML = /^[^<>]*(&lt;[^<>]*&gt;|&amp;([a-z+]|#\d+);)[^<>]*$/m # escaped HTML: escaped <> or doubly-escaped entity in absence of any <>
+        isHTML = /<[^>]+>|&([a-z+]|#\d+);/m                             # regular HTML: presence of any <> or HTML entity
         reCDATA = /^\s*<\!\[CDATA\[(.*?)\]\]>\s*$/m
         reElement = %r{<([a-z0-9]+:)?([a-z]+)([\s][^>]*)?>(.*?)</\1?\2>}mi
         reGroup = /<\/?media:group>/i
