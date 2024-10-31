@@ -60,7 +60,7 @@ a.local, a.local .label > span {background-color: #002}
 a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
 a.pointer, td[property="uri"] a {margin: 0; padding: 0; background-color: #222; color: #fff; border-radius: .5em; font-weight: normal; float: right}
 a.pointer:visited, td[property="uri"] a:visited {background-color: #338}
-a.title {margin: 0; border-radius: .38em}
+a.title {margin: 0; border-radius: .38em; font-size: 1.125em}
 a.to {float: right; margin: 0}
 a:visited span.uri {background-color: black}
 audio {width: 80ex; float: right}
@@ -85,7 +85,7 @@ dd {border-width: 0 0 1px 0; border-style: dotted; border-color: #222}
 dl, dt, dd, img, video, table, tr, td, .resource {max-width: 100%}
 dl, form, ol, ul, table, p, .resource {display: inline-block}
 dt {float: left; vertical-align: top; border-width: 0 0 1px 0; border-style: dotted; border-color: #444}
-dt, dt > span, .key, .type {background-color: #222; color: #bbb}
+dt, dt > span, .key, .type {background-color: #111; color: #bbb; border: 1px solid #666}
 h1 .kv {font-size: .6em}
 h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv, code .kv {float: right}
 h1 a.pointer, h2 a.pointer, h3 a.pointer, h4 a.pointer, h5 a.pointer, h6 a.pointer {position: absolute; right: -1.4em}
@@ -104,7 +104,6 @@ li:nth-child(odd) {background-color: #222; color: #fff}
 p {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
 p::before {content: '¶'; color: #666; margin-left: -12px}
 pre, code {display: block; white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono; margin: 0}
-span.kv {border: 1px solid #666}
 span.quote > .quote > .quote {background-color: #777}
 span.quote > .quote {background-color: #aaa}
 span.quote {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em; max-width: 80ex}
