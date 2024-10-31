@@ -118,6 +118,7 @@ module Webize
           body = HTML.cachestamp body, self if format == 'text/html'    # stamp with in-band cache metadata
 
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # allow (X)HTML to be served as XML
+          notransform = env[:notransform] || format.match?(FixedFormat) # transformable content?
 
           if ext = File.extname(doc)[1..-1]                             # name suffix
             ext = ext.to_sym
@@ -136,23 +137,26 @@ module Webize
             FileUtils.touch doc, mtime: mtime if mtime
           end
 
-          repository = readRDF format, body                             # read RDF
-                                                                        # remote-source metadata:
-          repository << RDF::Statement.new(env[:base], RDF::URI('#remote_source'), self) # graph id
-          repository << RDF::Statement.new(self, RDF::URI(HT + 'status'), status) # HTTP status RDF
-          h.map{|k,v| repository << RDF::Statement.new(self, RDF::URI(HT+k), v)}  # HTTP headers RDF
-          repository << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch timing
-          repository << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache timing
+          graph = readRDF format, body unless thru && notransform       # parse graph data
+          graph = graph.persist env, self unless thru                   # cache graph if data-only/multi fetch. thru-fetch cleanly maps to one raw file to fetch all cached data again so we have a raw-only cache policy for now (indexing-paranoia fanatics can change this)
+          h.map{|k,v|                                                   # HTTP resource metadata to graph
+            graph << RDF::Statement.new(self, RDF::URI(HT+k), v)} if graph
 
-          if !thru                                                      # fetchMany scenario, no HTTP response construction until after merging of intermediate fetches:
-            print MIME.format_icon format                               # denote format/fetch with single character for a bit of feedback
-            repository.persist env, self                                # cache graph-data and return index/abstract/summary/pointers-graph from index process
-                                                                        # webizing proxy 'thru' HTTP response:
-          elsif env[:notransform] || format.match?(FixedFormat)         # origin/upstream-server format preference
+          if !thru                                                      # no HTTP response construction or proxy
+            print MIME.format_icon format                               # denote fetch with single character for activity feedback
+                                                                        # fetch statistics
+            graph << RDF::Statement.new(env[:base], RDF::URI('#remote_source'), self) # source identity
+            graph << RDF::Statement.new(self, RDF::URI(HT + 'status'), status) # HTTP status
+            graph << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch timing
+            graph << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache timing
+
+            graph                                                       # return cached+fetched graph data
+                                                                        # webizing proxy HTTP-through response
+          elsif notransform                                             # origin/upstream-server format preference
             staticResponse format, body                                 # HTTP response in upstream format
           else                                                          # client format preference
             env[:origin_format] = format                                # note original format for logging/stats
-            respond [repository], format                                # HTTP response in content-negotiated format
+            respond [graph], format                                     # HTTP response in content-negotiated format
           end
         end
       end

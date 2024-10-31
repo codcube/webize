@@ -1,7 +1,7 @@
 module Webize
   module Cache
 
-    # cache and index a repository
+    # cache and index all uncached graphs in repo, returning a report graph
     # Repository -> 🐢(s)
      def persist env, base
                                                           # query pattern for:
@@ -14,20 +14,15 @@ module Webize
       each_graph.map{|graph|           # for each
         next unless g = graph.name     # named graph:
         g = POSIX::Node g              # graph URI
-        docBase = g.document           # document path
-        f = [docBase, :🐢].join '.' # 🐢 location
+        docBase = g.document           # document-base locator
+        f = [docBase, :🐢].join '.'    # 🐢 locator
+        next if File.exist? f          # persisted - mint new graph URI to store new version TODO do that here?
 
-        if File.exist? f          # cache hit (mint a new graph URI to store a new version)
-          # TODO automagic graph-version-URI minting and RDF indexing (with append-only URI lists)
-          graph << RDF::Statement.new(env[:base], RDF::URI('#archive'), g)# link to archived content
-          next
-        end
-
-        RDF::Writer.for(:turtle).                      # graph -> 🐢
+        RDF::Writer.for(:turtle).      # graph -> 🐢
           open(f, base_uri: g, prefixes: Prefixes){|f|
           f << graph}
 
-        log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] # canonical location
+        log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] # canonical location for logger
 
         if !g.to_s.match?(/^\/\d\d\d\d\/\d\d\/\d\d\/\d\d/) && # if graph not already located on timeline,
            (ts = graph.query(timestamp).first_value) &&       # and we have a timestamp value in RDF,
@@ -64,10 +59,11 @@ module Webize
         graph.each_statement{|s|  # walk graph
           case s.predicate        # summary fields
           when Creator
-            # group by message source, perhaps a weblog,
-            # mailing-list, user/channel on a platform host, etc
-            puts "grouping by #{s.object}"
-            group = s.object
+            unless s.object.node? || s.object.literal?
+              # group by message source URI - a weblog, mailing-list, user/channel on platform-host, etc
+              puts "grouping by #{s.object}"
+              group = s.object
+            end
           # TODO author indexing
           when Date
           # TODO populate summary timeline
@@ -106,10 +102,9 @@ module Webize
                                       group.respond_to?(:display_name) ? group.display_name : group.to_s)
         summary << RDF::Statement.new(group, RDF::URI('#graph_source'), g)  # group 👉 graph
 
-        out << summary                                                # summary graph
-      }
+        out << summary}           # summary graph
 
-      out
+      out                         # all post-index report/summary graphs merged to repository
      end
 
   end
