@@ -16,6 +16,15 @@ module Webize
             "\n"]}]
       end
 
+      def iframe iframes
+        iframes.map do |i|
+          uri = Webize::Resource(i['uri'], env) # URI
+          uri.query_hash.map do |_, v|
+            puts v
+          end
+        end
+      end
+
     end
     class Node
 
