@@ -139,8 +139,6 @@ module Webize
 
           graph = readRDF format, body unless thru && notransform       # parse graph data
           graph = graph.persist env, self unless thru                   # cache graph if data-only fetch. thru-fetch cleanly maps to one raw file to find all cached data again so it has a raw-only cache policy for now (indexing-fanatics may change this)
-          h.map{|k,v|                                                   # HTTP resource metadata to graph
-            graph << RDF::Statement.new(self, RDF::URI(HT+k), v)} if graph
 
           if !thru                                                      # no HTTP response construction or proxy
             print MIME.format_icon format                               # denote fetch with single character for activity feedback
@@ -156,6 +154,8 @@ module Webize
             staticResponse format, body                                 # HTTP response in upstream format
           else                                                          # client format preference
             env[:origin_format] = format                                # note original format for logging/stats
+            h.map{|k,v|                                                 # HTTP resource metadata to graph
+              graph << RDF::Statement.new(self, RDF::URI(HT+k), v)} if graph
             respond [graph], format                                     # HTTP response in content-negotiated format
           end
         end

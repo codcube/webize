@@ -104,7 +104,7 @@ rss rss.xml
 
         # (SG|X)ML element-patterns
         isCDATA = /^\s*<\!\[CDATA/m
-        isEscapedHTML = /^&lt;/m
+        isEHTML = /&lt;.*&gt;/m
         isHTML = /<[^>]+>|&([a-z+]|#\d+);/m
         reCDATA = /^\s*<\!\[CDATA\[(.*?)\]\]>\s*$/m
         reElement = %r{<([a-z0-9]+:)?([a-z]+)([\s][^>]*)?>(.*?)</\1?\2>}mi
@@ -183,14 +183,8 @@ rss rss.xml
               p = (x[e[0] && e[0].chop] || RSS) + e[1] # map optionally-prefixed node name to attribute URI
               o = e[3]                                 # node content
 
-              o = case o                               # unescape content
-                  when isCDATA                         # CDATA
-                    o.sub reCDATA, '\1'
-                  when isEscapedHTML                   # escaped HTML
-                    CGI.unescapeHTML o
-                  else
-                    o
-                  end
+              o = o.sub reCDATA, '\1' if o.match? isCDATA # unwrap CDATA
+              o = CGI.unescapeHTML o if o.match? isEHTML # unescape HTML
 
               o = case o                               # object datatype
                   when isURL
