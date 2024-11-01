@@ -68,20 +68,18 @@ module Webize
                     else
                       t.display_name
                     end
-          [
-            if inline
-              content
-            else
-              {
-                #_: :a,
-                _: :span,
-                class: :type,
-                #href: t.href,
-                title: t.uri,
-                c: content,
-              }
-            end,
-            ' ']}
+          if inline
+            content
+          else
+            {
+              #_: :a,
+              _: :span,
+              class: :type,
+              #href: t.href,
+              title: t.uri,
+              c: content,
+            }
+          end}
       end
 
       def cache_info(nodes) = nodes.map do |node|
