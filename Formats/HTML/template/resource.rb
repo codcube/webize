@@ -103,9 +103,9 @@ module Webize
 
         {_: name,                                # node
          c: [({class: :title,                    # title
-               c: r[Title].map{|t|
-                 HTML.markup t, env}}.           # attach link to title if exists
-                update(ref || {}).update(color ? {style: "background-color: #{color}; color: #000"} : {}) if r.has_key? Title),
+               c: r[Title].map{|t| [HTML.markup(t, env), ' ']}}.
+                update(ref || {}).               # attach reference to title node
+                update(color ? {style: "background-color: #{color}; color: #000"} : {}) if r.has_key? Title),
 
              (origin_ref unless inline),         # pointer
 
