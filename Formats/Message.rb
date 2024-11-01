@@ -5,7 +5,7 @@ module Webize
     class Reader < RDF::Reader
 
       # IRC log -> RDF
-      def chat_triples
+      def chat_triples &f
         # irssi:
         #  /set autolog on
         #  /set autolog_path ~/web/%Y/%m/%d/%H/$tag.$0.irc
@@ -53,7 +53,9 @@ module Webize
           yield subject, RDF::URI(To), target
           creator = RDF::URI(daydir + '/*/*irc?q=' + nick + '&sort=date&view=table#' + nick)
           yield subject, RDF::URI(Creator), creator
-          yield subject, RDF::URI(Contains), RDF::Literal(msg.hrefs, datatype: RDF.HTML) if msg}
+          yield subject, RDF::URI(Contains),
+                HTML::Reader.new(msg.hrefs, base_uri: @base).scan_fragment(&f) if msg
+        }
       end
 
       # twtxt -> RDF
