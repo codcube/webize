@@ -81,7 +81,7 @@ module Webize
              class: :val,
              c: property(k, vs.class == Array ? vs : [vs])},
 
-            inline ? nil : "\n"]}}
+            inline ? ' ' : "\n"]}}
       end
 
     end
