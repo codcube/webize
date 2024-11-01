@@ -22,12 +22,12 @@ class String
                  when /(youtu.?be|(mkv|mp4|webm)(\?|$))/i
                    Webize::Video
                  end
-          yield type, resource if type
+          yield RDF::URI(type), resource if type
         end
         [img,
          CGI.escapeHTML(resource.uri.sub(/^http:../,'')[0..79])].join) +
        '</a>') +
-      (post.empty? && '' || post.hrefs(&blk)) # possibly not tail-recursive, getting stack-overflow on long logs, TODO investigate
+      (post.empty? && '' || post.hrefs(&blk)) # sometimes not tail-recursive. the new idea is use an iterator not recursion, #lines and go right to nodes in the HTML triplr shape
   rescue
     logger.warn "failed to scan string for hrefs"
     logger.debug self

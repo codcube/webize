@@ -21,11 +21,12 @@ module Webize
         target = @base + '#' + channame
         day = parts[0..2].join('-') + 'T'
         hourslug = parts[0..3].join
-        linkgroup = [nil, parts[0..2]].join('/') + '/#IRClinks'
         lines = 0
         ts = {}
-        yield @base.env[:base], Contains, target
-        yield target, Type, RDF::URI('http://rdfs.org/sioc/ns#ChatLog')
+
+        yield @base.env[:base], RDF::URI(Contains), target
+
+        yield target, RDF::URI(Type), RDF::URI('http://rdfs.org/sioc/ns#ChatLog')
 
         @doc.lines.grep(/^[^-]/).map{|msg|
           tokens = msg.split /\s+/
@@ -43,16 +44,16 @@ module Webize
           end
           nick = CGI.escape(nick || 'anonymous')
           timestamp = day + time
-          subject = '#' + channame + hourslug + (lines += 1).to_s
-          yield subject, Type, type
-          yield target, Schema+'item', RDF::URI(subject)
+          subject = RDF::URI ['#', channame, hourslug, lines += 1].join
+          yield subject, RDF::URI(Type), type
+          yield target, RDF::URI(Schema+'item'), RDF::URI(subject)
           ts[timestamp] ||= 0
-          yield subject, Date, [timestamp, '%02d' % ts[timestamp]].join('.')
+          yield subject, RDF::URI(Date), [timestamp, '%02d' % ts[timestamp]].join('.')
           ts[timestamp] += 1
-          yield subject, To, target
+          yield subject, RDF::URI(To), target
           creator = RDF::URI(daydir + '/*/*irc?q=' + nick + '&sort=date&view=table#' + nick)
-          yield subject, Creator, creator
-          yield subject, Contains, msg.hrefs{|p,o| yield [Image,Video].member?(p) ? subject : linkgroup, p, o} if msg} # cluster non-media links per channel for space-efficient layout
+          yield subject, RDF::URI(Creator), creator
+          yield subject, RDF::URI(Contains), msg.hrefs if msg}
       end
 
       # twtxt -> RDF
