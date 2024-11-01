@@ -16,10 +16,10 @@ Feed
 Form
 Gemini
 Image
+InstantMessage
 JSON
 Mail
 Markdown
-Message
 Org
 PDF
 Subtitle

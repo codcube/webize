@@ -82,7 +82,7 @@ cite::before {content: '📚'; color: #666; margin-left: -12px}
 code > span { color: #6ef; background-color: #111; padding: 0 0 0 .2em;}
 code {border-width: 1px 0 1px 0; border-style: dotted; border-color: #eee}
 dl, dt, dd, img, video, table, tr, td, .resource, .val {max-width: 100%}
-dl, dt, dd, form, ol, ul, table, p, .resource, .val {display: inline-block}
+dl, dt, dd, form, ol, ul, table, p, .resource {display: inline-block}
 dt, .key {background-color: #111; color: #bbb; border: 1px solid #666}
 h1 .kv {font-size: .6em}
 h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv, code .kv {float: right}
