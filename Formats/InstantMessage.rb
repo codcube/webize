@@ -24,15 +24,17 @@ module Webize
         lines = 0
         ts = {}
 
-        query = @base.env[:qs]['q']&.downcase # query argument
+        # query arguments
+        text_query = @base.env[:qs]['q']&.downcase
+        from_query = @base.env[:qs]['from']&.downcase
 
         yield @base.env[:base], RDF::URI(Contains), target
 
         yield target, RDF::URI(Type), RDF::URI('http://rdfs.org/sioc/ns#ChatLog')
 
         @doc.lines.grep(/^[^-]/).map{|msg|
-          next if query && # skip chat line not matching query argument
-                  !msg.downcase.index(query)
+          next if text_query && # skip chat line not matching query argument
+                  !msg.downcase.index(text_query)
 
           tokens = msg.split /\s+/
           time = tokens.shift
@@ -48,6 +50,10 @@ module Webize
             msg = re[2]
           end
           nick = CGI.escape(nick || 'anonymous')
+
+          next if from_query && # skip line nott tmatching from: query
+                  nick.downcase != from_query
+
           timestamp = day + time
           subject = RDF::URI ['#', channame, hourslug, lines += 1].join
           yield subject, RDF::URI(Type), type
