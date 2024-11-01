@@ -40,14 +40,8 @@ module Webize
                        end
 
       def blockResource re, type
-        re.delete Type # strip RDF typetag, denoted with CSS ::before as alternative to metadata child-node(s)
+        re.delete Type # strip RDF typetag denoted with CSS ::before
         [(resource re, type), "\n"]
-      end
-
-      # strip RDF-typetag and label metadata
-      def unlabeledResource re, type
-        re.delete Label
-        inlineResource re, type
       end
 
       def inlineResource re, type

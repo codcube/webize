@@ -9,6 +9,9 @@ module Webize
       def form(node) = resource node, :form
       def select(node) = resource node, :select
 
+      # data elements
+      def time(node) = inlineResource node, :time
+
     end
     class Property
 

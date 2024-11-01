@@ -31,7 +31,7 @@ module Webize
       def sup(node) = inlineResource node, :sup
       def u(node) = inlineResource node, :u
 
-      def pre(content) = unlabeledResource content, :pre
+      def pre(content) = blockResource content, :pre
       def code(content) = blockResource content, :code
 
       def comment c
