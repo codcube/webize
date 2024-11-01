@@ -24,11 +24,16 @@ module Webize
         lines = 0
         ts = {}
 
+        query = @base.env[:qs]['q']&.downcase # query argument
+
         yield @base.env[:base], RDF::URI(Contains), target
 
         yield target, RDF::URI(Type), RDF::URI('http://rdfs.org/sioc/ns#ChatLog')
 
         @doc.lines.grep(/^[^-]/).map{|msg|
+          next if query && # skip chat line not matching query argument
+                  !msg.downcase.index(query)
+
           tokens = msg.split /\s+/
           time = tokens.shift
           if ['*','-!-'].member? tokens[0] # actions, joins, parts
