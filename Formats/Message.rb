@@ -53,7 +53,7 @@ module Webize
           yield subject, RDF::URI(To), target
           creator = RDF::URI(daydir + '/*/*irc?q=' + nick + '&sort=date&view=table#' + nick)
           yield subject, RDF::URI(Creator), creator
-          yield subject, RDF::URI(Contains), msg.hrefs if msg}
+          yield subject, RDF::URI(Contains), RDF::Literal(msg.hrefs, datatype: RDF.HTML) if msg}
       end
 
       # twtxt -> RDF
