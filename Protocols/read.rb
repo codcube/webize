@@ -30,13 +30,14 @@ module Webize
           # this characteristic eliminates needs for pruning in summary/merge/index/query operations.
           # references to output nodes are added by the handlers, specific to the request needs
 
-          # standard RDF serializers just dump out a soup of maybe-unconnected nodes, disjoint subgraphs etc
+          # standard RDF serializers usually dump out a soup of maybe-unconnected nodes, disjoint subgraphs etc
           # add this skeleton when going from native RDF readers to our serializers
-          if format == 'text/turtle' # native compiled-output-graph/cache/storage format
+          if format == 'text/turtle' # our preferred native storage format
             repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # request graph 👉 current graph
             repository.each_subject.map{|s|                                        # current graph 👉 subjects
               repository << RDF::Statement.new(base, RDF::URI(Contains), s) unless s.node?}
           end
+
           repository.each_graph.map{|g|                                            # current graph 👉 additional named graphs
           repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
 
