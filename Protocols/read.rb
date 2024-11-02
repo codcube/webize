@@ -3,7 +3,8 @@ module Webize
 
     # (MIME, data) -> RDF::Repository
     def readRDF format, content
-      repository = RDF::Repository.new.extend Webize::Cache # instantiate repository with our added behaviours (TODO subclass vs extend? IIRC we had weird bugs where third-party/stdlib embeded-triplrs didn't think our subclass was a Repo due to strict equiv)
+      repository = RDF::Repository.new.extend Webize::Cache # instantiate repository, add our behaviours
+      # TODO revisit subclass vs extend. IIRC we had weird bugs where third-party/stdlib embeded-triplrs didn't think our subclass was a Repo due to strict equivalence
 
       case format                                                 # content type
       when /octet.stream/                                         #  blob
@@ -32,6 +33,7 @@ module Webize
 
           # standard RDF serializers usually dump out a soup of maybe-unconnected nodes, disjoint subgraphs etc
           # add this skeleton when going from native RDF readers to our serializers
+
           if format == 'text/turtle' # our preferred native storage format
             repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # request graph 👉 current graph
             repository.each_subject.map{|s|                                        # current graph 👉 subjects
