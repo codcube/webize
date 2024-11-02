@@ -60,7 +60,7 @@ a.local, a.local .label > span {background-color: #002}
 a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
 a.pointer, td[property="uri"] a {margin: 0; padding: 0; background-color: #222; color: #fff; border-radius: .5em; font-weight: normal; float: right}
 a.pointer:visited, td[property="uri"] a:visited {background-color: #338}
-a.title {margin: 0; border-radius: .38em; font-size: 1.125em}
+a.title {margin: 0; border-radius: .38em; font-size: 1.08em}
 a.to {float: right; margin: 0}
 a:visited span.uri {background-color: black}
 audio {width: 80ex; float: right}

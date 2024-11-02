@@ -14,12 +14,14 @@ module Webize
 
         type = RDF::URI(SIOC + 'InstantMessage')
         parts = @base.parts
-        dirname = File.dirname @base.path
-        daydir = File.dirname dirname
+        hour = File.dirname @base.path
+        day = File.dirname hour
+        month = File.dirname day
+        year = File.dirname month
         network, channame = @base.basename.split '.'
         channame = Rack::Utils.unescape_path(channame).gsub('#','')
-        target = @base + '#' + channame
-        day = parts[0..2].join('-') + 'T'
+        chan = @base + '#' + channame
+        day_slug = parts[0..2].join('-') + 'T'
         hourslug = parts[0..3].join
         lines = 0
         ts = {}
@@ -50,23 +52,30 @@ module Webize
           next if from_query && # skip line nott tmatching from: query
                   nick.downcase != from_query
 
-          timestamp = day + time
+          timestamp = day_slug + time
           subject = RDF::URI ['#', channame, hourslug, lines += 1].join
           yield subject, RDF::URI(Type), type
-          yield target, RDF::URI(Schema+'item'), RDF::URI(subject)
+          yield chan, RDF::URI(Schema+'item'), RDF::URI(subject)
           ts[timestamp] ||= 0
           yield subject, RDF::URI(Date), [timestamp, '%02d' % ts[timestamp]].join('.')
           ts[timestamp] += 1
-          yield subject, RDF::URI(To), target
-          creator = RDF::URI(daydir + '/*/*irc?q=' + nick + '&sort=date&view=table#' + nick)
+          creator = RDF::URI(day + '/*/*irc?q=' + nick + '&sort=date&view=table#' + nick)
           yield subject, RDF::URI(Creator), creator
           yield subject, RDF::URI(Contains),
                 HTML::Reader.new(msg.hrefs, base_uri: @base).scan_fragment(&f) if msg}
 
         return unless lines > 0
 
-        yield @base.env[:base], RDF::URI(Contains), target
-        yield target, RDF::URI(Type), RDF::URI('http://rdfs.org/sioc/ns#ChatLog')
+        yield @base.env[:base], RDF::URI(Contains), RDF::URI(year)
+        yield RDF::URI(year), RDF::URI(Title), File.basename(year)
+        yield RDF::URI(year), RDF::URI(Contains), RDF::URI(month)
+        yield RDF::URI(month), RDF::URI(Title), File.basename(month)
+        yield RDF::URI(month), RDF::URI(Abstract), ::Date::MONTHNAMES[File.basename(month).to_i]
+        yield RDF::URI(month), RDF::URI(Contains), RDF::URI(day)
+        yield RDF::URI(day), RDF::URI(Title), File.basename(day)
+        yield RDF::URI(day), RDF::URI(Contains), chan
+        yield chan, RDF::URI(Title), '#' + channame
+        yield chan, RDF::URI(Type), RDF::URI('http://rdfs.org/sioc/ns#ChatLog')
 
       end
 

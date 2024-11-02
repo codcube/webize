@@ -25,7 +25,8 @@ class String
           yield RDF::URI(type), resource if type
         end
         [img,
-         CGI.escapeHTML(resource.uri.sub(/^http:../,'')[0..79])].join) +
+         #CGI.escapeHTML(resource.uri.sub(/^http:../,'')[0..79])
+        ].join) +
        '</a>') +
       (post.empty? && '' || post.hrefs(&blk)) # sometimes not tail-recursive. the new idea is use an iterator not recursion, #lines and go right to nodes in the HTML triplr shape
   rescue
