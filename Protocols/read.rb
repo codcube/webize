@@ -22,24 +22,23 @@ module Webize
             repository << _ }                                     # raw data -> RDF
           base = r.base_uri                                       # graph URI after any declarations
 
-          # it is obviously up to handlers (caller) to do what they wish with this data,
-          # though since we have doc/graph base URIs this is a good place to setup a skeleton
-          # of reference for a basic "in->out" flow, if no further processing is needed
-          # remember: no reference = no visibility. it may as well not exist!
+          # the graph needs a basic reference skeleton before output can commence
+          # no reference reachability to/from base-URI = no visibility on output
 
-          # the built-in non-RDF triplrs exploit this heavily when summarizing/merging/indexing
+          # example: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
 
-          # on the other hand,
-          # Turtle is our default internal (compiled-output-graph/cache/storage) format, with a "static web server" mindset
-          # of minimal processing. so little that without this, data won't appear in the output graph
-          if format == 'text/turtle'
-            repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # request base 👉 this graph
-            repository.each_subject.map{|s|                                      # this graph 👉 its subjects
+          # this characteristic eliminates needs for pruning in summary/merge/index/query operations.
+          # references to output nodes are added by the handlers, specific to the request needs
+
+          # standard RDF serializers just dump out a soup of maybe-unconnected nodes, disjoint subgraphs etc
+          # add this skeleton when going from native RDF readers to our serializers
+          if format == 'text/turtle' # native compiled-output-graph/cache/storage format
+            repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # request graph 👉 current graph
+            repository.each_subject.map{|s|                                        # current graph 👉 subjects
               repository << RDF::Statement.new(base, RDF::URI(Contains), s) unless s.node?}
           end
-
-          #repository.each_graph.map{|g|                                          # this graph 👉 additional named graphs
-          #repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
+          repository.each_graph.map{|g|                                            # current graph 👉 additional named graphs
+          repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
 
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
