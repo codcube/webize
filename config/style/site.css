@@ -27,7 +27,7 @@
 .resource {border: 1px solid #333; border-radius: .62em; margin: .1em; vertical-align: top}
 .resource[host="www.mixcloud.com"] img {display: none}
 .resource[host="www.mixcloud.com"] img:last-child {display: inline-block}
-.title {vertical-align: top}
+.title, .abstract {vertical-align: top}
 .title:visited {background-color: #ccc; color: #000}
 .top-bar .path a {color: #ddd; font-weight: normal}
 .top-bar .path a:last-child {color: #000; background-color: #fff; font-weight: bold; border-radius: 0 0 .3em .3em; margin-top: 0}
