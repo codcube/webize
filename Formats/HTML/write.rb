@@ -182,7 +182,9 @@ module Webize
         if x.empty?
           ''
         else
-          render(x.first) + render(x.rest)
+          x.map do |i|
+            render i
+          end.join
         end
       when Hash
 
