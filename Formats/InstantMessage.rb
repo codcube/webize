@@ -28,10 +28,6 @@ module Webize
         text_query = @base.env[:qs]['q']&.downcase
         from_query = @base.env[:qs]['from']&.downcase
 
-        yield @base.env[:base], RDF::URI(Contains), target
-
-        yield target, RDF::URI(Type), RDF::URI('http://rdfs.org/sioc/ns#ChatLog')
-
         @doc.lines.grep(/^[^-]/).map{|msg|
           next if text_query && # skip chat line not matching query argument
                   !msg.downcase.index(text_query)
@@ -65,8 +61,13 @@ module Webize
           creator = RDF::URI(daydir + '/*/*irc?q=' + nick + '&sort=date&view=table#' + nick)
           yield subject, RDF::URI(Creator), creator
           yield subject, RDF::URI(Contains),
-                HTML::Reader.new(msg.hrefs, base_uri: @base).scan_fragment(&f) if msg
-        }
+                HTML::Reader.new(msg.hrefs, base_uri: @base).scan_fragment(&f) if msg}
+
+        return unless lines > 0
+
+        yield @base.env[:base], RDF::URI(Contains), target
+        yield target, RDF::URI(Type), RDF::URI('http://rdfs.org/sioc/ns#ChatLog')
+
       end
 
       # twtxt -> RDF

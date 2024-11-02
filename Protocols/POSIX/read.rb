@@ -22,7 +22,7 @@ module Webize
       # enforce trailing slash on directory URI
       return Node(join basename + '/').readDir graph unless dirURI?
 
-      graph << RDF::Statement.new(env[:base], RDF::URI('#local_source'), self)   # source graph
+     #graph << RDF::Statement.new(env[:base], RDF::URI('#local_source'), self)   # source directory
       graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601) # directory timestamp
       graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename   # directory name
       graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#Directory'))
@@ -65,7 +65,7 @@ module Webize
 
       # storage metadata
       stat = File.stat fsPath
-      graph << RDF::Statement.new(env[:base], RDF::URI('#local_source'), self) # source provenance
+     #graph << RDF::Statement.new(env[:base], RDF::URI('#local_source'), self) # source file
       graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#File'))
       graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename
       graph << RDF::Statement.new(self, RDF::URI('http://www.w3.org/ns/posix/stat#size'), stat.size)
