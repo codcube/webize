@@ -55,8 +55,10 @@ module Webize
            ' ']}
       end
 
-      # LS - render resource URIs and filesystem metadata in table
-      def local_source(nodes) = table nodes, attrs: [Type, 'uri', Title, '#childDir', '#entry', Size, Date], id: :local_source
+      # LS - table of resource URIs and filesystem metadata
+      def local_source(nodes) = table nodes,
+                                      attrs: [Type, 'uri', Title, '#childDir', '#entry', Size, Date],
+                                      id: :local_source
 
       def origin locations
         locations.map{|l|
