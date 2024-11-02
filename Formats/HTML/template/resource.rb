@@ -87,8 +87,7 @@ module Webize
                 end
 
         skip = ['#color', '#new',
-                'uri',
-                Aria + 'hidden',
+                'uri', Abstract, Schema + 'item',
                 XHV + 'namespace',
                 Schema + 'height',
                 Schema + 'width',
@@ -102,6 +101,8 @@ module Webize
                 update(color ? {style: "background-color: #{color}; color: #000"} : {}) if r.has_key? Title),
 
              (origin_ref unless inline),         # pointer
+             (property Abstract, r[Abstract] if r.has_key? Abstract),
+             (property Schema + 'item', r[Schema + 'item'] if r.has_key? Schema + 'item'),
 
              if r[Contains]                      # content nodes
                if TabularChild.member? type.to_s # tabular view

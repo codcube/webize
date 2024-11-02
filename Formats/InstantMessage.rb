@@ -75,6 +75,7 @@ module Webize
         yield RDF::URI(day), RDF::URI(Title), File.basename(day)
         yield RDF::URI(day), RDF::URI(Contains), chan
         yield chan, RDF::URI(Title), '#' + channame
+        yield chan, RDF::URI(Abstract), [File.basename(hour), ':00'].join
         yield chan, RDF::URI(Type), RDF::URI('http://rdfs.org/sioc/ns#ChatLog')
 
       end
