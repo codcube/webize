@@ -235,3 +235,5 @@ date_string_short
 date_time
 dc.date.created
 dc.date.modified
+shareaholic:article_published_time
+shareaholic:article_modified_time

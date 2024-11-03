@@ -24,3 +24,6 @@ data-mobile-height
 data-image_height
 data-original-height
 vspace
+data-fixed-height
+data-height-onload
+data-height-percentage
