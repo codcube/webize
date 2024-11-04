@@ -160,3 +160,5 @@ watchEndpointSupportedOnesieConfig
 watchNextEndScreenRenderer
 webCommandMetadata
 settings
+data-literal
+data-ccp-props

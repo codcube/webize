@@ -538,3 +538,5 @@ hide_collections
 allow
 data-headerbg
 botguardData
+data-max-parallel-uploads
+data-parallel-uploads
