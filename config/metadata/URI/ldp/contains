@@ -22,3 +22,5 @@ hasPart
 ajaxPageState
 segments
 data-attrs
+children
+data-firstchild

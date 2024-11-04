@@ -162,3 +162,7 @@ webCommandMetadata
 settings
 data-literal
 data-ccp-props
+data-external
+signalServiceEndpoint
+signalAction
+hotkeyDialogSectionRenderer
