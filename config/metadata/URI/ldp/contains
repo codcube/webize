@@ -24,3 +24,4 @@ segments
 data-attrs
 children
 data-firstchild
+data-props
