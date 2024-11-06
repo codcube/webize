@@ -169,3 +169,7 @@ hotkeyDialogSectionRenderer
 data-list-defn-props
 data-node
 data-row
+strings
+data-environment
+data-attributes
+data-parametric
