@@ -78,8 +78,8 @@ module Webize
 
           unless p.match? HTTPURI
             case p
-            when /^aria/i
-              p = 'https://www.w3.org/ns/aria#' + p.sub(/^aria[-_]/i,'')
+            when /^(data-)?aria/i
+              p = 'https://www.w3.org/ns/aria#' + p.sub(/^(data-)?aria[-_]/i,'')
             when 'src'
               p = case node.name
                   when 'audio'

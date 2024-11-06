@@ -166,3 +166,6 @@ data-external
 signalServiceEndpoint
 signalAction
 hotkeyDialogSectionRenderer
+data-list-defn-props
+data-node
+data-row
