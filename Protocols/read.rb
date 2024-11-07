@@ -38,10 +38,10 @@ module Webize
           repository.each_graph.map{|g|                                          # doc graph 👉 graph(s)
           repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
 
-          if format == 'text/turtle' # native RDF Reader
+          if format == 'text/turtle' # RDF Reader
             repository.each_subject.map{|s|                                      # doc graph 👉 node(s)
               repository << RDF::Statement.new(base, RDF::URI(Contains), s) unless s.node?}
-          end # else: node references emitted by non-RDF Reader instance
+          end # else: node references emitted by non-RDF Reader
 
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
