@@ -35,11 +35,11 @@ module Webize
 
           if format == 'text/turtle' # native RDF Reader
             repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # env graph 👉 doc graph
-            repository.each_subject.map{|s|                                        # doc graph 👉 subjects
+            repository.each_subject.map{|s|                                        # doc graph 👉 subject(s)
               repository << RDF::Statement.new(base, RDF::URI(Contains), s) unless s.node?}
           end # else: subject references emitted by non-RDF Reader instance
 
-          repository.each_graph.map{|g|                                            # doc graph 👉 graphs
+          repository.each_graph.map{|g|                                            # doc graph 👉 graph(s)
           repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
 
         else
