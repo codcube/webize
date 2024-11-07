@@ -21,18 +21,14 @@ module Webize
 
           r = reader.new(content, base_uri: self){|_|             # instantiate reader and reference it
             repository << _ }                                     # raw data -> RDF
-          base = r.base_uri                                       # graph URI
+          base = r.base_uri                                       # graph URI. defaults to doc URI, declaratively updatable
 
-          # RDF serializers may emit a soup of unconnected nodes, disjoint subgraphs etc
-          # our serializers start at the base URI specified in the environment vars,
-          # which means: no node reachability from base = no visibility on output
+          # the first stage of reading data, from arbitrary MIME format to RDF triples, is now done
 
-          # analogy: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
+          # now we add pointers to this graph from the base graph
 
-          # one may read much more data in than ends up in an output result/response graph
-          # there's not a subtractive mandatory pruning in summary/merge/index/query operations,
-          # but an additive 'explicitly include (make reachable) nodes' process begun below,
-          # after the base URI (declaratively updatable) is found in the reader:
+          # our inlining and native data API requires these pointers as bridges of connectivity,
+          # as in https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
 
           repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # env graph 👉 doc graph
           repository.each_graph.map{|g|                                          # doc graph 👉 graph(s)
