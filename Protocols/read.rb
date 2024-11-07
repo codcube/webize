@@ -23,7 +23,7 @@ module Webize
             repository << _ }                                     # raw data -> RDF
           base = r.base_uri                                       # graph URI
 
-          # RDF serializers may emit a soup of maybe-unconnected nodes, disjoint subgraphs etc
+          # RDF serializers may emit a soup of unconnected nodes, disjoint subgraphs etc
           # our serializers start at the base URI specified in the environment vars,
           # which means: no node reachability from base = no visibility on output
 
@@ -36,9 +36,9 @@ module Webize
 
           if format == 'text/turtle' # native RDF Reader
             repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # env graph 👉 doc graph
-            repository.each_subject.map{|s|                                        # doc graph 👉 subject(s)
+            repository.each_subject.map{|s|                                        # doc graph 👉 node(s)
               repository << RDF::Statement.new(base, RDF::URI(Contains), s) unless s.node?}
-          end # else: subject references emitted by non-RDF Reader instance
+          end # else: node references emitted by non-RDF Reader instance
 
           repository.each_graph.map{|g|                                            # doc graph 👉 graph(s)
           repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
