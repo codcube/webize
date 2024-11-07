@@ -21,26 +21,25 @@ module Webize
 
           r = reader.new(content, base_uri: self){|_|             # instantiate reader and reference it
             repository << _ }                                     # raw data -> RDF
-          base = r.base_uri                                       # graph URI after any declarations
+          base = r.base_uri                                       # declarative graph URI
 
-          # the graph needs a basic reference skeleton before output can commence
-          # no reference reachability to/from base-URI = no visibility on output
+          # RDF serializers may emit a soup of maybe-unconnected nodes, disjoint subgraphs etc
+          # our serializers start at the base URI specified in the environment vars,
+          # which means: no node reachability from base = no visibility on output
 
-          # example: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
+          # physical analogue: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
 
-          # this characteristic eliminates needs for pruning in summary/merge/index/query operations.
-          # references to output nodes are added by the handlers, specific to the request needs
+          # one may read much more data in than ends up in an output result/response graph
+          # this trades off a subtractive mandatory pruning in summary/merge/index/query operations for
+          # an additive 'explicitly include (make reachable) nodes in output'
 
-          # standard RDF serializers usually dump out a soup of maybe-unconnected nodes, disjoint subgraphs etc
-          # add this skeleton when going from native RDF readers to our serializers
-
-          if format == 'text/turtle' # our preferred native storage format
-            repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # request graph 👉 current graph
-            repository.each_subject.map{|s|                                        # current graph 👉 subjects
+          if format == 'text/turtle' # native RDF
+            repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # env graph 👉 doc graph
+            repository.each_subject.map{|s|                                        # doc graph 👉 subjects
               repository << RDF::Statement.new(base, RDF::URI(Contains), s) unless s.node?}
-          end
+          end # else: subject references emitted by non-RDF Reader instance
 
-          repository.each_graph.map{|g|                                            # current graph 👉 additional named graphs
+          repository.each_graph.map{|g|                                            # doc graph 👉 graphs
           repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
 
         else
