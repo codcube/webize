@@ -36,7 +36,7 @@ module Webize
 
           repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # env graph 👉 doc graph
           repository.each_graph.map{|g|                                          # doc graph 👉 graph(s)
-          repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
+            repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
 
           if format == 'text/turtle' # RDF Reader
             repository.each_subject.map{|s|                                      # doc graph 👉 node(s)
