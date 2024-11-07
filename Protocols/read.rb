@@ -37,10 +37,10 @@ module Webize
 
           # native values with familiar Hash-accessor syntax-sugar, utility methods and JSON compatibility
 
-          # we only 👉 graphs, not their nodes, to allow experts implementation flexibility on the latter:
+          # only 👉 graphs, not their nodes, to allow experts implementation flexibility in the latter:
 
-          # - reachability = set-inclusion/inlining/visibility optimizations
-          # - summary/merge/index/query operations without a mandatory subtractive pruning afterwards
+          # - reachability = set-inclusion/inlining/visibility decisions
+          # - summary/merge/index/query of graphs without a mandatory subtractive pruning stage
 
           repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # env graph 👉 doc graph
           repository.each_graph.map{|g|                                          # doc graph 👉 graph(s)
