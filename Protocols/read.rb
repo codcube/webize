@@ -21,7 +21,7 @@ module Webize
 
           r = reader.new(content, base_uri: self){|_|             # instantiate reader and reference it
             repository << _ }                                     # raw data -> RDF
-          base = r.base_uri                                       # declarative graph URI
+          base = r.base_uri                                       # graph URI
 
           # RDF serializers may emit a soup of maybe-unconnected nodes, disjoint subgraphs etc
           # our serializers start at the base URI specified in the environment vars,
@@ -30,8 +30,9 @@ module Webize
           # analogy: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
 
           # one may read much more data in than ends up in an output result/response graph
-          # this trades off a subtractive mandatory pruning in summary/merge/index/query operations for
-          # an additive 'explicitly include (make reachable) nodes in output' which we do below
+          # there's not a subtractive mandatory pruning in summary/merge/index/query operations,
+          # but additive 'explicitly include (make reachable) nodes' step partially done below,
+          # while graph document base URI as declaratively updatable for the reader is bound:
 
           if format == 'text/turtle' # native RDF Reader
             repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # env graph 👉 doc graph
