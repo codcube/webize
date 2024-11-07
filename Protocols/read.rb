@@ -30,14 +30,27 @@ module Webize
           # our inlining and native data API requires these pointers as bridges of connectivity,
           # as in https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
 
+          # the reachability requirement allows implementation simplicity and better user/developer experience:
+
+          # developer isn't handed soup of unconnected nodes, disjoint subgraphs, left to figure out
+          # how to query it with SPARQL or even what RDF is entirely. the second-stage read (inlining) outputs:
+
+          # native values with familiar Hash-accessor syntax-sugar, utility methods and JSON compatibility
+
+          # we only 👉 graphs, not their nodes, here to allow experts/developers implementation flexibility:
+
+          # reachability = inclusion/inlining/visibility optimizations:
+          # summary/merge/index/query operations without a mandatory subtractive pruning, where
+          # one may have read much more data in than ends up in an output result/response graph
+
           repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # env graph 👉 doc graph
           repository.each_graph.map{|g|                                          # doc graph 👉 graph(s)
             repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
 
-          if format == 'text/turtle' # RDF Reader
+          if format == 'text/turtle' # native RDF
             repository.each_subject.map{|s|                                      # doc graph 👉 node(s)
               repository << RDF::Statement.new(base, RDF::URI(Contains), s) unless s.node?}
-          end # else: node references emitted by non-RDF Reader
+          end # else: node 👉 delegated to non-RDF Reader implementation
 
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
