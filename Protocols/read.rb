@@ -31,8 +31,8 @@ module Webize
 
           # one may read much more data in than ends up in an output result/response graph
           # there's not a subtractive mandatory pruning in summary/merge/index/query operations,
-          # but additive 'explicitly include (make reachable) nodes' step partially done below,
-          # after graph document base URI as declaratively updatable by the reader is found:
+          # but an additive 'explicitly include (make reachable) nodes' process begun below,
+          # after the base URI (declaratively updatable) is found in the reader:
 
           repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # env graph 👉 doc graph
           repository.each_graph.map{|g|                                          # doc graph 👉 graph(s)
