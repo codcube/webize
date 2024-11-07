@@ -27,13 +27,13 @@ module Webize
           # our serializers start at the base URI specified in the environment vars,
           # which means: no node reachability from base = no visibility on output
 
-          # physical analogue: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
+          # analogy: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
 
           # one may read much more data in than ends up in an output result/response graph
           # this trades off a subtractive mandatory pruning in summary/merge/index/query operations for
-          # an additive 'explicitly include (make reachable) nodes in output'
+          # an additive 'explicitly include (make reachable) nodes in output' which we do below
 
-          if format == 'text/turtle' # native RDF
+          if format == 'text/turtle' # native RDF Reader
             repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # env graph 👉 doc graph
             repository.each_subject.map{|s|                                        # doc graph 👉 subjects
               repository << RDF::Statement.new(base, RDF::URI(Contains), s) unless s.node?}
