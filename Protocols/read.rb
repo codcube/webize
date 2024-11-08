@@ -23,9 +23,9 @@ module Webize
             repository << _ }                                     # raw data -> RDF
           base = r.base_uri                                       # graph URI. defaults to doc URI, declaratively updatable
 
-          # the first stage of reading data, from arbitrary MIME format to RDF triples, is now done
+          # with the first stage of reading data, from arbitrary MIME format to RDF triples, done:
 
-          # now we add pointers to this graph from the base graph
+          # point to this graph from the base graph
 
           # our inlining and native data API requires these pointers as bridges of connectivity,
           # as in https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
