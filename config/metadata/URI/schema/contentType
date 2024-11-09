@@ -16,3 +16,4 @@ sailthru.contenttype
 twitter:player:stream:content_type
 video_type
 data-stream-format
+pageContentType
