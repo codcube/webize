@@ -79,6 +79,7 @@ module Webize
 
             {_: val,
              class: :val,
+             key: k,
              c: property(k, vs.class == Array ? vs : [vs])},
 
             inline ? ' ' : "\n"]}}

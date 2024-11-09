@@ -18,7 +18,6 @@
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
 .image {border: 1px dotted #555; display: inline-block}
 .image_reference {font-size: 2em}
-.label > span {background-color: #000; color: #ddd; border: 1px solid #444; font-size: .92em; border-radius: .28em}
 .link {border: 1px dotted #0cf; margin: 1px}
 .name {background-color: #888; color: #000; font-size: .8em; vertical-align: top}
 .preembed .icon {position: absolute; left: 45%; top: 32%; font-size: 8em; color: #f00}
@@ -37,7 +36,9 @@
 .top-bar form input {background-color: #282828; color: #eee; border-radius: .5em; border-width: 0; margin: 0; padding: 0; width: 24ex}
 .top-bar svg {height: 1em; width: 1em}
 .top-bar {border-width: 0 1px 1px 1px; display: inline-block; border-style: solid; border-color: #555; border-radius: 0 0 .62em .62em; vertical-align: top}
+.val > span, p > span {background-color: #000; color: #fff}
 .val {overflow: hidden}
+.val[key="http://www.w3.org/2000/01/rdf-schema#label"] > span {background-color: inherit; border: 1px solid #444; font-size: .92em; border-radius: .28em}
 .video {max-width: 80em}
 .warning a {background-color: #fff; color: #000}
 .warning {display: inline-block; background-color: #ff0; color: #000; padding: .2em; margin: .3em; border-radius: .5em}
@@ -55,10 +56,10 @@ a.date {white-space: nowrap; color: #ccc; background-color: #000; font-weight: n
 a.fragref {padding: .1em .3em .1em .3em; border-radius: .3em; font-size: 1.3em; border: 1px dotted #fef}
 a.from, a.to {color: #000}
 a.from:visited, a.to:visited {color: #fff}
-a.global, a.global .label > span {background-color: #004}
+a.global {background-color: #004}
 a.global, a.local {border: 1px solid #008; border-radius: .42em; display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
-a.local, a.local .label > span {background-color: #002}
+a.local {background-color: #002}
 a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
 a.pointer, td[property="uri"] a {margin: 0; padding: 0; background-color: #222; color: #fff; border-radius: .5em; font-weight: normal; float: right}
 a.pointer:visited, td[property="uri"] a:visited {background-color: #338}

@@ -48,13 +48,6 @@ module Webize
            id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}
       end
 
-      def label labels
-        labels.map{|l|
-          next unless l.class == RDF::Literal
-          [{_: :span, class: :label, c: HTML.markup(l, env)},
-           ' ']}
-      end
-
       # LS - table of resource URIs and filesystem metadata
       def local_source(nodes) = table nodes,
                                       attrs: [Type, 'uri', Title, '#childDir', '#entry', Size, Date],
