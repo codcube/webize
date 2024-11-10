@@ -17,7 +17,6 @@ http://rdfs.org/sioc/ns#addressed_to to
 http://rdfs.org/sioc/ns#has_creator creator
 http://schema.org/facets table
 http://schema.org/item table
-http://schema.org/transcodings table
 http://www.w3.org/1999/02/22-rdf-syntax-ns#type rdf_type
 http://www.w3.org/1999/xhtml/vocab#iframe iframe
 http://www.w3.org/1999/xhtml/vocab#script graph_source
