@@ -31,11 +31,14 @@ module Webize
         from_query = @base.env[:qs]['from']&.downcase
 
         @doc.lines.grep(/^[^-]/).map{|msg|
-          next if text_query && # skip chat line not matching query argument
+          next if text_query && # line not matching query argument
                   !msg.downcase.index(text_query)
 
           tokens = msg.split /\s+/
-          time = tokens.shift
+
+          time = tokens.shift              # timestamp
+          next if tokens.empty?
+
           if ['*','-!-'].member? tokens[0] # actions, joins, parts
             nick = tokens[1]
             msg = tokens[2..-1].join ' '
