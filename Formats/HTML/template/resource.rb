@@ -75,9 +75,6 @@ module Webize
                   r['#color'][0]
                 elsif r.has_key? '#new'           # new/updated resource highlight
                   '#8aa'
-                elsif r.has_key? Creator
-                  '#' + Digest::SHA2.hexdigest(   # message source
-                   r[Creator].to_s)[0..5]
                 elsif uri
                   if uri.deny?                    # blocked resource
                     :red
