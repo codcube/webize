@@ -84,24 +84,29 @@ module Webize
                 end
 
         skip = ['#color', '#new',
-                'uri', Abstract, Schema + 'item',
+                'uri', Type, Title, Abstract, Contains,
                 XHV + 'namespace',
                 Schema + 'height',
+                Schema + 'item',
                 Schema + 'width',
                 Schema + 'version',
-                Title, Contains]  # properties we handle before delegating to generic keyval render
+                ] # properties we display before delegating
 
         {_: name,                                # node
-         c: [({class: :title,                    # title
+         c: [(property Type, r[Type] if r.has_key? Type),
+                                                 # type
+             ({class: :title,                    # title
                c: r[Title].map{|t| [HTML.markup(t, env), ' ']}}.
-                update(ref || {}).               # attach reference to title node
+                update(ref || {}).               # reference
                 update(color ? {style: "background-color: #{color}; color: #000"} : {}) if r.has_key? Title),
 
              (origin_ref unless inline),         # pointer
+                                                 # abstract
              (property Abstract, r[Abstract] if r.has_key? Abstract),
+                                                 # item list
              (property Schema + 'item', r[Schema + 'item'] if r.has_key? Schema + 'item'),
 
-             if r[Contains]                      # content nodes
+             if r[Contains]                      # child nodes
                if TabularChild.member? type.to_s # tabular view
                  property Schema + 'item', r[Contains]
                else                              # inline view
@@ -115,7 +120,6 @@ module Webize
           update((id && type == :div) ? {class: :resource, host: uri.host} : {}).
           update(r.has_key?(Schema + 'height') ? {height: r[Schema + 'height'][0]} : {}).
           update(r.has_key?(Schema + 'width') ? {width: r[Schema + 'width'][0]} : {}).
-          # update(r.has_key?(XHV + 'viewbox') ? {height: r[XHV + 'viewbox'][0]} : {}).
           update((ns = r[XHV + 'namespace']) ? {xmlns: ns[0].class == Hash ? ns[0]['uri'] : ns[0].to_s} : {}).
           update(color ? {style: "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} 1px, transparent 1px, transparent 16px); border-color: #{color}"} : {})
       end
