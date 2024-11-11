@@ -137,7 +137,7 @@ module Webize
         # attachments
         m.attachments.select{|p|
           ::Mail::Encodings.defined?(p.body.encoding)}.map{|p|     # decodability check
-          name = p.filename && !p.filename.empty? && p.filename || # attachment name
+          name = p.filename && !p.filename.empty? && p.filename[-64..-1] || # attachment name
                  (Digest::SHA2.hexdigest(rand.to_s) + (Rack::Mime::MIME_TYPES.invert[p.mime_type&.downcase] || '.bin').to_s) # generate name
           file = POSIX::Node RDF::URI('/').join(POSIX::Node(graph).fsPath + '.' + name) # file URI
           unless file.exist?              # store file
