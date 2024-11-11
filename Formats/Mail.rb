@@ -47,16 +47,20 @@ module Webize
 
         yield mail, Type, RDF::URI(SIOC + 'MailMessage'), graph
 
-        # HTML message
+        # HTML parts
         htmlFiles, parts = m.all_parts.push(m).partition{|p| p.mime_type == 'text/html' }
-        htmlCount = 0
+#        htmlCount = 0
         htmlFiles.map{|p|
-          html = POSIX::Node RDF::URI('/').join(POSIX::Node(graph).fsPath + ".#{htmlCount}.html") # HTMLfile URI
-          yield mail, DC + 'hasFormat', html, graph   # reference
-          html.write p.decoded unless html.exist? # store
-          htmlCount += 1 }
+          fragment = HTML::Reader.new(p.decoded, base_uri: @base).scan_fragment &b
+          yield mail, Contains, fragment
+          
+#          html = POSIX::Node RDF::URI('/').join(POSIX::Node(graph).fsPath + ".#{htmlCount}.html") # HTMLfile URI
+#          yield mail, DC + 'hasFormat', html, graph   # reference
+#          html.write p.decoded unless html.exist? # store
+#          htmlCount += 1
+        }
 
-        # plaintext message
+        # plaintext parts
         parts.select{|p|
           (!p.mime_type || p.mime_type.match?(/^text\/plain/)) && # text parts
             ::Mail::Encodings.defined?(p.body.encoding)    # decodable?
@@ -121,10 +125,6 @@ module Webize
         if date = m.date
           timestamp = ([Time, DateTime].member?(date.class) ? date : Time.parse(date.to_s)).iso8601
           yield mail, Date, timestamp, graph
-
-          # cache message in maildir
-          maildirFile = POSIX::Node('/mail/cur/' + timestamp.gsub(/\D/,'.') + Digest::SHA2.hexdigest(id) + '.eml')
-          maildirFile.write body unless maildirFile.exist?
         end
 
         # references
