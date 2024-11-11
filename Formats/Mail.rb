@@ -3,7 +3,9 @@ require 'mail'
 module Webize
   module Mail
     class Format < RDF::Format
-      content_type 'message/rfc822', aliases: %w(message/rfc2822;q=0.8), :extension => :eml
+      content_type 'message/rfc822',
+                   aliases: %w(message/rfc2822;q=0.8),
+                   extension: :eml
       content_encoding 'utf-8'
       reader { Reader }
       def self.symbols
@@ -32,7 +34,7 @@ module Webize
       def each_statement &fn
         mail_triples(@doc){|subject, predicate, o, graph|
           fn.call RDF::Statement.new(Webize::URI(subject), Webize::URI(predicate), o,
-                                     :graph_name => graph)}
+                                     graph_name: graph)}
       end
 
       def mail_triples body, &b
