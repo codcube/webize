@@ -91,7 +91,7 @@ module Webize
                 Schema + 'width',
                 Schema + 'version',
                 ] # properties we display before delegating
-
+        # we probably should make keyval() accept ordering since that's why we do this
         {_: name,                                # node
          c: [(property Type, r[Type] if r.has_key? Type),
                                                  # type
