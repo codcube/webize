@@ -15,6 +15,12 @@ module Webize
                        [host, addr]}}.flatten]         # hostname -> address table
   PeerAddrs = PeerHosts.invert                         # address -> hostname table
 
+  # runtime cache-configuration option handling
+  Media_Cache = !%w(0 false no off).member?(
+    (ENV['IMG_CACHE'] || # we currently only cache images, allow this option
+     ENV['MEDIA_CACHE'] ||
+     'ON').downcase)     # default is ON
+
   class URI
 
     def relocate? = (URL_host? && (query_hash['url'] || query_hash['u'])) ||

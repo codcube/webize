@@ -35,7 +35,8 @@ module Webize
         else
           env[:images][i] = true       # mark as shown
           [{_: :img, id: i.local_id,   # IMG element
-            src: i.href,               # SRC attribute
+            src: i.send(               # SRC attribute
+              Media_Cache ? :href : :uri),
             alt: (image[Abstract] ||   # ALT attribute
                   image[Title])&.join},
            keyval(image, inline: true, # node metadata
