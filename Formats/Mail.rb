@@ -48,20 +48,48 @@ module Webize
         yield mail, Type, RDF::URI(SIOC + 'MailMessage'), graph
 
         # HTML parts
-        htmlFiles, parts = m.all_parts.push(m).partition{|p| p.mime_type == 'text/html' }
-        htmlFiles.map{|p|
+        htmlParts, parts = m.all_parts.push(m).partition{|p|
+          p.mime_type == 'text/html' }
+
+        htmlParts.map{|p|
           HTML::Reader.new(p.decoded, base_uri: mail).scan_document &b}
 
         # plaintext parts
-        parts.select{|p|
-          (!p.mime_type || p.mime_type.match?(/^text\/plain/)) && # text parts
-            ::Mail::Encodings.defined?(p.body.encoding)    # decodable?
-        }.map{|p|
+        textParts, parts = parts.partition{|p|
+          (!p.mime_type || p.mime_type.match?(/^text\/plain/)) && # text and untyped parts
+            ::Mail::Encodings.defined?(p.body.encoding)}          # decodable?
+
+        textParts.map{|p|
           Plaintext::Reader.new(p.decoded, base_uri: mail).plaintext_triples &b}
 
-        # recursively contained messages: digests, forwards, archives
-        parts.select{|p|p.mime_type=='message/rfc822'}.map{|m|
+        # recursive mail parts: digests, forwards, archives
+        mailParts, parts = parts.partition{|p|
+          p.mime_type=='message/rfc822'}
+
+        mailParts.map{|m|
           mail_triples m.body.decoded, &b}
+
+        # attachments
+        attachedParts = m.attachments
+
+        attachedParts.select{|p|
+          ::Mail::Encodings.defined?(p.body.encoding)}.map{|p|     # decodability check
+          name = p.filename && !p.filename.empty? && p.filename[-64..-1] || # attachment name
+                 (Digest::SHA2.hexdigest(rand.to_s) + (Rack::Mime::MIME_TYPES.invert[p.mime_type&.downcase] || '.bin').to_s) # generate name
+          file = POSIX::Node RDF::URI('/').join(POSIX::Node(graph).fsPath + '.' + name) # file URI
+          unless file.exist?              # store file
+            file.write p.body.decoded.force_encoding 'UTF-8'
+          end
+          yield mail, SIOC+'attachment', file, graph # attachment pointer
+          if p.main_type == 'image'           # image attachments
+            yield mail, Image, file, graph    # image link in RDF
+            yield mail, Contains,             # image link in HTML
+                  RDF::Literal(HTML.render({_: :a, href: file.uri, c: [{_: :img, src: file.uri}, p.filename]}), datatype: RDF.HTML), graph # render HTML
+          end }
+
+        # remaining parts (not untyped, plaintext, HTML, contained-messages, or attachment-disposition)
+        remainingParts = parts - attachedParts
+        puts "unhandled mail parts:", remainingParts unless remainingParts.empty?
 
         # From
         m.from.yield_self{|f|
@@ -70,6 +98,7 @@ module Webize
             f = "#{noms[0]}@#{noms[2]}" if noms.size > 2 && noms[1] == 'at'
             yield mail, Creator, RDF::URI('/mailto/' + f), graph
           }}
+
         m[:from] && m[:from].yield_self{|fr|
           fr.addrs.map{|a|
             name = a.display_name || a.name # human-readable name
@@ -82,11 +111,13 @@ module Webize
             ((r.class == Array || r.class == ::Mail::AddressContainer) ? r : [r]).compact.map{|r| # recipient
               yield mail, To, RDF::URI('/mailto/' + r), graph
             }}}
+
         m['X-BeenThere'].yield_self{|b|      # anti-loop recipient property
           (b.class == Array ? b : [b]).compact.map{|r|
             r = r.to_s
             yield mail, To, RDF::URI('/mailto/' + r), graph
           }}
+
         m['List-Id'] && m['List-Id'].yield_self{|name|
           yield mail, To, name.decoded.sub(/<[^>]+>/,'').gsub(/[<>&]/,''), graph} # mailinglist name
 
@@ -112,22 +143,6 @@ module Webize
               yield mail, SIOC + 'reply_of', msg, graph
               yield msg, SIOC + 'has_reply', mail, graph
             }}}
-
-        # attachments
-        m.attachments.select{|p|
-          ::Mail::Encodings.defined?(p.body.encoding)}.map{|p|     # decodability check
-          name = p.filename && !p.filename.empty? && p.filename[-64..-1] || # attachment name
-                 (Digest::SHA2.hexdigest(rand.to_s) + (Rack::Mime::MIME_TYPES.invert[p.mime_type&.downcase] || '.bin').to_s) # generate name
-          file = POSIX::Node RDF::URI('/').join(POSIX::Node(graph).fsPath + '.' + name) # file URI
-          unless file.exist?              # store file
-            file.write p.body.decoded.force_encoding 'UTF-8'
-          end
-          yield mail, SIOC+'attachment', file, graph # attachment pointer
-          if p.main_type == 'image'           # image attachments
-            yield mail, Image, file, graph    # image link in RDF
-            yield mail, Contains,             # image link in HTML
-                  RDF::Literal(HTML.render({_: :a, href: file.uri, c: [{_: :img, src: file.uri}, p.filename]}), datatype: RDF.HTML), graph # render HTML
-          end }
 
         yield mail, SIOC+'user_agent', m['X-Mailer'].to_s, graph if m['X-Mailer']
       end

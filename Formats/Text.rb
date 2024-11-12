@@ -121,7 +121,7 @@ module Webize
                  CGI.escapeHTML(@doc).             # escape text
                    gsub(::URI.regexp,
                         '<a href="\0">\0</a>'),    # href-ize URIs
-                 '</pre>'].join,                   # emit HTML 
+                 '</pre>'].join,                   # emit HTML
                 base_uri: @base).scan_fragment(&f) # webize HTML
       end
 
