@@ -89,7 +89,8 @@ module Webize
 
         # remaining parts (not untyped, plaintext, HTML, contained-messages, or attachment-disposition)
         remainingParts = parts - attachedParts - [m]
-        puts "unhandled mail parts:", remainingParts.map{|p| [p.mime_type, p.decoded.size].join "\t"} unless remainingParts.empty?
+#        puts "#{@base} unhandled mail parts:", remainingParts.map{|p|
+#          [p.mime_type, p.filename].join "\t"} unless remainingParts.empty?
 
         # From
         m.from.yield_self{|f|
