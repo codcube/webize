@@ -70,9 +70,9 @@ module Webize
           mail_triples m.body.decoded, &b}
 
         # attachments
-        attachedParts = m.attachments
+        attachments = m.attachments
 
-        attachedParts.select{|p|
+        attachments.select{|p|
           ::Mail::Encodings.defined?(p.body.encoding)}.map{|p|     # decodability check
           name = p.filename && !p.filename.empty? && p.filename[-64..-1] || # attachment name
                  (Digest::SHA2.hexdigest(rand.to_s) + (Rack::Mime::MIME_TYPES.invert[p.mime_type&.downcase] || '.bin').to_s) # generate name
@@ -87,12 +87,12 @@ module Webize
                   RDF::Literal(HTML.render({_: :a, href: file.uri, c: [{_: :img, src: file.uri}, p.filename]}), datatype: RDF.HTML), graph # render HTML
           end }
 
-        # remaining parts (not untyped, plaintext, HTML, contained-messages, or attachment-disposition)
-        # - it's logging multipart/alternative and multipart/related that i think we already displayed
-        # above since #all_parts does recursive parts calls and a tree flattening. but in case something goes missing, uncomment:
-#        remainingParts = parts - attachedParts - [m]
-#        puts "#{@base} unhandled mail parts:", remainingParts.map{|p|
-#          [p.mime_type, p.filename].join "\t"} unless remainingParts.empty?
+        # remaining parts
+        rest = (parts - attachments - [m]).select{|p|
+          !p.mime_type || p.mime_type.index('multipart') != 0}
+
+        puts "#{@base} unprocessed mail parts:", rest.map{|p|
+          [p.mime_type, p.filename].join "\t"} unless rest.empty?
 
         # From
         m.from.yield_self{|f|
