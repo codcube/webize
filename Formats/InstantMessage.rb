@@ -93,7 +93,7 @@ module Webize
           subject = graph.join '#msg'
           yield subject, Type, RDF::URI(Post), graph
           yield subject, Date, date, graph
-          yield subject, Contains, msg.hrefs, graph if msg
+          Plaintext::Reader.new(msg, base_uri: subject).plaintext_triples(&f) if msg
           yield subject, Creator, (@base.host + dirname).split(/\W/).join('.'), graph
           yield subject, To, @base, graph
         }
