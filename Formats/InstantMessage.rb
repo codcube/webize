@@ -64,8 +64,8 @@ module Webize
           ts[timestamp] += 1
           creator = RDF::URI(day + '/*/*irc?q=' + nick + '&sort=date&view=table#' + nick)
           yield subject, RDF::URI(Creator), creator
-          yield subject, RDF::URI(Contains),
-                HTML::Reader.new(msg.hrefs, base_uri: @base).scan_fragment(&f) if msg}
+          Plaintext::Reader.new(msg, base_uri: subject).plaintext_triples(&f) if msg
+        }
 
         return unless lines > 0
 
