@@ -1,42 +1,4 @@
 # coding: utf-8
-
-# enable 🐢 extension for text/turtle
-RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl]
-
-class String
-
-  # text -> HTML, yielding inlined-resource (rel,href) tuples to block
-  def hrefs &blk
-    # URIs are sometimes wrapped in (). an opening/closing pair is required for capture of (), '"<> never captured. , and . can be used anywhere but end of URL
-    pre, link, post = self.partition(/((g(emini|opher)|https?):\/\/(\([^)>\s]*\)|[,.]\S|[^\s),.”\'\"<>\]])+)/)
-    pre.gsub('&','&amp;').gsub('<','&lt;').gsub('>','&gt;') + # pre-match
-      (link.empty? && '' ||
-       '<a href="' + link.gsub('&','&amp;').gsub('<','&lt;').gsub('>','&gt;') + '">' +
-       (resource = Webize::Resource.new(link).relocate
-        img = nil
-        if blk
-          type = case link
-                 when /[\.=](gif|jpg|jpeg|(jpg|png):(large|small|thumb)|png|webp)([\?&]|$)/i
-                   img = '<img src="' + resource.uri + '">'
-                   Webize::Image
-                 when /(youtu.?be|(mkv|mp4|webm)(\?|$))/i
-                   Webize::Video
-                 end
-          yield RDF::URI(type), resource if type
-        end
-        [img,
-         #CGI.escapeHTML(resource.uri.sub(/^http:../,'')[0..79])
-        ].join) +
-       '</a>') +
-      (post.empty? && '' || post.hrefs(&blk)) # sometimes not tail-recursive. the new idea is use an iterator not recursion, #lines and go right to nodes in the HTML triplr shape
-  rescue
-    logger.warn "failed to scan string for hrefs"
-    logger.debug self
-    ''
-  end
-
-end
-
 module Webize
   module MSWord
     class Format < RDF::Format
@@ -137,30 +99,33 @@ module Webize
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        text_triples{|s, p, o, graph=nil|
+        triples{|s, p, o, graph=nil|
           fn.call RDF::Statement.new(s, p, o,
                                      graph_name: graph || @base)}
       end
 
-      def text_triples &f
-        basename = File.basename (@base.path || '/'), '.txt'
-        if basename == 'twtxt'
+      def triples &f
+        if File.basename((@base.path||'/'), '.txt') == 'twtxt'
           twtxt_triples &f
         elsif File.extname(@base) == '.irc'
           chat_triples &f
         else
-          dom = {_: :pre,
-                 c: @doc.lines.map{|line|
-                   line.hrefs{|p,o|
-                     yield @base, p, o}}}
-
-          html = HTML.render dom
-
-          fragment = HTML::Reader.new(html, base_uri: @base).scan_fragment &f
-
-          yield @base, RDF::URI(Contains), fragment
+          plaintext_triples &f
         end
       end
+
+      def plaintext_triples &f
+        yield @base, RDF::URI(Contains),
+              HTML::Reader.new(
+                ['<pre>',
+
+                 CGI.escapeHTML(@doc).                      # escape
+                   gsub(::URI.regexp,
+                        '<a href="\0">\0</a>'),             # hrefize
+
+                 '</pre>'].join, base_uri: @base).scan_fragment(&f)
+      end
+
     end
   end
 end

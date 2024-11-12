@@ -47,6 +47,9 @@ class Array
   def rest = self[1..-1]
 end
 
+# 🐢 extension for text/turtle
+RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl]
+
 module Webize
 
   # classes which become a URI on #to_s
