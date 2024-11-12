@@ -160,6 +160,13 @@ id ID _id id_str @id)
 
     # RDF::Graph -> JSON (serializable representation in native ruby values)
     def self.fromGraph graph
+      # second stage data reading: RDF::Graph to native ruby values
+
+      # developer isn't handed soup of unconnected nodes, disjoint subgraphs, left to figure out
+      # how to query it with SPARQL or even what RDF is entirely. the second-stage read (inlining) outputs:
+
+      # native values with familiar Hash-accessor syntax-sugar, utility methods and JSON compatibility
+      # this is a convenience for user/developer experience, experts may also stick to the RDF and skip this step
 
       index = {}                                  # (URI -> node) table
 

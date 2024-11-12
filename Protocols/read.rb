@@ -3,6 +3,7 @@ module Webize
 
     # (MIME, data) -> RDF::Repository
     def readRDF format, content
+      # first stage of reading data to our native graph structure: arbitrary MIME to RDF triples
       repository = RDF::Repository.new.extend Webize::Cache # instantiate repository, add our behaviours
       # TODO revisit subclass vs extend. IIRC we had weird bugs where third-party/stdlib embeded-triplrs didn't think our subclass was a Repo due to strict equivalence
 
@@ -23,19 +24,8 @@ module Webize
             repository << _ }                                     # raw data -> RDF
           base = r.base_uri                                       # graph URI. defaults to doc URI, declaratively updatable
 
-          # with the first stage of reading data, from arbitrary MIME format to RDF triples, done:
-
-          # point to this graph from the base graph
-
-          # our inlining and native data API requires these pointers as bridges of connectivity,
-          # as in https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
-
-          # the reachability requirement allows implementation simplicity and better user/developer experience:
-
-          # developer isn't handed soup of unconnected nodes, disjoint subgraphs, left to figure out
-          # how to query it with SPARQL or even what RDF is entirely. the second-stage read (inlining) outputs:
-
-          # native values with familiar Hash-accessor syntax-sugar, utility methods and JSON compatibility
+          # point to graph base from the env/request base, for basic traversibility
+          # https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
 
           # only 👉 graphs, not their nodes, to allow experts implementation flexibility in the latter:
 
