@@ -172,3 +172,6 @@ data-ad-id
 data-wp-pid
 videoUuid
 articleID
+postId
+classid
+data-message-id

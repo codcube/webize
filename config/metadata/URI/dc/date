@@ -241,3 +241,5 @@ dataUpdatedAt
 opengraphModifiedTime
 opengraphPublishedTime
 firstPublishDate
+articlePublishTime
+articleUpdateTime
