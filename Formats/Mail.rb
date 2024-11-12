@@ -45,6 +45,12 @@ module Webize
         id = m.message_id || m.resent_message_id || Digest::SHA2.hexdigest(rand.to_s)
         mail = graph = RDF::URI('/msg/' + Rack::Utils.escape_path(id))
 
+        # query args
+        from_query = @base.env[:qs]['from']&.downcase
+        from_text = [m.from, m[:from]].join.downcase
+        return if from_query && !from_text.index(from_query)
+
+        # type
         yield mail, Type, RDF::URI(SIOC + 'MailMessage'), graph
 
         # HTML parts
