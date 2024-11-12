@@ -88,7 +88,9 @@ module Webize
           end }
 
         # remaining parts (not untyped, plaintext, HTML, contained-messages, or attachment-disposition)
-        remainingParts = parts - attachedParts - [m]
+        # - it's logging multipart/alternative and multipart/related that i think we already displayed
+        # above since #all_parts does recursive parts calls and a tree flattening. but in case something goes missing, uncomment:
+#        remainingParts = parts - attachedParts - [m]
 #        puts "#{@base} unhandled mail parts:", remainingParts.map{|p|
 #          [p.mime_type, p.filename].join "\t"} unless remainingParts.empty?
 
