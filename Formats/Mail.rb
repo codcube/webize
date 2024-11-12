@@ -49,22 +49,15 @@ module Webize
 
         # HTML parts
         htmlFiles, parts = m.all_parts.push(m).partition{|p| p.mime_type == 'text/html' }
-#        htmlCount = 0
         htmlFiles.map{|p|
-          HTML::Reader.new(p.decoded, base_uri: mail).scan_document &b
-#          html = POSIX::Node RDF::URI('/').join(POSIX::Node(graph).fsPath + ".#{htmlCount}.html") # HTMLfile URI
-#          yield mail, DC + 'hasFormat', html, graph   # reference
-#          html.write p.decoded unless html.exist? # store
-#          htmlCount += 1
-        }
+          HTML::Reader.new(p.decoded, base_uri: mail).scan_document &b}
 
         # plaintext parts
         parts.select{|p|
           (!p.mime_type || p.mime_type.match?(/^text\/plain/)) && # text parts
             ::Mail::Encodings.defined?(p.body.encoding)    # decodable?
         }.map{|p|
-          Plaintext::Reader.new(p.decoded, base_uri: mail).plaintext_triples &b
-        }
+          Plaintext::Reader.new(p.decoded, base_uri: mail).plaintext_triples &b}
 
         # recursively contained messages: digests, forwards, archives
         parts.select{|p|p.mime_type=='message/rfc822'}.map{|m|

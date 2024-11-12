@@ -115,15 +115,14 @@ module Webize
       end
 
       def plaintext_triples &f
-        yield @base, RDF::URI(Contains),
-              HTML::Reader.new(
-                ['<pre>',
-
-                 CGI.escapeHTML(@doc).                      # escape
+        yield @base, RDF::URI(Contains),           # content pointer
+              HTML::Reader.new(                    # instantiate HTML reader
+                ['<pre>',                          # wrap in <pre>
+                 CGI.escapeHTML(@doc).             # escape text
                    gsub(::URI.regexp,
-                        '<a href="\0">\0</a>'),             # hrefize
-
-                 '</pre>'].join, base_uri: @base).scan_fragment(&f)
+                        '<a href="\0">\0</a>'),    # href-ize URIs
+                 '</pre>'].join,                   # emit HTML 
+                base_uri: @base).scan_fragment(&f) # webize HTML
       end
 
     end
