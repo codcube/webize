@@ -1,5 +1,7 @@
 module Webize
 
+  RDF.vocab_map[:ui] = {uri: 'https://www.w3.org/ns/ui#', class_name: 'UI'}
+
   MetaMap = {} # vocab URI mapping table
 
   VocabPath = %w(metadata URI) # path segments to vocab-map config base
