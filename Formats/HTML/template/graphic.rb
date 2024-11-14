@@ -5,10 +5,11 @@ module Webize
       Markup[Image] = :img
 
       def img images
-        # all objects of this predicate considered an image.
-        # this is a common pattern in JSON where the image URI is in a string value or object without type info alongside it
+        # all objects of this predicate considered an image - predicate URI says it's an image so we'll take its word
+
+        # supports a common pattern in JSON where the image URI is in a string-value or object without type info alongside it
         # referring-context is more explicit than extension-sniffing heuristics which miss any image without a classic fs-name extension,
-        # common with content-addressed / hash-derived CDN URLs, specialized image-servers etc. predicate URI says it's an image so we'll take its word
+        # common with content-addressed / hash-derived CDN URLs, specialized image-servers etc
         images.map do |i|
           Node.new(env[:base]).env(env).img i # image
         end
