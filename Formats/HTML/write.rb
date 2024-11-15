@@ -143,13 +143,12 @@ module Webize
         o
       when NilClass
         o
-      when Webize::Resource # above RDF::URI because RDF::URI === Webize::Resource('base',{})
-        #puts o, caller[0..14] if o.dataURI? || o.imgPath?
-        {_: :a, href: o.href, c: o.imgPath? ? {_: :img, src: o.href} : o.display_name}
+      when Webize::Resource # above RDF::URI because this subclasses also matches there: RDF::URI === Webize::Resource('base',{})
+        {_: :a, href: o.href,
+         c: (o.imgPath? && !o.deny?) ? {_: :img, src: o.href} : o.display_name}
       when RDF::Graph
-        # markup nodes visible via reference from base. this is broader than a concise bounded description: <https://www.w3.org/submissions/CBD/> <https://patterns.dataincubator.org/>
-        graph = JSON.fromGraph(o)[env[:base]] || {} # graph to tree, rooted at base URI
-        graph[Type] = [Document]                    # type graph as document
+        graph = JSON.fromGraph(o)[env[:base]] || {} # graph to tree rooted at base URI
+        graph[Type] = [Document]                    # type data as document
         markup graph, env                           # markup document
       when RDF::Repository
         :repository
