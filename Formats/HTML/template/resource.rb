@@ -131,7 +131,11 @@ module Webize
 
         %w(colspan height namespace rowspan width).map{|attr| # HTML node attributes
           if r.has_key? XHV + attr
-            node[attr] = r[XHV + attr][0].class == Hash ? r[XHV + attr][0]['uri'] : r[XHV + attr][0].to_s
+            node[attr] = if r[XHV + attr][0].class == Hash
+                           r[XHV + attr][0]['uri']
+                         else
+                           r[XHV + attr][0].to_s
+                         end
           end}
 
         if color
