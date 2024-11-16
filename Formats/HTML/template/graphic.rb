@@ -34,18 +34,19 @@ module Webize
             class: :image_reference},
            ' ']
         else
-          env[:images][i] = true       # mark as shown
-          [{_: :img, id: i.local_id,   # IMG element
-            src: if Remote_Media_Cache # SRC attribute
-             Remote_Media_Cache + i.uri # peer cache
-           elsif Media_Cache
-             i.href                     # local cache
+          env[:images][i] = true     # mark as shown
+          [{_: :img, id: i.local_id, # IMG element
+            src: if Remote_Cache     # SRC attribute
+             Remote_Cache + i.uri    # peer cache
+           elsif Local_Cache
+             i.href                  # local cache
            else
-             i.uri                      # origin location
+             i.uri                   # origin location
             end,
-            alt: (image[Abstract] ||   # ALT attribute
+            alt: (image[Abstract] || # ALT attribute
                   image[Title])&.join},
-           keyval(image, inline: true, # node metadata
+           keyval(image,             # node metadata
+                  inline: true,
                   skip: ['uri', Type]),
            ' ']
         end

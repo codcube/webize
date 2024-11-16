@@ -18,11 +18,11 @@ module Webize
   # cache-configuration options
 
   # local cache - accepts shutoff argument
-  Local_Media_Cache = !%w(0 false no off).member?(
+  Local_Cache = !%w(0 false no off).member?(
     (ENV['MEDIA_CACHE'] || 'ON').downcase) # (on by default)
 
   # peer cache - accepts base-URI argument
-  Remote_Media_Cache = ENV['CDN']
+  Remote_Cache = ENV['CDN']
 
   class URI
 
