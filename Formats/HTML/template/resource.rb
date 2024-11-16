@@ -17,13 +17,17 @@ module Webize
       end
 
       def iframe iframes
+        # TODO click-to-inline original iframe?
         iframes.map do |i|
-          uri = Webize::Resource(i['uri'], env) # URI
-          uri.query_hash.map do |_, v|
-            if v.match? HTTPURI
-              {_: :a, href: v, c: v}
-            end
-          end
+          uri = Webize::Resource(i['uri'], env) # src
+
+          [{_: :a, href: uri.href, c: uri}, # iframe-src reference
+
+           uri.query_hash.map do |_, v| # URI attrs
+             if v.match? HTTPURI
+               {_: :a, href: v, c: v}
+             end
+           end]
         end
       end
 
