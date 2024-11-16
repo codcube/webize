@@ -90,7 +90,6 @@ module Webize
           summary << s}           # summary << statement
 
         summary << RDF::Statement.new(g, RDF::URI(Image), img) if img # image exerpt
-
 #        RDF::Writer.for(:turtle). # summary >> 🐢
 #          open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
 #          f << summary} unless summary.empty?

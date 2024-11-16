@@ -96,36 +96,49 @@ module Webize
                 Schema + 'version',
                 ] # properties we display before delegating
         # we probably should make keyval() accept ordering since that's why we do this
-        {_: name,                                # node
-         c: [(property Type, r[Type] if r.has_key? Type),
-                                                 # type
-             ({class: :title,                    # title
-               c: r[Title].map{|t| [HTML.markup(t, env), ' ']}}.
-                update(ref || {}).               # reference
-                update(color ? {style: "background-color: #{color}; color: #000"} : {}) if r.has_key? Title),
+        node = {_: name,                                # node
+                c: [(property Type, r[Type] if r.has_key? Type),
+                    # type
+                    ({class: :title,                    # title
+                      c: r[Title].map{|t| [HTML.markup(t, env), ' ']}}.
+                       update(ref || {}).               # reference
+                       update(color ? {style: "background-color: #{color}; color: #000"} : {}) if r.has_key? Title),
 
-             (origin_ref unless inline),         # pointer
-                                                 # abstract
-             (property Abstract, r[Abstract] if r.has_key? Abstract),
-                                                 # item list
-             (property Schema + 'item', r[Schema + 'item'] if r.has_key? Schema + 'item'),
+                    (origin_ref unless inline),         # pointer
+                    # abstract
+                    (property Abstract, r[Abstract] if r.has_key? Abstract),
+                    # item list
+                    (property Schema + 'item', r[Schema + 'item'] if r.has_key? Schema + 'item'),
 
-             if r[Contains]                      # child nodes
-               if TabularChild.member? type.to_s # tabular view
-                 property Schema + 'item', r[Contains]
-               else                              # inline view
-                 r[Contains].map{|c| HTML.markup c, env }
-               end
-             end,
+                    if r[Contains]                      # child nodes
+                      if TabularChild.member? type.to_s # tabular view
+                        property Schema + 'item', r[Contains]
+                      else                              # inline view
+                        r[Contains].map{|c| HTML.markup c, env }
+                      end
+                    end,
 
-             keyval(r, inline: inline, skip: skip), # metadata nodes
-            ]}.
-          update(id ? {id: id} : {}).
-          update((id && type == :div) ? {class: :resource, host: uri.host} : {}).
-          update(r.has_key?(Schema + 'height') ? {height: r[Schema + 'height'][0]} : {}).
-          update(r.has_key?(Schema + 'width') ? {width: r[Schema + 'width'][0]} : {}).
-          update((ns = r[XHV + 'namespace']) ? {xmlns: ns[0].class == Hash ? ns[0]['uri'] : ns[0].to_s} : {}).
-          update(color ? {style: "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} 1px, transparent 1px, transparent 16px); border-color: #{color}"} : {})
+                    keyval(r, inline: inline, skip: skip), # metadata nodes
+                   ]}
+
+        if id # identified node
+          node[:id] = id
+          if type == :div
+            node[:class] = :resource
+            node[:host] = uri.host
+          end
+        end
+
+        %w(colspan height namespace rowspan width).map{|attr| # HTML node attributes
+          if r.has_key? XHV + attr
+            node[attr] = r[XHV + attr][0].class == Hash ? r[XHV + attr][0]['uri'] : r[XHV + attr][0].to_s
+          end}
+
+        if color
+          node[:style] = "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} 1px, transparent 1px, transparent 16px); border-color: #{color}"
+        end
+
+        node
       end
     end
   end

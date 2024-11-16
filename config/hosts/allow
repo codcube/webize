@@ -2,6 +2,7 @@ activitypub.ghost.org
 airfire-data-exports.s3.us-west-2.amazonaws.com
 ajax.aspnetcdn.com
 ajax.googleapis.com
+aje.io
 ajmn-aje-vod.akamaized.net
 api-v2.soundcloud.com
 api.flickr.com
@@ -104,6 +105,7 @@ private-user-images.githubusercontent.com
 prodamdlim.akamaized.net
 public.api.bsky.app
 ruby-rdf.github.io
+s2.radio.co
 s3.amazonaws.com
 scotthelme.ghost.io
 seirdy.one
