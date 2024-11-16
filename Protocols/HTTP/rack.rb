@@ -5,20 +5,21 @@ module Webize
     def self.bwPrint(kv) = kv.map{|k,v|
       "\e[38;5;7;7m#{k}\e[0m#{v}\n"}
 
-    # interface with Rack:
-    # instantiate resource, call method, log response
+    # Rack-caller entry-point
     def self.call env
       return [403,{},[]] unless Methods.member? env['REQUEST_METHOD'] # allow HTTP methods
 
+      # instantiate resource, call method, log response:
+
       env[:start_time] = Time.now                                   # start wall-clock timer
-      env['SERVER_NAME'].downcase!                                  # normalize hostname case
+      env['SERVER_NAME'].downcase!                                  # normalize hostname
       env.update HTTP.env                                           # init environment fields
 
-      isPeer = PeerHosts.has_key? env['SERVER_NAME']                # peer node?
-      isLocal = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
-      env[:proxy_refs] = isPeer || isLocal                          # emit proxy refs on local and peer hosts
+      peerURL = PeerHosts.has_key? env['SERVER_NAME']                # peer node?
+      localURL = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
+      env[:proxy_refs] = peerURL || localURL                          # emit proxy refs on local and peer hosts
 
-      u = RDF::URI(isLocal ? '/' : [isPeer ? :http : :https, '://', env['HTTP_HOST']].join). # base URI
+      u = RDF::URI(localURL ? '/' : [peerURL ? :http : :https, '://', env['HTTP_HOST']].join). # base URI
             join RDF::URI(env['REQUEST_PATH']).path                 # enforce just path in REQUEST_PATH variable
 
       env[:base] = (Node u, env).freeze                             # base node - immutable
@@ -47,7 +48,7 @@ module Webize
         outFmt = MIME.format_icon head['Content-Type']              # output format
         color = env[:deny] ? '38;5;196' : (MIME::Color[outFmt]||0)  # format -> color
 
-        Console.logger.info [(env[:base].scheme == 'http' && !isPeer) ? '🔓' : nil, # denote transport security
+        Console.logger.info [(env[:base].scheme == 'http' && !peerURL) ? '🔓' : nil, # denote transport insecurity
 
              if env[:deny]                                          # action taken:
                '🛑'                                                 # blocked
