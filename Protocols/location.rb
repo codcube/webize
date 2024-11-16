@@ -15,11 +15,14 @@ module Webize
                        [host, addr]}}.flatten]         # hostname -> address table
   PeerAddrs = PeerHosts.invert                         # address -> hostname table
 
-  # runtime cache-configuration option handling
-  Media_Cache = !%w(0 false no off).member?(
-    (ENV['IMG_CACHE'] || # we currently only cache images, allow this option
-     ENV['MEDIA_CACHE'] ||
-     'ON').downcase)     # default is ON
+  # cache-configuration options
+
+  # local cache - accepts shutoff argument
+  Local_Media_Cache = !%w(0 false no off).member?(
+    (ENV['MEDIA_CACHE'] || 'ON').downcase) # (on by default)
+
+  # peer cache - accepts base-URI argument
+  Remote_Media_Cache = ENV['CDN']
 
   class URI
 
