@@ -143,7 +143,7 @@ module Webize
         o
       when NilClass
         o
-      when Webize::Resource # above RDF::URI because this subclasses also matches there: RDF::URI === Webize::Resource('base',{})
+      when Webize::Resource # above RDF::URI because subclass also matches parent: Webize::Resource('base',{}) === RDF::URI
         {_: :a, href: o.href,
          c: (o.imgPath? && !o.deny?) ? {_: :img, src: o.href} : o.display_name}
       when RDF::Graph
