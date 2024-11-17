@@ -50,7 +50,7 @@ module Webize
           anchor_id = Webize::Resource(id, env).local_id
         end
 
-        anchor[Link]&.map{|l| # we allow multiple targets - each renders as its own <a>
+        anchor[Link]&.map{|l| # if multiple target URLs provided, each renders in its own <a>
           next unless l.class == Hash
 
           u = Webize::Resource l['uri'], env # URI

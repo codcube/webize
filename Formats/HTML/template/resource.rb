@@ -101,19 +101,23 @@ module Webize
         # node
         node = {_: name,                                # node type
                 c: [(property Type, r[Type] if r.has_key? Type),
-                    # type
-                    ({class: :title,                    # title
+
+                    # title
+                    ({class: :title,
                       c: r[Title].map{|t| [HTML.markup(t, env), ' ']}}.
                        update(ref || {}).               # reference
                        update(color ? {style: "background-color: #{color}; color: #000"} : {}) if r.has_key? Title),
 
                     (origin_ref unless inline),         # pointer
+
                     # abstract
                     (property Abstract, r[Abstract] if r.has_key? Abstract),
+
                     # item list
                     (property Schema + 'item', r[Schema + 'item'] if r.has_key? Schema + 'item'),
 
-                    if r[Contains]                      # child nodes
+                    # child nodes
+                    if r[Contains]
                       if TabularChild.member? type.to_s # tabular view
                         property Schema + 'item', r[Contains]
                       else                              # inline view
@@ -121,7 +125,8 @@ module Webize
                       end
                     end,
 
-                    keyval(r, inline: inline, skip: skip), # metadata nodes
+                    # node metadata
+                    keyval(r, inline: inline, skip: skip),
                    ]}
 
         # node identity
