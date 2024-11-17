@@ -6,7 +6,7 @@
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em; position: fixed}
 .abstract {border: 1px solid #888; background: repeating-linear-gradient(-45deg, #888, #888 1px, transparent 1px, transparent 18px); display: inline-block}
 .abstract, .abstract span {border-radius: .38em}
-.blocked {background: repeating-linear-gradient(330deg, #f00, #f00 .875em, transparent .875em, transparent 1em); color: #fff; border: 1px solid red}
+.blocked {background: repeating-linear-gradient(300deg, #f00, #f00 .875em, transparent .875em, transparent 1em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
 .bottom-bar .stats {border-width: 1px 1px 0 1px; display: inline-block; border-style: solid; border-color: #555; border-radius: .62em .62em 0 0; font-size: 1.3em}
 .bottom-bar {position: fixed; bottom: 0; width: 100%; vertical-align: bottom}
