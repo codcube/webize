@@ -30,7 +30,7 @@ module Webize
 
         if env[:images].has_key? i     # shown image?
           [{_: :a, c: :🖼️,             # link to existing image
-            href: '#' + i.local_id,
+            href: ['#', i.local_id].join,
             class: :image_reference},
            ' ']
         else
