@@ -55,9 +55,14 @@ module Webize
 
           u = Webize::Resource l['uri'], env # URI
 
-          {_: :a, href: u.href,              # reference resolved for current context
-
-           class: u.host == host ? 'local' : 'global', # local or global link styling
+          {_: :a, href: u.href, # resolved reference
+           class: if u.deny?    # link styling
+            :blocked
+          elsif u.host == host
+            :local
+          else
+            :global
+           end,
 
            c: [anchor[Contains]&.map{|content|         # inner text
                  HTML.markup content, env},
