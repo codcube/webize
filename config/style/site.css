@@ -6,7 +6,7 @@
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em; position: fixed}
 .abstract {border: 1px solid #888; background: repeating-linear-gradient(-45deg, #888, #888 1px, transparent 1px, transparent 18px); display: inline-block}
 .abstract, .abstract span {border-radius: .38em}
-.blocked {background: repeating-linear-gradient(315deg, #f00, #f00 .875em, transparent .875em, transparent 1em); color: #fff; border: 1px solid red}
+.blocked {background: repeating-linear-gradient(330deg, #f00, #f00 .875em, transparent .875em, transparent 1em); color: #fff; border: 1px solid red}
 .bold {font-weight: bold}
 .bottom-bar .stats {border-width: 1px 1px 0 1px; display: inline-block; border-style: solid; border-color: #555; border-radius: .62em .62em 0 0; font-size: 1.3em}
 .bottom-bar {position: fixed; bottom: 0; width: 100%; vertical-align: bottom}
@@ -84,7 +84,8 @@ code > span { color: #6ef; background-color: #111; padding: 0 0 0 .2em;}
 code {border-width: 1px 0 1px 0; border-style: dotted; border-color: #eee}
 dl, dt, dd, form, ol, ul, table, p, .resource {display: inline-block}
 dl, dt, dd, img, video, table, tr, td, .resource, .val {max-width: 100%}
-dt, .key {background-color: #111; color: #bbb; border: 1px solid #666}
+dt, .key {background-color: #111; border: 1px solid #666}
+dt, .key, .type {color: #bbb}
 h1 .kv {font-size: .6em}
 h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv, code .kv {float: right}
 h1 a.pointer, h2 a.pointer, h3 a.pointer, h4 a.pointer, h5 a.pointer, h6 a.pointer {position: absolute; right: -1.4em}
