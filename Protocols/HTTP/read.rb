@@ -1,3 +1,4 @@
+require 'zstd-ruby'
 module Webize
   module HTTP
 
@@ -12,7 +13,7 @@ module Webize
       when /flate|zip/i
         Zlib::Inflate.inflate body
       when /zstd/i
-        Zstd::Inflate.inflate body
+        Zstd.decompress body
       else
         head['Content-Encoding'] = encoding
         body

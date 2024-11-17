@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Alpine https://www.alpinelinux.org/
-command -v apk && sudo apk add alpine-sdk build-base gcompat linux-headers ruby ruby-dev openssl-dev findutils grep libxslt-dev poppler-utils taglib-dev py3-pygments p11-kit-trust yaml-dev
+command -v apk && sudo apk add alpine-sdk build-base gcompat linux-headers ruby ruby-dev ruby-zstd-ruby openssl-dev findutils grep libxslt-dev poppler-utils taglib-dev py3-pygments p11-kit-trust yaml-dev
 
 # Arch https://www.archlinux.org/
 command -v pacman && sudo pacman -S --needed base-devel poppler ruby taglib
