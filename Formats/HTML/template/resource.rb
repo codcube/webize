@@ -19,6 +19,7 @@ module Webize
       def iframe iframes
         # TODO click-to-inline original iframe?
         iframes.map do |i|
+          (puts [:iframe, i].join ' '; next) unless i.class == Hash
           uri = Webize::Resource(i['uri'], env) # src
 
           [{_: :a, href: uri.href, c: uri}, # iframe-src reference
@@ -133,6 +134,7 @@ module Webize
         if id
           node[:id] = id
           if type == :div
+            # generic identified-node styling
             node[:class] = :resource
             node[:host] = uri.host
           end
