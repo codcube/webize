@@ -89,14 +89,17 @@ module Webize
 
         skip = ['#color', '#new',
                 'uri', Type, Title, Abstract, Contains,
+                XHV + 'colspan',
+                XHV + 'rowspan',
                 XHV + 'namespace',
-                Schema + 'height',
+                XHV + 'height',
                 Schema + 'item',
-                Schema + 'width',
+                XHV + 'width',
                 Schema + 'version',
-                ] # properties we display before delegating
-        # we probably should make keyval() accept ordering since that's why we do this
-        node = {_: name,                                # node
+                ] # properties we display before delegating - we probably should make keyval() accept orderings since that's why we manually display
+
+        # node
+        node = {_: name,                                # node type
                 c: [(property Type, r[Type] if r.has_key? Type),
                     # type
                     ({class: :title,                    # title
@@ -121,7 +124,8 @@ module Webize
                     keyval(r, inline: inline, skip: skip), # metadata nodes
                    ]}
 
-        if id # identified node
+        # node identity
+        if id
           node[:id] = id
           if type == :div
             node[:class] = :resource
@@ -129,12 +133,14 @@ module Webize
           end
         end
 
-        %w(colspan height namespace rowspan width).map{|attr| # HTML node attributes
-          if r.has_key? XHV + attr
-            node[attr] = if r[XHV + attr][0].class == Hash
-                           r[XHV + attr][0]['uri']
+        # node attributes
+        %w(colspan height namespace rowspan width).map{|attr|
+          a = XHV + attr
+          if r.has_key? a
+            node[attr] = if r[a][0].class == Hash
+                           r[a][0]['uri']
                          else
-                           r[XHV + attr][0].to_s
+                           r[a][0].to_s
                          end
           end}
 
