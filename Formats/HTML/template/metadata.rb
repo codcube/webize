@@ -86,8 +86,8 @@ module Webize
 
         uri = Webize::Resource uri, env
 
-        node[HT+'host'] = [uri.host] unless env[:base].host == uri.host # host
-        node.update({HT+'path' => [uri.path],        # path
+        node.update({HT+'host' => [uri.host],        # host
+                     HT+'path' => [uri.path],        # path
                      '#cache' => [POSIX::Node(uri)], # 👉 cache
                      '#origin' => [uri]})            # 👉 upstream/origin resource
       end
