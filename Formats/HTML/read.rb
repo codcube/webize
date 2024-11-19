@@ -50,7 +50,7 @@ module Webize
       end
 
       # recursive DOM-node scanner
-      def scan_node node, depth = 0, &f
+      def scan_node node, &f
 
         # subject identity
         subject = if node['id']   # identified node
@@ -146,7 +146,7 @@ module Webize
         } if node.respond_to? :attribute_nodes
 
         # child nodes
-        if depth > 30 || OpaqueNode.member?(node.name) # HTML literal
+        if OpaqueNode.member?(node.name) # HTML literal
           yield subject, Contains, RDF::Literal(node.inner_html, datatype: RDF.HTML)
         elsif node.name == 'comment'
           yield subject, Contains, node.inner_text
@@ -175,7 +175,7 @@ module Webize
                 end
               end
             else # child node
-              yield subject, Contains, (scan_node child, depth + 1, &f)
+              yield subject, Contains, (scan_node child, &f)
             end}
         end
 
