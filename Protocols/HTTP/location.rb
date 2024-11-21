@@ -20,7 +20,7 @@ module Webize
 
 
     def notfound
-      env[:origin_status] = 404
+      env[:origin_status] ||= 404
       respond [RDF::Repository.new]
     end
 

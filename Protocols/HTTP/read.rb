@@ -268,8 +268,8 @@ module Webize
 
       return fetchLocal unless p # local node - void or root path
                                  # proxy URI
-      return unproxy.hostGET if (p[-1] == ':' && ps.size > 1) || # remote node, URI w/ scheme
-                                (p.index('.') && p != 'favicon.ico') #            sans scheme
+      return unproxy.hostGET if (p[-1] == ':' && ps.size > 1) || # remote node: URI with scheme
+                                (p.index('.') && p != 'favicon.ico') # URI sans scheme
 
       return dateDir if %w{m d h y}.member? p # current year/month/day/hour contents
       return block parts[1] if p == 'block'   # block domain
@@ -277,14 +277,24 @@ module Webize
 
       if extname == '.u' # URI list
         case query
-        when 'fetch'     # remote node(s)
+        when 'fetch'     # remote nodes
           return fetch uris
-        when 'load'      # cached node(s)
+        when 'load'      # cached nodes
           return fetchLocal uris
         end
       end
 
-      fetchLocal         # local node(s)
+      fetchLocal         # local node
+
+    rescue Exception => e
+      env[:warnings].
+        push({_: :pre,
+              c: CGI.escapeHTML(
+                [e.class,
+                 e.message,
+                 e.backtrace].join "\n")})
+      env[:origin_status] = 500
+      notfound
     end
 
     def HEAD = self.GET.yield_self{|s, h, _|
