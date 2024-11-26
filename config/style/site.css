@@ -38,7 +38,7 @@
 .top-bar {border-width: 0 1px 1px 1px; display: inline-block; border-style: solid; border-color: #555; border-radius: 0 0 .62em .62em; vertical-align: top}
 .val > span, p > span {background-color: #000; color: #fff}
 .val[key="http://www.w3.org/2000/01/rdf-schema#label"] > span {background-color: #777; font-size: .88em; border-radius: .28em; color: #000; margin-left: 1px}
-a .val[key="http://www.w3.org/2000/01/rdf-schema#label"] > span {background-color: #00c; color: #fff}
+a .val[key="http://www.w3.org/2000/01/rdf-schema#label"] > span {background-color: #05f; color: #000}
 a.blocked .val[key="http://www.w3.org/2000/01/rdf-schema#label"] > span {background-color: #f00; color: #000}
 .video {max-width: 80em}
 .warning a {background-color: #fff; color: #000}
