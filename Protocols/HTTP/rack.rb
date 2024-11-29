@@ -15,9 +15,10 @@ module Webize
       env['SERVER_NAME'].downcase!                                  # normalize hostname
       env.update HTTP.env                                           # init environment fields
 
-      peerURL = PeerHosts.has_key? env['SERVER_NAME']                # peer node?
-      localURL = LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME']) # local node?
-      env[:proxy_refs] = peerURL || localURL                          # emit proxy refs on local and peer hosts
+      peerURL = PeerHosts.has_key? env['SERVER_NAME']               # peer node?
+      localURL = EMV['HOSTNAME'] == env['SERVER_NAME'] ||           # local node?
+                 LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME'])
+      env[:proxy_refs] = peerURL || localURL                        # emit proxy refs on local and peer hosts
 
       u = RDF::URI(localURL ? '/' : [peerURL ? :http : :https, '://', env['HTTP_HOST']].join). # base URI
             join RDF::URI(env['REQUEST_PATH']).path                 # enforce just path in REQUEST_PATH variable
