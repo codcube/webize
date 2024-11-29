@@ -16,7 +16,7 @@ module Webize
       env.update HTTP.env                                           # init environment fields
 
       peerURL = PeerHosts.has_key? env['SERVER_NAME']               # peer node?
-      localURL = EMV['HOSTNAME'] == env['SERVER_NAME'] ||           # local node?
+      localURL = ENV['HOSTNAME'] == env['SERVER_NAME'] ||           # local node?
                  LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME'])
       env[:proxy_refs] = peerURL || localURL                        # emit proxy refs on local and peer hosts
 
