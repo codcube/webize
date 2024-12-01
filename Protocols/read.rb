@@ -24,16 +24,16 @@ module Webize
             repository << _ }                                     # raw data -> RDF
           base = r.base_uri                                       # graph URI. defaults to doc URI, declaratively updatable
 
-          # point to graph base from the env/request base, for basic traversibility
-          # https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
+          # 👉 loaded graph(s) from env/request base, for basic findability and reachability,
+          # as in https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
 
-          # only 👉 graphs, not their nodes, to allow experts implementation flexibility in the latter:
+          # graph reader is responsible to 👉 nodes, to allow implementation flexibility:
 
           # - reachability = set-inclusion/inlining/visibility decisions
           # - summary/merge/index/query of graphs without a mandatory subtractive pruning stage
 
-          repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # env graph 👉 doc graph
-          repository.each_graph.map{|g|                                          # doc graph 👉 graph(s)
+          repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # 👉 graph
+          repository.each_graph.map{|g|                                          # 👉 subgraph(s)
             repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
 
           if format == 'text/turtle' # native RDF
