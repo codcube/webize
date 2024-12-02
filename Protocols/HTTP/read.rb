@@ -139,7 +139,7 @@ module Webize
           end
 
           unless thru && notransform
-            graph = readRDF(format, body).persist env, self             # parse and cache graph data
+            graph = readRDF(format, body).persist env, self, summarize: !thru # parse and cache graph data
           end
 
           if !thru                                                      # no HTTP response construction or proxy
@@ -262,23 +262,18 @@ module Webize
     end
 
     def GET
-      return hostGET if host     # remote node
-
-      ps = parts                 # path nodes
-      p = ps[0]                  # first node
-
-      return fetchLocal unless p # local node - void or root path
-                                 # proxy URI
-      return unproxy.hostGET if (p[-1] == ':' && ps.size > 1) || # remote node: URI with scheme
-                                (p.index('.') && p != 'favicon.ico') # URI sans scheme
-
-      return dateDir if %w{m d h y}.member? p # current year/month/day/hour contents
-      return block parts[1] if p == 'block'   # block domain
-      return redirect '/d?f=msg*' if path == '/mail' # email
-      return fetch uris if extname == '.u' && env[:qs]['fetch'] # URI list
-
-      fetchLocal         # local node
-
+      return hostGET if host                                     # fetch remote node
+      ps = parts                                                 # parse path
+      p = ps[0]                                                  # find first path component
+      return fetchLocal unless p                                 # fetch local node at null or root path
+      return unproxy.hostGET if (p[-1] == ':' && ps.size > 1) || # fetch remote node at proxy-URI with scheme
+                            (p.index('.') && p != 'favicon.ico') # fetch remote node at proxy-URI sans scheme
+      return dateDir if %w{m d h y}.member? p                    # redirect to current year/month/day/hour container
+      return block parts[1] if p == 'block'                      # add domain to blocklist
+      return redirect '/d?f=msg*' if path == '/mail'             # redirect to email inbox (day-dir and FIND arg)
+      return fetch uris if extname == '.u' &&                    # fetch URIs in list
+                           env[:qs].has_key?('fetch')
+      fetchLocal                                                 # fetch local node
     rescue Exception => e
       env[:warnings].
         push({_: :pre,
