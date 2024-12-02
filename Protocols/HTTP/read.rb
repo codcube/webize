@@ -275,15 +275,7 @@ module Webize
       return dateDir if %w{m d h y}.member? p # current year/month/day/hour contents
       return block parts[1] if p == 'block'   # block domain
       return redirect '/d?f=msg*' if path == '/mail' # email
-
-      if extname == '.u' # URI list
-        case query
-        when 'fetch'     # remote nodes
-          return fetch uris
-        when 'load'      # cached nodes
-          return fetchLocal uris
-        end
-      end
+      return fetch uris if extname == '.u' && env[:qs]['fetch'] # URI list
 
       fetchLocal         # local node
 

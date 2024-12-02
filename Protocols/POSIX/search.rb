@@ -74,17 +74,4 @@ module Webize
     end
 
   end
-  class Resource
-
-    # find URIs in uri-list resource
-    def uris
-      return [] unless extname == '.u'
-      pattern = RDF::Query::Pattern.new :s, RDF::URI('#graph'), :o
-
-      storage.read.query(pattern).objects.map do |o|
-        Webize::Resource o, env
-      end
-    end
-
-  end
 end

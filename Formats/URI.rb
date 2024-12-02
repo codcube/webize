@@ -138,6 +138,16 @@ module Webize
       end
     end
 
+    # list of URIs in uri-list resource
+    def uris
+      return [] unless extname == '.u'
+      pattern = RDF::Query::Pattern.new :s, RDF::URI('#graph'), :o
+
+      storage.read.query(pattern).objects.map do |o|
+        Webize::Resource o, env
+      end
+    end
+
   end
 
   def self.URI uri
@@ -174,21 +184,19 @@ module Webize
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        list = @base + '#list'                                     # list URI
-
-        # link list to request base
+        list = @base + '#list'                # list URI
+                                              # 👉 list
         fn.call RDF::Statement.new @base, RDF::URI(Contains), list
-
-        linkCount = 0                              # statistics
-        query = @base.env[:qs]['q']&.downcase      # query argument
+        linkCount = 0                         # statistics
+        query = @base.env[:qs]['q']&.downcase # query argument
 
         @doc.lines.shuffle.map(&:chomp).map{|line| # each line:
           next if line.empty?            # skip empty line
           next if line.match?(/^#/)      # skip commented line
-          next if query &&               # skip entry not matching query argument
+          next if query &&               # skip entry not matching query
                   !line.downcase.index(query)
-          uri, title = line.split ' ', 2 # URI and optional title (String)
-          u = Webize::URI(uri)           # URI                    (RDF)
+          uri, title = line.split ' ', 2 # URI, title (String)
+          u = Webize::URI(uri)           # URI        (RDF)
           if u.deny?
             puts "➕ host \e[7m#{u.host}\e[0m in URI list"
             URI::AllowHosts.push u.host
