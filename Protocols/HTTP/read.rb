@@ -138,8 +138,9 @@ module Webize
             FileUtils.touch doc, mtime: mtime if mtime
           end
 
-          graph = readRDF format, body unless thru && notransform       # parse graph data
-          graph = graph.persist env, self unless thru                   # cache graph if data-only fetch. thru-fetch cleanly maps to one raw file to find all cached data again so it has a raw-only cache policy for now (indexing-fanatics may change this)
+          unless thru && notransform
+            graph = readRDF(format, body).persist env, self             # parse and cache graph data
+          end
 
           if !thru                                                      # no HTTP response construction or proxy
             print MIME.format_icon format                               # denote fetch with single character for activity feedback
