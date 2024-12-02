@@ -35,9 +35,6 @@ module Webize
       else                                 # content-negotiated transform
         respond [repository], format       # response in preferred format
       end
-    rescue Exception => e
-      logger.failure self, e
-      fetchLocal
     end
 
   end
