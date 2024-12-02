@@ -12,15 +12,23 @@ module Webize
     # (URI, env) -> [URI, URI, ..]
     def nodes
       q = env[:qs] || {}                          # query params
+
+      preview = -> {                              # (lambda)
+        env[:preview] = !q.has_key?('full')}      #  toggle preview mode
+
       if directory?
         if q['f'] && !q['f'].empty?               # FIND exact
-          find q['f']
+          preview[]; find q['f']
+
         elsif q['find'] && !q['find'].empty?      # FIND substring matches
-          find '*' + q['find'] + '*'
+          preview[]; find '*' + q['find'] + '*'
+
         elsif q['q'] && !q['q'].empty?            # GREP
-          grep
+          preview[]; grep
+
         else                                      # LS (dir)
           trailing = dirURI?
+
           [self,
            *Node(join [trailing ? '../' : nil,    # static index - basename
                        basename,
@@ -32,7 +40,8 @@ module Webize
       elsif file?                                 # LS (file)
         [self]
       elsif fsPath.match? GlobChars               # GLOB
-        if q['q'] && !q['q'].empty?               # GREP inside GLOB
+        preview[]
+        if q['q'] && !q['q'].empty?               # GREP in GLOB
           if (g = pathGlob).empty?
             []
           else

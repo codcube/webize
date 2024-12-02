@@ -56,10 +56,10 @@ module Webize
       root = !path || path == '/'
       if host && root # up to parent domain
         env[:links][:up] = '//' + host.split('.')[1..-1].join('.')
-      elsif !root     # up to parent path
+      elsif !root     # up to parent node
         env[:links][:up] = [File.dirname(env['REQUEST_PATH']), '/', (env['QUERY_STRING'] && !env['QUERY_STRING'].empty?) ? ['?',env['QUERY_STRING']] : nil].join
-      end             # down to children
-      env[:links][:down] = '*' if (!host || offline?) && dirURI?
+      end             # down to child-nodes
+      env[:links][:down] = URI.qs(env[:qs].merge({'full' => nil})) unless host
     end
 
     # unique identifier for file version

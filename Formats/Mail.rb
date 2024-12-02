@@ -50,8 +50,55 @@ module Webize
         from_text = [m.from, m[:from]].join.downcase
         return if from_query && !from_text.index(from_query)
 
-        # type
+        # RDF type
         yield mail, Type, RDF::URI(SIOC + 'MailMessage'), graph
+
+        # From
+        m.from.yield_self{|f|
+          ((f.class == Array || f.class == ::Mail::AddressContainer) ? f : [f]).compact.map{|f|
+            noms = f.split ' '
+            f = "#{noms[0]}@#{noms[2]}" if noms.size > 2 && noms[1] == 'at'
+            yield mail, Creator, RDF::URI('/mailto/' + f), graph
+          }}
+
+        m[:from] && m[:from].yield_self{|fr|
+          fr.addrs.map{|a|
+            name = a.display_name || a.name # human-readable name
+            yield mail, Creator, name, graph if name
+          } if fr.respond_to? :addrs}
+
+        # To
+        %w{to cc bcc resent_to}.map{|p|      # recipient accessor-methods
+          m.send(p).yield_self{|r|           # recipient(s)
+            ((r.class == Array || r.class == ::Mail::AddressContainer) ? r : [r]).compact.map{|r| # recipient
+              yield mail, To, RDF::URI('/mailto/' + r), graph
+            }}}
+
+        m['X-BeenThere'].yield_self{|b|      # anti-loop recipient property
+          (b.class == Array ? b : [b]).compact.map{|r|
+            r = r.to_s
+            yield mail, To, RDF::URI('/mailto/' + r), graph
+          }}
+
+        m['List-Id'] && m['List-Id'].yield_self{|name|
+          yield mail, To, name.decoded.sub(/<[^>]+>/,'').gsub(/[<>&]/,''), graph} # mailinglist name
+
+        # Subject
+        subject = nil
+        m.subject && m.subject.yield_self{|s|
+          subject = s
+          subject.scan(/\[[^\]]+\]/){|l|
+            yield mail, Schema + 'group', l[1..-2], graph}
+          yield mail, Title, subject, graph}
+
+        # Date
+        if date = m.date
+          timestamp = ([Time, DateTime].member?(date.class) ? date : Time.parse(date.to_s)).iso8601
+          yield mail, Date, timestamp, graph
+        end
+
+        # body + attachments elided in preview mode
+        return if @base.env[:preview]
 
         # HTML parts
         htmlParts, parts = m.all_parts.push(m).partition{|p|
@@ -99,50 +146,6 @@ module Webize
 
         puts "#{@base} unprocessed mail parts:", rest.map{|p|
           [p.mime_type, p.filename].join "\t"} unless rest.empty?
-
-        # From
-        m.from.yield_self{|f|
-          ((f.class == Array || f.class == ::Mail::AddressContainer) ? f : [f]).compact.map{|f|
-            noms = f.split ' '
-            f = "#{noms[0]}@#{noms[2]}" if noms.size > 2 && noms[1] == 'at'
-            yield mail, Creator, RDF::URI('/mailto/' + f), graph
-          }}
-
-        m[:from] && m[:from].yield_self{|fr|
-          fr.addrs.map{|a|
-            name = a.display_name || a.name # human-readable name
-            yield mail, Creator, name, graph if name
-          } if fr.respond_to? :addrs}
-
-        # To
-        %w{to cc bcc resent_to}.map{|p|      # recipient accessor-methods
-          m.send(p).yield_self{|r|           # recipient(s)
-            ((r.class == Array || r.class == ::Mail::AddressContainer) ? r : [r]).compact.map{|r| # recipient
-              yield mail, To, RDF::URI('/mailto/' + r), graph
-            }}}
-
-        m['X-BeenThere'].yield_self{|b|      # anti-loop recipient property
-          (b.class == Array ? b : [b]).compact.map{|r|
-            r = r.to_s
-            yield mail, To, RDF::URI('/mailto/' + r), graph
-          }}
-
-        m['List-Id'] && m['List-Id'].yield_self{|name|
-          yield mail, To, name.decoded.sub(/<[^>]+>/,'').gsub(/[<>&]/,''), graph} # mailinglist name
-
-        # Subject
-        subject = nil
-        m.subject && m.subject.yield_self{|s|
-          subject = s
-          subject.scan(/\[[^\]]+\]/){|l|
-            yield mail, Schema + 'group', l[1..-2], graph}
-          yield mail, Title, subject, graph}
-
-        # Date
-        if date = m.date
-          timestamp = ([Time, DateTime].member?(date.class) ? date : Time.parse(date.to_s)).iso8601
-          yield mail, Date, timestamp, graph
-        end
 
         # references
         %w{in_reply_to references}.map{|ref|
