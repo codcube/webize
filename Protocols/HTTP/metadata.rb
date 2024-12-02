@@ -61,11 +61,10 @@ module Webize
         # up to parent node
         env[:links][:up] = [File.dirname(env['REQUEST_PATH']), '/', (env['QUERY_STRING'] && !env['QUERY_STRING'].empty?) ? ['?',env['QUERY_STRING']] : nil].join
       end
-      return if host
       # down to child node(s)
       if env[:preview]
         env[:links][:down] = URI.qs(env[:qs].merge({'full' => nil}))
-      elsif dirURI?
+      elsif dirURI? && !host
         env[:links][:down] = '*'
       end
     end

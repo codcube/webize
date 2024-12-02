@@ -27,14 +27,17 @@ module Webize
         ts = {}
 
         # query arguments
-        text_query = @base.env[:qs]['q']&.downcase
-        from_query = @base.env[:qs]['from']&.downcase
+        text_query = @base.env[:qs]['q']&.downcase    # general text search
+        from_query = @base.env[:qs]['from']&.downcase # from: constraint
+        text_query ||= 'http' if @base.env[:preview]  # only display links/images in preview mode
 
         @doc.lines.grep(/^[^-]/).map{|msg|
-          next if text_query && # line not matching query argument
+
+          # line must match if query argument provided
+          next if text_query &&
                   !msg.downcase.index(text_query)
 
-          tokens = msg.split /\s+/
+          tokens = msg.split /\s+/         # tokenize
 
           time = tokens.shift              # timestamp
           next if tokens.empty?
