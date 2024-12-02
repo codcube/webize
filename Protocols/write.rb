@@ -3,13 +3,14 @@ module Webize
 
     # cache and index all uncached graphs in repo, returning a report graph
     # Repository -> 🐢(s)
-     def persist env, base
+     def persist env, base, summarize: false
                                                           # query pattern for:
       timestamp = RDF::Query::Pattern.new :s, RDF::URI(Date), :o  # timestamp
       creator = RDF::Query::Pattern.new :s, RDF::URI(Creator), :o # sender
       to = RDF::Query::Pattern.new :s, RDF::URI(To), :o           # receiver
       type = RDF::Query::Pattern.new :s, RDF::URI(Type), :o       # type
-      out = RDF::Repository.new                           # output graph
+
+      summaries = RDF::Repository.new if summarize
 
       each_graph.map{|graph|           # for each
         next unless g = graph.name     # named graph
@@ -22,7 +23,9 @@ module Webize
           open(f, base_uri: g, prefixes: Prefixes){|f|
           f << graph}
 
-        log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] # canonical location for logger
+        graph << RDF::Statement.new(g, RDF::URI('#new'), true)
+
+        log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] # log graph-cache addition
 
         if !g.to_s.match?(/^\/\d\d\d\d\/\d\d\/\d\d\/\d\d/) && # if graph not already located on timeline,
            (ts = graph.query(timestamp).first_value) &&       # and we have a timestamp value in RDF,
@@ -52,6 +55,7 @@ module Webize
 
         Console.logger.info log.join ' '                      # log message
 
+        next unless summarize     # summarize?
         summary = RDF::Graph.new  # summary graph
         img = nil                 # exerpted image
         group = base              # group URI
@@ -63,9 +67,7 @@ module Webize
               # group by message source URI - a weblog, mailing-list, user/channel on platform-host, etc
               group = s.object
             end
-          # TODO author indexing
           when Date
-          # TODO summary timeline
           when Image
             unless img && img < s.object # memo largest/newest (alphanumeric URI-sort) image
               img = s.object
@@ -75,33 +77,28 @@ module Webize
           when LDP+'prev'
             s.subject = g # page pointer
           when Link
-          # TODO backlink indexing
           when To
           when Title
           when Type
           when Video
             s.subject = g
-          else
-            next
+          else # 'when' entry required for sumary inclusion
+            next # drop remaining predicates
           end
 
-          next if s.subject != g  # summary subject graph
+          next if s.subject != g  # drop subjects not pertaining to summary graph
 
-          summary << s}           # summary << statement
+          summary << s}           # summary statement
 
-        summary << RDF::Statement.new(g, RDF::URI(Image), img) if img # image exerpt
-#        RDF::Writer.for(:turtle). # summary >> 🐢
-#          open(g.preview.uri, base_uri: g, prefixes: Prefixes){|f|
-#          f << summary} unless summary.empty?
-
-        summary << RDF::Statement.new(env[:base], RDF::URI(Contains), group) # base 👉 group
-        summary << RDF::Statement.new(group, RDF::URI(Title),                # group title
+        summary << RDF::Statement.new(g, RDF::URI(Image), img) if img        # graph 👉 image
+        summary << RDF::Statement.new(env[:base], RDF::URI(Contains), group) # base 👉 dest-group
+        summary << RDF::Statement.new(group, RDF::URI(Title),                # dest-group title
                                       group.respond_to?(:display_name) ? group.display_name : group.to_s)
-        summary << RDF::Statement.new(group, RDF::URI('#graph_source'), g)  # group 👉 graph
+        summary << RDF::Statement.new(group, RDF::URI('#graph_source'), g)   # dest-group 👉 graph
 
-        out << summary}           # summary graph
+        summaries << summary}      # summary graph
 
-      out                         # all report/summary graphs merged to a repository
+      summarize ? summaries : self # output graph
      end
 
   end
