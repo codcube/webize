@@ -220,3 +220,4 @@ https://xeiaso.net/blog.rss
 https://zverok.space/feed.xml
 https://seirdy.one/notes/atom.xml
 https://soatok.blog/feed/
+https://backend.newsmast.org/api/v1/timelines/newsmast/public/community?exclude_replies=true
