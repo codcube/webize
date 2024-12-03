@@ -38,11 +38,6 @@
 .top-bar {border-width: 0 1px 1px 1px; display: inline-block; border-style: solid; border-color: #555; border-radius: 0 0 .62em .62em; vertical-align: top}
 .val > span, p > span {background-color: #000; color: #fff}
 .val[key="http://www.w3.org/2000/01/rdf-schema#label"] > span {background-color: #777; font-size: .88em; border-radius: .28em; color: #000; margin-left: 1px}
-a .val[key="http://www.w3.org/2000/01/rdf-schema#label"] > span {background-color: #228; color: #fff}
-a.blocked .key {background-color: #fff; color: #f00}
-a.blocked .val[key="http://www.w3.org/2000/01/rdf-schema#label"] > span {background-color: #f00; color: #000}
-a.blocked > span:first-child {background-color: #f00}
-a.blocked .uri {color: #eee; background-color: #f00}
 .video {max-width: 80em}
 .warning a {background-color: #fff; color: #000}
 .warning {display: inline-block; background-color: #ff0; color: #000; padding: .2em; margin: .3em; border-radius: .5em}
@@ -51,10 +46,15 @@ a .key {background-color: #226; color: #fff; border-radius: .2em; border-width: 
 a .kv {font-size: 0.92em}
 a .kv, a .uri {font-weight: normal}
 a .uri {color: #ccc; font-size: 0.86em}
+a .val[key="http://www.w3.org/2000/01/rdf-schema#label"] > span {background-color: #228; color: #fff}
 a hr {border-width: 0}
 a span {background-color: inherit; border-radius: inherit; color: inherit}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; padding: 0 .125em 0 .125em; margin: 1px; min-width: 1em; min-height: 1em; overflow: hidden}
 a, a > span { max-width: 40em }
+a.blocked .key {background-color: #fff; color: #f00}
+a.blocked .uri {color: #eee; background-color: #f00}
+a.blocked .val[key="http://www.w3.org/2000/01/rdf-schema#label"] > span {background-color: #f00; color: #000}
+a.blocked > span:first-child {background-color: #f00}
 a.date {white-space: nowrap; color: #ccc; background-color: #000; font-weight: normal}
 a.fragref {padding: .1em .3em .1em .3em; border-radius: .3em; font-size: 1.3em; border: 1px dotted #fef}
 a.from, a.to {color: #000}
@@ -64,8 +64,8 @@ a.global, a.local, a.blocked {border-radius: .42em; display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
 a.local {background-color: #002; border: 1px solid #008}
 a.origin {background-color: #444; color: #fff; padding: 0 .2em 0 .2em}
+a.origin:visited, a.pointer:visited, td[property="uri"] a:visited {background-color: #338}
 a.pointer, td[property="uri"] a {margin: 0; padding: 0; background-color: #222; color: #fff; border-radius: .5em; font-weight: normal; float: right}
-a.pointer:visited, td[property="uri"] a:visited {background-color: #338}
 a.title {margin: 0; border-radius: .38em; font-size: 1.08em}
 a.to {float: right; margin: 0}
 a:visited span.uri {background-color: black}
