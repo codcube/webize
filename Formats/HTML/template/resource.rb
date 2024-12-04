@@ -25,7 +25,7 @@ module Webize
           [{_: :a, href: uri.href, c: uri}, # iframe-src reference
 
            uri.query_hash.map do |_, v| # URI attrs
-             if v.match? HTTPURI
+             if v&.match? HTTPURI
                {_: :a, href: v, c: v}
              end
            end]
