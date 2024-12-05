@@ -85,15 +85,13 @@ module Webize
                 end
 
         skip = ['#color', '#new',
-                Type, Title, Abstract, Contains,
+                Type, Title, Contains,
                 XHV + 'colspan',
                 XHV + 'rowspan',
                 XHV + 'namespace',
                 XHV + 'height',
-                Schema + 'item',
                 XHV + 'width',
-                Schema + 'version',
-                ] # properties we display before delegating - we probably should make keyval() accept orderings since that's why we manually display
+                ] # properties we use before delegating to #keyval
 
         # node
         node = {_: name,                                # node type
@@ -104,12 +102,6 @@ module Webize
                       c: r[Title].map{|t| [HTML.markup(t, env), ' ']}}.
                        update(ref || {}).               # reference
                        update(color ? {style: "background-color: #{color}; color: #000"} : {}) if r.has_key? Title),
-
-                    # abstract
-                    (property Abstract, r[Abstract] if r.has_key? Abstract),
-
-                    # item list
-                    (property Schema + 'item', r[Schema + 'item'] if r.has_key? Schema + 'item'),
 
                     # child nodes
                     if r[Contains]
