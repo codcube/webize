@@ -65,14 +65,10 @@ module Webize
         name = [:form, :head, :select].           # node name
                  member?(type) ? :div : type
 
-        if uri = r['uri']                         # identified node:
+        if uri = r['uri']                         # identified?
           uri = Webize::Resource(uri, env)        # URI
-          id = uri.local_id                       # localized fragment identity (representation of transcluded resource in document)
-
-          origin_ref = {_: :a, class: :pointer,   # original pointer
-                        href: uri, c: :🔗}
-
-          ref = {_: :a, href: uri.href,           # pointer in current context
+          id = uri.local_id                       # local identifier for resource representation
+          ref = {_: :a, href: uri.href,           # resource reference
                  id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}
         end
 
@@ -89,7 +85,7 @@ module Webize
                 end
 
         skip = ['#color', '#new',
-                'uri', Type, Title, Abstract, Contains,
+                Type, Title, Abstract, Contains,
                 XHV + 'colspan',
                 XHV + 'rowspan',
                 XHV + 'namespace',
@@ -108,8 +104,6 @@ module Webize
                       c: r[Title].map{|t| [HTML.markup(t, env), ' ']}}.
                        update(ref || {}).               # reference
                        update(color ? {style: "background-color: #{color}; color: #000"} : {}) if r.has_key? Title),
-
-                    (origin_ref unless inline),         # pointer
 
                     # abstract
                     (property Abstract, r[Abstract] if r.has_key? Abstract),
