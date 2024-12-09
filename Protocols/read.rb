@@ -20,26 +20,23 @@ module Webize
       else
         if reader ||= RDF::Reader.for(content_type: format)       # if reader exists for format:
 
-          r = reader.new(content, base_uri: self){|_|             # instantiate reader and reference it
+          r = reader.new(content, base_uri: self){|_|             # instantiate reader
             repository << _ }                                     # raw data -> RDF
           base = r.base_uri                                       # graph URI. defaults to doc URI, declaratively updatable
 
           # 👉 loaded graph(s) from env/request base, for basic findability and reachability,
           # as in https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
 
-          # graph reader is responsible to 👉 nodes, to allow implementation flexibility:
-
-          # - reachability = set-inclusion/inlining/visibility decisions
-          # - summary/merge/index/query of graphs without a mandatory subtractive pruning stage
-
           repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # 👉 graph
           repository.each_graph.map{|g|                                          # 👉 subgraph(s)
             repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
 
           if format == 'text/turtle' # native RDF
-            repository.each_subject.map{|s|                                      # doc graph 👉 node(s)
+            repository.each_subject.map{|s|                                      # graph 👉 node(s)
               repository << RDF::Statement.new(base, RDF::URI(Contains), s) unless s.node?}
-          end # else: node 👉 delegated to non-RDF Reader implementation
+          end # non-RDF reader is responsible to 👉 nodes. this allows implementation flexibility:
+          # * reachability = set-inclusion/inlining/output-visibility decisions
+          # * summary/merge/index/query of graphs without requiring a subtractive pruning stage
 
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
