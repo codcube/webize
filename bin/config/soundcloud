@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby
+require_relative '../../index'
+File.open(Webize::ConfigPath + '/subscriptions/SC.u', mode: 'w').write Webize::Feed::Subscriptions['soundcloud.com'].join("\n")
