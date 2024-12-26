@@ -1,6 +1,5 @@
 https://brown.columbia.edu/feed/
 https://corkscrew.audubon.org/rss.xml
-http://jamaica-star.com/feed/ent.xml
 http://mcld.co.uk/blog/feeds/mcld_blog.atom
 http://mcld.co.uk/blog/feeds/mcld_blog.rss
 http://simia.net/api.php?hidebots=1&urlversion=1&days=7&limit=50&action=feedrecentchanges&feedformat=atom
@@ -106,7 +105,6 @@ https://mastodon.social/@doriantaylor.rss
 https://mastodon.social/@wearenew_public.rss
 https://mastodon.social/tags/SemanticWeb.rss
 https://mediajustice.org/news-category/blog/feed/
-https://miixtapechiick.com/feed/
 https://mjg59.dreamwidth.org/data/atom
 https://mjg59.dreamwidth.org/data/rss
 https://mlml.io/events/index.xml
