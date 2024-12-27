@@ -32,22 +32,32 @@ module Webize
 
       # local
       return fetchLocal nodes if offline? # offline
-      return fileResponse if storage.file? && fileMIME.match?(FixedFormat) && !basename.match?(/index/i)# cache hit
+      return fileResponse if storage.file? &&  # cache hit if file and
+                             fileMIME.match?(FixedFormat) && # fixed format: we can't or prefer not to rewrite via content-negotiation preferences
+                             !basename.match?(/index/i)      # exclude compressed index-files from fixed-format list - pattern in distro pkg-cache
 
       # network
-      return fetchMany nodes if nodes # node(s)
-             fetchRemote              # node
+      return fetchRemotes nodes if nodes # node(s)
+             fetchRemote                 # node
     end
 
-    def fetchMany nodes
+    def fetchList
+      return fetch uris if env[:qs].has_key?('fetch') # fetch URIs in list
+      fetchLocal                                      # parse the list returning URIs
+    end
+
+    def fetchRemotes nodes
       barrier = Async::Barrier.new # limit concurrency
       semaphore = Async::Semaphore.new(16, parent: barrier)
-      repos = []                   # repository list
+
+      repos = []                   # repository references
+
       nodes.map{|n|
-        semaphore.async{           # fetch URI -> RDF::Repository
+        semaphore.async{           # fetch URI -> repository
           repos << (Node(n).fetchRemote thru: false)}}
+
       barrier.wait
-      respond repos                # merged-repository HTTP response
+      respond repos                # repositories -> HTTP response
     end
 
     # fetch resource and cache upstream/original and derived graph data
@@ -265,14 +275,20 @@ module Webize
       return hostGET if host                                     # fetch remote node
       ps = parts                                                 # parse path
       p = ps[0]                                                  # find first path component
+
       return fetchLocal unless p                                 # fetch local node at null or root path
+
       return unproxy.hostGET if (p[-1] == ':' && ps.size > 1) || # fetch remote node at proxy-URI with scheme
                             (p.index('.') && p != 'favicon.ico') # fetch remote node at proxy-URI sans scheme
+
       return dateDir if %w{m d h y}.member? p                    # redirect to current year/month/day/hour container
+
       return block parts[1] if p == 'block'                      # add domain to blocklist
+
       return redirect '/d?f=msg*' if path == '/mail'             # redirect to email inbox (day-dir and FIND arg)
-      return fetch uris if extname == '.u' &&                    # fetch URIs in list
-                           env[:qs].has_key?('fetch')
+
+      return fetchList if extname == '.u'                        # fetch URIs in list
+
       fetchLocal                                                 # fetch local node
     rescue Exception => e
       env[:warnings].
