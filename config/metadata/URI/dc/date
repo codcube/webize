@@ -246,3 +246,5 @@ articleUpdateTime
 data-date-published
 last_posted_at
 bumped_at
+providerUpdateTime
+publishdate
