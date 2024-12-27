@@ -17,25 +17,22 @@ module Webize
 
       peerURL = PeerHosts.has_key? env['SERVER_NAME']               # peer node?
       localURL = ENV['HOSTNAME'] == env['SERVER_NAME'] ||           # local node?
-                 LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || env['SERVER_NAME'])
-      env[:proxy_refs] = peerURL || localURL                        # emit proxy refs on local and peer hosts
+                 LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || # hostname->address result is local address
+                                    env['SERVER_NAME'])              # local address
+
+      env[:proxy_refs] = peerURL || localURL                        # prefer to emit refs proxied onto local and peer base URI
 
       u = RDF::URI(localURL ? '/' : [peerURL ? :http : :https, '://', env['HTTP_HOST']].join). # base URI
-            join RDF::URI(env['REQUEST_PATH']).path                 # enforce just path in REQUEST_PATH variable
+            join RDF::URI(env['REQUEST_PATH']).path                 # enforce just a path in REQUEST_PATH - full URI appears there sometimes from upstream libraries/sources
 
-      env[:base] = (Node u, env).freeze                             # base node - immutable
-      uri = Node u, env                                             # request node - may update for concrete-representations/variants or relocations
-
-      if env['QUERY_STRING'] && !env['QUERY_STRING'].empty?         # query?
-        env[:qs] = Webize::URI('?'+env['QUERY_STRING']).query_hash  # parse and memoize query
-        qs = env[:qs].dup                                           # query args
-        Args.map{|k|                                                # (💻 <> 🖥) internal args to request environment
-         env[k.to_sym] = qs.delete(k) || true if qs.has_key? k}
-        uri.query_values = qs unless qs.empty?                      # (🖥 <> ☁️) external args to request URI
-      end
+      env[:base] = (Node u, env).freeze                             #    base URI - immutable
+      uri = Node u, env                                             # request URI - updateable at req-time for representation-variants or relocations
+      uri.query = env['QUERY_STRING'] if env['QUERY_STRING'] &&     # query
+                                        !env['QUERY_STRING'].empty?
+      env[:qs] = uri.query_hash                                     # parse and memoize query
 
       if env['HTTP_REFERER']
-        env[:referer] = Node(env['HTTP_REFERER'], env)              # referer node
+        env[:referer] = Node(env['HTTP_REFERER'], env)              # referer
         Referer[env[:base]] ||= []
         Referer[env[:base]].push env[:referer] unless Referer[env[:base]].member? env[:referer]
       end
@@ -75,8 +72,8 @@ module Webize
 
              ([' ⟵ ', inFmt, ' '] if inFmt && inFmt != outFmt),             # input format, if transcoded
 
-             (qs.map{|k,v|
-                " \e[38;5;7;7m#{k}\e[0m #{v}"} if qs && !qs.empty?),         # query arguments
+             env[:qs].map{|k,v|                                              # query arguments
+                " \e[38;5;7;7m#{k}\e[0m #{v}"},
 
              head['Location'] ? [" → \e[#{color}m",
                                  (Node head['Location'], env).unproxyURI,

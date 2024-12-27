@@ -13,7 +13,6 @@ resolv).map{|d|
 module Webize
   module HTTP
 
-    Args = Webize.configList 'HTTP/arguments'            # permitted query arguments
     Methods = Webize.configList 'HTTP/methods'           # permitted HTTP methods
     ActionIcon = Webize.configHash 'style/icons/action'  # HTTP method -> char
     StatusIcon = Webize.configHash 'style/icons/status'  # status code (string) -> char
