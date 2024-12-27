@@ -144,12 +144,11 @@ module Webize
       when NilClass
         o
       when Webize::Resource
-        # if we want this to render differently than RDF::URI (parent class), it goes *before* parent in list
-        # as parent is equiv to this class in Webize::Resource('base',{}) === RDF::URI
-        HTML::Node.new(env[:base]).env(env).a(
+        # if we want this to render differently than RDF::URI (parent class), it goes *before* parent in condition list,
+        # as parent-class matches in Webize::Resource('base',{}) === RDF::URI
+        HTML::Node.new(env[:base]).env(env).a( # render anonymous <a>
           {Link => [{'uri' => o.uri}],
-           Contains => [(:IMG if o.imgPath? && !o.deny?),
-                        o.display_name]})
+           Contains => [o.display_name]})
       when RDF::Graph
         graph = JSON.fromGraph(o)[env[:base]] || {} # graph to tree rooted at base URI
         graph[Type] = [Document]                    # type data as document
