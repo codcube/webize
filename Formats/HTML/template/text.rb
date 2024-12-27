@@ -54,6 +54,7 @@ module Webize
           next unless l.class == Hash
 
           u = Webize::Resource l['uri'], env # URI
+          anchor[Image] = [{'uri' => u.uri}] if u.imgPath? && !u.deny? && !anchor[Image]
 
           {_: :a, href: u.href, # resolved reference
            class: if u.deny?    # link styling

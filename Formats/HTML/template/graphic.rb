@@ -52,17 +52,13 @@ module Webize
         end
       end
 
-      # container for image and associated metadata
-      # note: <img> in HTML is mapped to this by default, because:
-      # metadata as innerHTML or attrs of img is eaten / not displayed by most user-agents in the wild, and
-      # an <img> has a node-id URI distinct from the image URI
-
-      # example: HTML <img id=container src=imgURI> is equivalent to
-      #          RDF  <#container> a <xhv:img>
-      #               <#container> <dc:Image> <imgURI>
-
-      # we also allow blank nodes, e.g. <img> with no id assigned
-      # container node is <span>, since some useragents balk at <div> block element inside <a> which often wraps this
+      # container for <img> and associated metadata
+      # we introducer a container element. <img> is one already, but
+      # metadata as inner nodes or attrs of <img> is not displayed by most user-agents in the wild
+      # note <img> has a URI distinct from its image URI, as in this example:
+      # HTML <img id=container src=imgURI>
+      # RDF  <#container> a <xhv:img>
+      #      <#container> <dc:Image> <imgURI>
       def imageContainer(c) = {_: :span, class: :image,                          # container
                                c: keyval(c, inline: true, skip: ['uri', Type])}. # image and metadata
                                 update(c['uri'] ? {id: Webize::Resource(env[:base].join(c['uri']),env).local_id} : {}) # local identifier
