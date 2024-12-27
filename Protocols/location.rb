@@ -36,7 +36,7 @@ module Webize
                  elsif FWD_hosts.member? host
                    ['//', FWD_hosts[host], path, query ? ['?', query] : nil].join
                  elsif RSS_available?
-                   ['//', host, path.sub(/\/$/,''), '.rss'].join
+                   ['//', host, path ? path.sub(/\/$/,'') : '/', '.rss'].join
                  elsif YT_hosts.member? host
                    ['//www.youtube.com/watch?v=',
                     query_hash['v'] || path[1..-1]].join

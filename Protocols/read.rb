@@ -22,19 +22,25 @@ module Webize
 
           r = reader.new(content, base_uri: self){|_|             # instantiate reader
             repository << _ }                                     # raw data -> RDF
-          base = r.base_uri                                       # graph URI. defaults to doc URI, declaratively updatable
 
-          # 👉 loaded graph(s) from env/request base, for basic findability and reachability,
+          graph = r.base_uri                                      # graph URI, declarable inside document so this is *after* the reader invocation
+          hostname = graph.host || 'localhost'
+          host = Webize::URI '//' + hostname                      # graph host
+
+          # 👉 graphs grouped by host from base URI, for findability and reachability
           # as in https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
 
-          repository << RDF::Statement.new(env[:base], RDF::URI(Contains), base) # 👉 graph
-          repository.each_graph.map{|g|                                          # 👉 subgraph(s)
-            repository << RDF::Statement.new(base, RDF::URI(Contains), g.name) if g.name}
+          repository << RDF::Statement.new(env[:base], RDF::URI(Contains), host) # base 👉 host
+          repository << RDF::Statement.new(host, RDF::URI(Contains), graph)      # host 👉 graph
+          repository << RDF::Statement.new(host, RDF::URI(Title), hostname)
+
+          repository.each_graph.map{|g|                                          # graph 👉 named subgraph(s)
+            repository << RDF::Statement.new(graph, RDF::URI(Contains), g.name) if g.name}
 
           if format == 'text/turtle' # native RDF
             repository.each_subject.map{|s|                                      # graph 👉 node(s)
-              repository << RDF::Statement.new(base, RDF::URI(Contains), s) unless s.node?}
-          end # non-RDF reader is responsible to 👉 nodes. this allows implementation flexibility:
+              repository << RDF::Statement.new(graph, RDF::URI(Contains), s) unless s.node?}
+          end # non-RDF reader graph(s) 👉 nodes, allowing implementation flexibility:
           # * reachability = set-inclusion/inlining/output-visibility decisions
           # * summary/merge/index/query of graphs without requiring a subtractive pruning stage
 

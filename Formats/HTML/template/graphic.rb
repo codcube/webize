@@ -55,7 +55,7 @@ module Webize
       # container for <img> and associated metadata
       # we introducer a container element. <img> is one already, but
       # metadata as inner nodes or attrs of <img> is not displayed by most user-agents in the wild
-      # note <img> has a URI distinct from its image URI, as in this example:
+      # note <img> has a URI distinct from its image URI, as in:
       # HTML <img id=container src=imgURI>
       # RDF  <#container> a <xhv:img>
       #      <#container> <dc:Image> <imgURI>
