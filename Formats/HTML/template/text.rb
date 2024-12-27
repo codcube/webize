@@ -60,8 +60,10 @@ module Webize
            class: if u.deny?    # link styling
             :blocked
           elsif u.host == host
+            css = "border-color: " + HostColor[host] if HostColor.has_key? host
             :local
           else
+            css = "background-color: " + HostColor[u.host] if HostColor.has_key? u.host
             :global
            end,
 
@@ -75,6 +77,7 @@ module Webize
                keyval(anchor.merge(u.query_hash),
                       inline: true,
                       skip: ['uri', Contains, Link, Type, To])]}.
+            update(css ? {style: css} : {}).
             update(id ? (id = nil; {id: anchor_id}) : {})} # attach id to first link
       end
 
