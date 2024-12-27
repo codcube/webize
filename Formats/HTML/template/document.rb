@@ -68,13 +68,16 @@ module Webize
                       href: '/block/' + host.sub(/^(www|xml)\./,''),
                       class: :dimmed} if host && !deny_domain?), "\n",
 
-                    # 👉 path breadcrumbs
+                    # 👉 path
                     bc = String.new,       # breadcrumb trail
                     {_: :span, class: :path, c: parts.map{|p|
                        bc += '/' + p
                        ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
                               href: Resource.new(join(bc)).env(env).href,
                               c: CGI.escapeHTML(Webize::URI(Rack::Utils.unescape p).basename || '')}]}}, "\n",
+
+                    # child path(s)
+                    (property '#childDir', doc.delete('#childDir') if doc['#childDir']),
 
                     # 🔍 search box
                     ([{_: :form, c: env[:qs].map{|k,v|
@@ -99,8 +102,6 @@ module Webize
                     ({class: :referers,
                       c: [HTML.markup(HTTP::Referer[self], env), :👈]} if HTTP::Referer[self]),
 
-#                    # 👉 source graph(s)
-#                    (property '#source', doc['#source'] ),
                   ]},
 
                  # ⚠️ warnings

@@ -22,7 +22,7 @@
 .name {background-color: #888; color: #000; font-size: .8em; vertical-align: top}
 .preembed .icon {position: absolute; left: 45%; top: 32%; font-size: 8em; color: #f00}
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
-.redirectors, .referers {border: 1px dotted #888; border-radius: 0}
+.redirectors, .referers {background-color: #bbb; border-radius: .42em}
 .resource {border: 1px solid #333; border-radius: .62em; margin: .1em; vertical-align: top}
 .resource[host="www.mixcloud.com"] img {display: none}
 .resource[host="www.mixcloud.com"] img:last-child {display: inline-block}
