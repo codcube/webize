@@ -25,11 +25,12 @@ module Webize
             repository << _ }                                     # raw data -> RDF
 
           graph = r.base_uri                                      # graph URI, declarable inside document so this is *after* the read
-          hostname = graph.host || 'localhost'
-          host = Webize::URI '//' + hostname                      # graph host
+          hostname = graph.host || 'localhost'                    # graph hostname
+          host = Webize::URI '//' + hostname                      # graph host-URI
 
-          # 👉 graphs grouped by host from base URI, for findability and reachability
-          # as in https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
+          # 👉 graphs grouped by host from base URI, for findability, reachability, and visibility in default view scope
+          # see: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
+          #      https://www.w3.org/submissions/CBD/
 
           repository << RDF::Statement.new(env[:base], RDF::URI(Contains), host) # base 👉 host
           repository << RDF::Statement.new(host, RDF::URI(Contains), graph)      # host 👉 graph
@@ -38,13 +39,10 @@ module Webize
           repository.each_graph.map{|g|                                          # graph 👉 named subgraph(s)
             repository << RDF::Statement.new(graph, RDF::URI(Contains), g.name) if g.name}
 
-          if format == 'text/turtle' # native RDF
+          if format == 'text/turtle'                                             # native RDF graph
             repository.each_subject.map{|s|                                      # graph 👉 node(s)
               repository << RDF::Statement.new(graph, RDF::URI(Contains), s) unless s.node?}
-          end # non-RDF reader graph(s) 👉 nodes, allowing implementation flexibility:
-          # * reachability = set-inclusion/inlining/output-visibility decisions
-          # * summary/merge/index/query of graphs without requiring a subtractive pruning stage
-
+          end                                                                    # else: non-RDF Reader emits node pointers
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
         end
