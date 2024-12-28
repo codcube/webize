@@ -1,15 +1,6 @@
 # coding: utf-8
 module Webize
 
-  # classes which cast to URI-string on #to_s. we could instead check for RDF::URI in parent class (does any subclass change behaviour of #to_s ?)
-  Identifiable = [
-    HTTP::Node,
-    POSIX::Node,
-    RDF::URI,
-    Webize::Resource,
-    Webize::URI,
-  ]
-
   BasicSlugs = [nil, '', *Webize.configTokens('blocklist/slug')]
   GlobChars = /[\*\{\[]/
   Gunk = Webize.configRegex 'blocklist/regex'
