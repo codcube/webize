@@ -8,25 +8,24 @@ module Webize
     # Rack-caller entry-point
     def self.call env
       return [403,{},[]] unless Methods.member? env['REQUEST_METHOD'] # allow HTTP methods
-
-      # instantiate resource, call method, log response:
-
       env[:start_time] = Time.now                                   # start wall-clock timer
-      env['SERVER_NAME'].downcase!                                  # normalize hostname
       env.update HTTP.env                                           # init environment fields
 
+      env['SERVER_NAME'].downcase!                                  # normalize hostname-case
       peerURL = PeerHosts.has_key? env['SERVER_NAME']               # peer node?
       localURL = ENV['HOSTNAME'] == env['SERVER_NAME'] ||           # local node?
-                 LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || # hostname->address result is local address
+                 LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || # hostname->address mapping is local address
                                     env['SERVER_NAME'])              # local address
 
-      env[:proxy_refs] = peerURL || localURL                        # prefer to emit refs proxied onto local and peer base URI
+      env[:proxy_refs] = peerURL || localURL                        # enable proxy references on local and peer base URIs - pure URI-rewriting alternative to HTTP_PROXY app variables
 
-      u = RDF::URI(localURL ? '/' : [peerURL ? :http : :https, '://', env['HTTP_HOST']].join). # base URI
-            join RDF::URI(env['REQUEST_PATH']).path                 # enforce just a path in REQUEST_PATH - full URI appears there sometimes from upstream libraries/sources
+      base = RDF::URI(localURL ? '/' : [peerURL ? :http : :https, '://', # scheme
+                                        env['HTTP_HOST']].join).    # host
+               join RDF::URI(env['REQUEST_PATH']).path              # path - REQUEST_PATH may contain a full URI (mainly on HTTP2 or Gemini frontend)
 
-      env[:base] = (Node u, env).freeze                             #    base URI - immutable
-      uri = Node u, env                                             # request URI - updateable at req-time for representation-variants or relocations
+      env[:base] = (Node base, env).freeze                          # base URI    - immutable environment value
+      uri = Node base, env                                          # request URI - updateable at req-time for representation-variants or relocations
+
       uri.query = env['QUERY_STRING']                               # request query
       env[:qs] = uri.query_hash                                     # memoize parsed query
 
@@ -40,7 +39,8 @@ module Webize
 
       URI.blocklist if env['HTTP_CACHE_CONTROL'] == 'no-cache'      # refresh blocklist (ctrl-shift-R in client UI)
 
-      uri.send(env['REQUEST_METHOD']).yield_self{|status,head,body| # call request and log response
+      uri.send(env['REQUEST_METHOD']).yield_self{|status,head,body| # call request method
+                                                                    # log response
         inFmt = MIME.format_icon env[:origin_format]                # input format
         outFmt = MIME.format_icon head['Content-Type']              # output format
         color = env[:deny] ? '38;5;196' : (MIME::Color[outFmt]||0)  # format -> color
