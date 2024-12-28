@@ -26,8 +26,8 @@ module Webize
       env[:base] = (Node base, env).freeze                          # base URI    - immutable environment value
       uri = Node base, env                                          # request URI - updateable at req-time for representation-variants or relocations
 
-      uri.query = env['QUERY_STRING']                               # request query
-      env[:qs] = uri.query_hash                                     # memoize parsed query
+      uri.query = env['QUERY_STRING'] if env['QUERY_STRING'] && !env['QUERY_STRING'].empty?
+      env[:qs] = uri.query_hash                                     # query arguments
 
       if env['HTTP_REFERER']                                        # referer
         env[:referer] = Node(env['HTTP_REFERER'], env)
