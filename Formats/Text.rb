@@ -105,9 +105,10 @@ module Webize
       end
 
       def triples &f
-        if File.basename((@base.path||'/'), '.txt') == 'twtxt'
+        path = @base.path || '/'
+        if File.basename(path, '.txt') == 'twtxt'
           twtxt_triples &f
-        elsif File.extname(@base) == '.irc'
+        elsif File.extname(path) == '.irc'
           chat_triples &f
         else
           plaintext_triples &f
