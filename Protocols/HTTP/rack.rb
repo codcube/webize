@@ -17,7 +17,7 @@ module Webize
                  LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || # hostname->address mapping is local address
                                     env['SERVER_NAME'])              # local address
 
-      env[:proxy_refs] = peerURL || localURL                        # enable proxy references on local and peer base URIs - pure URI-rewriting alternative to HTTP_PROXY app variables
+      env[:proxy_refs] = peerURL || localURL                        # enable proxy references on local and peer (re)hosts - pure URI-rewriting alternative to HTTP_PROXY app variables
 
       base = RDF::URI(localURL ? '/' : [peerURL ? :http : :https, '://', # scheme
                                         env['HTTP_HOST']].join).    # host

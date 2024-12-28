@@ -80,7 +80,7 @@ module Webize
     def on_host? = !host || env[:base].host == host # unspecified or matching host
     def on_path? = !path || env[:base].path == path # unspecified or matching path
 
-    def offline? = ENV.has_key? 'OFFLINE'
+    def offline? = ENV.has_key?('OFFLINE') || env[:qs].has_key?('offline')
 
     # relocate reference to proxy host
     def proxy_ref = ['http://', env['HTTP_HOST'], '/', scheme ? uri : uri[2..-1]].join
