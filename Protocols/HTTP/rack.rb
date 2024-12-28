@@ -44,9 +44,10 @@ module Webize
         inFmt = MIME.format_icon env[:origin_format]                # input format
         outFmt = MIME.format_icon head['Content-Type']              # output format
         color = env[:deny] ? '38;5;196' : (MIME::Color[outFmt]||0)  # format -> color
+
         env[:mapped].
           sort_by{|k, stat| stat[:count]}.reverse.
-          map{|k, stat| puts [stat[:count], k, stat[:target]].join "\t"}
+          map{|k, stat| puts [stat[:count], k, stat[:target]].join "\t"} if debug?
 
         Console.logger.info [(env[:base].scheme == 'http' && !peerURL) ? '🔓' : nil, # denote transport insecurity
 

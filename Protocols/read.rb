@@ -19,7 +19,7 @@ module Webize
         repository << RDF::Statement.new(self, RDF::URI(Title), basename)
       else
         if reader ||= RDF::Reader.for(content_type: format)       # if reader exists for format:
-
+          puts "read #{uri} as #{reader}"
           r = reader.new(content, base_uri: self){|_|             # instantiate reader
             repository << _ }                                     # raw data -> RDF
 

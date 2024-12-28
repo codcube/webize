@@ -67,7 +67,7 @@ module Webize
           ts[timestamp] ||= 0
           yield subject, RDF::URI(Date), [timestamp, '%02d' % ts[timestamp]].join('.')
           ts[timestamp] += 1
-          creator = RDF::URI(day + '/*/*irc?q=' + nick + '&sort=date&view=table#' + nick)
+          creator = @base + '?from=' + nick + '#' + nick
           yield subject, RDF::URI(Creator), creator
           Plaintext::Reader.new(msg, base_uri: subject).plaintext_triples(&f) if msg
         }
