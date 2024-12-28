@@ -46,6 +46,7 @@ id ID _id id_str @id)
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
+        @env = @base.env
         @doc = ::JSON.parse input.respond_to?(:read) ? input.read : input
         @options = options
 
@@ -67,7 +68,7 @@ id ID _id id_str @id)
       end
 
       def scan_document &f
-        yield @base.env[:base], Webize::URI(Contains), @base  # request graph 👉 document
+        yield @env[:base], Webize::URI(Contains), @base  # request graph 👉 document
         yield @base, Webize::URI(Contains), scan_fragment(&f) # document 👉 JSON tree-in-graph root node
       end
 
@@ -92,9 +93,15 @@ id ID _id id_str @id)
 
           # predicates
           predicate = MetaMap[k] || k # map predicate URI
-          next if predicate == :drop
 
-          unless predicate.match? HTTPURI
+          unless k == predicate # predicate-mapping statistics
+            @env[:mapped][k] ||= {target: predicate, count: 0}
+            @env[:mapped][k][:count] += 1
+          end
+
+          next if predicate == :drop # dropped predicate
+
+          unless predicate.match? HTTPURI # unmapped predicate
             puts ["unmapped JSON attr \e[7m", predicate, "\e[0m ", v].join
             predicate = Schema + predicate
           end

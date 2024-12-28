@@ -4,13 +4,15 @@ module Webize
     def self.debug? = ENV['CONSOLE_LEVEL'] == 'debug'
 
     # initialize environment
+    # these are being deprecated in favor of RDF in the request graph describing the base URI
     def self.env = {
-      feeds: [],
-      fragments: {},
-      images: {},
-      links: {},
-      qs: {},
-      warnings: []}
+      feeds: [],     # feed pointers
+      fragments: {}, # fragment list for deduplication
+      images: {},    # image list for deduplication
+      links: {},     # Link headers
+      mapped: {},    # mapped URI statistics
+      qs: {},        # parsed query-string
+      warnings: []}  # warnings
 
   end
   class HTTP::Node
