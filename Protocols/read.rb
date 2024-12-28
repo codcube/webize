@@ -28,7 +28,7 @@ module Webize
           hostname = graph.host || 'localhost'                    # graph hostname
           host = Webize::URI '//' + hostname                      # graph host-URI
 
-          # 👉 graphs grouped by host from base URI, for findability, reachability, and visibility in default view scope
+          # 👉 graphs from base URI, for findability, reachability, and visibility in default view scope
           # see: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
           #      https://www.w3.org/submissions/CBD/
 
@@ -39,10 +39,10 @@ module Webize
           repository.each_graph.map{|g|                                          # graph 👉 named subgraph(s)
             repository << RDF::Statement.new(graph, RDF::URI(Contains), g.name) if g.name}
 
-          if format == 'text/turtle'                                             # native RDF graph
+          if format == 'text/turtle'                                             # native RDF?
             repository.each_subject.map{|s|                                      # graph 👉 node(s)
               repository << RDF::Statement.new(graph, RDF::URI(Contains), s) unless s.node?}
-          end                                                                    # else: non-RDF Reader emits node pointers
+          end                                                                    # else: non-RDF Reader emits node 👉
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
         end
