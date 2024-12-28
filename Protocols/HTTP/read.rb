@@ -42,8 +42,8 @@ module Webize
     end
 
     def fetchList
-      return fetch uris if env[:qs].has_key?('fetch') # fetch URIs in list
-      fetchLocal                                      # parse the list returning URIs
+      return fetch uris if env[:qs].has_key?('fetch') # fetch each URI in list
+      fetchLocal                                      # return list of URIs, no follow-on fetching
     end
 
     def fetchRemotes nodes
