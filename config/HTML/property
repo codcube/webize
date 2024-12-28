@@ -12,6 +12,7 @@ http://purl.org/dc/terms/Image img
 http://purl.org/dc/terms/Video video
 http://purl.org/dc/terms/abstract abstract
 http://purl.org/dc/terms/date date
+http://purl.org/dc/terms/hasFormat table
 http://purl.org/dc/terms/title title
 http://rdfs.org/sioc/ns#addressed_to to
 http://rdfs.org/sioc/ns#has_creator creator
