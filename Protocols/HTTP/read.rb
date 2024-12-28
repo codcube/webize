@@ -41,26 +41,7 @@ module Webize
              fetchRemote                 # node
     end
 
-    def fetchList
-      return fetch uris if env[:qs].has_key?('fetch') # fetch each URI in list
-      fetchLocal                                      # return list of URIs, no follow-on fetching
-    end
-
-    def fetchRemotes nodes
-      barrier = Async::Barrier.new # limit concurrency
-      semaphore = Async::Semaphore.new(16, parent: barrier)
-
-      repos = []                   # repository references
-
-      nodes.map{|n|
-        semaphore.async{           # fetch URI -> repository
-          repos << (Node(n).fetchRemote thru: false)}}
-
-      barrier.wait
-      respond repos                # repositories -> HTTP response
-    end
-
-    # fetch resource and cache upstream/original and derived graph data
+    # fetch w/ HTTP remote resource and cache upstream/original and derived graph data
     # much of this code deals with the mess in the wild of MIME/charset and other metadata only available inside the document,
     # rather than HTTP headers, requiring readahead sniffing. add some normalizing of name symbols to be what's in Ruby's list,
     # fix erroneous MIMEs and file extensions that won't map back to the right MIME if stored at upstream-supplied path, and work with
@@ -226,6 +207,11 @@ module Webize
       end
     end
 
+    def fetchList
+      return fetch uris if env[:qs].has_key?('fetch') # fetch each URI in list
+      fetchLocal                                      # return list of URIs, no follow-on fetching
+    end
+
     def fetchLocal nodes = nil
       return fileResponse if !nodes && storage.file? &&                    # static response if one non-transformable node
                              (format = fileMIME                            # lookup MIME type
@@ -269,6 +255,20 @@ module Webize
       repository << RDF::Statement.new(env[:base], RDF::URI('#remote_source'), self) # source provenance
 
       opts[:thru] == false ? repository : notfound
+    end
+
+    def fetchRemotes nodes
+      barrier = Async::Barrier.new # limit concurrency
+      semaphore = Async::Semaphore.new(16, parent: barrier)
+
+      repos = []                   # repository references
+
+      nodes.map{|n|
+        semaphore.async{           # fetch URI -> repository
+          repos << (Node(n).fetchRemote thru: false)}}
+
+      barrier.wait
+      respond repos                # repositories -> HTTP response
     end
 
     def GET
