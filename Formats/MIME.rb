@@ -1,3 +1,7 @@
+
+# enable 🐢 extension for Turtle
+RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl]
+
 module Webize
   class URI
 
