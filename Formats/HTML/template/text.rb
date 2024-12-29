@@ -54,7 +54,9 @@ module Webize
           next unless l.class == Hash
 
           u = Webize::Resource l['uri'], env # URI
-          anchor[Image] = [{'uri' => u.uri}] if u.imgPath? && !u.deny? && !anchor[Image]
+
+          # if reference target is image, add first-class image attribute for views to use for thumbnail
+          anchor[Image] ||= [{'uri' => u.uri}] if u.imageURI?
 
           [{_: :a, href: u.href, # resolved reference
             class: if u.deny?    # link styling
@@ -68,7 +70,7 @@ module Webize
             end,
             c: [anchor[Contains]&.map{|content|         # contained nodes
                   HTML.markup content, env},
-                {_: :span, class: :uri,                 # show identifier components
+                {_: :span, class: :uri,                 # identifier components
                  c: [u.host,
                      (CGI.escapeHTML(u.path) if u.path)]},
                 keyval(anchor.merge(u.query_hash),      # metadata
@@ -76,6 +78,7 @@ module Webize
                        skip: ['uri', Contains, Link, Type, To])]}.
              update(css ? {style: css} : {}).
              update(id ? (id = nil; {id: anchor_id}) : {}), # attach id to first link
+           (HTML::Node.new(env[:base]).env(env).videotag({'uri' => u.uri}) if u.videoURI?), # video tag
           ]}
       end
 
