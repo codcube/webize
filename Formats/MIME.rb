@@ -16,7 +16,8 @@ module Webize
 
     def fontURI? = FontExt.member? extname&.downcase
 
-    def imageData? = dataURI? && path.index('image') == 0
+    def imageData? = dataURI? &&
+                     path.index('image') == 0
     alias_method :imgData?, :imageData?
 
     def imageHost? = ImageHost.member?(host)
