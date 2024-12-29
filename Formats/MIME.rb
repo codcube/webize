@@ -17,7 +17,7 @@ module Webize
 
     def imagePath? = path && (ImageExt.member?(extname.downcase) || # image-format extension
                               path[-5..-1] == '@jpeg') # alternative extension separator
-    alias_method :imgPath?. :imagePath?
+    alias_method :imgPath?, :imagePath?
 
     def imageURI? = imagePath? || (dataURI? && path.index('image') == 0) || (%w(jpg png).member? query_hash['format'])
     alias_method :imgURI?, :imageURI?
