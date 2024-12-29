@@ -8,6 +8,7 @@ module Webize
     CDN_doc = Webize.configRegex 'formats/CDN'
     FontExt = Webize.configList 'formats/font/ext'
     ImageExt = Webize.configList 'formats/image/ext'
+    ImageHost = Webize.configList 'formats/image/host'
     VideoExt = Webize.configList 'formats/video/ext'
     VideoHost = Webize.configList 'formats/video/host'
 
@@ -15,21 +16,33 @@ module Webize
 
     def fontURI? = FontExt.member? extname&.downcase
 
-    def imagePath? = path && (ImageExt.member?(extname.downcase) || # image-format extension
-                              path[-5..-1] == '@jpeg') # alternative extension separator
+    def imageData? = dataURI? && path.index('image') == 0
+    alias_method :imgData?, :imageData?
+
+    def imageHost? = ImageHost.member?(host)
+    alias_method :imgHost?, :imageHost?
+
+    def imagePath? = path &&
+                     (ImageExt.member?(extname.downcase) || # image extension
+                      %w(@jpeg @webp @png).member?(path[-5..-1])) # @ as extension separator
     alias_method :imgPath?, :imagePath?
 
-    def imageURI? = imagePath? || (dataURI? && path.index('image') == 0) || (%w(jpg png).member? query_hash['format'])
+    def imageURI? = imagePath? ||
+                    imageHost? ||
+                    imageData? ||
+                    (%w(jpg png).member? query_hash['format'])
     alias_method :imgURI?, :imageURI?
 
     def videoHost? = VideoHost.member?(host)
-    alias_method :vidHost?, :videoHost?
+    #alias_method :vidHost?, :videoHost?
 
-    def videoPath? = path && VideoExt.member?(extname.downcase)
-    alias_method :vidPath?, :videoPath?
+    def videoPath? = path &&
+                     VideoExt.member?(extname.downcase)
+    #alias_method :vidPath?, :videoPath?
 
-    def videoURI? = videoPath? || videoHost?
-    alias_method :vidURI?, :videoURI?
+    def videoURI? = videoPath? ||
+                    videoHost?
+    #alias_method :vidURI?, :videoURI?
 
   end
   module MIME
