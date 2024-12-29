@@ -56,29 +56,27 @@ module Webize
           u = Webize::Resource l['uri'], env # URI
           anchor[Image] = [{'uri' => u.uri}] if u.imgPath? && !u.deny? && !anchor[Image]
 
-          {_: :a, href: u.href, # resolved reference
-           class: if u.deny?    # link styling
-            :blocked
-          elsif u.host == host
-            css = "border-color: " + HostColor[host] if HostColor.has_key? host
-            :local
-          else
-            css = "background-color: " + HostColor[u.host] if HostColor.has_key? u.host
-            :global
-           end,
-
-           c: [anchor[Contains]&.map{|content|         # inner text
-                 HTML.markup content, env},
-
-               {_: :span, class: :uri,                 # identifier
-                c: [u.host,
-                    (CGI.escapeHTML(u.path) if u.path)]},
-
-               keyval(anchor.merge(u.query_hash),
-                      inline: true,
-                      skip: ['uri', Contains, Link, Type, To])]}.
-            update(css ? {style: css} : {}).
-            update(id ? (id = nil; {id: anchor_id}) : {})} # attach id to first link
+          [{_: :a, href: u.href, # resolved reference
+            class: if u.deny?    # link styling
+             :blocked
+           elsif u.host == host
+             css = "border-color: " + HostColor[host] if HostColor.has_key? host
+             :local
+           else
+             css = "background-color: " + HostColor[u.host] if HostColor.has_key? u.host
+             :global
+            end,
+            c: [anchor[Contains]&.map{|content|         # contained nodes
+                  HTML.markup content, env},
+                {_: :span, class: :uri,                 # show identifier components
+                 c: [u.host,
+                     (CGI.escapeHTML(u.path) if u.path)]},
+                keyval(anchor.merge(u.query_hash),      # metadata
+                       inline: true,
+                       skip: ['uri', Contains, Link, Type, To])]}.
+             update(css ? {style: css} : {}).
+             update(id ? (id = nil; {id: anchor_id}) : {}), # attach id to first link
+          ]}
       end
 
     end
