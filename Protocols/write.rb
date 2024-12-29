@@ -1,7 +1,7 @@
 module Webize
   module Cache
 
-    # cache and index all uncached graphs in repo, returning a report graph
+    # cache and index all uncached graphs in repo, optionally returning a summarized report graph
     # Repository -> 🐢(s)
      def persist env, base, summarize: false
                                                           # query pattern for:
