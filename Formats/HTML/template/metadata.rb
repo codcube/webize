@@ -111,7 +111,7 @@ module Webize
                                                '#cache', '#origin',
                                                Title,
                                                HT + 'Content-Type', HT + 'Content-Length', HT + 'Server', HT + 'X-Powered-By',
-                                               '#fTime', '#pTime']
+                                               '#fTime', '#pTime', Date]
 
       def status_code code
         code.map{|status|

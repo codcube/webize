@@ -9,9 +9,7 @@ module Webize
       creator = RDF::Query::Pattern.new :s, RDF::URI(Creator), :o # sender
       to = RDF::Query::Pattern.new :s, RDF::URI(To), :o           # receiver
       type = RDF::Query::Pattern.new :s, RDF::URI(Type), :o       # type
-#if newest = query(timestamp).objects.sort[-1] # dataset timestamp
-#        out << RDF::Statement.new(dataset, RDF::URI(Date), newest)
-#      end
+
       summaries = RDF::Repository.new if summarize
 
       each_graph.map{|graph|           # for each
@@ -100,7 +98,17 @@ module Webize
 
         summaries << summary}      # summary graph
 
-      summarize ? summaries : self # output graph
+      if summarize
+
+        if newest = query(timestamp).objects.sort[-1] # dataset timestamp
+          summaries << RDF::Statement.new(base, RDF::URI(Date), newest)
+          #puts "latest timestamp in #{base}: #{newest}"
+        end
+
+        summaries # summary graph
+      else
+        self      # full unmodified graph
+      end
      end
 
   end
