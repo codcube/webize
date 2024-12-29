@@ -16,7 +16,7 @@ module Webize
     def imgPath? = path && (ImgExt.member?(extname.downcase) || # image-format extension
                             path[-5..-1] == '@jpeg') # alternative extension separator
 
-    def imgURI? = imgPath? || (dataURI? && path.index('image') == 0)
+    def imgURI? = imgPath? || (dataURI? && path.index('image') == 0) || (%w(jpg png).member? query_hash['format'])
 
   end
   module MIME
