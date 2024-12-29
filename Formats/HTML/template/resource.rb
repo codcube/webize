@@ -22,7 +22,7 @@ module Webize
           (puts [:iframe, i].join ' '; next) unless i.class == Hash
           uri = Webize::Resource(i['uri'], env) # src
 
-          [{_: :a, href: uri.href, c: uri}, # iframe-src reference
+          [HTML.markup(uri, env), # src reference
 
            uri.query_hash.map do |_, v| # URI attrs
              if v&.match? HTTPURI
