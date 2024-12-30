@@ -127,6 +127,9 @@ module Webize
       Resource.new(uri).env env
     end
 
+    # base-URI accessor
+    def base = env[:base]
+
     # set or get environment
     def env e = nil
       if e

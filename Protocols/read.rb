@@ -24,15 +24,23 @@ module Webize
           r = reader.new(content, base_uri: self){|_|             # instantiate reader
             repository << _ }                                     # raw data -> RDF
 
-          graph = r.base_uri                                      # graph URI, declarable inside document so this is *after* the read
+          graph = Resource r.base_uri                             # graph URI, declarable in document so this must be *after* the reader pass
 
-          # base graph 👉 inlined graph, for reachability and visibility in default view
-          # concepts: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
+          # below, add triples for the HTML view to look a bit nicer, or render anything at all (reachability is required)
+          # classic metaphor: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
+
+          # related RDF formalisms and best practices:
           # https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
 
-          repository << RDF::Statement.new(env[:base], RDF::URI(Contains), host) # base 👉 host
-          repository << RDF::Statement.new(host, RDF::URI(Contains), graph)      # host 👉 graph
-          repository << RDF::Statement.new(host, RDF::URI(Title), hostname)
+          # base graph 👉 inlined graph, through indirection of nested container structure
+          container = graph.fsNames.inject(base) do |parent, name|
+            c = RDF::URI('#container_' + Digest::SHA2.hexdigest(parent.to_s + name))
+            repository << RDF::Statement.new(parent, RDF::URI(Contains), c) # parent container 👉 child container
+            repository << RDF::Statement.new(c, RDF::URI(Title), name)      # container name
+            c
+          end
+
+          repository << RDF::Statement.new(container, RDF::URI(Contains), graph) # container 👉 graph
 
           repository.each_graph.map{|g|                                          # graph 👉 named subgraph(s)
             repository << RDF::Statement.new(graph, RDF::URI(Contains), g.name) if g.name}
