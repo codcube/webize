@@ -70,13 +70,17 @@ module Webize
 
                     # 👉 path
                     bc = String.new,       # breadcrumb trail
-                    {_: :span, class: :path, c: parts.map{|p|
-                       bc += '/' + p
-                       ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
-                              href: Resource.new(join(bc)).env(env).href,
-                              c: CGI.escapeHTML(Webize::URI(Rack::Utils.unescape p).basename || '')}]}}, "\n",
+                    {_: :span, class: :path,
+                     c: [ # parent directories
+                       parts.map{|p| # path part
+                         bc += '/' + p # add breadcrumb to trail
+                         ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
+                                href: Resource.new(join(bc)).env(env).href,
+                                c: CGI.escapeHTML(Webize::URI(Rack::Utils.unescape p).basename || '')}]},
+                       (property '#childNode', doc.delete('#childNode') if doc['#childNode'])
+                     ]}, "\n",
 
-                    # child path(s)
+                    # child directories
                     (property '#childDir', doc.delete('#childDir') if doc['#childDir']),
 
                     # 🔍 search box
