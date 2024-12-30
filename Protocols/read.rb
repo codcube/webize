@@ -26,7 +26,7 @@ module Webize
 
           graph = r.base_uri                                      # graph URI, declarable inside document so this is *after* the read
 
-          # emit base-graph 👉 inlined-graph, for findability, reachability, and visibility in default view-scope
+          # base graph 👉 inlined graph, for reachability and visibility in default view
           # concepts: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
           # https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
 
