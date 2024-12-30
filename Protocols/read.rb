@@ -26,10 +26,10 @@ module Webize
 
           graph = Resource r.base_uri                             # graph URI, declarable in document so this must be *after* the reader pass
 
-          # below, add triples for the HTML view to look a bit nicer, or render anything at all (reachability is required)
+          # add triples for the HTML view to render a bit more nicely or at all (reachability is required)
           # classic metaphor: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
 
-          # related RDF formalisms and best practices:
+          # related RDF formalisms and guidelines:
           # https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
 
           # base graph 👉 inlined graph, through indirection of nested container structure
