@@ -43,11 +43,6 @@ POSIX
   components.map{|component|
     require_relative "#{category}/#{component}"}}
 
-# our one monkey-patch
-class Array
-  def rest = self[1..-1]
-end
-
 module Webize
   # classes which cast to URI-string on #to_s. we could instead check for RDF::URI in parent class (does any subclass change behaviour of #to_s ?)
   Identifiable = [

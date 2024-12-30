@@ -1,5 +1,8 @@
 # coding: utf-8
 require 'rouge'
+class Array
+  def rest = self[1..-1]
+end
 module Webize
   module Code
     SiteJS = Webize.configData 'scripts/site.js'
