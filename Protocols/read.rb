@@ -38,8 +38,8 @@ module Webize
           # instantiate reader, bind it to a var, read data -> RDF
           r = reader.new(content, base_uri: self){|_| graph << _ }
 
-          # emit graph URIs from 'out of band' Reader/Repository properties before they go out of scope
-          # base and additional graph URIs may be declared in document so this is *after* the reader pass
+          # while here: emit graph pointers after in-doc declarations have updated the graph URI
+          # and before said URIs in 'out of band' Reader or Repository properties go out of scope
           [r.base_uri, *graph.each_graph.map(&:name)].map do |_|
             (Resource _).graph_pointer graph
           end

@@ -40,6 +40,7 @@ parsely-tags
 postLabel
 primaryTag
 sailthru.tags
+slug
 tag
 tagIds
 tagList
