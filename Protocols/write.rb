@@ -2,13 +2,16 @@ module Webize
   module Cache
 
     # cache and timeline-index named graphs to 🐢, given repository instance
-     def persist env, base
-                                                          # query pattern for:
+    def persist env, base, updates: false      # output updates?
+      updates = RDF::Repository.new if updates # updates graph
+
+      # query patterns:
       timestamp = RDF::Query::Pattern.new :s, RDF::URI(Date), :o  # timestamp
       creator = RDF::Query::Pattern.new :s, RDF::URI(Creator), :o # sender
       to = RDF::Query::Pattern.new :s, RDF::URI(To), :o           # receiver
       type = RDF::Query::Pattern.new :s, RDF::URI(Type), :o       # type
 
+      # visit graphs
       each_graph.map{|graph|           # for each
         next unless g = graph.name     # named graph
         g = POSIX::Node g              # graph URI
@@ -16,14 +19,18 @@ module Webize
         f = [docBase, :🐢].join '.'    # 🐢 locator
         next if File.exist? f          # persisted - mint new graph URI to store new version TODO do that here?
 
+        # persist
         RDF::Writer.for(:turtle).      # graph -> 🐢
           open(f, base_uri: g, prefixes: Prefixes){|f|
           f << graph}
+                                       # log 🐢 population
+        log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join]
 
-        graph << RDF::Statement.new(g, RDF::URI('#new'), true)
+        # update handling
+        graph << RDF::Statement.new(g, RDF::URI('#new'), true) # tag graph as an updated graph
+        updates << graph if updates                            # add graph to updates graph
 
-        log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join] # log cache location
-
+        # timeline indexing
         if !g.to_s.match?(/^\/\d\d\d\d\/\d\d\/\d\d\/\d\d/) && # if graph not already located on timeline,
            (ts = graph.query(timestamp).first_value) &&       # and we have a timestamp value in RDF,
            ts.match?(/^\d\d\d\d-/)                            # in iso8601-compatible format
@@ -46,11 +53,11 @@ module Webize
           unless File.exist? 🕒
             FileUtils.mkdir_p File.dirname 🕒                 # make timeline container(s)
             FileUtils.ln f, 🕒 # rescue FileUtils.cp f, 🕒      # link 🐢 to 🕒, with copy as fallback operation
-            log.unshift [:🕒, ts]                             # timeline location
+            log.unshift [:🕒, ts]                             # log 🕒 entry
           end
         end
 
-        Console.logger.info log.join ' '                      # output log message
+        Console.logger.info log.join ' '                      # log message
       }
 
       if newest = query(timestamp).objects.sort[-1] # dataset timestamp
@@ -58,7 +65,7 @@ module Webize
         self << RDF::Statement.new(base, RDF::URI(Date), newest)
       end
 
-      self      # persisted-to-cached-graphs repository
+      updates || self # persisted-graphs repository
      end
   end
 end
