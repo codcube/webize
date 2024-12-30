@@ -13,10 +13,8 @@ module Webize
         audio_triples repository
       when /^image/                                               #  image
         repository << RDF::Statement.new(self, RDF::URI(Type), RDF::URI(Image))
-        repository << RDF::Statement.new(self, RDF::URI(Title), basename)
       when /^video/                                               #  video
         repository << RDF::Statement.new(self, RDF::URI(Type), RDF::URI(Video))
-        repository << RDF::Statement.new(self, RDF::URI(Title), basename)
       else
         if reader ||= RDF::Reader.for(content_type: format)       # if reader exists for format:
           #puts "read #{uri} as #{reader}"
@@ -32,12 +30,12 @@ module Webize
           # related RDF formalisms and guidelines:
           # https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
 
-          # base graph 👉 inlined graph, through indirection of nested container structure
-          container = graph.fsNames[0..-2].inject(base) do |parent, name| # from base to containing dir
-            c = RDF::URI('#container_' + Digest::SHA2.hexdigest(parent.to_s + name))
+          # base graph 👉 inlined graph through indirection of nested container structure
+          container = graph.fsNames[0..-2].inject(base) do |parent, name| # from base to containing node
+            c = RDF::URI('#container_' + Digest::SHA2.hexdigest(parent.to_s + name)) # container URI
             repository << RDF::Statement.new(parent, RDF::URI(Contains), c) # parent container 👉 child container
             repository << RDF::Statement.new(c, RDF::URI(Title), name)      # container name
-            c
+            c                                                               # container
           end
 
           repository << RDF::Statement.new(container, RDF::URI(Contains), graph) # container 👉 graph
