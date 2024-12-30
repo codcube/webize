@@ -57,6 +57,8 @@ module Webize
 
     def extname = (File.extname path if path)
 
+    def fsNames = host ? fsNamesGlobal : fsNamesLocal
+
     def fsNamesLocal = if parts.empty?
                          %w(.)
                        elsif parts[0] == 'msg'                                          # message
@@ -72,7 +74,6 @@ module Webize
                            [hash[0..1], hash[2..-1]]         # sharded-hash container
                          else
                            if query
-                            # puts :qqq, fsNamesQuery
                              Webize::URI join fsNamesQuery.join '.'
                            else
                              self
@@ -84,9 +85,7 @@ module Webize
                         extname] - ['']                      # extension
 
     # URI -> pathname
-    def fsPath
-      (host ? fsNamesGlobal : fsNamesLocal).join '/'
-    end
+    def fsPath = fsNames.join '/'
 
     def graph = URI.new split('#')[0]
 

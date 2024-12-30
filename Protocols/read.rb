@@ -25,12 +25,10 @@ module Webize
             repository << _ }                                     # raw data -> RDF
 
           graph = r.base_uri                                      # graph URI, declarable inside document so this is *after* the read
-          hostname = graph.host || 'localhost'                    # graph hostname
-          host = Webize::URI '//' + hostname                      # graph host-URI
 
-          # 👉 graph from base, for findability, reachability, and visibility in default view-scope
+          # emit base-graph 👉 inlined-graph, for findability, reachability, and visibility in default view-scope
           # concepts: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
-          #           https://www.w3.org/submissions/CBD/
+          # https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
 
           repository << RDF::Statement.new(env[:base], RDF::URI(Contains), host) # base 👉 host
           repository << RDF::Statement.new(host, RDF::URI(Contains), graph)      # host 👉 graph
@@ -42,7 +40,7 @@ module Webize
           if format == 'text/turtle'                                             # native RDF:
             repository.each_subject.map{|s|                                      # graph 👉 node(s)
               repository << RDF::Statement.new(graph, RDF::URI(Contains), s) unless s.node?}
-          end                                                                    # non-RDF: Reader output 👉 node(s)
+          end                                                                    # non-RDF Reader emits 👉 node(s)
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
         end
