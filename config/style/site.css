@@ -27,6 +27,8 @@
 .resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"] {max-width: 36em}
 .resource[host="www.mixcloud.com"] img {display: none}
 .resource[host="www.mixcloud.com"] img:last-child {display: inline-block}
+.resource[host="www.reddit.com"] {max-width: 80ex}
+.resource[host="www.reddit.com"] span.comment {display: none}
 .title, .abstract {vertical-align: top}
 .title:visited {background-color: #ccc; color: #000}
 .top-bar .path a {color: #ddd; font-weight: normal}
