@@ -12,23 +12,27 @@ module Webize
       type = RDF::Query::Pattern.new :s, RDF::URI(Type), :o       # type
 
       # visit graphs
-      each_graph.map{|graph|           # for each
-        next unless g = graph.name     # named graph
-        g = POSIX::Node g              # graph URI
-        docBase = g.document           # document base-locator
-        f = [docBase, :🐢].join '.'    # 🐢 locator
-        next if File.exist? f          # persisted - mint new graph URI to store new version TODO do that here?
+      each_graph.map{|graph|        # for each
+        next unless g = graph.name  # named graph
+        g = POSIX::Node g, env      # graph URI
+        docBase = g.document        # document base-locator
+        f = [docBase, :🐢].join '.' # 🐢 locator
+        next if File.exist? f       # persisted - mint new graph URI to store new version TODO do that here?
 
         # persist
-        RDF::Writer.for(:turtle).      # graph -> 🐢
+        RDF::Writer.for(:turtle).   # graph -> 🐢
           open(f, base_uri: g, prefixes: Prefixes){|f|
           f << graph}
-                                       # log 🐢 population
+                                    # log 🐢 population
         log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join]
 
         # update handling
-        graph << RDF::Statement.new(g, RDF::URI('#new'), true) # tag graph as an updated graph
-        updates << graph if updates                            # add graph to updates graph
+        graph << RDF::Statement.new(
+          g, RDF::URI('#new'), true) # tag graph as updated
+        if updates                  # updates graph?
+          g.graph_pointer graph     # graph pointer
+          updates << graph          # graph to updates graph
+        end
 
         # timeline indexing
         if !g.to_s.match?(/^\/\d\d\d\d\/\d\d\/\d\d\/\d\d/) && # if graph not already located on timeline,
