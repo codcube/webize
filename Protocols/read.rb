@@ -1,12 +1,10 @@
 module Webize
-  module MIME
+  class Resource
 
     def graph_pointer graph
-      # point to graph URI (aka self) from base URI so basic traverses, recursive walks, index lookups can find the graph
-      # this is essentially required or the data won't be findable / reachable in various algos we use throughout our code
+      # point to graph URI so it is findable / reachable in various traverse, recursive walk, index lookup algos throughout the code
 
       # the classic example: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
-
       # related RDF formalisms and guidelines:
       # https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
 
@@ -20,7 +18,8 @@ module Webize
 
       graph << RDF::Statement.new(container, RDF::URI(Contains), self) # container 👉 graph
     end
-
+  end
+  module MIME
     # (MIME, data) -> RDF::Repository
     def readRDF format, content
       graph = RDF::Repository.new.extend Webize::Cache # repository with our behaviours TODO revisit subclass vs extend. IIRC we had weird bugs where third-party code didn't think our subclass was usable as a Repo due to strict equivalence or suchlike
@@ -39,9 +38,9 @@ module Webize
           # instantiate reader, bind it to a var, read data -> RDF
           r = reader.new(content, base_uri: self){|_| graph << _ }
 
-          # emit graph pointers
+          # emit graph URIs from 'out of band' Reader/Repository properties before they go out of scope
           # base and additional graph URIs may be declared in document so this is *after* the reader pass
-          [r.base_uri, graph.each_graph.map(&:name)].map do |_|
+          [r.base_uri, *graph.each_graph.map(&:name)].map do |_|
             (Resource _).graph_pointer graph
           end
 
