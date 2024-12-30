@@ -29,10 +29,7 @@ Vocab
 XML),
 
  Protocols: %w(
-access
-location
-read
-write
+access location read write
 Gemini
 HTTP
 POSIX
@@ -44,7 +41,7 @@ POSIX
     require_relative "#{category}/#{component}"}}
 
 module Webize
-  # classes which cast to URI-string on #to_s. we could instead check for RDF::URI in parent class (does any subclass change behaviour of #to_s ?)
+  # classes which cast to a URI on #to_s. we could probably check for RDF::URI as a parent class (does any subclass change behaviour of #to_s ?)
   Identifiable = [
     HTTP::Node,
     POSIX::Node,
