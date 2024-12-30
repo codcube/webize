@@ -130,7 +130,7 @@ module Webize
           end
 
           unless thru && notransform
-            graph = readRDF(format, body).persist env, self, summarize: !thru # parse and cache graph data
+            graph = readRDF(format, body).persist env, self #summarize: !thru # parse and cache graph data
           end
 
           if !thru                                                      # no HTTP response construction or proxy
