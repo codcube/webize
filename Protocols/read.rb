@@ -33,7 +33,7 @@ module Webize
           # https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
 
           # base graph 👉 inlined graph, through indirection of nested container structure
-          container = graph.fsNames.inject(base) do |parent, name|
+          container = graph.fsNames[0..-2].inject(base) do |parent, name| # from base to containing dir
             c = RDF::URI('#container_' + Digest::SHA2.hexdigest(parent.to_s + name))
             repository << RDF::Statement.new(parent, RDF::URI(Contains), c) # parent container 👉 child container
             repository << RDF::Statement.new(c, RDF::URI(Title), name)      # container name
