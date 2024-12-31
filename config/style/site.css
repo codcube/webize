@@ -26,6 +26,7 @@
 .resource {border: 1px solid #333; border-radius: .62em; margin: .1em; vertical-align: top}
 .resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"] {max-width: 36em}
 .resource[host="www.mixcloud.com"] img {display: none}
+.resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
 .resource[host="www.mixcloud.com"] img:last-child {display: inline-block}
 .resource[host="www.reddit.com"] {max-width: 80ex}
 .resource[host="www.reddit.com"] span.comment {display: none}
