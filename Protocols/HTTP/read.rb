@@ -136,7 +136,9 @@ module Webize
           if !thru                                                      # no HTTP response construction or proxy
             print MIME.format_icon format                               # denote fetch with single character for activity feedback
                                                                         # fetch statistics
-            graph << RDF::Statement.new(env[:base], RDF::URI('#remote_source'), self) # source identity
+            h = Resource '//' + host                                    # host URI
+            h.graph_pointer graph                                       # per-host remote source listing
+            graph << RDF::Statement.new(h, RDF::URI('#remote_source'), self) # source identity
             graph << RDF::Statement.new(self, RDF::URI(HT + 'status'), status) # HTTP status
             graph << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch timing
             graph << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache timing
