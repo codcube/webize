@@ -35,7 +35,7 @@ module Webize
           name += '/'
         end
 
-        contains = RDF::URI(isDir ? '#childDir' : '#childNode') # containment predicate
+        contains = RDF::URI(isDir ? '#childDir' : '#entry') # containment predicate
         c = Node join name.gsub(' ','%20').gsub('#','%23')  # child node
 
         graph << RDF::Statement.new(c, RDF::URI(Title), name)
