@@ -37,7 +37,7 @@ end
 # components
 %w(
 access
-location
+locate
 metadata
 proxy
 rack

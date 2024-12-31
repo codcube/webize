@@ -29,7 +29,7 @@ Vocab
 XML),
 
  Protocols: %w(
-access location read write
+access annotate locate read write
 Gemini
 HTTP
 POSIX
