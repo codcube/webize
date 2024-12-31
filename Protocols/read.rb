@@ -18,11 +18,10 @@ module Webize
       else
         if reader = RDF::Reader.for(content_type: format) # if reader exists for format:
 
-          # instantiate reader, bind it to a var, read data -> RDF
+          # instantiate reader, bind it to a var, read data as RDF
           r = reader.new(content, base_uri: self){|_| graph << _ }
 
-          # emit pointer(s) to graph in RDF as Ruby methods on Reader/Repo instances are 'out of band techniques' from perspective of graph data (and the reader falls out of scope when this method returns)
-          # must be *after* in-doc base URI declarations have parsed and possibly also introduced more named-graphs
+          # emit pointers to graphs in RDF, as Ruby methods on Reader/Repo instances are out-of-band techniques from perspective of graph-data - even if we're still consuming data in this Ruby process, reader w/ declaratively updated base-URI falls out of scope when this method returns, and the named-graph tags available in the Repo instance aren't serializable into all popular formats, or preserved through many of our merge-oriented algorithms for collation/view purposes
           [r.base_uri,
            *graph.each_graph.map(&:name)].map do |_|
             (Resource _).graph_pointer graph
