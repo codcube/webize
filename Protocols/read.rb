@@ -30,7 +30,7 @@ module Webize
            *graph.each_graph.map(&:name)].map do |_|
             (Resource _).graph_pointer graph
           end
-          # the 👉'd graph may then 👉 to its nodes, completing reachability 'nice to have' for the output layer. you can of course just #dump a soup if disconnected subgraphs with the stock Turtle serializer, but these in-band references are nice for book-keeping, discoverability, and making the default generic view look nicer without doing any extra work besides providing a nice reference skeleton
+          # the 👉'd graph may then 👉 to its nodes, completing reachability 'nice to have' for the output layer. you can of course just #dump a soup of disconnected subgraphs with the stock Turtle serializer, but these references are nice for book-keeping, discoverability, and making the default generic view look nicer without doing any extra work besides providing a nice reference skeleton
 
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
