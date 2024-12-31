@@ -2,7 +2,7 @@ module Webize
   class Resource
 
     def graph_pointer graph
-      # 👉 graph so it is reachable/visible in traverse, recursive walk, index lookup, treeization, view algorithms
+      # 👉 graph so it is reachable/visible in recursive walk, index lookup, treeization, etc algorithms
 
       # the classic example: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
       # related RDF formalisms and guidelines:

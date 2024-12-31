@@ -21,11 +21,16 @@ module Webize
           # instantiate reader, bind it to a var, read data as RDF
           r = reader.new(content, base_uri: self){|_| graph << _ }
 
-          # emit pointers to graphs in RDF, as Ruby methods on Reader/Repo instances are out-of-band techniques from perspective of graph-data - even if we're still consuming data in this Ruby process, reader w/ declaratively updated base-URI falls out of scope when this method returns, and the named-graph tags available in the Repo instance aren't serializable into all popular formats, or preserved through many of our merge-oriented algorithms for collation/view purposes
+          # emit 👉 to graphs as RDF
+
+          # Ruby methods on Reader/Repo instances are out-of-band techniques from perspective of generic graph-data consumption - even if we're still in this Ruby process, reader w/ declaratively updated base-URI falls out of scope as this method returns, and named-graph identifiers available in a Repository instance aren't preserved through all the merge/collation/view algorithms elsewhere. there's not much point plumbing the graph name throughout everything when multiple named-graphs usually aren't serializable to a single output stream ( you get a base URI and will be happy with it!) unless using some obscure/bleeding-edge/unadopted formats.
+
+          # so naming and referring to the base URIs of the additional graphs, from the base URI of the default graph is the most rock solid, antifragile way to at least know there are other graphs to look for, and provide reachability to them via naïve, simple recursive traversal algorithms
           [r.base_uri,
            *graph.each_graph.map(&:name)].map do |_|
             (Resource _).graph_pointer graph
           end
+          # the 👉'd graph may then 👉 to its nodes, completing reachability 'nice to have' for the output layer. you can of course just #dump a soup if disconnected subgraphs with the stock Turtle serializer, but these in-band references are nice for book-keeping, discoverability, and making the default generic view look nicer without doing any extra work besides providing a nice reference skeleton
 
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
