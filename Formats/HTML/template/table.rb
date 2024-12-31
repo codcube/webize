@@ -4,7 +4,7 @@ module Webize
     class Property
 
       # table layout: graph <> table, resource <> row, property <> column
-      def table graph, attrs: nil, id: nil, skip: []
+      def table graph, attrs: nil, id: nil, skip: [], heading: true
         graph = graph.select{|g| g.respond_to? :keys} # resources
         return unless graph.size > 0               # empty graph?
         all_attrs = graph.map(&:keys).flatten.uniq # all attributes
@@ -26,7 +26,7 @@ module Webize
                          _: :span,   # <span> label of property
                          title: k,
                          c: icon,
-                       }}, "\n"]}}} if env),
+                       }}, "\n"]}}} if heading),
              {_: :tbody,
               c: graph.map{|resource|
                 [{_: :tr, c: attrs.map{|k| # <tr> row of resource
