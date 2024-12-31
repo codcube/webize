@@ -24,14 +24,14 @@
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .redirectors, .referers {background-color: #bbb; border-radius: .42em}
 .resource {border: 1px solid #333; border-radius: .62em; margin: 1px; vertical-align: top}
-.resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"] {max-width: 36em}
 .resource[host="www.mixcloud.com"] img {display: none}
-.resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
 .resource[host="www.mixcloud.com"] img:last-child {display: inline-block}
-.resource[host="www.reddit.com"] {max-width: 80ex}
+.resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
+.resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"] {max-width: 36em}
 .resource[host="www.reddit.com"] span.comment {display: none}
-.resource[id^="container"] > span.kv {display: none}
+.resource[host="www.reddit.com"] {max-width: 80ex}
 .resource[id^="container"] > a.title {color: #777; padding: 0; margin: 0; min-width: 0; min-height: 0; font-size: .8em}
+.resource[id^="container"] > span.kv {display: none}
 .resource[id^="container"] {border-color: #555}
 .title, .abstract {vertical-align: top}
 .title:visited {background-color: #ccc; color: #000}
