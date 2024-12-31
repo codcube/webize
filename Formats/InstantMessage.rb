@@ -15,9 +15,6 @@ module Webize
         type = RDF::URI(SIOC + 'InstantMessage')
         parts = @base.parts
         hour = File.dirname @base.path
-        day = File.dirname hour
-        month = File.dirname day
-        year = File.dirname month
         network, channame = @base.basename.split '.'
         channame = Rack::Utils.unescape_path(channame).gsub('#','')
         chan = @base + '#' + channame
@@ -71,21 +68,11 @@ module Webize
           yield subject, RDF::URI(Creator), creator
           Plaintext::Reader.new(msg, base_uri: subject).plaintext_triples(&f) if msg
         }
-
-        return unless lines > 0
-
-        yield @base.env[:base], RDF::URI(Contains), RDF::URI(year)
-        yield RDF::URI(year), RDF::URI(Title), File.basename(year)
-        yield RDF::URI(year), RDF::URI(Contains), RDF::URI(month)
-        yield RDF::URI(month), RDF::URI(Title), File.basename(month)
-        yield RDF::URI(month), RDF::URI(Abstract), ::Date::MONTHNAMES[File.basename(month).to_i]
-        yield RDF::URI(month), RDF::URI(Contains), RDF::URI(day)
-        yield RDF::URI(day), RDF::URI(Title), File.basename(day)
-        yield RDF::URI(day), RDF::URI(Contains), chan
+        return unless lines > 0 # skip channel metadata for empty logs
+        yield @base, RDF::URI(Contains), chan
         yield chan, RDF::URI(Title), '#' + channame
         yield chan, RDF::URI(Abstract), [File.basename(hour), ':00'].join
         yield chan, RDF::URI(Type), RDF::URI('http://rdfs.org/sioc/ns#ChatLog')
-
       end
 
       # twtxt -> RDF
