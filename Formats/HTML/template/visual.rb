@@ -94,6 +94,7 @@ module Webize
                  HTML.markup t, env}} if video.has_key? Title),
 
              if v.host == YT_host                              # Youtube video
+               return videotag({'uri' => v.relocate.uri}) if v.relocate?
                id = v.query_hash['v']                          # video id
                player = 'yt'+Digest::SHA2.hexdigest(rand.to_s) # player id
                video.delete Image                              # strip thumbnail definitions
