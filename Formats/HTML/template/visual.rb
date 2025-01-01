@@ -84,7 +84,7 @@ module Webize
          return) unless video.has_key? 'uri'                   # required URI
 
         v = Webize::Resource env[:base].join(video['uri']),env # video resource
-
+puts v
         return if env[:videos].has_key? v                      # shown video
         env[:videos][v] = true                                 # mark as shown
 
