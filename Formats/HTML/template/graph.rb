@@ -46,7 +46,8 @@ module Webize
                                                '#cache', '#origin',
                                                Title,
                                                HT + 'Content-Type', HT + 'Content-Length', HT + 'Server', HT + 'X-Powered-By',
-                                               '#fTime', '#pTime', Date]
+                                               '#fTime', '#pTime', Date],
+                                       heading: false
 
     end
   end

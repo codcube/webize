@@ -27,7 +27,7 @@
 .resource[host="www.mixcloud.com"] img {display: none}
 .resource[host="www.mixcloud.com"] img:last-child {display: inline-block}
 .resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
-.resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"] {max-width: 36em}
+.resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource {max-width: 38em; overflow: hidden}
 .resource[host="www.reddit.com"] span.comment {display: none}
 .resource[host="www.reddit.com"] {max-width: 80ex}
 .resource[id^="container"] > a.title {color: #777; padding: 0; margin: 0; min-width: 0; min-height: 0; font-size: .8em}
