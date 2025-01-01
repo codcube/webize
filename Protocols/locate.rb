@@ -6,6 +6,7 @@ module Webize
   URL_hosts = Webize.configList 'hosts/url'
   RSS_hosts = Webize.configList 'hosts/rss'
   YT_rehosts = Webize.configList 'formats/video/rehost-yt'
+  YT_host = 'www.youtube.com'
 
   # addressing
   LocalAddrs = Socket.ip_address_list.map &:ip_address # local addresses
@@ -28,7 +29,8 @@ module Webize
 
     def relocate? = (URL_host? && (query_hash['url'] || query_hash['u'])) ||
                     RSS_available? ||
-                    [FWD_hosts, YT_rehosts].find{|_| _.member? host}
+                    [FWD_hosts, YT_rehosts].find{|_| _.member? host} ||
+                    (YT_host == host && parts[0] == 'v')
 
     def relocate
       Webize::URI(if URL_host? && (query_hash['url'] || query_hash['u'])
@@ -37,9 +39,9 @@ module Webize
                    ['//', FWD_hosts[host], path, query ? ['?', query] : nil].join
                  elsif RSS_available?
                    ['//', host, path ? path.sub(/\/$/,'') : '/', '.rss'].join
-                 elsif YT_rehosts.member? host
-                   ['//www.youtube.com/watch?v=',
-                    query_hash['v'] || path[1..-1]].join
+                 elsif [YT_host, *YT_rehosts].member? host
+                   ['https://www.youtube.com/watch?v=',
+                    query_hash['v'] || parts[-1]].join
                  else
                    self
                   end)

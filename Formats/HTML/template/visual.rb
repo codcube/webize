@@ -84,7 +84,7 @@ module Webize
          return) unless video.has_key? 'uri'                   # required URI
 
         v = Webize::Resource env[:base].join(video['uri']),env # video resource
-puts v
+
         return if env[:videos].has_key? v                      # shown video
         env[:videos][v] = true                                 # mark as shown
 
@@ -93,10 +93,10 @@ puts v
                c: video.delete(Title).map{|t|
                  HTML.markup t, env}} if video.has_key? Title),
 
-             if v.uri.match? /youtu/                           # Youtube
-               id = v.query_hash['v'] || v.parts[-1]           # video id
+             if v.host == YT_host                              # Youtube video
+               id = v.query_hash['v']                          # video id
                player = 'yt'+Digest::SHA2.hexdigest(rand.to_s) # player id
-               video.delete Image                              # strip duplicate thumbnail(s)
+               video.delete Image                              # strip thumbnail definitions
                [{_: :a, id: 'preembed' + Digest::SHA2.hexdigest(rand.to_s), # pre-embed thumbnail
                   class: :preembed,                            # on activation:
                   href: '#' + player,                          # focus player (embed)
@@ -104,7 +104,7 @@ puts v
                   c: [{_: :img, src: Webize::Resource("https://i.ytimg.com/vi_webp/#{id}/sddefault.webp", env).href},
                       {class: :icon, c: '&#9654;'}]},          # ▶ icon
                  {id: player}]                                 # player
-             else                                              # generic video
+             else                                              # video
                source = {_: :source, src: v.uri}
                source[:type] = 'application/x-mpegURL' if v.extname == '.m3u8'
 
@@ -112,7 +112,7 @@ puts v
                  c: source}, '<br>',
                 {_: :a, href: v.uri, c: v.display_name}]
              end,
-             (keyval video)]}                                  # extra attributes
+             (keyval video)]}                                  # video attributes
       end
     end
   end
