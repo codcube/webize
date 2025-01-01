@@ -5,7 +5,7 @@ module Webize
   FWD_hosts = Webize.configHash 'hosts/forward'
   URL_hosts = Webize.configList 'hosts/url'
   RSS_hosts = Webize.configList 'hosts/rss'
-  YT_hosts = Webize.configList 'hosts/youtube'
+  YT_hosts = Webize.configList 'formats/video/host-yt'
 
   # addressing
   LocalAddrs = Socket.ip_address_list.map &:ip_address # local addresses
