@@ -13,8 +13,9 @@ module Webize
 
         uri = Webize::Resource uri, env
 
-        node.update({#HT+'host' => [uri.host],        # host
-                     HT+'path' => [uri.path],        # path
+        node.update({#HT+'host' => [uri.host],       # host
+                      HT+'path' => [uri.path],       # path
+                      HT+'query' => [uri.query],     # query
                      '#cache' => [POSIX::Node(uri)], # 👉 cache
                      '#origin' => [uri]})            # 👉 upstream/origin resource
       end
@@ -22,7 +23,7 @@ module Webize
       # generic graph listing - cache+origin pointers and summary fields
       def graph_source(nodes) = table cache_info(nodes), attrs: [LDP + 'prev', 'uri',
                                                                  Title, '#origin',
-                                                                 HT + 'host', HT + 'path',
+                                                                 HT + 'host', HT + 'path', HT + 'query',
                                                                  Image, Creator, Date,
                                                                  '#cache', LDP + 'next']
 
@@ -42,7 +43,7 @@ module Webize
       def remote_source(nodes) = table cache_info(nodes),
                                        id: :remote_source,
                                        attrs: [HT+'status',
-                                               'uri', HT + 'host', HT + 'path',
+                                               'uri', HT + 'host', HT + 'path', HT + 'query',
                                                '#cache', '#origin',
                                                Title,
                                                HT + 'Content-Type', HT + 'Content-Length', HT + 'Server', HT + 'X-Powered-By',
