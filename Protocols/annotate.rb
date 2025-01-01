@@ -11,7 +11,7 @@ module Webize
       # create hierarchical containers from path structure
       names = fsNames
       names.pop unless dirURI?                         # container node
-      nodes.pop if nodes[-1] == 'www'                  # drop 'www' prefix
+      names.pop if names[-1] == 'www'                  # drop 'www' prefix
       container = names.inject(base) do |parent, name| # walk from base to container
         c = RDF::URI('#container_' + Digest::SHA2.hexdigest(parent.to_s + name)) # container URI
         graph << RDF::Statement.new(parent, RDF::URI(Contains), c) # parent 👉 child container
