@@ -32,7 +32,8 @@ module Webize
         (#puts "no Image URI", image
          return) unless image.has_key? 'uri' # required URI
 
-        i = Webize::Resource env[:base].join(image['uri']), env
+        i = Webize::Resource env[:base].join(image['uri']), env # image resource
+
         return {_: :span, href: i.uri, c: :🚫} if i.deny? # blocked image
 
         if env[:images].has_key? i     # shown image?
@@ -77,27 +78,33 @@ module Webize
       def svg(node) = inlineResource node, :svg
 
       def videotag video
-        return unless video.class == Hash
+        (puts "not a video", video
+         return) unless video.class == Hash                    # required resource
+        (puts "no video URI", video
+         return) unless video.has_key? 'uri'                   # required URI
 
-        v = Webize::Resource env[:base].join(video['uri']), env                    # video resource
+        v = Webize::Resource env[:base].join(video['uri']),env # video resource
+
+        return if env[:videos].has_key? v                      # shown video
+        env[:videos][v] = true                                 # mark as shown
 
         {class: 'video resource',
-         c: [({class: :title,                                                      # title
+         c: [({class: :title,                                  # title
                c: video.delete(Title).map{|t|
                  HTML.markup t, env}} if video.has_key? Title),
 
-             if v.uri.match? /youtu/                                               # Youtube
-               id = v.query_hash['v'] || v.parts[-1]                                # video id
-               player = 'yt' + Digest::SHA2.hexdigest(rand.to_s)                    # player id
-               video.delete Image                                                   # strip duplicate thumbnail(s)
-               [{_: :a, id: 'preembed' + Digest::SHA2.hexdigest(rand.to_s),         # pre-embed thumbnail
-                  class: :preembed,                                                 # on activation:
-                  href: '#' + player,                                               # focus player (embed)
+             if v.uri.match? /youtu/                           # Youtube
+               id = v.query_hash['v'] || v.parts[-1]           # video id
+               player = 'yt'+Digest::SHA2.hexdigest(rand.to_s) # player id
+               video.delete Image                              # strip duplicate thumbnail(s)
+               [{_: :a, id: 'preembed' + Digest::SHA2.hexdigest(rand.to_s), # pre-embed thumbnail
+                  class: :preembed,                            # on activation:
+                  href: '#' + player,                          # focus player (embed)
                   onclick: "inlineplayer(\"##{player}\",\"#{id}\"); this.remove()", # load player
                   c: [{_: :img, src: Webize::Resource("https://i.ytimg.com/vi_webp/#{id}/sddefault.webp", env).href},
-                      {class: :icon, c: '&#9654;'}]},                               # ▶ icon
-                 {id: player}]                                                      # player
-             else                                                                  # generic video
+                      {class: :icon, c: '&#9654;'}]},          # ▶ icon
+                 {id: player}]                                 # player
+             else                                              # generic video
                source = {_: :source, src: v.uri}
                source[:type] = 'application/x-mpegURL' if v.extname == '.m3u8'
 
@@ -105,7 +112,7 @@ module Webize
                  c: source}, '<br>',
                 {_: :a, href: v.uri, c: v.display_name}]
              end,
-             (keyval video)]}                                                      # extra attributes
+             (keyval video)]}                                  # extra attributes
       end
     end
   end
