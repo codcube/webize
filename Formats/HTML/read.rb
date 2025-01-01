@@ -39,9 +39,8 @@ module Webize
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        send(@isBookmarks ? :bookmarks : :scan_document){|s, p, o, graph = @base|
-          fn.call RDF::Statement.new(s, Webize::URI.new(p), o,
-                                     graph_name: graph)}
+        send(@isBookmarks ? :bookmarks : :scan_document){|s, p, o, graph|
+          fn.call RDF::Statement.new(s, Webize::URI.new(p), o, graph_name: graph)}
       end
 
       # scan document fragment
@@ -113,11 +112,11 @@ module Webize
             href[]
           when Schema + 'srcSet' # parse @srcset
             o.scan(SRCSET).map{|uri, _|
-              yield subject, Image, @base.join(uri)}
+              yield subject, Image, @base.join(uri), @base}
             next
           when Label             # tokenize @label
             o.split(/\s/).map{|label|
-              yield subject, p, label }
+              yield subject, p, label, @base }
             next
           when Link              # @link untyped reference
             href[]
@@ -139,17 +138,17 @@ module Webize
           end
 
           # emit triples
-          yield subject, p, o # primary attr-mapped triple
+          yield subject, p, o, @base # primary attr-mapped triple
 
-          yield subject, Image, o if p == Link && o.imgURI? # image triple
+          yield subject, Image, o, @base if p == Link && o.imgURI? # image triple
 
         } if node.respond_to? :attribute_nodes
 
         # child nodes
         if OpaqueNode.member?(node.name) # HTML literal
-          yield subject, Contains, RDF::Literal(node.inner_html, datatype: RDF.HTML)
+          yield subject, Contains, RDF::Literal(node.inner_html, datatype: RDF.HTML), @base
         elsif node.name == 'comment'
-          yield subject, Contains, node.inner_text
+          yield subject, Contains, node.inner_text, @base
         else
           node.children.map{|child|
             if child.text? || child.cdata? # text literal
@@ -160,22 +159,22 @@ module Webize
                   begin                    # read as JSON
                     json = stringified ? (::JSON.load %Q("#{text}")) : text
                     json_node = JSON::Reader.new(json, base_uri: @base).scan_fragment &f
-                    yield subject, Contains, json_node # emit JSON node
+                    yield subject, Contains, json_node, @base # emit JSON node
                   rescue
-                    yield subject, Contains, child.inner_text.gsub(/\n/,'').gsub(/\s+/,' ')[0..255]
+                    yield subject, Contains, child.inner_text.gsub(/\n/,'').gsub(/\s+/,' ')[0..255], @base
                   end
                 else
-                  yield subject, Contains, child.inner_text.gsub(/\n/,'').gsub(/\s+/,' ')[0..255]
+                  yield subject, Contains, child.inner_text.gsub(/\n/,'').gsub(/\s+/,' ')[0..255], @base
                 end
               else
                 case child.inner_text
                 when EmptyText
                 else
-                  yield subject, Contains, child.inner_text
+                  yield subject, Contains, child.inner_text, @base
                 end
               end
             else # child node
-              yield subject, Contains, (scan_node child, &f)
+              yield subject, Contains, (scan_node child, &f), @base
             end}
         end
 
@@ -190,7 +189,6 @@ module Webize
         if base = @doc.css('head base')[0]
           if baseHref = base['href']
             @base = HTTP::Node @base.join(baseHref), @env
-            yield @env[:base], Contains, @base
           end
         end
 
@@ -227,14 +225,14 @@ module Webize
 
               logger.warn ["META no URI \e[7m", p, "\e[0m ", o].join unless p.to_s.match? /^(drop|http)/
 
-              yield @base, p, o unless p == :drop
+              yield @base, p, o, @base unless p == :drop
               m.remove
             end
           elsif eq = m['http-equiv']
             case eq
             when 'refresh'
               if u = m['content'].split('url=')[-1]
-                yield @base, Link, RDF::URI(u)
+                yield @base, Link, RDF::URI(u), @base
               end
             else
               #puts "HTTP-EQUIV #{eq}"
@@ -261,7 +259,7 @@ module Webize
             if p == :drop
               puts "\e[38;5;196m-<link>\e[0m #{k} #{o}"
             else
-              yield @base, p, o
+              yield @base, p, o, @base
               m.remove
             end
           }
@@ -270,7 +268,7 @@ module Webize
 
         # <title>
         @doc.css('title').map{|t|
-          yield @base, Title, t.inner_text unless t.inner_text.empty?}
+          yield @base, Title, t.inner_text, @base unless t.inner_text.empty?}
 
         # @doc.css('#next, #nextPage, a.next, .show-more > a').map{|nextPage|
         #   if ref = nextPage.attr('href')
@@ -292,7 +290,7 @@ module Webize
             nodes[id] = true           # mark first occurrence
           end}
 
-        yield @base, Contains, (scan_node @doc, &f) # scan document
+        yield @base, Contains, (scan_node @doc, &f), @base # scan document
       end
     end
   end
