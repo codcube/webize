@@ -3,10 +3,10 @@ module Webize
     class Property
 
       Markup[Image] = :img
+      Markup[Video] = :video
 
       def img images
         # all objects of this predicate considered an image - predicate URI says it's an image so we'll take its word
-
         # supports a common pattern in JSON where the image URI is in a string-value or object without type info alongside it
         # referring-context is more explicit than extension-sniffing heuristics which miss any image without a classic fs-name extension,
         # common with content-addressed / hash-derived CDN URLs, specialized image-servers etc
@@ -14,10 +14,17 @@ module Webize
           Node.new(env[:base]).env(env).img i # image
         end
       end
+
+      def video videos
+        videos.map{|v|
+          Node.new(env[:base]).env(env).videotag v}
+      end
+
     end
     class Node
 
       Markup[Image] = :img
+      Markup[Video] = :videotag
 
       def img image
         (#puts "not an Image", image
@@ -69,6 +76,37 @@ module Webize
 
       def svg(node) = inlineResource node, :svg
 
+      def videotag video
+        return unless video.class == Hash
+
+        v = Webize::Resource env[:base].join(video['uri']), env                    # video resource
+
+        {class: 'video resource',
+         c: [({class: :title,                                                      # title
+               c: video.delete(Title).map{|t|
+                 HTML.markup t, env}} if video.has_key? Title),
+
+             if v.uri.match? /youtu/                                               # Youtube
+               id = v.query_hash['v'] || v.parts[-1]                                # video id
+               player = 'yt' + Digest::SHA2.hexdigest(rand.to_s)                    # player id
+               video.delete Image                                                   # strip duplicate thumbnail(s)
+               [{_: :a, id: 'preembed' + Digest::SHA2.hexdigest(rand.to_s),         # pre-embed thumbnail
+                  class: :preembed,                                                 # on activation:
+                  href: '#' + player,                                               # focus player (embed)
+                  onclick: "inlineplayer(\"##{player}\",\"#{id}\"); this.remove()", # load player
+                  c: [{_: :img, src: Webize::Resource("https://i.ytimg.com/vi_webp/#{id}/sddefault.webp", env).href},
+                      {class: :icon, c: '&#9654;'}]},                               # ▶ icon
+                 {id: player}]                                                      # player
+             else                                                                  # generic video
+               source = {_: :source, src: v.uri}
+               source[:type] = 'application/x-mpegURL' if v.extname == '.m3u8'
+
+               [{_: :video, controls: :true,
+                 c: source}, '<br>',
+                {_: :a, href: v.uri, c: v.display_name}]
+             end,
+             (keyval video)]}                                                      # extra attributes
+      end
     end
   end
 end

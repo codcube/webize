@@ -12,6 +12,7 @@ module Webize
       links: {},     # Link headers
       mapped: {},    # mapped URI statistics
       qs: {},        # parsed query-string
+      videos: {},    # videos list for deduplication
       warnings: []}  # warnings
 
   end
