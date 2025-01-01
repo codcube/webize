@@ -43,7 +43,7 @@
 .top-bar form input {background-color: #282828; color: #eee; border-radius: .5em; border-width: 0; margin: 0; padding: 0; width: 24ex}
 .top-bar svg {height: 1em; width: 1em}
 .top-bar {border-width: 0 1px 1px 1px; display: inline-block; border-style: solid; border-color: #555; border-radius: 0 0 .62em .62em; vertical-align: top}
-.val > span, p > span {background-color: #000; color: #fff}
+p > span, .val[key="http://rdfs.org/sioc/ns#content"] span {background-color: #000; color: #fff}
 .val[key="http://www.w3.org/2000/01/rdf-schema#label"] > span {background-color: #777; font-size: .88em; border-radius: .28em; color: #000; margin-left: 1px}
 .video {max-width: 80em}
 .warning a {background-color: #fff; color: #000}
