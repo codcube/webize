@@ -66,7 +66,7 @@ module Webize
       # storage metadata
       stat = File.stat fsPath
       graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#File'))
-     #graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename
+      graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename
       graph << RDF::Statement.new(self, RDF::URI('http://www.w3.org/ns/posix/stat#size'), stat.size)
       graph << RDF::Statement.new(self, RDF::URI(Date), stat.mtime.iso8601)
 
