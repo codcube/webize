@@ -8,13 +8,14 @@ module Webize
       # related RDF formalisms and guidelines:
       # https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
 
-      # create nested hierarchical containers for path structure
-      container = fsNames[0..-2].inject(base) do |parent, name| # walk from base to container (POSIX#dirname) node
+      # create hierarchical containers from path structure
+      names = fsNames
+      names.pop unless dirURI?                         # container node
+      nodes.pop if nodes[-1] == 'www'                  # drop 'www' prefix
+      container = names.inject(base) do |parent, name| # walk from base to container
         c = RDF::URI('#container_' + Digest::SHA2.hexdigest(parent.to_s + name)) # container URI
         graph << RDF::Statement.new(parent, RDF::URI(Contains), c) # parent 👉 child container
         graph << RDF::Statement.new(c, RDF::URI(Title), name) # container name
-       #graph << RDF::Statement.new(c, RDF::URI(Type),        # type
-       #                            RDF::URI('#container'))
         c                                                     # parent container for next iteration
       end
 
