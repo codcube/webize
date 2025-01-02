@@ -186,8 +186,8 @@ module Webize
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        list = @base + '#list'                # list URI
-                                              # 👉 list
+        list = @base + '#list'           # list URI
+                                         # 👉 list
         fn.call RDF::Statement.new @base, RDF::URI(Contains), list
         query = @base.env[:qs]['q']&.downcase # query argument
 
