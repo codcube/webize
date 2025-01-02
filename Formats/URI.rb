@@ -189,28 +189,22 @@ module Webize
         list = @base + '#list'                # list URI
                                               # 👉 list
         fn.call RDF::Statement.new @base, RDF::URI(Contains), list
-        linkCount = 0                         # statistics
         query = @base.env[:qs]['q']&.downcase # query argument
 
-        @doc.lines.shuffle.map(&:chomp).map{|line| # each line:
+        @doc.lines.map(&:chomp).map{|line| # each line:
           next if line.empty?            # skip empty line
           next if line.match?(/^#/)      # skip commented line
           next if query &&               # skip entry not matching query
                   !line.downcase.index(query)
+
           uri, title = line.split ' ', 2 # URI, title (String)
           u = Webize::URI(uri)           # URI        (RDF)
-          if u.deny?
-            puts "➕ host \e[7m#{u.host}\e[0m in URI list"
-            URI::AllowHosts.push u.host
-          end
-          linkCount += 1
-          img = u.imgURI?
-          member = img ? Image : '#graph'
-          fn.call RDF::Statement.new list, RDF::URI(member), u
+
+          URI::AllowHosts.push u.host if u.deny? # depending on DNS configuration, list presence might not be enough for implicit unblock
+
+          fn.call RDF::Statement.new list, RDF::URI('#graph'), u
           fn.call RDF::Statement.new u, RDF::URI(Title), title || uri unless img
         }
-
-        fn.call RDF::Statement.new list, RDF::URI(Size), linkCount
       end
     end
   end
