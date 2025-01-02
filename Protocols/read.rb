@@ -32,7 +32,7 @@ module Webize
             (Resource g).graph_pointer graph
           end
 
-        # now the graph hsa the responsibility 👉 to its nodes if you're adding these 'nice to have' in-band references. you can of course just #dump a soup of disconnected subgraphs with the stock Turtle serializer, but these references are nice for book-keeping, discoverability, and making the default generic view more functional (automagic gopher-style navigation) without doing any extra work besides providing the reference skeleton
+        # now the graph has responsibility to 👉 its nodes if you're adding these in-band references. you can of course just #dump a soup of disconnected subgraphs with the stock Turtle serializer, but these references are nice for book-keeping, discoverability, and making the default generic view more functional (automagic gopher-style navigation) without doing any extra work besides providing the reference skeleton
 
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
