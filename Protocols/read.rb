@@ -27,7 +27,7 @@ module Webize
 
           # naming and referring to the URIs of the additional graphs from the graph URI of the base graph is one the most rock solid, antifragile ways to at least know there are other graphs to look for, and provide reachability to them via naïve, simple recursive traversal algorithms. we're mainly doing this so we can be lazy and have simpler implementations not need to stack #each_graph and some graph op all over the place
           [r.base_uri,
-           *graph.each_graph.map(&:name)].map do |g|
+           *graph.each_graph.map(&:name)].uniq.map do |g|
             puts "graph #{g}"
             (Resource g).graph_pointer graph
           end
