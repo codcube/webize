@@ -64,10 +64,10 @@ module Webize
         Console.logger.info log.join ' '                      # log message
       }
 
-      if updates && newest = query(timestamp).objects.sort[-1] # dataset timestamp
+      #if updates && newest = query(timestamp).objects.sort[-1] # dataset timestamp
         # much noise w/ "like/play/favorite" causing last-updated bumps so not super useful to find non-updating sources. also gotta keep an eye on HTTP metadata like X-cache-updated type header data getting in TODO deep dive and maybe finally support more specific timestamp types that we're all merging into dc:date now
-        updates << RDF::Statement.new(base, RDF::URI(Date), newest)
-      end
+        #updates << RDF::Statement.new(base, RDF::URI(Date), newest)
+      #end
 
       updates || self # persisted-graphs repository
      end
