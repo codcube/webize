@@ -200,7 +200,7 @@ module Webize
           uri, title = line.split ' ', 2 # URI, title (String)
           u = Webize::URI(uri)           # URI        (RDF)
 
-          URI::AllowHosts.push u.host if u.deny? # implicit unblock due to list presence. depending on DNS configuration, that might not be enough (run allow script to add line to hosts/allow)
+          URI::AllowHosts.push u.host if u.deny? # implicit unblock due to list presence. depending on DNS configuration, this might not be enough (script at bin/access/allow add line to config/hosts/allow)
 
           fn.call RDF::Statement.new list, RDF::URI('#graph'), u
           fn.call RDF::Statement.new u, RDF::URI(Title), title if title
