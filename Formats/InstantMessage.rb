@@ -54,21 +54,27 @@ module Webize
           end
           nick = CGI.escape(nick || 'anonymous')
 
-          next if from_query && # skip line nott tmatching from: query
+          next if from_query && # skip line not tmatching from: query
                   nick.downcase != from_query
 
           timestamp = day_slug + time
           subject = RDF::URI ['#', channame, hourslug, lines += 1].join
-          yield subject, RDF::URI(Type), type
-          yield chan, RDF::URI(Schema+'item'), RDF::URI(subject)
-          ts[timestamp] ||= 0
+
+          yield subject, RDF::URI(Type), type                    # typetag
+          yield chan, RDF::URI(Schema+'item'), RDF::URI(subject) # line entry
+
+          ts[timestamp] ||= 0                                    # timestamp
           yield subject, RDF::URI(Date), [timestamp, '%02d' % ts[timestamp]].join('.')
           ts[timestamp] += 1
-          creator = @base + '?from=' + nick + '#' + nick
+
+          creator = @base + '?from=' + nick + '#' + nick         # author
           yield subject, RDF::URI(Creator), creator
-          Plaintext::Reader.new(msg, base_uri: subject).plaintext_triples(&f) if msg
-        }
+
+          Plaintext::Reader.new(msg, base_uri: @base).           # line content
+            plaintext_triples(subject, &f) if msg}
+
         return unless lines > 0 # skip channel metadata for empty logs
+
         yield @base, RDF::URI(Contains), chan
         yield chan, RDF::URI(Title), '#' + channame
         yield chan, RDF::URI(Abstract), [File.basename(hour), ':00'].join
