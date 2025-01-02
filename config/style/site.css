@@ -126,6 +126,8 @@ td.k, th[scope="row"] {text-align: right; font-weight: bold}
 td[property="#path"] {max-width: 42em; overflow: hidden; white-space: nowrap}
 td[property="http://purl.org/dc/terms/Image"] {min-width: 128px}
 td[property="http://rdfs.org/sioc/ns#has_creator"] {text-align: right}
+td[property="http://www.w3.org/2011/http#path"] {color: #ccc; font-size: .9em}
+td[property="http://www.w3.org/2011/http#query"] {color: #bbb; font-size: .8em}
 th {background-color: #383838; color: #fff}
 th:first-child {border-radius: .3em 0 0 .3em}
 th:last-child {border-radius: 0 .3em .3em 0}

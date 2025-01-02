@@ -140,8 +140,8 @@ module Webize
             h.graph_pointer graph                                       # per-host remote source listing
             graph << RDF::Statement.new(h, RDF::URI('#remote_source'), self) # source identity
             graph << RDF::Statement.new(self, RDF::URI(HT + 'status'), status) # HTTP status
-            graph << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch timing
-            graph << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache timing
+           #graph << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch timing
+           #graph << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache timing
 
             graph                                                       # return cached+fetched graph data
                                                                         # webizing proxy HTTP-through response
