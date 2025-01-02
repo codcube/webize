@@ -145,7 +145,7 @@ module Webize
       return [] unless extname == '.u'
       pattern = RDF::Query::Pattern.new :s, RDF::URI('#graph'), :o
 
-      storage.read.query(pattern).objects.map do |o|
+      storage.read.query(pattern).objects.shuffle.map do |o|
         Webize::Resource o, env
       end
     end
