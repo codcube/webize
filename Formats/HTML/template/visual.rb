@@ -27,10 +27,12 @@ module Webize
       Markup[Video] = :videotag
 
       def img image
-        (#puts "not an Image", image
+        (puts ["not an image resource", image.class, image].join " "
          return) unless image.class == Hash  # required resource
-        (#puts "no Image URI", image
-         return) unless image.has_key? 'uri' # required URI
+
+        # URI becomes image @src in this method. if you've a description of an <img> tag,
+        # or @src is in an image predicate, use #imageContainer below
+        return unless image.has_key? 'uri' # required URI
 
         i = Webize::Resource env[:base].join(image['uri']), env # image resource
 

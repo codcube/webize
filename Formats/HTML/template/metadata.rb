@@ -24,13 +24,12 @@ module Webize
 
       def creator creators
         creators.map{|creator|
-          puts creator
           [ # colorize by URI
-            if Identifiable.member? creator.class
-              uri = Webize::Resource.new(creator).env env
-              name = uri.display_name
+            if creator.class == Hash && creator['uri']
+              author = Webize::Resource env[:base].join(creator['uri']), env # author URI
+              name = author.display_name
               color = Digest::SHA2.hexdigest(name)[0..5]
-              {_: :a, class: :from, href: uri.href, style: "background-color: ##{color}", c: name}
+              {_: :a, class: :from, href: author.href, style: "background-color: ##{color}", c: name}
             else
               HTML.markup creator, env
             end,
