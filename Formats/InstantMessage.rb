@@ -54,7 +54,7 @@ module Webize
           end
           nick = CGI.escape(nick || 'anonymous')
 
-          next if from_query && # skip line not tmatching from: query
+          next if from_query && # skip line not matching from: query
                   nick.downcase != from_query
 
           timestamp = day_slug + time

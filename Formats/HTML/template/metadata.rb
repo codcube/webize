@@ -24,6 +24,7 @@ module Webize
 
       def creator creators
         creators.map{|creator|
+          puts creator
           [ # colorize by URI
             if Identifiable.member? creator.class
               uri = Webize::Resource.new(creator).env env
