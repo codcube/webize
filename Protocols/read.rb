@@ -23,14 +23,16 @@ module Webize
 
           # emit 👉 to graphs as RDF
 
-          # Ruby methods on Reader/Repo instances are out-of-band techniques from perspective of generic graph-data consumption. even in this Ruby process, the reader w/ declaratively updated base-URI falls out of scope as this method returns, and named-graph identifiers available in a Repository instance aren't preserved through all our merge/collation/view algorithms elsewhere - there's not much point plumbing them through everything when multiple named-graphs usually aren't serializable to a single output stream ( you get a base URI and will be happy with it!) unless using some obscure/bleeding-edge/unadopted formats. we've taken a look at NQuads and RDFSTAR and the Ruby libraries have above average supppport for such things, but we're kind of luddites.
+          # Ruby methods on Reader/Repo instances are out-of-band techniques from perspective of generic data consumption. even in this Ruby process, the reader w/ declaratively updated base-URI falls out of scope as this method returns, and named-graph identifiers available in a Repository instances aren't preserved through all our merge/collation/view algorithms elsewhere - there's not much point plumbing them through everything when multiple named-graphs oten aren't serializable to a single output stream (you will get a base URI definition and be happy!) unless using some bleeding-edge formats. we've taken a look at NQuads and RDFSTAR and the Ruby libraries have above average support for such things, but we're kind of luddites.
 
-          # so naming and referring to the base URIs of the additional graphs, from the base URI of the default graph is the most rock solid, antifragile way to at least know there are other graphs to look for, and provide reachability to them via naïve, simple recursive traversal algorithms
+          # naming and referring to the URIs of the additional graphs from the graph URI of the base graph is one the most rock solid, antifragile ways to at least know there are other graphs to look for, and provide reachability to them via naïve, simple recursive traversal algorithms. we're mainly doing this so we can be lazy and have simpler implementations not need to stack #each_graph and some graph op all over the place
           [r.base_uri,
-           *graph.each_graph.map(&:name)].map do |_|
-            (Resource _).graph_pointer graph
+           *graph.each_graph.map(&:name)].map do |g|
+            puts "graph #{g}"
+            (Resource g).graph_pointer graph
           end
-          # the 👉'd graph may then 👉 to its nodes, completing reachability 'nice to have' for the output layer. you can of course just #dump a soup of disconnected subgraphs with the stock Turtle serializer, but these references are nice for book-keeping, discoverability, and making the default generic view more functional (automagic gopher-style navigation) without doing any extra work besides providing a reference skeleton
+
+        # now the graph hsa the responsibility 👉 to its nodes if you're adding these 'nice to have' in-band references. you can of course just #dump a soup of disconnected subgraphs with the stock Turtle serializer, but these references are nice for book-keeping, discoverability, and making the default generic view more functional (automagic gopher-style navigation) without doing any extra work besides providing the reference skeleton
 
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
