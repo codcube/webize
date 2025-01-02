@@ -83,8 +83,8 @@ module Webize
       def to recipients
         recipients.map{|r|
           [# colorize by URI
-            if Identifiable.member? r.class
-              uri = Webize::Resource.new(r).env env
+            if r.class == Hash && r['uri']
+              uri = Webize::Resource env[:base].join(r['uri']), env # recipient URI
               name = uri.display_name
               color = Digest::SHA2.hexdigest(name)[0..5]
               {_: :a, class: :to, href: uri.href, style: "background-color: ##{color}", c: ['&rarr;', name].join}
