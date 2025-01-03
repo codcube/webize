@@ -6,9 +6,15 @@ module Webize
   end
   class POSIX::Node
 
+    CachedFormats = %w(application/pdf)
+
+    IndexedFormats = %w(message/rfc822)
+
     def read
       if file?
+
         readFile
+
       elsif directory?
         readDir
       else
@@ -30,7 +36,7 @@ module Webize
       (nodes = node.children).map{|child|                   # child nodes
         name = child.basename.to_s                          # node name
         next if name[0] == '.'                              # invisible node
-
+ 
         if isDir = child.directory?                         # node type
           name += '/'
         end
