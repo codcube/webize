@@ -62,11 +62,12 @@ module Webize
       locator = fsPath
 
       graph = if IndexedFormats.member? format
-                🐢 = locator + '.🐢' # cache locator
-                if File.exist? 🐢
+                🐢 = locator + '.🐢'   # cache locator
+                if File.exist? 🐢      # cache exists
                   readRDF 'text/turtle', File.open(🐢).read
-                else
-                  puts "➕ #{locator}"
+                else                   # populate cache
+                  puts "➕ #{locator}" # indexed location
+                  (readRDF format, File.open(locator).read).index env, self
                 end
               else
                 readRDF format, File.open(locator).read # Node -> RDF
