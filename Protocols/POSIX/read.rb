@@ -59,23 +59,11 @@ module Webize
 
     # Node -> RDF
     def readFile
-      format = fileMIME             # MIME type
-      locator = fsPath              # graph locator
+      format = fileMIME
       if IndexedFormats.member? format
-        🐢 = locator + '.🐢'        # cache locator
-        if File.exist? 🐢           # cache exists?
-          puts "cache hit for #{locator}"
-          readRDF 'text/turtle', File.open(🐢).read
-        else                        # cache and index graph
-          puts "➕ #{locator}"      # log index-add
-          graph = (readRDF format,  # read graph
-                           File.open(locator).read).index env, self
-          RDF::Writer.for(:turtle). # cache graph in 🐢
-            open(🐢, base_uri: self, prefixes: Prefixes){|cache| cache << graph}
-          graph
-        end
+       (readRDF format, File.open(fsPath).read).index env, self
       else
-        readRDF format, File.open(locator).read
+        readRDF format, File.open(fsPath).read
       end
     end
   end
