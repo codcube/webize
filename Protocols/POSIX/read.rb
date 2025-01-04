@@ -6,15 +6,13 @@ module Webize
   end
   class POSIX::Node
 
-    CachedFormats = %w(application/pdf)
-
-    IndexedFormats = %w(message/rfc822)
+    IndexedFormats = %w(
+application/pdf
+message/rfc822)
 
     def read
       if file?
-
         readFile
-
       elsif directory?
         readDir
       else
@@ -67,7 +65,13 @@ module Webize
     end
 
     def readFile
-      graph = readRDF fileMIME, readBlob # stored data -> RDF graph
+      format = fileMIME
+
+      if IndexedFormats.member? format
+        puts :index
+      else
+        graph = readRDF format, readBlob # stored data -> RDF graph
+      end
 
       # storage metadata
       stat = File.stat fsPath
