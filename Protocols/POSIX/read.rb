@@ -6,18 +6,6 @@ module Webize
   end
   class POSIX::Node
 
-    # indexing preference:
-    # in HTTP::Node everything is indexed after a network read, unless no transcoding or merging is occurring ("static asset" fetches)
-    # in POSIX::Node we only index if explicity listed. query args are passed to readers so you can do quite a bit of ad-hoc querying without a pre-indexing pass
-
-    # so far listings are for one of these reasons:
-    # - a read speedup via cached Turtle (the PDF-extraction util we're using is suspiciously slow - for now only the first read will be an excruciating wait)
-    # - data needs to be stored at alternate locations. e.g. an email's data needs to findable at a Message-ID derived location
-
-    IndexedFormats = %w(
-application/pdf
-message/rfc822)
-
     def read
       if file?
         readFile
