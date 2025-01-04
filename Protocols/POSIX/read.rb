@@ -6,6 +6,7 @@ module Webize
       elsif directory?
         readDir
       else
+        # something like dangling symlink or network-fs error may end up here
         puts "no file or directory at #{uri}"
         RDF::Repository.new
       end
