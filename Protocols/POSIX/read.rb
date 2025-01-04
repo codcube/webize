@@ -1,11 +1,5 @@
 module Webize
-  class Resource
-
-    def read = storage.read
-
-  end
   class POSIX::Node
-
     def read
       if file?
         readFile
@@ -83,6 +77,11 @@ module Webize
       (File.open POSIX::Node(self).fsPath).
         read
     end
+
+  end
+  class Resource
+
+    def read = storage.read # cast to POSIX::Node and read
 
   end
 end
