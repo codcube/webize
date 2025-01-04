@@ -1,8 +1,8 @@
 module Webize
   module Cache
 
-    # cache and timeline-index named graphs to 🐢, given repository instance
-    def persist env, base, updates: false      # output updates?
+    # cache and index graphs in repository to 🐢
+    def index env, base, updates: false      # output updates?
       updates = RDF::Repository.new if updates # updates graph
 
       # query patterns:
