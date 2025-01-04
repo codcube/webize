@@ -1,8 +1,6 @@
 /d?f=msg* 📭
-/h/*irc 🗣
+/h/*irc?q=http 🗣
 https://forecast.weather.gov/MapClick.php?lat=42.29213000000004&lon=-71.07175499999994 🌥️
 /src/webize/config/subscriptions/SENE.u?fetch 𝔹
 /src/webize/config/subscriptions/net.u?fetch 📰
 /src/webize/config/subscriptions/m.u?fetch 🔉
-
-
