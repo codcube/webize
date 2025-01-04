@@ -12,21 +12,6 @@ module Webize
     VideoExt = Webize.configList 'formats/video/ext'
     VideoHost = Webize.configList 'formats/video/host'
 
-    # indexing preference:
-    # for HTTP everything is indexed after a network read, unless no transcoding or merging is occurring ("static asset" fetches)
-    # for POSIX (files encountered on local or network fs) we only index explicity listed formats
-
-    # query args are passed to readers so you can do quite a bit of ad-hoc querying without an indexing pass
-    # so far, indexing is mainly for one of two reasons:
-
-    # - a read speedup is desired via cached 🐢 (the PDF-extraction tool is suspiciously slow - for now only the first read will be an excruciating wait)
-    # - data needs to be stored at alternate locations. e.g. an email's data needs to findable at a Message-ID derived location though via .procmailrc they're
-    # delivered to a timeline location already, while an Atom/RSS feed's posts need to appear at both canonical post URI and timeline locations
-
-    IndexedFormats = %w(
-application/pdf
-message/rfc822)
-
     def CDN_doc? = host&.match?(CDN_hosts) && path&.match?(CDN_doc)
 
     def fontURI? = FontExt.member? extname&.downcase
@@ -67,6 +52,21 @@ message/rfc822)
 
     # formats we prefer to not (content-negotiation) or can not (unimplemented) transform
     FixedFormat = /audio|css|image|octet|script|video|zip/
+
+    # indexing preferences:
+    # for HTTP everything is indexed after a network read, unless no transcoding or merging is occurring ("static asset" fetches)
+    # for POSIX (files encountered on local or network fs) we only index explicity listed formats
+
+    # query args are passed to readers so you can do quite a bit of ad-hoc querying without an indexing pass
+    # so far, indexing is mainly for one of two reasons:
+
+    # - a read speedup is desired via cached 🐢 (the PDF-extraction tool is suspiciously slow - for now only the first read will be an excruciating wait)
+    # - data needs to be stored at alternate locations. e.g. an email's data needs to findable at a Message-ID derived location though via .procmailrc they're
+    # delivered to a timeline location already, while an Atom/RSS feed's posts need to appear at both canonical post URI and timeline locations
+
+    IndexedFormats = %w(
+application/pdf
+message/rfc822)
 
     # formats we transform even if MIME stays the same
     ReFormat = %w(text/html)
