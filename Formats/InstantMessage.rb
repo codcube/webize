@@ -27,9 +27,6 @@ module Webize
         text_query = @base.env[:qs]['q']&.downcase    # general text search
         from_query = @base.env[:qs]['from']&.downcase # from: constraint
 
-        # show only link/image-containing lines in preview mode
-        text_query = 'http' if @base.env[:preview] && !text_query && !from_query
-
         @doc.lines.grep(/^[^-]/).map{|msg|
 
           # line must match if query argument provided

@@ -97,9 +97,6 @@ module Webize
           yield mail, Date, timestamp, graph
         end
 
-        # body + attachments elided in preview mode
-        return if @base.env[:preview]
-
         # HTML parts
         htmlParts, parts = m.all_parts.push(m).partition{|p|
           p.mime_type == 'text/html' }
