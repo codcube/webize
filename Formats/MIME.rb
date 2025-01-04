@@ -58,14 +58,11 @@ module Webize
     # for POSIX (files encountered on local or network fs) we only index explicity listed formats
 
     # query args are passed to readers so you can do quite a bit of ad-hoc querying without an indexing pass
-    # so far, indexing is mainly for one of two reasons:
-
-    # - a read speedup is desired via cached 🐢 (the PDF-extraction tool is suspiciously slow - for now only the first read will be an excruciating wait)
-    # - data needs to be stored at alternate locations. e.g. an email's data needs to findable at a Message-ID derived location though via .procmailrc they're
-    # delivered to a timeline location already, while an Atom/RSS feed's posts need to appear at both canonical post URI and timeline locations
+    # so far, indexing is used when a graph pointer needs to be at an alternate location to wherever a file is
+    # e.g: - email findable at a Message-ID derived location
+    #      - Atom/RSS feed's posts at their canonical post URI and timeline locations
 
     IndexedFormats = %w(
-application/pdf
 application/rss+xml
 message/rfc822)
 
