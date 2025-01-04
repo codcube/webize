@@ -1,12 +1,14 @@
 module Webize
   class POSIX::Node
+
+    # Node -> Repository
     def read
       if file?
         readFile
       elsif directory?
         readDir
       else
-        # something like dangling symlink or network-fs error may end up here
+        # something like a "dangling" symlink may send you here
         puts "no file or directory at #{uri}"
         RDF::Repository.new
       end
@@ -57,15 +59,21 @@ module Webize
 
     def readFile
       format = fileMIME
+      locator = fsPath
 
-      if IndexedFormats.member? format
-        puts :index
-      else
-        graph = readRDF format, readBlob # stored data -> RDF graph
-      end
+      graph = if IndexedFormats.member? format
+                🐢 = locator + '.🐢' # cache locator
+                if File.exist? 🐢
+                  readRDF 'text/turtle', File.open(🐢).read
+                else
+                  puts "➕ #{locator}"
+                end
+              else
+                readRDF format, File.open(locator).read # Node -> RDF
+              end
 
       # storage metadata
-      stat = File.stat fsPath
+      stat = File.stat locator
       graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#File'))
       graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename
       graph << RDF::Statement.new(self, RDF::URI('http://www.w3.org/ns/posix/stat#size'), stat.size)
@@ -73,12 +81,6 @@ module Webize
 
       graph
     end
-
-    def readBlob
-      (File.open POSIX::Node(self).fsPath).
-        read
-    end
-
   end
   class Resource
 
