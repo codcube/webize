@@ -66,6 +66,7 @@ module Webize
 
     IndexedFormats = %w(
 application/pdf
+application/rss+xml
 message/rfc822)
 
     # formats we transform even if MIME stays the same
