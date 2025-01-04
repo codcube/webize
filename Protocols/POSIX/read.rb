@@ -57,30 +57,26 @@ module Webize
       graph
     end
 
+    # Node -> RDF
     def readFile
-      format = fileMIME
-      locator = fsPath
-
-      graph = if IndexedFormats.member? format
-                🐢 = locator + '.🐢'   # cache locator
-                if File.exist? 🐢      # cache exists
-                  readRDF 'text/turtle', File.open(🐢).read
-                else                   # populate cache
-                  puts "➕ #{locator}" # indexed location
-                  (readRDF format, File.open(locator).read).index env, self
-                end
-              else
-                readRDF format, File.open(locator).read # Node -> RDF
-              end
-
-      # storage metadata
-      stat = File.stat locator
-      graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#File'))
-      graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename
-      graph << RDF::Statement.new(self, RDF::URI('http://www.w3.org/ns/posix/stat#size'), stat.size)
-      graph << RDF::Statement.new(self, RDF::URI(Date), stat.mtime.iso8601)
-
-      graph
+      format = fileMIME             # MIME type
+      locator = fsPath              # graph locator
+      if IndexedFormats.member? format
+        🐢 = locator + '.🐢'        # cache locator
+        if File.exist? 🐢           # cache exists?
+          puts "cache hit for #{locator}"
+          readRDF 'text/turtle', File.open(🐢).read
+        else                        # cache and index graph
+          puts "➕ #{locator}"      # log index-add
+          graph = (readRDF format,  # read graph
+                           File.open(locator).read).index env, self
+          RDF::Writer.for(:turtle). # cache graph in 🐢
+            open(🐢, base_uri: self, prefixes: Prefixes){|cache| cache << graph}
+          graph
+        end
+      else
+        readRDF format, File.open(locator).read
+      end
     end
   end
   class Resource
@@ -89,3 +85,10 @@ module Webize
 
   end
 end
+
+# # source metadata
+# stat = File.stat locator
+# graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#File'))
+# graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename
+# graph << RDF::Statement.new(self, RDF::URI('http://www.w3.org/ns/posix/stat#size'), stat.size)
+# graph << RDF::Statement.new(self, RDF::URI(Date), stat.mtime.iso8601)
