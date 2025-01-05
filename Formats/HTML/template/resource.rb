@@ -74,7 +74,7 @@ module Webize
         color = if r.has_key? '#color'            # specified color
                   r['#color'][0]
                 elsif r.has_key? '#new'           # new/updated resource highlight
-                  '#688'
+                  '#668'
                 elsif uri
                   if uri.deny?                    # blocked resource
                     :red
