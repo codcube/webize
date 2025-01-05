@@ -137,7 +137,7 @@ module Webize
           end}
 
         if color
-          node[:style] = "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} 1px, transparent 1px, transparent 16px); border-color: #{color}"
+          node[:style] = "background: repeating-linear-gradient(#{45 * rand(8)}deg, #{color}, #{color} 1px, transparent 1px, transparent 1em); border-color: #{color}"
         end
 
         node
