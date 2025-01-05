@@ -82,7 +82,15 @@ module Webize
              key: k,
              c: property(k, vs.class == Array ? vs : [vs])},
 
-            inline ? ' ' : "\n"]}}
+            if inline
+              if k.index(HT) == 0
+                '<br>'
+              else
+                ' '
+              end
+            else
+              "\n"
+            end]}}
       end
 
     end
