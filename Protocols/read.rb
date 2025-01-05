@@ -21,16 +21,13 @@ module Webize
           # instantiate reader, bind it to a var, read data as RDF
           r = reader.new(content, base_uri: self){|_| graph << _ }
 
-          # 👉 to graphs in RDF:
-          # Ruby methods on Reader/Repo instances are out-of-band techniques from perspective of generic data consumption. even in this Ruby process, the reader w/ declaratively updated base-URI falls out of scope as this method returns, and named-graph identifiers available in a Repository instances aren't preserved through all our merge/collation/view algorithms elsewhere - there's not much point plumbing them through everything when multiple named-graphs oten aren't serializable to a single output stream (you will get a base URI definition and be happy!) unless using some bleeding-edge formats. we've taken a look at NQuads and RDFSTAR and the Ruby libraries have above average support for such things, but we're kind of luddites.
-
-          # naming and referring to the URIs of the additional graphs from the graph URI of the base graph is one the most rock solid, antifragile ways to at least know there are other graphs to look for, and provide reachability to them via naïve, simple recursive traversal algorithms.
+          # Ruby methods on Reader/Reposittory are out-of-band (even inaccessible) techniques for generic data consuers. in this process, the reader w/ declaratively updated base-URI falls out of scope as this method returns, so here we 👉 graph URIs, for basic graph-name preservation and wayfinding:
           [r.base_uri,
            *graph.each_graph.map(&:name)].uniq.map do |g|
             (Resource g).graph_pointer graph
           end
 
-        # the graph should 👉 its nodes if you're adding these in-band references. you can of course just #dump a soup of disconnected subgraphs with the stock Turtle serializer, but these references are nice for book-keeping, discoverability, and making the default generic view more functional (automagic gopher-style navigation) without doing any extra work besides providing the reference skeleton
+        # (graph 👉 node) pointers are provided by reader implementations. you can #dump a soup of disconnected subgraphs with the Turtle serializer, but these references improve book-keeping, discoverability, and making the HTML/JS UI more functional (automagic keyboard navigation) without any extra work beyond providing a reference skeleton
 
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
