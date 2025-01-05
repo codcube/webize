@@ -27,7 +27,7 @@ module Webize
             (Resource g).graph_pointer graph
           end
 
-        # (graph 👉 node) pointers are provided by reader implementations. you can #dump a soup of disconnected subgraphs with the Turtle serializer, but these references improve book-keeping, discoverability, and making the HTML/JS UI more functional (automagic keyboard navigation) without any extra work beyond providing a reference skeleton
+        # (graph 👉 node) is provided in reader implementations. you can #dump a soup of disconnected subgraphs with the Turtle serializer, but these references improve book-keeping, discoverability, and making the HTML/JS UI more functional (automagic keyboard navigation) without any extra work beyond providing a reference skeleton
 
         else
           logger.warn ["⚠️ no RDF reader for " , format].join
