@@ -75,7 +75,7 @@ module Webize
         color = if r.has_key? '#color'            # specified color
                   r['#color'][0]
                 elsif r.has_key? '#new'           # new/updated resource highlight
-                  '#8aa'
+                  '#688'
                 elsif uri
                   if uri.deny?                    # blocked resource
                     :red
@@ -101,7 +101,7 @@ module Webize
                     ({class: :title,
                       c: r[Title].map{|t| [HTML.markup(t, env), ' ']}}.
                        update(ref || {}).               # reference
-                       update(color ? {style: "background-color: #{color}; color: #000"} : {}) if r.has_key? Title),
+                       update(color ? {style: "background-color: #{color}"} : {}) if r.has_key? Title),
 
                     # child nodes
                     if r[Contains]
