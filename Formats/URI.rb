@@ -186,9 +186,6 @@ module Webize
       def each_triple &block; each_statement{|s| block.call *s.to_triple} end
 
       def each_statement &fn
-        list = @base + '#list'           # list URI
-                                         # 👉 list
-        fn.call RDF::Statement.new @base, RDF::URI(Contains), list
         query = @base.env[:qs]['q']&.downcase # query argument
 
         @doc.lines.map(&:chomp).map{|line| # each line:
@@ -200,10 +197,11 @@ module Webize
           uri, title = line.split ' ', 2 # URI, title (String)
           u = Webize::URI(uri)           # URI        (RDF)
 
-          URI::AllowHosts.push u.host if u.deny? # implicit unblock due to list presence. depending on DNS configuration, this might not be enough (script at bin/access/allow add line to config/hosts/allow)
+          URI::AllowHosts.push u.host if u.deny? # implicit unblock due to list presence. depending on DNS configuration, this might not be enough (script at bin/access/allow adds line to config/hosts/allow)
 
-          fn.call RDF::Statement.new list, RDF::URI('#graph'), u
-          fn.call RDF::Statement.new u, RDF::URI(Title), title if title
+          graph = RDF::URI('//' + (u.host || 'localhost'))
+          fn.call RDF::Statement.new graph, RDF::URI('#graph'), u, graph_name: graph
+          fn.call RDF::Statement.new u, RDF::URI(Title), title, graph_name: graph if title
         }
       end
     end
