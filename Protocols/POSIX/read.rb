@@ -19,37 +19,21 @@ module Webize
       # enforce trailing slash on directory URI
       return Node(join basename + '/').readDir graph unless dirURI?
       graph_pointer graph                                                        # 👉 directory
-      graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601) # directory timestamp
-      graph << RDF::Statement.new(self, RDF::URI(Title), basename) if basename   # directory name
-      graph << RDF::Statement.new(self, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#Directory'))
+      graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601) # timestamp
 
       (nodes = node.children).map{|child|                   # child nodes
         name = child.basename.to_s                          # node name
         next if name[0] == '.'                              # invisible node
- 
         if isDir = child.directory?                         # node type
           name += '/'
         end
-
         contains = RDF::URI(isDir ? '#childDir' : '#entry') # containment predicate
         c = Node join name.gsub(' ','%20').gsub('#','%23')  # child node
-
         graph << RDF::Statement.new(c, RDF::URI(Title), name)
         graph << RDF::Statement.new(c, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#Directory')) if isDir
-
         char = c.basename[0].downcase
-        if nodes.size > 192 # alphanumeric bin
-          bin = Node join char + '*'
-          bin_label = char
-        elsif nodes.size > 32 # alphas or numerics bin
-          glob = char.match?(/[0-9]/) ? '[0-9]*' : '[a-zA-Z]*'
-          bin = Node join glob
-          bin_label = glob[1..3]
-        else
-          bin = self
-        end
-        graph << RDF::Statement.new(self, RDF::URI(Contains), bin)
-        graph << RDF::Statement.new(bin, RDF::URI(Title), bin_label) if bin_label
+        bin = Node join char + '*/'
+        bin.graph_pointer graph                       # 👉 child
         graph << RDF::Statement.new(bin, contains, c) # bin entry
       }
 
