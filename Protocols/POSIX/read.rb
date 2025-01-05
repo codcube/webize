@@ -31,10 +31,15 @@ module Webize
         c = Node join name.gsub(' ','%20').gsub('#','%23')  # child node
         graph << RDF::Statement.new(c, RDF::URI(Title), name)
         graph << RDF::Statement.new(c, RDF::URI(Type), RDF::URI('http://www.w3.org/ns/posix/stat#Directory')) if isDir
-        char = c.basename[0].downcase
-        bin = Node join char + '*/'
-        bin.graph_pointer graph                       # 👉 child
-        graph << RDF::Statement.new(bin, contains, c) # bin entry
+        if nodes.size > 48
+          char = c.basename[0].downcase
+          bin = Node join char + '*/'
+          bin.graph_pointer graph                       # 👉 child
+          graph << RDF::Statement.new(bin, contains, c) # bin entry
+        else
+          graph << RDF::Statement.new(self, contains, c) # bin entry
+        end
+
       }
 
       graph

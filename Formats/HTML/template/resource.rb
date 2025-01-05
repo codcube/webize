@@ -10,7 +10,6 @@ module Webize
 
            [{_: :a,
              href: uri.href,
-             id: 'b' + Digest::SHA2.hexdigest(rand.to_s),
              class: :button,
              c: uri.display_name},
             "\n"]}]
