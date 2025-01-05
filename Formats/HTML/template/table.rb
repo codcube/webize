@@ -72,7 +72,9 @@ module Webize
          c: kv.map{|k, vs|
            next if skip.member? k
 
-           [{_: key,
+           [('<br>' if k.index(HT) == 0), # field-per-line TODO expand conditions
+
+            {_: key,
              class: :key,
              c: Property.new(Type).env(env).
                rdf_type([k], inline: inline)},
@@ -82,15 +84,7 @@ module Webize
              key: k,
              c: property(k, vs.class == Array ? vs : [vs])},
 
-            if inline
-              if k.index(HT) == 0
-                '<br>'
-              else
-                ' '
-              end
-            else
-              "\n"
-            end]}}
+            inline ? ' ' : "\n"]}}
       end
 
     end

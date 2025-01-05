@@ -1,3 +1,5 @@
 Cache-Control
 X-Cacheable
 CF-Cache-Status
+X-Cache
+CF-Ray

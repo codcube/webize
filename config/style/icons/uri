@@ -146,6 +146,7 @@ http://www.w3.org/2011/http#path /
 http://www.w3.org/2011/http#preload 🐰
 http://www.w3.org/2011/http#query ?
 http://www.w3.org/2011/http#referer 👉
+http://www.w3.org/2011/http#robots 🤖
 http://www.w3.org/2011/http#server 🖥️
 http://www.w3.org/2011/http#set-cookie 🍪
 http://www.w3.org/2011/http#status 🏁
