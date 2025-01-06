@@ -11,8 +11,6 @@
 .bottom-bar .stats {border-width: 1px 1px 0 1px; display: inline-block; border-style: solid; border-color: #555; border-radius: .62em .62em 0 0; font-size: 1.3em}
 .bottom-bar {position: fixed; bottom: 0; width: 100%; vertical-align: bottom}
 .columns {column-width: 83ex; column-gap: 0}
-.comment span {display: inline-block; background-color: #6ef; color: #000; font-weight: normal; font-family: monospace; white-space: pre-wrap; border-radius: .3em; padding: 0; margin: 0}
-.comment {display: block; background-color: #000; color: #6ef; font-weight: bold}
 .dimmed {opacity: 0.2}
 .favicon {position: fixed; top: 0; left: 0; z-index: -1}
 .file > .icon {font-size: 2em; background-color: #000; color: #fff}
@@ -113,6 +111,8 @@ p > span, .val > span, .val[key="http://rdfs.org/sioc/ns#content"] span {backgro
 p {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
 p::before {content: '¶'; color: #666; margin-left: -12px}
 pre, code {display: block; max-width: 100ex; white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono; margin: 0}
+span.comment span {display: inline-block; background-color: #6ef; color: #000; font-weight: normal; font-family: monospace; white-space: pre-wrap; border-radius: .3em; padding: 0; margin: 0}
+span.comment {display: block; background-color: #000; color: #6ef; font-weight: bold}
 span.quote > .quote > .quote {background-color: #777}
 span.quote > .quote {background-color: #aaa}
 span.quote {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em; max-width: 80ex}
