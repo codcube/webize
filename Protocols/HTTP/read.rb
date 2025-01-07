@@ -135,16 +135,9 @@ module Webize
 
           if !thru                                                      # no HTTP response construction or proxy
             print MIME.format_icon format                               # denote fetch with single character for activity feedback
-                                                                        # fetch statistics
-            h = Resource '//' + host                                    # host URI
-            h.graph_pointer graph                                       # per-host remote source listing
-            graph << RDF::Statement.new(h, RDF::URI('#remote_source'), self) # source identity
-            graph << RDF::Statement.new(self, RDF::URI(HT + 'status'), status) # HTTP status
-           #graph << RDF::Statement.new(self, RDF::URI('#fTime'), fetch_time - start_time) # fetch timing
-           #graph << RDF::Statement.new(self, RDF::URI('#pTime'), Time.now - fetch_time)   # parse/cache timing
-
+            graph_pointer graph                                         # source graph
+            graph << RDF::Statement.new(self, RDF::URI(HT + 'status'), status) # source status
             graph                                                       # return cached+fetched graph data
-                                                                        # webizing proxy HTTP-through response
           elsif notransform                                             # origin/upstream-server format preference
             staticResponse format, body                                 # HTTP response in upstream format
           else                                                          # client format preference
@@ -157,46 +150,43 @@ module Webize
       end
     rescue Exception => e
       raise unless e.respond_to?(:io) && e.io.respond_to?(:status) # raise non-HTTP-response errors
-      status = e.io.status[0].to_i                          # status
       repository ||= RDF::Repository.new
-      repository << RDF::Statement.new(env[:base], RDF::URI('#remote_source'), self) # source provenance
-      repository << RDF::Statement.new(self, RDF::URI(HT + 'status'), status) # HTTP status in RDF
-      head = headers e.io.meta                              # headers
+      graph_pointer repository                             # source graph
+      status = e.io.status[0].to_i                         # source status
+      repository << RDF::Statement.new(self, RDF::URI(HT + 'status'), status)
+      head = headers e.io.meta                             # headers
       case status.to_s
-      when /30[12378]/                                      # redirects
+      when /30[12378]/                                     # redirects
         location = e.io.meta['location']
         dest = Node join location
-        if !thru                                            # notify on console and warnings-bar of new location
+        if !thru                                           # notify on console and warnings-bar of new location
           logger.warn "➡️ #{uri} → #{location}"
           env[:warnings].push [{_: :a, href: href, c: uri}, '➡️',
                                {_: :a, href: dest.href, c: dest.uri}, '<br>']
           repository
         elsif no_scheme == dest.no_scheme
-          if scheme == 'https' && dest.scheme == 'http'     # 🔒downgrade redirect
+          if scheme == 'https' && dest.scheme == 'http'    # 🔒downgrade redirect
             logger.warn "🛑 downgrade redirect #{dest}"
             fetchLocal if thru
-          elsif scheme == 'http' && dest.scheme == 'https'  # 🔒upgrade redirect
+          elsif scheme == 'http' && dest.scheme == 'https' # 🔒upgrade redirect
             logger.debug "🔒 upgrade redirect #{dest}"
             dest.fetchHTTP
-          else                                              # redirect loop or non-HTTP protocol
+          else                                             # redirect loop or non-HTTP protocol
             logger.warn "🛑 not following #{uri} → #{dest} redirect"
             fetchLocal if thru
           end
         else
-          HTTP::Redirector[dest] ||= []                     # update redirection cache
+          HTTP::Redirector[dest] ||= []                    # update redirection cache
           HTTP::Redirector[dest].push env[:base] unless HTTP::Redirector[dest].member? env[:base]
-          [status, {'Location' => dest.href}, []]           # redirect
+          [status, {'Location' => dest.href}, []]          # redirect
         end
-      when /304/                                            # origin unmodified
+      when /304/                                           # origin unmodified
         thru ? fetchLocal : repository
-      when /300|[45]\d\d/                                   # not allowed/available/found
+      when /300|[45]\d\d/                                  # not allowed/available/found
         body = HTTP.decompress(head, e.io.read).encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
         RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|repository << g} if head['Content-Type']&.index 'html'
         head['Content-Length'] = body.bytesize.to_s
-        if path == '/favicon.ico' && status / 100 == 4 # set default icon
-          storage.write HTML::SiteIcon
-          fileResponse
-        elsif !thru
+        if !thru
           repository
         elsif env[:notransform]
           [status, head, [body]] # static response data
@@ -248,14 +238,6 @@ module Webize
                            {_: :a, href: href, c: uri}, # error on URI
                            CGI.escapeHTML(e.message),   # error message
                            {_: :b, c: [:⏱️, Time.now - start_time, :s]}, '<br>']
-      puts [:⚠️, uri,
-            e.class, e.message,
-            e.backtrace.join("\n")
-           ].join ' '
-
-      repository ||= RDF::Repository.new
-      repository << RDF::Statement.new(env[:base], RDF::URI('#remote_source'), self) # source provenance
-
       opts[:thru] == false ? repository : notfound
     end
 

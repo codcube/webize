@@ -131,27 +131,7 @@ module Webize
                     # 👉 previous, next and expanded-set node(s)
                     link[:prev,'&#9664;'],
                     link[:next,'&#9654;'],
-                    link[:down,'&#9660;'],
-
-                    # source reference(s)
-                    {class: :sources,
-                     c: [
-                       if doc.has_key? '#local_source'
-                         [{_: :a,
-                           id: :local_src,
-                           href: '#local_source',
-                           c: Icons['#local_source']},
-                          doc['#local_source'].size]
-                       end,
-
-                       if doc.has_key? '#remote_source'
-                         [{_: :a,
-                           id: :remote_src,
-                           href: '#remote_source',
-                           c: Icons['#remote_source']},
-                          doc['#remote_source'].size]
-                       end
-                     ]}]},
+                    link[:down,'&#9660;']]},
 
                  # script
                  {_: :script, c: Code::SiteJS}]}]}]
