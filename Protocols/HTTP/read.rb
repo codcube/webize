@@ -54,8 +54,6 @@ module Webize
                      redirect: false} # don't invisibly follow redirects in HTTP-library code, return this data to us and clients/proxies so they can update URL bars, source links on 301s etc
 
     def fetchHTTP thru: true                                           # thread upstream HTTP response through to caller, or simply return fetched data
-      start_time = Time.now                                            # start "wall clock" timer for basic stats (fishing out super-slow stuff from aggregate fetches for optimization/profiling)
-
       doc = storage.document                                           # graph-cache location
       meta = [doc, '.meta'].join                                       # HTTP metadata-cache location
 
@@ -73,7 +71,6 @@ module Webize
       head['Accept'] = ['text/turtle', head['Accept']].join ',' unless env[:notransform] || !head.has_key?('Accept') || head['Accept'].match?(/text\/turtle/)
 
       ::URI.open(uri, head) do |response|
-        fetch_time = Time.now                                          # fetch timing
         h = headers response.meta                                      # response header
         case status = response.status[0].to_i                          # response status
         when 204                                                       # no upstream content
@@ -218,7 +215,6 @@ module Webize
     end
 
     def fetchRemote **opts
-      start_time = Time.now
       env[:fetched] = true                              # denote network-fetch for logger
       case scheme                                       # request scheme
       when 'gemini'
@@ -236,8 +232,7 @@ module Webize
     rescue Exception => e                               # warn on exception
       env[:warnings].push [e.class,                     # error class
                            {_: :a, href: href, c: uri}, # error on URI
-                           CGI.escapeHTML(e.message),   # error message
-                           {_: :b, c: [:⏱️, Time.now - start_time, :s]}, '<br>']
+                           CGI.escapeHTML(e.message)]   # error message
       opts[:thru] == false ? repository : notfound
     end
 
