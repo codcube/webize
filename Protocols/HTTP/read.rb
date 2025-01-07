@@ -233,7 +233,7 @@ module Webize
       env[:warnings].push [e.class,                     # error class
                            {_: :a, href: href, c: uri}, # error on URI
                            CGI.escapeHTML(e.message)]   # error message
-      opts[:thru] == false ? repository : notfound
+      opts[:thru] == false ? nil : notfound
     end
 
     def fetchRemotes nodes
