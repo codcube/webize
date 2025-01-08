@@ -73,8 +73,8 @@ module Webize
                     {_: :span, class: :path,
                      c: [ # parent directories
                        parts.map{|p| # path part
-                         bc += '/' + p # add breadcrumb to trail
-                         ['/', {_: :a, id: 'p' + bc.gsub('/','_'), class: :path_crumb,
+                         bc += '/' + p # breadcrumb to trail
+                         ['/', {_: :a, class: :path_crumb,
                                 href: Resource.new(join(bc)).env(env).href,
                                 c: CGI.escapeHTML(Webize::URI(Rack::Utils.unescape p).basename || '')}]},
                        (property '#childNode', doc.delete('#childNode') if doc['#childNode'])
