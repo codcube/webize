@@ -84,8 +84,8 @@ blockquote::before {content: '❝'; color: #aaa; margin-left: -14px; font-size: 
 body {font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans; padding: 0; margin: 0; background-color: #000; color: #fff}
 cite {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
 cite::before {content: '📚'; color: #666; margin-left: -12px}
-code > span { color: #6ef; background-color: #111; padding: 0 0 0 .2em;}
-code {border-width: 1px 0 1px 0; border-style: dotted; border-color: #eee}
+code > span { color: #6ef; padding: 0 0 0 .2em;}
+code {display: inline-block; background-color: #226; font-size: .88em; border-radius: .6em; margin: 2px}
 dl, dt, dd, form, ol, ul, table, p, .resource {display: inline-block}
 dl, dt, dd, img, video, table, tr, td, .resource, .val {max-width: 100%}
 dt, .key {background-color: #111; border: 1px solid #666}
@@ -108,9 +108,9 @@ li:nth-child(odd) {background-color: #222; color: #fff}
 p > span, .val > span, .val[key="http://rdfs.org/sioc/ns#content"] span {background-color: #000; color: #fff}
 p {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
 p::before {content: '¶'; color: #666; margin-left: -12px}
-pre, code {display: block; max-width: 100ex; white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono; margin: 0}
-span.comment span {display: inline-block; background-color: #6ef; color: #000; font-weight: normal; font-family: monospace; white-space: pre-wrap; border-radius: .3em; padding: 0; margin: 0}
-span.comment {display: block; background-color: #000; color: #6ef; font-weight: bold}
+pre, code {max-width: 98ex; white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono; margin: 0}
+span.comment span {display: inline-block; background-color: #6ef; color: #000; font-weight: normal; font-family: monospace; white-space: pre-wrap; border-radius: .3em; padding: 0; margin: 0; max-width: 80ex}
+span.comment {display: inline-block; background-color: #000; color: #6ef; font-weight: bold}
 span.quote > .quote > .quote {background-color: #777}
 span.quote > .quote {background-color: #aaa}
 span.quote {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .1em; padding-left: .25em; max-width: 80ex}
