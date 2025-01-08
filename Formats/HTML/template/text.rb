@@ -44,12 +44,7 @@ module Webize
 
       # hypertext anchor
       def a anchor
-        anchor.delete XHV + 'target' # strip upstream link behaviours
-
-        if id = anchor['uri']        # resolve identifier
-          anchor_id = Webize::Resource(id, env).local_id
-        end
-
+        anchor.delete XHV + 'target' # we control the UI - strip origin link behaviours
         anchor[Link]&.map{|l| # if multiple target URLs provided, each renders in its own <a>
           next unless l.class == Hash
 
@@ -77,7 +72,6 @@ module Webize
                        inline: true,
                        skip: ['uri', Contains, Link, Type, To])]}.
              update(css ? {style: css} : {}).
-             update(id ? (id = nil; {id: anchor_id}) : {}), # attach id to first link
            (HTML::Node.new(env[:base]).env(env).videotag({'uri' => u.uri}) if u.videoURI?), # video tag
           ]}
       end

@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function(){
     var first = null;
     var last = null;
     // add identified anchors. breaks and paragraphs to selection ring
-    document.querySelectorAll('a[id], br[id], p[id]').map(function(e){
+    document.querySelectorAll('a[id], br[id], h1 > a, h2 > a, p[id]').map(function(e){
 	if(!first)     // first node
 	    first = this;	
 	if(last){      // link to previous node
