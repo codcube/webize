@@ -71,7 +71,7 @@ module Webize
                 keyval(anchor.merge(u.query_hash),      # metadata
                        inline: true,
                        skip: ['uri', Contains, Link, Type, To])]}.
-             update(css ? {style: css} : {}).
+             update(css ? {style: css} : {}),
            (HTML::Node.new(env[:base]).env(env).videotag({'uri' => u.uri}) if u.videoURI?), # video tag
           ]}
       end

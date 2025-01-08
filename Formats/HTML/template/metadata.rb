@@ -40,9 +40,7 @@ module Webize
         (uris.class == Array ? uris : [uris]).map{|uri|
           u = Webize::Resource uri, env # URI instance
 
-          [{_: :a, c: :🔗,
-            href: u.href,
-            id: 'u' + Digest::SHA2.hexdigest(rand.to_s)},
+          [{_: :a, c: :🔗, href: u.href},       # reference
            if u.host                            # remote reference?
              [{_: :a, c: :📦, href: u.storage.fsPath}, # cache link
               {_: :a, c: :↗, href: u.uri}]            # origin link
