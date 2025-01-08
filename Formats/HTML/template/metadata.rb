@@ -38,9 +38,16 @@ module Webize
 
       def identifier uris
         (uris.class == Array ? uris : [uris]).map{|uri|
-          {_: :a, c: :🔗,
-           href: env ? Webize::Resource(uri, env).href : uri,
-           id: 'u' + Digest::SHA2.hexdigest(rand.to_s)}}
+          u = Webize::Resource uri, env # URI instance
+
+          [{_: :a, c: :🔗,
+            href: u.href,
+            id: 'u' + Digest::SHA2.hexdigest(rand.to_s)},
+           if u.host                            # remote reference?
+             [{_: :a, c: :📦, href: u.storage.fsPath}, # cache link
+              {_: :a, c: :↗, href: u.uri}]            # origin link
+           end]
+        }
       end
 
       def rdf_type types, inline: false
