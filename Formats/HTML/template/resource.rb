@@ -53,11 +53,10 @@ module Webize
         resource re, type, inline: true # metadata with SPAN instead of DL/DT/DD
       end
 
-      # mint an identifier if nonexistent TODO check dc:identifier field as well as default 'uri'
+      # mint an identifier for resource
       def identifiedResource re, type
-        re['uri'] ||= ['#', type,'_',
-                       Digest::SHA2.hexdigest(rand.to_s)].join
-        blockResource re, type
+        re['uri'] ||= ['#', type, '_', Digest::SHA2.hexdigest(rand.to_s)].join
+        inlineResource re, type
       end
 
       def resource r, type = :div, inline: true
