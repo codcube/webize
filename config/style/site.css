@@ -92,11 +92,11 @@ dt, .key {background-color: #111; border: 1px solid #666}
 dt, .key, .type {color: #bbb}
 h1 .kv {font-size: .6em}
 h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv, code .kv {float: right}
-h1, h1 > *, h1 > a.global {background-color: #ccc; color: #000; border-width: 0}
+h1, h1 > *, h1 > a.global, h1 > a.local {background-color: #ccc; color: #000; border-width: 0}
 h1, h2, h3, h4, h5, h6 {clear: both; border-radius: .2em}
 h2 .kv {font-size: .75em}
-h2, h2 > *, h2 > a.global {background-color: #aaa; color: #000; border-width: 0}
-h3, h3 > * {background-color: #888; color: #000}
+h2, h2 > *, h2 > a.global, h2 > a.local {background-color: #aaa; color: #000; border-width: 0}
+h3, h3 > *, h3 > a.global, h3 > a.local {background-color: #888; color: #000; border-width: 0}
 h4, h4 > * {background-color: #666; color: #000}
 h5, h5 > * {background-color: #444; color: #fff}
 h6, h6 > * {background-color: #222; color: #fff}
