@@ -50,18 +50,7 @@ module Webize
                     {_: :a, id: :rootpath,
                      href: Resource.new(join('/')).env(env).href, c: '&nbsp;' * 3}, "\n",
 
-                    # 👉 alternate UI
-                    ({_: :a, id: :rehost,
-                      href: Webize::Resource(['//', ReHost[host], path].join, env).href,
-                      c: {_: :img, src: ['//', ReHost[host], '/favicon.ico'].join}} if ReHost.has_key? host),
-
-                    # 👉 original UI/format
-                    {_: :a, id: :UI, c: :🧪,
-                     href: host ? uri : URI.qs(env[:qs].merge({'notransform'=>nil}))}, "\n",
-
-                    # 👉 cache
-                    {_: :a, id: :cache, c: :📦,
-                     href: '/' + POSIX::Node(self).fsPath}, "\n",
+                    (property 'uri', doc.delete('uri') if doc['uri']), # document URI
 
                     # 👉 block domain
                     ({_: :a, id: :block, c: :🛑,
