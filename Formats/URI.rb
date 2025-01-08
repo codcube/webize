@@ -143,7 +143,7 @@ module Webize
     # list of URIs in uri-list resource
     def uris
       return [] unless extname == '.u'
-      pattern = RDF::Query::Pattern.new :s, RDF::URI('#graph'), :o
+      pattern = RDF::Query::Pattern.new :s, RDF::URI('#entry'), :o
 
       storage.read.query(pattern).objects.shuffle.map do |o|
         Webize::Resource o, env
@@ -200,7 +200,7 @@ module Webize
           URI::AllowHosts.push u.host if u.deny? # implicit unblock due to list presence. depending on DNS configuration, this might not be enough (script at bin/access/allow adds line to config/hosts/allow)
 
           graph = RDF::URI('//' + (u.host || 'localhost'))
-          fn.call RDF::Statement.new graph, RDF::URI('#graph'), u, graph_name: graph
+          fn.call RDF::Statement.new graph, RDF::URI('#entry'), u, graph_name: graph
           fn.call RDF::Statement.new u, RDF::URI(Title), title, graph_name: graph if title
         }
       end
