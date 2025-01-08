@@ -44,7 +44,7 @@
 .val[key="uri"] a {padding: 0}
 .video {max-width: 80em}
 .warning a {background-color: #fff; color: #000}
-.warning {display: inline-block; background-color: #ff0; color: #000; padding: .2em; margin: .3em; border-radius: .5em}
+.warning {display: block; background-color: #ff0; color: #000; padding: .2em; margin: auto; border-radius: .5em; max-width: 128ex}
 :target, :target > span {background: repeating-linear-gradient(315deg, #3cf, #3cf 1px, transparent 1px, transparent 8px) !important; color: #fff !important; border: 1px solid #3cf !important; opacity: 1.0}
 a .key {background-color: #226; color: #fff; border-radius: .2em; border-width: 0}
 a .kv {font-size: 0.92em}
@@ -82,9 +82,6 @@ blockquote blockquote::before {color: #fff}
 blockquote {border-radius: .48em; margin: 2px 2px 2px 12px; border: .1em solid #333; background-color: #222; color: #fff}
 blockquote::before {content: '❝'; color: #aaa; margin-left: -14px; font-size: 1.5em}
 body {font-family: Noto Sans, DejaVu Sans, sans-serif, sans serif, sans; padding: 0; margin: 0; background-color: #000; color: #fff}
-body.error > pre > a {color: #fff; font-size: 12ex; text-decoration: none}
-body.error > pre {margin: auto}
-body.error {background: #f00; font-weight: bold}
 cite {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
 cite::before {content: '📚'; color: #666; margin-left: -12px}
 code > span { color: #6ef; background-color: #111; padding: 0 0 0 .2em;}

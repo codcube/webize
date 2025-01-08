@@ -1,18 +1,7 @@
-#archive 📦
-#cache 📦
 #childDir 📂
 #entry ☰
-#fTime 🐕
-#graph 🕸️
-#graph_source 🕸️
-#local_source 💼
-#origin ↗
-#pTime 🔨
-#remote_source 🌍
 #sort ↨
 #source ⚙️
-ArticleGQL 📝
-article 📰
 http://purl.org/dc/terms/Audio 🔊
 http://purl.org/dc/terms/Image 🖼️
 http://purl.org/dc/terms/Video 🎞
@@ -169,5 +158,4 @@ https://schema.org/commentCount 🗯
 https://schema.org/itemListElement ☰
 https://schema.org/repostCount ⏩
 https://schema.org/upvoteCount 👍
-sioct:Comment 🗨️
 uri &nbsp;
