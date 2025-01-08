@@ -92,9 +92,8 @@ dt, .key {background-color: #111; border: 1px solid #666}
 dt, .key, .type {color: #bbb}
 h1 .kv {font-size: .6em}
 h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv, code .kv {float: right}
-h1 a.pointer, h2 a.pointer, h3 a.pointer, h4 a.pointer, h5 a.pointer, h6 a.pointer {position: absolute; right: -1.4em}
 h1, h1 > *, h1 > a.global {background-color: #ccc; color: #000; border-width: 0}
-h1, h2, h3, h4, h5, h6 {clear: both; padding: 0 0 0 .2em; border-radius: .2em; position: relative; margin-right: 1em}
+h1, h2, h3, h4, h5, h6 {clear: both; border-radius: .2em}
 h2 .kv {font-size: .75em}
 h2, h2 > *, h2 > a.global {background-color: #aaa; color: #000; border-width: 0}
 h3, h3 > * {background-color: #888; color: #000}
