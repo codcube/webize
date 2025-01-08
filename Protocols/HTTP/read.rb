@@ -233,8 +233,9 @@ module Webize
       env[:warnings].push [e.class,                     # error class
                            {_: :a, href: href, c: uri}, # request URI
                            (CGI.escapeHTML e.message),  # error message
-                           {_: :pre,                    # error backtrace
-                            c: (CGI.escapeHTML e.backtrace.join "\n")}]
+                           #{_: :pre,                    # error backtrace
+                           #c: (CGI.escapeHTML e.backtrace.join "\n")}
+                          ]
       opts[:thru] == false ? nil : notfound
     end
 
