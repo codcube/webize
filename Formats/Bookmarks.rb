@@ -13,16 +13,16 @@ module Webize
           next if query &&                    # skip bookmark not matching query argument
                   !a.downcase.index(query)
 
-          ## nokogiri implementation:
-          # a = Nokogiri::HTML.fragment(a).css('a')[0]
+          ## nokogiri implementation (slow, pretty, potentially less bugs)
+          #a = Nokogiri::HTML.fragment(a).css('a')[0]
           #subject = RDF::URI a['href']
           #title = a.inner_text
           #yield subject, Date, Webize.date(a['add_date'])
           #if icon = a['icon']
           #yield subject, Image, RDF::URI(icon)
 
-          ## regex implementation
-          subject = RDF::URI CGI.unescapeHTML a.match(/href=["']?([^'">\s]+)/i)[1]
+          ## regex implementation (fast and ugly)
+          subject = Webize::URI CGI.unescapeHTML a.match(/href=["']?([^'">\s]+)/i)[1]
           subject = HTTP::Node(subject,{}).unproxyURI if %w(l localhost x).member? subject.host
           graph = subject.graph
 
