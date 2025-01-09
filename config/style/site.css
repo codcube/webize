@@ -88,7 +88,7 @@ code > span { color: #6ef; padding: 0 0 0 .2em;}
 code {display: inline-block; background-color: #226; font-size: .88em; border-radius: .6em; margin: 2px}
 dl, dt, dd, form, ol, ul, table, p, .resource {display: inline-block}
 dl, dt, dd, img, video, table, tr, td, .resource, .val {max-width: 100%}
-dt, .key {background-color: #111; border: 1px solid #666}
+dt, .key {background-color: #111; border: 1px solid #666; border-radius: .4em}
 dt, .key, .type {color: #bbb}
 h1 .kv {font-size: .6em}
 h1 .kv, h2 .kv, h3 .kv, h4 .kv, h5 .kv, h6 .kv, code .kv {float: right}
