@@ -53,7 +53,7 @@ module Webize
                     (property 'uri', doc.delete('uri') if doc['uri']), # document URI
 
                     # 👉 block domain
-                    ({_: :a, id: :block, c: :🛑,
+                    ({_: :a, c: :🛑,
                       href: '/block/' + host.sub(/^(www|xml)\./,''),
                       class: :dimmed} if host && !deny_domain?), "\n",
 
