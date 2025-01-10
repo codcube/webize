@@ -555,3 +555,5 @@ moz-do-not-send
 onerror
 data-remodal-options
 data-remodal-action
+data-rte-preserve-empty
+data-dnt
