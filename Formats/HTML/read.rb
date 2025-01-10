@@ -89,7 +89,6 @@ module Webize
                   when 'video'
                     Video
                   else
-                    puts "LINK #{node.name} #{o}"
                     Link
                   end
             when /type/i
