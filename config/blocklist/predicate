@@ -563,3 +563,12 @@ sandbox
 data-text-color
 data-background-color
 replaybase
+data-wp-on-window--resize
+data-wp-on--click
+data-wp-on--load
+data-wp-style--top
+data-wp-style--right
+data-indicator-color
+data-indicator
+data-scroll
+bgcolor
