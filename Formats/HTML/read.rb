@@ -152,7 +152,7 @@ module Webize
           node.children.map{|child|
             if child.text? || child.cdata? # text literal
               if node.name == 'script'     # script node
-                if m = child.inner_text.match(JSON::Inner) # content looks JSONish (TODO better detection, we optimistically feed a lot of stuff to the parser)
+                if m = child.inner_text.match(JSON::Inner) # try {} in script as JSON
                   stringified = !m[1].nil? # serialized to string value?
                   text = m[2]              # raw JSON data
                   begin                    # read as JSON
@@ -160,10 +160,8 @@ module Webize
                     json_node = JSON::Reader.new(json, base_uri: @base).scan_fragment &f
                     yield subject, Contains, json_node, @base # emit JSON node
                   rescue
-                    yield subject, Contains, child.inner_text.gsub(/\n/,'').gsub(/\s+/,' ')[0..255], @base
+                    #puts ["not JSON: ", child.inner_text.gsub(/\n/,'').gsub(/\s+/,' ')[0..188]].join
                   end
-                else
-                  yield subject, Contains, child.inner_text.gsub(/\n/,'').gsub(/\s+/,' ')[0..255], @base
                 end
               else
                 case child.inner_text
@@ -192,7 +190,7 @@ module Webize
         end
 
         # strip upstream UI
-        @doc.css('style').remove       # drop stylesheets
+        @doc.css('style, link[rel="stylesheet"]').remove # drop stylesheets
         @doc.css('script[src]').remove # drop scripts
 
         # <meta>
