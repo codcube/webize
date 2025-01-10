@@ -150,6 +150,7 @@ rss rss.xml
             subject = Webize::URI.new @base.join id
             subject.query = nil if subject.query&.match?(/utm[^a-z]/)
             subject.fragment = nil if subject.fragment&.match?(/utm[^a-z]/)
+            subject.path = subject.path.gsub(/\/+/,'/') if subject.path.match? /\/\//
 
             # graph
             graph = subject.graph
