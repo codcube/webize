@@ -3,6 +3,7 @@ module Webize
 
     # (MIME, data) -> RDF::Repository
     def readRDF format, content
+      puts [:read, uri].join ' '
 
       graph = RDF::Repository.new.extend Webize::Cache # instantiate repository extended with file-cache behaviours
       # TODO revisit subclass vs extend. we had issues where third-party code didn't think our subclass was a Repo due to strict equivalence or suchlike
