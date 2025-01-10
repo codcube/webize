@@ -25,7 +25,7 @@ module Webize
     def respond repositories, defaultFormat = 'text/html'
       format = selectFormat defaultFormat
       format += '; charset=utf-8' if %w{text/html text/turtle}.member? format
-
+      puts "respond for #{uri} in format #{format}"
       # status code
       [env[:origin_status] || 200,
 
@@ -40,6 +40,7 @@ module Webize
                       writer.buffer(base_uri: self,
                                     prefixes: Prefixes) do |w|
                         repositories.compact.map{|r|
+                          puts r.subjects.join ' '
                           w << r}
                       end
                      else
