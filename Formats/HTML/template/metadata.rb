@@ -40,10 +40,10 @@ module Webize
         (uris.class == Array ? uris : [uris]).map{|uri|
           u = Webize::Resource uri, env # URI instance
 
-          [{_: :a, c: :🔗, href: u.href},       # reference
-           if u.host                            # remote reference?
-             [{_: :a, c: :📦, href: u.storage.fsPath}, # cache link
-              {_: :a, c: :↗, href: u.uri}]            # origin link
+          [{_: :a, c: :🔗, href: u.href},  # reference
+           if u.host                       # remote reference?
+             [{_: :a, c: :📦, href: '/' + u.storage.fsPath}, # cache reference
+              {_: :a, c: :↗, href: u.uri}] # origin reference
            end]
         }
       end
