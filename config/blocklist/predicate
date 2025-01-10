@@ -573,3 +573,4 @@ data-indicator
 data-scroll
 bgcolor
 style-nonce
+data-render-function
