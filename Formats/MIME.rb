@@ -1,4 +1,5 @@
 
+
 # enable 🐢 extension for Turtle
 RDF::Format.file_extensions[:🐢] = RDF::Format.file_extensions[:ttl]
 
@@ -61,10 +62,7 @@ module Webize
     # so far, indexing is used when a graph pointer needs to be at an alternate location to wherever a file is
     # e.g: - email findable at a Message-ID derived location
     #      - Atom/RSS feed's posts at their canonical post URI and timeline locations
-
-    IndexedFormats = %w(
-application/rss+xml
-message/rfc822)
+    IndexedFormats = Webize.configList 'formats/indexed'
 
     # formats we transform even if MIME stays the same
     ReFormat = %w(text/html)

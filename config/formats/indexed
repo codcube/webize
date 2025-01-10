@@ -1,0 +1,7 @@
+application/atom+xml
+application/rss+xml
+application/x-rss+xml
+application/xml
+message/rfc822
+text/atom
+text/xml
