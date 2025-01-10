@@ -3,7 +3,6 @@ module Webize
 
     # cache and index graphs in repository to 🐢
     def index env, base, updates: false      # output updates?
-#      updates = true
       updates = RDF::Repository.new if updates # updates graph
 
       # query patterns:

@@ -19,7 +19,6 @@ module Webize
       OpaqueNode = %w(svg)
       SRCSET = /\s*(\S+)\s+([^,]+),*/
       StripTags = /<\/?(font|noscript)[^>]*>/i
-      StyleAttr = /^on|border|color|dir|style|theme/i
 
       def initialize(input = $stdin, options = {}, &block)
         @base = options[:base_uri]
@@ -59,7 +58,7 @@ module Webize
                   end
 
         # type
-        yield subject, Type, RDF::URI(XHV + node.name)
+        yield subject, Type, RDF::URI(XHV + node.name), @base
 
         # attributes
         node.attribute_nodes.map{|attr|
@@ -193,21 +192,12 @@ module Webize
         end
 
         # strip upstream UI
-        @doc.css('style').remove                                       # drop stylesheets
-
-        @doc.traverse{|e|                                              # elements
-          e.respond_to?(:attribute_nodes) && e.attribute_nodes.map{|a| # attributes
-            attr = a.name                                              # attribute name
-            a.unlink if attr.match? StyleAttr }}                       # drop style attributes
-
-        @doc.css('script[src]').map{|s|                                # drop scripts
-          yield @base, XHV + 'script', @base.join(s['src'])
-          s.remove
-        }
+        @doc.css('style').remove       # drop stylesheets
+        @doc.css('script[src]').remove # drop scripts
 
         # <meta>
         @doc.css('meta').map{|m|
-          if k = (m.attr('itemprop') ||  # predicate
+          if k = (m.attr('itemprop') || # predicate
                   m.attr('name') ||
                   m.attr('property'))
 
