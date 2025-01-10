@@ -557,3 +557,6 @@ data-remodal-options
 data-remodal-action
 data-rte-preserve-empty
 data-dnt
+data-amber-behavior
+stretchy
+sandbox
