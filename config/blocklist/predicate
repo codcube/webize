@@ -574,3 +574,6 @@ data-scroll
 bgcolor
 style-nonce
 data-render-function
+data-liked
+data-core-v316-plus
+disablepictureinpicture
