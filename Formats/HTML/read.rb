@@ -230,28 +230,32 @@ module Webize
           end}
 
         # <link>
-        @doc.css('link[rel][href]').map{|m|
+        @doc.css('link[href]').map{|m|
 
           # @href -> object
           o = HTTP::Node @base.join(m.attr 'href'), @env
 
+          if Feed::Names.member?(o.basename) ||
+             Feed::Extensions.member?(o.extname)
+            yield @base, DC + 'hasFormat', o, @base
+          end
+
           # @rel -> predicate
+          next unless m.attr 'rel'
           m.attr('rel').split(/[\s,]+/).map{|k|
             @env[:links][:prev] ||= o if k.match? /prev(ious)?/i
             @env[:links][:next] ||= o if k.downcase == 'next'
             @env[:links][:icon] ||= o if k.match? /^(fav)?icon?$/i
-            @env[:feeds].push o if k == 'alternate' && ((m['type']&.match?(/atom|feed|rss/)) || (o.path&.match?(/^\/feed\/?$/)))
+ 
             p = MetaMap[k] || k
             logger.warn ["no URI for LINK tag \e[7m", k, "\e[0m ", o].join unless p.to_s.match? /^(drop|http)/
+
             if p == :drop
               puts "\e[38;5;196m-<link>\e[0m #{k} #{o}"
             else
               yield @base, p, o, @base
               m.remove
-            end
-          }
-
-          @env[:feeds].push o if Feed::Names.member?(o.basename) || Feed::Extensions.member?(o.extname)}
+            end}}
 
         # <title>
         @doc.css('title').map{|t|
