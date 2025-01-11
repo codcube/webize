@@ -56,7 +56,7 @@ module Webize
 
           unless File.exist? 🕒
             FileUtils.mkdir_p File.dirname 🕒                 # make timeline container(s)
-            FileUtils.ln f, 🕒 # rescue FileUtils.cp f, 🕒      # link 🐢 to 🕒, with copy as fallback operation
+            FileUtils.ln f, 🕒 rescue FileUtils.cp f, 🕒      # link 🐢 to 🕒, with copy as fallback operation
             log.unshift [:🕒, ts]                             # log 🕒 entry
           end
         end
