@@ -33,6 +33,8 @@ module Webize
 
       def pre(content) = blockResource content, :pre
       def code(content) = blockResource content, :code
+      def form(content) = blockResource content, :form
+      def input(content) = inlineResource content, :input
 
       def comment c
         {_: :span, class: :comment,

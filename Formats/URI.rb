@@ -57,13 +57,19 @@ module Webize
 
     def extname = (File.extname path if path)
 
-    def fsNames = host ? fsNamesGlobal : fsNamesLocal
+    def fsNames = case scheme
+                  when 'mid' # RFC2111 mid: URI for RFC822 message
+                    id = Digest::SHA2.hexdigest to_s # calculate hash of mid: URI
+                    ['mail', id[0..1], id[2..-1]]    #  sharded-hash container
+                  when 'tag' # RFC4151 tag: URI primarily emanating from blogging engines
+                    id = Digest::SHA2.hexdigest to_s #  calculate hash of tag URI
+                    ['mid', id[0..1], id[2..-1]]     #  sharded-hash container
+                  else
+                    host ? fsNamesGlobal : fsNamesLocal
+                  end
 
     def fsNamesLocal = if parts.empty?
                          %w(.)
-                       elsif parts[0] == 'msg'                                          # message
-                         id = Digest::SHA2.hexdigest Rack::Utils.unescape_path parts[1] #  calculate hash of message identifier
-                         ['mail', id[0..1], id[2..-1]]                                  #  sharded-hash container
                        else                                                             # path map
                          unescape_parts
                        end
