@@ -38,8 +38,8 @@ module Webize
                       update(f.has_key?(Contains) ? {c: f[Contains].map{|c| HTML.markup c, env}} : {}).
                       update(f.has_key?(Schema+'action') ? {action: f[Schema+'action'][0]['uri']} : {})
 
-      def input(i) = (puts :input, i
-        {_: :input, name: i[Title][0]})
+      def input(i) = {_: :input}.
+                       update(i.has_key?(Title) ? {name: i[Title][0]} : {})
 
       def select(s) = resource s, :select
 

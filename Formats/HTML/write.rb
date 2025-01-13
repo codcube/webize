@@ -39,11 +39,6 @@ module Webize
 
       # resource-type URI -> representation generator method mapper
       def self.markup o, env
- puts o[Type] &&                     # has RDF type attribute?
-      Markup[o[Type].map{|t|
-               puts t['uri']
-                        t.class == Hash ? t['uri'] : t.to_s}.find{|t| # types
-                        Markup.has_key? t}]
         Node.new(env[:base]).env(env).        # representation instance
           send o[Type] &&                     # has RDF type attribute?
                Markup[o[Type].map{|t|
