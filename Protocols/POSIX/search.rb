@@ -23,14 +23,8 @@ module Webize
           grep
 
         else                                      # LS (dir)
-          trailing = dirURI?
-
-          [self,
-           *Node(join [trailing ? '../' : nil,    # static index - basename
-                       basename,
-                       '.{html,ttl,🐢}'].join).glob,
-                                                  # static index - well-known names
-           *Node(join [trailing ? nil : [basename, '/'],
+          [self, # dir + static index nodes
+           *Node(join [dirURI? ? nil : [basename, '/'],
                        '{index,readme,README}*'].join).glob]
         end
       elsif file?                                 # LS (file)
