@@ -5,8 +5,10 @@ module Webize
 
     # (IO) document path (noun) and container initialization (verb)
     def document
-      mkdir
-      fsPath
+      # append well-known 'index' slug if directory-description document
+      return (Node join 'index').document if dirURI?
+      mkdir  # create containing dir
+      fsPath # return document pathname
     end
 
     # (IO) follow symlinks and return name-extension
