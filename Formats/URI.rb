@@ -142,7 +142,7 @@ module Webize
         @env = e
         self
       else
-        @env ||= {}
+        @env ||= HTTP.env.update({base: self})
       end
     end
 
