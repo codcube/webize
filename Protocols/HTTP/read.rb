@@ -116,7 +116,7 @@ module Webize
           end
 
           # Content-Type: header is more formally-specified and less ad-hoc than path extensions.
-          # internally, we treat our suffixes as correct to map to a MIME without needing to exec 'attr', FFI-based POSIX-eattr libs or sidecar turtle files
+          # internally, we treat extensions as correct to map to a MIME without needing to exec 'attr', compile FFI-based POSIX-eattr libs or use sidecar turtle files
           # therefore we need to store it at the correct location for the upstream reported MIME
           if (mimes = RDF::Format.content_types[format]) &&             # MIME definitions
              !(exts = mimes.map(&:file_extension).flatten).member?(ext) # extension maps to MIME?
@@ -135,7 +135,7 @@ module Webize
           end
 
           unless thru && notransform
-            graph = readRDF(format, body).index env, self, updates: !thru # parse, cache, and index
+            graph = readRDF(format, body).index env, self, updates: !thru # parse, cache, and index graph-data
           end
 
           if !thru                                                      # no HTTP response construction or proxy
