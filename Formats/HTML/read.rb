@@ -261,16 +261,6 @@ module Webize
         @doc.css('title').map{|t|
           yield @base, Title, t.inner_text, @base unless t.inner_text.empty?}
 
-        # @doc.css('#next, #nextPage, a.next, .show-more > a').map{|nextPage|
-        #   if ref = nextPage.attr('href')
-        #     @env[:links][:next] ||= @base.join ref
-        #   end}
-
-        # @doc.css('#prev, #prevPage, a.prev').map{|prevPage|
-        #   if ref = prevPage.attr('href')
-        #     @env[:links][:prev] ||= @base.join ref
-        #   end}
-
         # fix id-collisions to prevent unwanted cycles in tree/linked-list datastructures
         nodes = {}
         @doc.css('[id]').map{|node|    # identified node

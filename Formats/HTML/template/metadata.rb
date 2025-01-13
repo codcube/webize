@@ -2,14 +2,10 @@ module Webize
   module HTML
     class Node
 
-      # document header
+      # header node
       def head(node) = resource node, :head
 
-      # form elements
-      def form(node) = resource node, :form
-      def select(node) = resource node, :select
-
-      # data elements
+      # datatype-specific nodes
       def time(node) = inlineResource node, :time
 
     end
