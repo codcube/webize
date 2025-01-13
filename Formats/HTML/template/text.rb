@@ -34,17 +34,20 @@ module Webize
       def pre(content) = blockResource content, :pre
       def code(content) = blockResource content, :code
 
-      def form(content) = blockResource content, :form
-      def input(content) = inlineResource content, :input
-      def select(node) = resource node, :select
+      def form(f) = {_: :form}.
+                      update(f.has_key?(Contains) ? {c: f[Contains].map{|c| HTML.markup c, env}} : {}).
+                      update(f.has_key?(Schema+'action') ? {action: f[Schema+'action'][0]['uri']} : {})
 
-      def comment c
-        {_: :span, class: :comment,
-         c: ['&lt;!--',
-             c[Contains].map{|content|
-               HTML.markup content, env},
-             '--&gt;']}
-      end
+      def input(i) = (puts :input, i
+        {_: :input, name: i[Title][0]})
+
+      def select(s) = resource s, :select
+
+      def comment(c) = {_: :span, class: :comment,
+                        c: ['&lt;!--',
+                            c[Contains].map{|content|
+                              HTML.markup content, env},
+                            '--&gt;']}
 
       # hypertext anchor
       def a anchor
