@@ -32,9 +32,11 @@ module Webize
 
       # local
       return fetchLocal nodes if offline? # offline
-      return fileResponse if storage.file? &&  # cache hit if file and
-                             fileMIME.match?(FixedFormat) && # fixed format: we can't or prefer not to rewrite via content-negotiation preferences
-                             !basename.match?(/index/i)      # exclude compressed index-files from fixed-format list - pattern in distro pkg-cache
+      # most third party clients are unaware of the flexibility content-negotiation provides, and even get confused if we return a different format
+      # therefore, if we've cached content of a type matching the FixedFormat rule, we return it
+      return fileResponse if storage.file? &&  # return static node if exists and
+                             fileMIME.match?(FixedFormat) && # format is fixed
+                             !basename.match?(/index/i)      # exclude compressed index-files from rule - common pattern in distro pkg-cache dirs
 
       # network
       return fetchRemotes nodes if nodes # node(s)
@@ -109,17 +111,20 @@ module Webize
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # allow (X)HTML to be served as XML
           notransform = env[:notransform] || format.match?(FixedFormat) # transformable content?
 
-          if ext = File.extname(doc)[1..-1]                             # name suffix
-            ext = ext.to_sym
+          if ext = File.extname(doc)[1..-1]                             # name suffix with stripped leading '.'
+            ext = ext.to_sym                                            # symbolize for lookup in RDF::Format
           end
 
-          if (mimes = RDF::Format.content_types[format]) &&             # MIME definition
-             !(exts = mimes.map(&:file_extension).flatten).member?(ext) # suffix mapped to MIME?
-            doc = [(link = doc), '.', exts[0]].join                     # append mapped suffix
-            # link to corrected-extension node for static-file discovery at original URL
-            FileUtils.ln_s File.basename(doc), link unless !%w(audio image video).member?(format.split('/')[0]) ||
-                                                           File.exist?(link) ||
-                                                           File.symlink?(link)
+          # Content-Type: header is more formally-specified and less ad-hoc than path extensions.
+          # internally, we treat our suffixes as correct to map to a MIME without needing to exec 'attr', FFI-based POSIX-eattr libs or sidecar turtle files
+          # therefore we need to store it at the correct location for the upstream reported MIME
+          if (mimes = RDF::Format.content_types[format]) &&             # MIME definitions
+             !(exts = mimes.map(&:file_extension).flatten).member?(ext) # extension maps to MIME?
+            doc = [(link = doc), '.', exts[0]].join                     # append mapped extension
+            # link to updated location from original to preserve findability and 1:1 fixed-format node mapping
+            FileUtils.ln_s File.basename(doc), link unless !format.match?(FixedFormat) ||
+                                                            File.exist?(link) ||
+                                                            File.symlink?(link)
           end
 
           File.open(doc, 'w'){|f|f << body }                            # cache raw data
