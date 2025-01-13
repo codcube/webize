@@ -57,6 +57,7 @@ module Webize
 
     # resource reference in current browsing context
     def href
+      return '/' + fsPath if %w(cid mid tag).member?(scheme)
       return '#' + fragment if fragment && in_request_graph? # relative fragment
       return to_s unless host                                # relative path
       return proxy_ref if env[:proxy_refs] && !proxy_ref?    # proxy locator
