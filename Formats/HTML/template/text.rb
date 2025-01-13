@@ -36,7 +36,7 @@ module Webize
 
       def form(f) = {_: :form}.
                       update(f.has_key?(Contains) ? {c: f[Contains].map{|c| HTML.markup c, env}} : {}).
-                      update(f.has_key?(Schema+'action') ? {action: f[Schema+'action'][0]['uri']} : {})
+                      update(f.has_key?(Schema+'action') ? {action: f[Schema+'action'][0].class == Hash ? f[Schema+'action'][0]['uri'] : f[Schema+'action'][0].to_s} : {})
 
       def input(i) = {_: :input}.
                        update(i.has_key?(Title) ? {name: i[Title][0]} : {})
