@@ -241,21 +241,15 @@ module Webize
           end
 
           # @rel -> predicate
-          next unless m.attr 'rel'
-          m.attr('rel').split(/[\s,]+/).map{|k|
-            @env[:links][:prev] ||= o if k.match? /prev(ious)?/i
-            @env[:links][:next] ||= o if k.downcase == 'next'
-            @env[:links][:icon] ||= o if k.match? /^(fav)?icon?$/i
- 
-            p = MetaMap[k] || k
-            logger.warn ["no URI for LINK tag \e[7m", k, "\e[0m ", o].join unless p.to_s.match? /^(drop|http)/
+          next unless rel = m.attr('rel')
+          m.remove
 
-            if p == :drop
-              puts "\e[38;5;196m-<link>\e[0m #{k} #{o}"
-            else
-              yield @base, p, o, @base
-              m.remove
-            end}}
+          rel.split(/[\s,]+/).map{|k|
+            p = MetaMap[k] || k
+            logger.warn ["no URI for <link> \e[7m", k, "\e[0m ", o].join unless p.to_s.match? /^(drop|http)/
+            next if p == :drop
+            yield @base, p, o, @base
+          }}
 
         # <title>
         @doc.css('title').map{|t|
