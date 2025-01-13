@@ -113,10 +113,12 @@ module Webize
             ext = ext.to_sym
           end
 
-          if (formats = RDF::Format.content_types[format]) &&           # content-type definitions
-             !(exts = formats.map(&:file_extension).flatten).member?(ext) # valid suffix for content type?
-            doc = [(link = doc), '.', exts[0]].join                       # append suffix, link from original name
-            FileUtils.ln_s File.basename(doc), link unless File.exist?(link) || File.symlink?(link)
+          if %w(audio image video).member?(format.split('/')[0]) &&     # fix extension for format:
+             (mimes = RDF::Format.content_types[format]) &&             # MIME definition
+             !(exts = mimes.map(&:file_extension).flatten).member?(ext) # suffix mapped to MIME?
+            doc = [(link = doc), '.', exts[0]].join                     # append mapped suffix
+            FileUtils.ln_s File.basename(doc), link unless File.exist?(link) || # link node from original location
+                                                           File.symlink?(link)
           end
 
           File.open(doc, 'w'){|f|f << body }                            # cache raw data
