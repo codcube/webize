@@ -43,7 +43,7 @@ module Webize
 
         # Message resource
         id = m.message_id || m.resent_message_id || Digest::SHA2.hexdigest(rand.to_s)
-        mail = graph = RDF::URI('mid:' + Rack::Utils.escape_path(id))
+        mail = graph = RDF::URI( '/' + POSIX::Node('mid:' + Rack::Utils.escape_path(id)).fsPath )
 
         # query args
         from_query = @base.env[:qs]['from']&.downcase
@@ -148,7 +148,7 @@ module Webize
         %w{in_reply_to references}.map{|ref|
           m.send(ref).yield_self{|rs|
             (rs.class == Array ? rs : [rs]).compact.map{|r|
-              msg = RDF::URI('mid:' + Rack::Utils.escape_path(r))
+              msg = RDF::URI( '/' + POSIX::Node('mid:' + Rack::Utils.escape_path(r)).fsPath )
               yield mail, SIOC + 'reply_of', msg, graph
               yield msg, SIOC + 'has_reply', mail, graph
             }}}
