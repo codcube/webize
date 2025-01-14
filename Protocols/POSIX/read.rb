@@ -17,7 +17,7 @@ module Webize
     def readDir graph = RDF::Repository.new
 
       # enforce trailing slash on directory URI
-      return Node(join basename + '/').readDir graph unless dirURI?
+      return Node(join [basename, '/'].join).readDir graph unless dirURI?
       graph_pointer graph                                                        # 👉 directory
       graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601) # timestamp
 

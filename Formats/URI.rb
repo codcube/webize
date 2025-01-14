@@ -38,7 +38,7 @@ module Webize
 
     def dirname = File.dirname fsPath
 
-    def dirURI? = !path || path[-1] == '/'
+    def dirURI? = path && path[-1] == '/'
 
     def display_host
       return unless host
