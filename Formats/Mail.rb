@@ -43,6 +43,7 @@ module Webize
 
         # Message resource
         id = m.message_id || m.resent_message_id || Digest::SHA2.hexdigest(rand.to_s)
+        # we'd like to emit pure mid: but it's looping inside /data/data/com.termux/files/usr/lib/ruby/gems/3.3.0/gems/rdf-3.3.2/lib/rdf/model/uri.rb on serialization with URis like mid:../ and adding another ../ each time. not sure what's up.. 
         mail = graph = RDF::URI( '/' + POSIX::Node('mid:' + Rack::Utils.escape_path(id)).fsPath )
 
         # query args
