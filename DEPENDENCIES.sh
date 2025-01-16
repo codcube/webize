@@ -6,8 +6,8 @@ command -v apk && sudo apk add alpine-sdk build-base gcompat libcap-setcap linux
 # Arch https://www.archlinux.org/
 command -v pacman && sudo pacman -S --needed base-devel poppler ruby taglib
 
-# Debian https://www.debian.org/
-command -v apt-get && sudo apt-get install build-essential ruby ruby-dev grep file libssl-dev libtag1-dev libxslt-dev libzip-dev make libffi-dev
+# Debian/Ubuntu https://www.debian.org/
+command -v apt-get && sudo apt-get install build-essential ruby ruby-dev grep file libssl-dev libtag1-dev libxslt-dev libyaml-dev libzip-dev make libffi-dev
 
 # Gentoo https://www.gentoo.org/
 command -v emerge && sudo emerge ruby taglib
