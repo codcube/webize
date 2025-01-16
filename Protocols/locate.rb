@@ -77,7 +77,7 @@ module Webize
 
     # local aka fragment identifier
     # synthesize a derived local identifier if remote resource
-    def local_id = in_request_graph? ? fragment : 'r' + Digest::SHA2.hexdigest(to_s)
+    def local_id = in_request_graph? ? fragment : 'inline_' + Digest::SHA2.hexdigest(to_s)
 
     # test for canonical location on base host/path - unspecified matches due to relative resolution
     def on_host? = !host || env[:base].host == host # unspecified or matching host

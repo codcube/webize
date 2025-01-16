@@ -47,7 +47,13 @@ module Webize
 
     def display_name
       return uri.split(',')[0] if dataURI?
-      return fragment if fragment && !fragment.empty?                     # fragment
+      if fragment && !fragment.empty?                     # fragment
+        if fragment.index('inline_') == 0
+          return '↜'
+        else
+          return fragment
+        end
+      end
       return basename if path && basename && !['','/'].member?(basename)  # basename
       return display_host if host                                         # hostname
       uri
