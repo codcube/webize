@@ -33,7 +33,9 @@ module Webize
       end
 
       # graph provenance listing
-      def graph_source(s) = table s, attrs: ['uri', Creator, Title, To]
+      def graph_source(s) = table s,
+                                  attrs: ['uri', Creator, Title, To],
+                                  heading: false
 
       def identifier uris
         (uris.class == Array ? uris : [uris]).map{|uri|
