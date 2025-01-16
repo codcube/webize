@@ -15,4 +15,5 @@ http://www.w3.org/1999/02/22-rdf-syntax-ns#type rdf_type
 http://www.w3.org/1999/xhtml/vocab#iframe iframe
 http://www.w3.org/2011/http#Content-Type content_type
 http://www.w3.org/2011/http#status status_code
+http://www.w3.org/ns/prov#graph graph_source
 uri identifier
