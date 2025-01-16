@@ -23,10 +23,12 @@ module Webize
           r = reader.new(content, base_uri: self){|_| graph << _ }
 
           # Ruby methods on Reader/Reposittory are out-of-band (even inaccessible) techniques for generic data consuers. in this process, the reader w/ declaratively updated base-URI falls out of scope as this method returns, so here we 👉 graph URIs, for basic graph-name preservation and wayfinding:
-          [r.base_uri,
-           *graph.each_graph.map(&:name)].compact.uniq.map do |g|
+          (Resource r.base_uri).graph_pointer graph
+          graph.each_graph.map(&:name).compact.uniq.map do |g|
+            g = Resource g
             graph << RDF::Statement.new(self, RDF::URI(Prov+'graph'), g)
-            (Resource g).graph_pointer graph
+            graph << RDF::Statement.new(g, RDF::URI(Link), RDF::URI('#' + g.local_id)) # graph 👉 representation
+            g.graph_pointer graph
           end
 
         # (graph 👉 node) is provided in reader implementations. you can #dump a soup of disconnected subgraphs with the Turtle serializer, but these references improve book-keeping, discoverability, and making the HTML/JS UI more functional (automagic keyboard navigation) without any extra work beyond providing a reference skeleton

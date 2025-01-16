@@ -34,7 +34,7 @@ module Webize
 
       # graph provenance listing
       def graph_source(s) = table s,
-                                  attrs: ['uri', Creator, Title, To],
+                                  attrs: ['uri', Creator, Title, Link, To],
                                   heading: false
 
       def identifier uris
