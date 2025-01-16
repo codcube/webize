@@ -15,6 +15,7 @@ LDP	 http://www.w3.org/ns/ldp#
 Label	 http://www.w3.org/2000/01/rdf-schema#label
 Link     http://purl.org/dc/terms/link
 Post     http://rdfs.org/sioc/ns#Post
+Prov	 http://www.w3.org/ns/prov#
 RDFs	 http://www.w3.org/2000/01/rdf-schema#
 SIOC     http://rdfs.org/sioc/ns#
 Schema   http://schema.org/

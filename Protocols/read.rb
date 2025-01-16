@@ -25,6 +25,7 @@ module Webize
           # Ruby methods on Reader/Reposittory are out-of-band (even inaccessible) techniques for generic data consuers. in this process, the reader w/ declaratively updated base-URI falls out of scope as this method returns, so here we 👉 graph URIs, for basic graph-name preservation and wayfinding:
           [r.base_uri,
            *graph.each_graph.map(&:name)].uniq.map do |g|
+            graph << RDF::Statement.new(self, RDF::URI(Prov+'graph'), g)
             (Resource g).graph_pointer graph
           end
 
