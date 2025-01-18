@@ -23,8 +23,7 @@
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .redirectors, .referers {background-color: #bbb; border-radius: .42em}
 .resource {border: 1px solid #333; border-radius: .62em; margin: 1px; vertical-align: top}
-.resource[host="www.mixcloud.com"] .resource[host="www.mixcloud.com"] a.origin, .resource[host="soundcloud.com"] .resource[host="soundcloud.com"] a.origin {display: none}
-.resource[host="www.mixcloud.com"] a.origin, .resource[host="soundcloud.com"] a.origin {font-size: 2em; float: right; font-weight: normal}
+.resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
 .resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
 .resource[host="www.mixcloud.com"] span[href] {display: none}
 .resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource {max-width: 38em; overflow: hidden}
