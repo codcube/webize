@@ -23,9 +23,9 @@
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .redirectors, .referers {background-color: #bbb; border-radius: .42em}
 .resource {border: 1px solid #333; border-radius: .62em; margin: 1px; vertical-align: top}
-.resource[host="www.mixcloud.com"] img {display: none}
-.resource[host="www.mixcloud.com"] img:last-child {display: inline-block}
+.resource[host="www.mixcloud.com"] a.origin, .resource[host="soundcloud.com"] a.origin {font-size: 3em}
 .resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
+.resource[host="www.mixcloud.com"] span[href] {display: none}
 .resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource {max-width: 38em; overflow: hidden}
 .resource[host="www.reddit.com"] {max-width: 80ex}
 .resource[id^="container"] > a.title {color: #aaa; padding: 0; margin: 0; min-width: 0; min-height: 0; font-size: .88em}
