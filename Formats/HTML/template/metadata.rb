@@ -32,6 +32,12 @@ module Webize
             ' ']}
       end
 
+      def format formats
+        formats.map{|f|
+          puts f
+        }
+      end
+
       # graph provenance listing
       def graph_source(s) = table s,
                                   attrs: ['uri', Creator, Title, Link, To],
