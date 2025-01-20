@@ -3,3 +3,5 @@ data-target
 panelTargetId
 data-clipboard-target
 targetId
+data-bs-target
+data-scroll-target
