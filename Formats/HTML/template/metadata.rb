@@ -34,6 +34,12 @@ module Webize
 
       def format formats
         formats.map{|f|
+                    # 👉 feed(s)
+                    # env[:feeds].uniq.map{|feed|
+                    #   feed = Resource.new(feed).env env
+                    #   [{_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'f' + Digest::SHA2.hexdigest(feed.uri)}.
+                    #      update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {}), "\n"]},
+
           puts f
         }
       end

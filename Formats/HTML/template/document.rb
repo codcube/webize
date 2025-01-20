@@ -77,12 +77,6 @@ module Webize
                          {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}}, # parameters
                       "\n"] if env[:qs].has_key? 'q'),
 
-                    # 👉 feed(s)
-                    # env[:feeds].uniq.map{|feed|
-                    #   feed = Resource.new(feed).env env
-                    #   [{_: :a, href: feed.href, title: feed.path, c: FeedIcon, id: 'f' + Digest::SHA2.hexdigest(feed.uri)}.
-                    #      update((feed.path||'/').match?(/^\/feed\/?$/) ? {style: 'border: .08em solid orange; background-color: orange'} : {}), "\n"]},
-
                     # 🔌 offline status
                     (:🔌 if offline?),
 
