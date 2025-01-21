@@ -583,3 +583,7 @@ yandex-verification
 Set-Cookie
 is_legacy_transcoding
 data-bs-toggle
+stroke
+stroke-width
+stroke-linecap
+stroke-linejoin
