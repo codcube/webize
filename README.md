@@ -1,6 +1,6 @@
 # INSTALL
-[a script](DEPENDENCIES.sh) calls distro packagers to install build-time dependencies for the Gem dependencies,
-the runs 'bundle install'. if that fails, see comments in the script for environment-var and other tweaks.
+[a script](DEPENDENCIES.sh) calls distro packagers to install library dependencies of the Gem dependencies
+then runs 'bundle install'. if that fails, see comments in the script for environment-var and other tweaks.
 
 # USAGE
 
@@ -12,16 +12,14 @@ you may want directories in [bin/](bin/) in **PATH**, to launch servers or do al
 
     export PATH=$HOME/src/webize/bin/config:$HOME/src/webize/bin/server:$PATH
 
+if you're planning on reading mail, you may want to install the [procmailrc](config/dotfiles/.procmailrc) to deliver to hour-directories
+
 launch:
 
     httpd
 
-when **OFFLINE** is set, requests are served from local cache. for an offline, verbose server:
-
-    CONSOLE_LEVEL=debug OFFLINE=1 httpd
-
-there's also an optional DNS server
+there's also a DNS server:
 
     dnsd
 
-everything is really a configuration + app atop falcon and async-dns so feel free to come up with your own ideas
+'webize' is a server configuration + RDF-conversion library running atop [falcon](https://github.com/socketry/falcon) and [async-dns](https://github.com/socketry/async-dns) so feel free to come up with your own invocations involving the common HTTP_PROXY and/or our CDN (shared-cache base URI) and OFFLINE (serve from cache only) environment-vars
