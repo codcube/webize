@@ -2,7 +2,7 @@
 [a script](DEPENDENCIES.sh) calls distro packagers to install library dependencies of the Gem dependencies
 then runs 'bundle install'. if that fails, see comments in the script for environment-var and other tweaks.
 
-# USAGE
+# CONFIG
 
 set the cache location. this will likely move to $HOME/.cache but is currently user-defined
 
@@ -12,14 +12,14 @@ you may want directories in [bin/](bin/) in **PATH**, to launch servers or do al
 
     export PATH=$HOME/src/webize/bin/config:$HOME/src/webize/bin/server:$PATH
 
-if you're planning on reading mail, you may want to install the [procmailrc](config/dotfiles/.procmailrc) to deliver to hour-directories
+if you use email, [procmailrc](config/dotfiles/.procmailrc) configures delivery to hour-dirs. we type 'localhost' in URL bars often and don't want to type :8000 over and over again so we use the classic HTTP port in our scripts. one of the tricks on [this list](https://github.com/codcube/webize/blob/main/Protocols/DNS.rb#L72) may be needed on your system, or you can simply invent your own invocations with a >1024 port specifier - 'httpd' is just a server configuration hooking up our RDF-conversion ("webizing") library with [falcon](https://github.com/socketry/falcon) and [async-dns](https://github.com/socketry/async-dns). common HTTP_PROXY and our CDN (shared-cache base URI) and OFFLINE (serve from cache only) environment-vars are supported.
 
-launch:
+# USAGE
+
+HTTP server (on localhost, port 80):
 
     httpd
 
 there's also a DNS server:
 
     dnsd
-
-'webize' is a server configuration + RDF-conversion library running atop [falcon](https://github.com/socketry/falcon) and [async-dns](https://github.com/socketry/async-dns) so feel free to come up with your own invocations involving the common HTTP_PROXY and/or our CDN (shared-cache base URI) and OFFLINE (serve from cache only) environment-vars
