@@ -1,5 +1,3 @@
-# webize
-
 # INSTALL
 [a script](DEPENDENCIES.sh) calls distro packagers to install build-time dependencies for the Gem dependencies,
 the runs 'bundle install'. if that fails, see comments in the script for environment-var and other tweaks.
