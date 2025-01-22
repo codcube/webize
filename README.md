@@ -16,10 +16,10 @@ if you use email, [procmailrc](config/dotfiles/.procmailrc) configures delivery 
 
 # USAGE
 
-HTTP server (on localhost, port 80):
+HTTP server (localhost, port 80):
 
     httpd
 
-there's also a DNS server:
+DNS server: (localhost, port 53):
 
     dnsd
