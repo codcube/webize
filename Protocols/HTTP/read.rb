@@ -19,7 +19,7 @@ module Webize
         body
       end
     rescue Exception => e
-      Console.logger.failure head, e
+      Console.logger.warn head, e
       head['Content-Encoding'] = encoding
       body
     end
