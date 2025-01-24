@@ -187,3 +187,6 @@ data-carousel-extra
 communities
 data-wp-context
 watchEndpoint
+asset
+thumbnailOverlays
+thumbnailOverlayToggleButtonRenderer
