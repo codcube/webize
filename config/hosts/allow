@@ -20,6 +20,7 @@ api-v2.soundcloud.com
 api.vimeo.com
 api.weather.com
 api.weather.gov
+app.radicle.xyz
 arc-anglerfish-washpost-prod-washpost.s3.amazonaws.com
 armageddon-media-proxy-jpost.walla.cloud
 assets.msn.com
@@ -200,6 +201,7 @@ vod-thumb-ww-live.akamaized.net
 vore.website
 v.redd.it
 w3c.github.io
+web-cdn.bsky.app
 webmention.io
 werd.io
 whois.nic.google
