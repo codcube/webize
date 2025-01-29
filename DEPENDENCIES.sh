@@ -19,7 +19,8 @@ command -v pkg && pkg install binutils ruby grep gumbo-parser-static file findut
 command -v xbps-install && sudo xbps-install -S base-devel libltdl-devel libressl-devel poppler-utils ruby ruby-devel taglib-devel
 
 # Ruby https://www.ruby-lang.org/
-command -v bundle || gem install bundler
+#command -v bundle || gem install bundler
+gem install bundler
 bundle install && rm Gemfile.lock
 
 # bundle: install may tell you it needs sudo, then if you use sudo, tell you to not install as root. so which is it? we'll go with #2. put something like this in your shell .rc file:
