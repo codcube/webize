@@ -23,7 +23,7 @@
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .redirectors, .referers {background-color: #bbb; border-radius: .42em}
 .resource {border: 1px solid #333; border-radius: .62em; margin: 1px; vertical-align: top}
-.resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
+[key="http://rdfs.org/sioc/ns#content"] > .resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
 .resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
 .resource[host="www.mixcloud.com"] span[href] {display: none}
 .resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource {max-width: 38em; overflow: hidden}
@@ -104,7 +104,7 @@ hr {margin: 1px 0 1px 0; border-style: dotted; color: #888}
 img {border-radius: .4em}
 li:nth-child(even) {background-color: #000; color: #fff}
 li:nth-child(odd) {background-color: #222; color: #fff}
-p > span, .val > span, .val[key="http://rdfs.org/sioc/ns#content"] span {background-color: #000; color: #fff}
+p > span, .val > span {background-color: #000; color: #fff}
 p {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
 p::before {content: '¶'; color: #666; margin-left: -12px}
 pre, code {max-width: 98ex; white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono; margin: 0}
