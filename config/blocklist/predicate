@@ -598,3 +598,5 @@ data-wacopycontent
 data-watemprangeelementstart
 background
 foreground
+data-wp-bind--hidden
+data-wp-interactive
