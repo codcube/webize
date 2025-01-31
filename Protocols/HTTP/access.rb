@@ -11,12 +11,16 @@ module Webize
     def deny
       status = 403
       env[:deny] = true
-      env[:warnings].push({_: :a,
-                           id: :allow,
-                           title: 'allow temporarily',
-                           style: 'font-size: 3em',
-                           href: Node(['//', host, path, '?allow=', allow_key].join).href,
-                           c: :👁️})
+      env[:warnings].push [{_: :a, # local-allow reference
+                            id: :allow,
+                            title: 'allow temporarily',
+                            style: 'font-size: 3em',
+                            href: Node(['//', host, path, '?allow=', allow_key].join).href,
+                            c: :👁️},
+                           {_: :a, # gateway reference
+                            title: 'access via gateway',
+                            href: ['http://m:8000/', uri].join,
+                            c: :⛩️}]
 
       if uri.match? Gunk
 
