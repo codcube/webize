@@ -600,3 +600,9 @@ background
 foreground
 data-wp-bind--hidden
 data-wp-interactive
+darkVibrant
+lightVibrant
+darkMuted
+vibrant
+palette
+isOpaque
