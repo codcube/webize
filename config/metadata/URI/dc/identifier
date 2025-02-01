@@ -183,3 +183,6 @@ data-td_block_id
 data-identifier
 _id
 data-huuid
+data-luma-event-id
+data-bluesky-cid
+data-bluesky-uri
