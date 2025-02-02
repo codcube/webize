@@ -183,3 +183,5 @@ preview_remote_url
 __ref
 urlFull
 data-stringify-link
+data-hovercard-url
+platform_url
