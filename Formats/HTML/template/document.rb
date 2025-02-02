@@ -72,6 +72,9 @@ module Webize
                     # child directories
                     (property '#childDir', doc.delete('#childDir') if doc['#childDir']),
 
+                    # alternate formats
+                    (property DC + 'hasFormat', doc.delete(DC + 'hasFormat') if doc[DC + 'hasFormat']),
+
                     # 🔍 search box
                     ([{_: :form, c: env[:qs].map{|k,v|
                          {_: :input, name: k, value: v}.update(k == 'q' ? {} : {type: :hidden})}}, # parameters
