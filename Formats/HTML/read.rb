@@ -235,8 +235,7 @@ module Webize
           # @href -> object
           o = HTTP::Node @base.join(m.attr 'href'), @env
 
-          if Feed::Names.member?(o.basename) ||
-             Feed::Extensions.member?(o.extname)
+          if o.feedURI? # implicit @rel if feed URI
             yield @base, DC + 'hasFormat', o, @base
           end
 

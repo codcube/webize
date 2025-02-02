@@ -15,6 +15,9 @@ module Webize
 
     def CDN_doc? = host&.match?(CDN_hosts) && path&.match?(CDN_doc)
 
+    def feedURI? = Feed::Names.member?(basename) ||
+                   Feed::Extensions.member?(extname)
+
     def fontURI? = FontExt.member? extname&.downcase
 
     def imageData? = dataURI? &&
