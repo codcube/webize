@@ -67,7 +67,6 @@ a.global, a.local, a.blocked {display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
 a.local {background-color: #002; border: 1px solid #008}
 a.feed {border: 1px solid orange}
-a.feed svg {height: 1.6em}
 a.origin {background-color: #000; padding: 0 .2em 0 .2em}
 a.origin:visited, a.pointer:visited, td[property="uri"] a:visited {background-color: #338}
 a.pointer, td[property="uri"] a {margin: 0; padding: 0; background-color: #222; color: #fff; border-radius: .5em; font-weight: normal; float: right}
