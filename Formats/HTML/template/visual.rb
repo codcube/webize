@@ -38,11 +38,9 @@ module Webize
 
         return {_: :span, href: i.uri, c: :🚫} if i.deny? # blocked image
 
-        if env[:images].has_key? i     # shown image?
-          [{_: :a, c: :🖼️,             # link to existing image
-            href: ['#', i.local_id].join,
-            class: :image_reference},
-           ' ']
+        if env[:images].has_key? i   # shown image?
+          [{_: :span, c: :🖼️,        # link to existing image
+            href: ['#', i.local_id].join}, ' ']
         else
           env[:images][i] = true     # mark as shown
           [{_: :img, id: i.local_id, # IMG element
