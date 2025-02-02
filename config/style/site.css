@@ -22,11 +22,11 @@
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .redirectors, .referers {background-color: #bbb; border-radius: .42em}
 .resource {border: 1px solid #333; border-radius: .62em; margin: 1px; vertical-align: top}
-.resource[id^="container"] > .resource[host="www.mixcloud.com"] > .kv > .val > a.origin, [key="http://rdfs.org/sioc/ns#content"] > .resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
 .resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
 .resource[host="www.mixcloud.com"] span[href] {display: none}
 .resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource {max-width: 38em; overflow: hidden}
 .resource[host="www.reddit.com"] {max-width: 80ex}
+.resource[id^="container"] > .resource[host="www.mixcloud.com"] > .kv > .val > a.origin, [key="http://rdfs.org/sioc/ns#content"] > .resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
 .resource[id^="container"] > a.title {color: #aaa; padding: 0; margin: 0; min-width: 0; min-height: 0; font-size: .88em}
 .resource[id^="container"] > span.kv {display: none}
 .resource[id^="container"] {border-color: #383838}
@@ -52,6 +52,7 @@ a .uri {color: #ccc; font-size: 0.86em}
 a .val[key="http://www.w3.org/2000/01/rdf-schema#label"] > span {background-color: #117; color: #fff}
 a hr {border-width: 0}
 a span {background-color: inherit; border-radius: inherit; color: inherit}
+a svg {max-height: 4em}
 a {text-decoration: none; border-radius: .2em; color: #fff; font-weight: bold; margin: 1px; min-width: 1em; min-height: 1em; overflow: hidden}
 a, a > span { max-width: 40em }
 a.blocked .key {background-color: #fff; color: #f00}

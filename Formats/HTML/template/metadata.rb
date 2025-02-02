@@ -36,8 +36,10 @@ module Webize
         formats.map{|fmt|
           if fmt.class == Hash && fmt['uri']
             f = Webize::Resource env[:base].join(fmt['uri']), env
-            {_: :a, href: f.href,
+            {_: :a, href: f.href, class: :local,
              c: [(FeedIcon if f.feedURI?),
+                 {_: :span, class: :uri,
+                  c: (CGI.escapeHTML File.dirname f.path if f.path)},
                  f.display_name]}
           else
             HTML.markup fmt, env
