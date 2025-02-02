@@ -186,3 +186,6 @@ data-huuid
 data-luma-event-id
 data-bluesky-cid
 data-bluesky-uri
+data-cpeid
+data-fake-id
+data-instgrm-payload-id
