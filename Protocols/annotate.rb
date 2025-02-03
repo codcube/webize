@@ -12,7 +12,7 @@ module Webize
       container = fsNames.inject(base) do |parent, name| # walk from base to container
         c = RDF::URI('#container_' + Digest::SHA2.hexdigest(parent.to_s + name)) # container URI
         graph << RDF::Statement.new(parent, RDF::URI(Contains), c) # parent 👉 child container
-        graph << RDF::Statement.new(c, RDF::URI(Title), name) # container name
+       #graph << RDF::Statement.new(c, RDF::URI(Title), name) # container name
         c                                                     # parent container for next iteration
       end
 
