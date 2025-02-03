@@ -26,12 +26,12 @@ module Webize
                                     # log 🐢 population
         log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join]
 
-        # update handling
-        graph << RDF::Statement.new(
-          g, RDF::URI('#new'), true) # tag graph as updated
+        # updates
         if updates                  # updates graph?
-          g.graph_pointer graph     # graph pointer
-          updates << graph          # graph to updates graph
+          g.graph_pointer graph     # update pointer
+          updates << graph          # update to updates graph
+        else                        # mark as update
+          self << RDF::Statement.new(g, RDF::URI('#new'), true)
         end
 
         # timeline indexing
