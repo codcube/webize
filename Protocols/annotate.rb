@@ -4,11 +4,11 @@ module Webize
     def graph_pointer graph
       # 👉 graph so it is reachable/visible in recursive walk, index lookup, treeization, etc algorithms
 
-      # the classic example: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
-      # related RDF formalisms and guidelines:
+      # classic example: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
+      # RDF related formalisms and guidelines:
       # https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
 
-      # create hierarchical containers from path structure
+      # emit hierarchical containers
       container = fsNames.inject(base) do |parent, name| # walk from base to container
         c = RDF::URI('#container_' + Digest::SHA2.hexdigest(parent.to_s + name)) # container URI
         graph << RDF::Statement.new(parent, RDF::URI(Contains), c) # parent 👉 child container
