@@ -263,3 +263,4 @@ https://www.youtube.com/feeds/videos.xml?channel_id=UCqdM7PpJ84RvkqM87OzMAzw
 https://www.youtube.com/feeds/videos.xml?channel_id=UCvM_2-HUTqwKkcQvLVRcMJw
 https://www.youtube.com/feeds/videos.xml?channel_id=UCx_SjDi4CS5ALkWCS9ffldQ
 https://www.capeandislands.org/index.rss
+https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=did%3Aplc%3Aduslwfe3f2uoy24srkzmfz5n&filter=posts_and_author_threads&includePins=false&limit=30
