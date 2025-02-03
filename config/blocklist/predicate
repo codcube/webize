@@ -622,3 +622,6 @@ data-tooltip-direction
 data-octo-click
 data-hide-on-mobile
 data-image-align
+data-wp-on-async--click
+data-wp-on--keydown
+data-flickr-embed

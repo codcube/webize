@@ -191,3 +191,6 @@ data-fake-id
 data-instgrm-payload-id
 buildId
 disqus.identifier
+templateid
+mapid
+memberid
