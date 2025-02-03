@@ -11,3 +11,4 @@ data-stream-duration
 durationMillis
 video_length
 data-video-duration
+data-aos-duration
