@@ -182,3 +182,4 @@ cleanTitle
 disqus.title
 disqus.shortname
 data-stream-program-name
+data-fieldname
