@@ -250,3 +250,4 @@ bylineImageUrl
 bylineLargeImageUrl
 data-bg-lazy
 data-canonical-src
+data-thumbnail
