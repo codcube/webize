@@ -5,3 +5,4 @@ data-clipboard-target
 targetId
 data-bs-target
 data-scroll-target
+data-action-target
