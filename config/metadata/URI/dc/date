@@ -252,3 +252,5 @@ image_updated_at
 date.updated
 publicPublishedDate
 data-promo-date
+last_post_date
+created_timestamp
