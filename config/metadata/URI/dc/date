@@ -254,3 +254,5 @@ publicPublishedDate
 data-promo-date
 last_post_date
 created_timestamp
+latestPublishedAt
+firstPublishedAt
