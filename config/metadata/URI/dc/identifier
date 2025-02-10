@@ -83,7 +83,6 @@ slack-app-id
 source_status_id
 source_user_id
 tagfullid
-uid
 uploadId
 urn
 uuid
@@ -199,3 +198,4 @@ data-post_id
 data-menu-id
 data-external-identifier
 data-fn
+data-image-mask-id
