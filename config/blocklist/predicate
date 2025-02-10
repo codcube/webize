@@ -633,3 +633,6 @@ data-uw-styling-context
 data-wp-class--hide
 data-wp-class--show
 data-wp-init
+data-aos-delay
+data-aos-easing
+data-aos-once
