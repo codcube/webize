@@ -96,6 +96,7 @@ https://kddnewton.com/feed.xml
 https://leahneukirchen.org/trivium/index.atom
 https://leftychan.net/leftypol/
 https://lemmy.ml/feeds/c/libre_culture.xml
+https://liberationnews.org/feed/
 https://librarytechnology.org/rss/
 https://linuxrocks.online/@dnkl.rss
 https://listeningpostcollective.org/feed/
@@ -123,8 +124,6 @@ https://mlml.io/projects/index.xml
 https://mstdn.social/@kroc.rss
 https://nebigdatahub.org/feed/
 https://neuromatch.social/@jonny.rss
-https://www.nsf.gov/rss/rss_www_events.xml
-https://www.nsf.gov/rss/rss_www_news.xml
 https://newdesigncongress.org/en/rss/
 https://newpublic.substack.com/feed
 https://news.ycombinator.com/rss
@@ -207,7 +206,6 @@ https://www.frdr-dfdr.ca/repo/feed/rss_2.0/site
 https://www.hifa.org/news/rss
 https://www.hotosm.org/feed.xml
 https://www.hunton.com/privacy-and-information-security-law/?rss
-https://liberationnews.org/feed/
 https://www.librarycopyrightalliance.org/feed/
 https://www.macarthurjustice.org/feed/
 https://www.michalzelazny.com/feed/
@@ -215,8 +213,9 @@ https://www.mintpressnews.com/feed/
 https://www.nationalarchives.gov.uk/rss/news.xml
 https://www.niemanlab.org/feed/
 https://www.nsf.gov/news/mmg/rss/rss2mmg.xml
+https://www.nsf.gov/rss/rss_www_events.xml
 https://www.nsf.gov/rss/rss_www_funding_pgm_annc_inf.xml
-https://www.nsf.gov/rss/rss_www_impacts.xml
+https://www.nsf.gov/rss/rss_www_news.xml
 https://www.pewresearch.org/feed/
 https://www.phoronix.com/rss.php
 https://www.pressforward.news/feed/
