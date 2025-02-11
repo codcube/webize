@@ -22,9 +22,9 @@ module Webize
           # instantiate reader, bind it to a var, read data as RDF
           r = reader.new(content, base_uri: self){|_| graph << _ }
 
-          # Ruby methods on Reader/Reposittory are out-of-band (even inaccessible) techniques for generic data consuers. in this process, the reader w/ declaratively updated base-URI falls out of scope as this method returns, so here we 👉 graph URIs, for basic graph-name preservation and wayfinding:
-          (Resource r.base_uri).graph_pointer graph
-          graph.each_graph.map(&:name).compact.uniq.map do |g|
+          # create first-class RDF statements of declaratively-updatable graph URI(s) as they are only otherwise available via out-of-band (from data-consumer perspective) methods in the Reader and Repository classes, the former also falling out of scope after this method returns
+          (Resource r.base_uri).graph_pointer graph            # canonical graph URI
+          graph.each_graph.map(&:name).compact.uniq.map do |g| # additional named-graph URIs
             g = Resource g
             graph << RDF::Statement.new(self, RDF::URI(Prov+'graph'), g)
             graph << RDF::Statement.new(g, RDF::URI(Link), RDF::URI('#' + g.local_id)) # graph 👉 representation
