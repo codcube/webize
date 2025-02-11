@@ -200,3 +200,5 @@ data-external-identifier
 data-fn
 data-image-mask-id
 data-id-selector
+data-component-id
+data-media-id
