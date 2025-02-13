@@ -34,10 +34,10 @@ module Webize
         if nodes.size > 48
           char = c.basename[0].downcase
           bin = Node join char + '*/'
-          bin.graph_pointer graph                       # 👉 child
+          bin.graph_pointer graph, true                 # 👉 bin
           graph << RDF::Statement.new(bin, contains, c) # bin entry
         else
-          graph << RDF::Statement.new(self, contains, c) # bin entry
+          graph << RDF::Statement.new(self, contains, c) # entry
         end
 
       }

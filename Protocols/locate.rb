@@ -55,21 +55,21 @@ module Webize
   end
   class Resource
 
-    # 👉 graph URI
-    def graph_pointer graph
-      # for reachability/visibility in recursive walk, index lookup, treeization, etc algorithms
-      # classic example: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
-      # RDF formalisms and guidelines:
-      # https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
+    # 👉 graph, for reachability in recursive walk, lookup, treeization, etc algorithms
+    # 
+    # classic example: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
+    # RDF formalisms&guidelines: https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
+    def graph_pointer graph, tabular = false
+      containment = tabular ? Schema + 'item' : Contains
 
-      container = fsNames.inject(base) do |parent, name| # walk from baseURI to graph via hierarchical containers
+      container = fsNames.inject(base) do |parent, name| # walk from base to graph via hierarchical containers
         c = RDF::URI('#container_' + Digest::SHA2.hexdigest(parent.to_s + name)) # container URI
-        graph << RDF::Statement.new(parent, RDF::URI(Contains), c) # parent 👉 child container
+        graph << RDF::Statement.new(parent, RDF::URI(containment), c) # parent 👉 child
         graph << RDF::Statement.new(c, RDF::URI(Title), name) # container name
-        c                                                     # parent container for next iteration
+        c                                                     # child
       end
 
-      graph << RDF::Statement.new(container, RDF::URI(Contains), self) # container 👉 graph
+      graph << RDF::Statement.new(container, RDF::URI(containment), self) # container 👉 graph
     end
 
     # resource reference in current browsing context
