@@ -57,7 +57,7 @@ module Webize
         (uris.class == Array ? uris : [uris]).map{|uri|
           u = Webize::Resource uri, env # URI instance
 
-          [{_: :a, c: :🔗, href: u.href}, # reference
+          [{_: :a, c: :🔗, href: u.href, id: ['ref_', Digest::SHA2.hexdigest(rand.to_s)].join}, # reference
            if u.host                      # remote reference?
              [{_: :a, c: :📦, href: '/' + u.storage.fsPath}, # cache reference
               {_: :a, c: :↗, href: u.uri, class: :origin}] # origin reference
@@ -77,10 +77,8 @@ module Webize
             content
           else
             {
-              #_: :a,
               _: :span,
               class: :type,
-              #href: t.href,
               title: t.uri,
               c: content,
             }
@@ -99,7 +97,8 @@ module Webize
       def title titles
         titles.map{|t|
           [{_: :span, c: HTML.markup(t, env)},
-           {_: :hr}]}
+           #{_: :hr}
+          ]}
       end
 
       def to recipients
