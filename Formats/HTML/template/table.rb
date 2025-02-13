@@ -28,7 +28,12 @@ module Webize
                          c: icon,
                        }}, "\n"]}}} if heading),
              {_: :tbody,
-              c: graph.map{|resource|
+              c: graph.sort_by{|r|
+                if r[Title]
+                  r[Title][0]
+                else
+                  r['uri']
+                end.to_s}.map{|resource|
                 [{_: :tr, c: attrs.map{|k| # <tr> row of resource
                     [{_: :td, property: k, # <td> cell of attribute/property
                       c: if resource.has_key? k
