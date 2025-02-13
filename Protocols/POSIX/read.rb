@@ -19,8 +19,8 @@ module Webize
       # enforce trailing slash on directory URI
       return Node(join [basename, '/'].join).readDir graph unless dirURI?
 
-      # table entry for directory-list graph 
-      graph_pointer graph, true                                                  # 👉 directory
+      # entry for directory-list graph
+      graph_pointer graph                                   # 👉 directory
 
       graph << RDF::Statement.new(self, RDF::URI(Date), node.stat.mtime.iso8601) # timestamp
 
@@ -37,7 +37,7 @@ module Webize
         if nodes.size > 48
           char = c.basename[0].downcase
           bin = Node join char + '*/'
-          bin.graph_pointer graph, true                 # 👉 bin
+          bin.graph_pointer graph                       # 👉 bin
           graph << RDF::Statement.new(bin, contains, c) # bin entry
         else
           graph << RDF::Statement.new(self, contains, c) # entry
