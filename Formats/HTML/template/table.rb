@@ -35,10 +35,10 @@ module Webize
                   r['uri']
                 end.to_s}.map{|resource|
 
-                # render resource once
+                # render resource as a row at most once
                 id = resource.__id__
-                next if env[:fragments].has_key? id
-                env[:fragments][id] = true
+                next if env[:rows].has_key? id
+                env[:rows][id] = true
 
                 [{_: :tr, c: attrs.map{|k| # <tr> row of resource
                     [{_: :td, property: k, # <td> cell of attribute/property

@@ -10,6 +10,7 @@ module Webize
       links: {},     # Link headers TODO move to RDF request-graph
       mapped: {},    # mapped URI statistics
       qs: {},        # parsed query-string
+      rows: {},      # row list for deduplication
       unmapped: {},  # unmapped URI statistics
       videos: {},    # videos list for deduplication
       warnings: []}  # warnings
