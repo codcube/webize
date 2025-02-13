@@ -60,17 +60,14 @@ module Webize
     # classic example: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
     # RDF formalisms&guidelines: https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
     def graph_pointer graph
-      containment = Schema + 'item'
-#      containment = Contains
-
       container = fsNames.inject(base) do |parent, name| # walk from base to graph via hierarchical containers
         c = RDF::URI('#container_' + Digest::SHA2.hexdigest(parent.to_s + name)) # container URI
-        graph << RDF::Statement.new(parent, RDF::URI(containment), c) # parent 👉 child
+        graph << RDF::Statement.new(parent, RDF::URI(Schema + 'item'), c) # parent 👉 child
         graph << RDF::Statement.new(c, RDF::URI(Title), name) # container name
         c                                                     # child
       end
 
-      graph << RDF::Statement.new(container, RDF::URI(containment), self) # container 👉 graph
+      graph << RDF::Statement.new(container, RDF::URI(Contains), self) # container 👉 graph representation
     end
 
     # resource reference in current browsing context
