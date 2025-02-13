@@ -22,12 +22,12 @@
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .redirectors, .referers {background-color: #bbb; border-radius: .42em}
 .resource {border: 1px solid #333; border-radius: .62em; margin: 1px; vertical-align: top}
+.resource[host="fosstodon.org"] {max-width: 100ex}
+.resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
 .resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
 .resource[host="www.mixcloud.com"] span[href] {display: none}
 .resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource {max-width: 38em; overflow: hidden}
 .resource[host="www.reddit.com"] {max-width: 80ex}
-.resource[host="fosstodon.org"] {max-width: 100ex}
-.resource[id^="container"] > .resource[host="www.mixcloud.com"] > .kv > .val > a.origin, [key="http://rdfs.org/sioc/ns#content"] > .resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
 .resource[id^="container"] > a.title {color: #aaa; padding: 0; margin: 0; min-width: 0; min-height: 0; font-size: .88em}
 .resource[id^="container"] > span.kv {display: none}
 .resource[id^="container"] {border-color: #383838}
@@ -46,6 +46,7 @@
 .warning a {background-color: #fff; color: #000}
 .warning {display: block; background-color: #ff0; color: #000; padding: .2em; margin: auto; border-radius: .5em; max-width: 128ex; overflow: hidden}
 :target, :target > span {background: repeating-linear-gradient(315deg, #3cf, #3cf 1px, transparent 1px, transparent 8px) !important; color: #fff !important; border: 1px solid #3cf !important; opacity: 1.0}
+[property="http://schema.org/item"] > table.tabular > thead {display: none}
 a .key {background-color: #226; color: #fff; border-radius: .2em; border-width: 0}
 a .kv {font-size: 0.92em}
 a .kv, a .uri {font-weight: normal}
@@ -60,6 +61,7 @@ a.blocked .uri {color: #eee; background-color: #f00}
 a.blocked .val[key="http://www.w3.org/2000/01/rdf-schema#label"] > span {background-color: #f00; color: #000}
 a.blocked > span:first-child {background-color: #f00}
 a.date {white-space: nowrap; color: #ccc; background-color: #000; font-weight: normal}
+a.feed {border: 1px solid orange}
 a.fragref {padding: .1em .3em .1em .3em; border-radius: .3em; font-size: 1.3em; border: 1px dotted #fef}
 a.from, a.to {color: #000}
 a.from:visited, a.to:visited {color: #fff}
@@ -67,7 +69,6 @@ a.global {background-color: #004; border: 1px solid #008}
 a.global, a.local, a.blocked {display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
 a.local {background-color: #002; border: 1px solid #008}
-a.feed {border: 1px solid orange}
 a.origin {background-color: #000; padding: 0 .2em 0 .2em}
 a.origin:visited, a.pointer:visited, td[property="uri"] a:visited {background-color: #338}
 a.pointer, td[property="uri"] a {margin: 0; padding: 0; background-color: #222; color: #fff; border-radius: .5em; font-weight: normal; float: right}
@@ -117,7 +118,6 @@ span.quote {background-color: #ccc; color: #000; border-radius: .1em .4em .4em .
 span.quote::before {content: '>'; float: left}
 table {border-spacing: 1px}
 table.tabular td {border-width: 0 1px 1px 0; border-color: #444; border-radius: 0; border-style: dotted; vertical-align: top}
-[property="http://schema.org/item"] > table.tabular > thead {display: none}
 td.k a, th[scope="row"] a {color: #000; background-color: #a8a8a8; border-color: #a8a8a8; border-radius: .4em 0 0 .4em; max-width: 28ex; padding: 0}
 td.k, th[scope="row"] {text-align: right; font-weight: bold}
 td[property="#path"] {max-width: 42em; overflow: hidden; white-space: nowrap}
