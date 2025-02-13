@@ -26,7 +26,7 @@
 .resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
 .resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
 .resource[host="www.mixcloud.com"] span[href] {display: none}
-.resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource {max-width: 38em; overflow: hidden}
+.resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource {max-width: 42em; overflow: hidden}
 .resource[host="www.reddit.com"] {max-width: 80ex}
 .resource[id^="container"] > a.title {color: #aaa; padding: 0; margin: 0; min-width: 0; min-height: 0; font-size: .88em}
 .resource[id^="container"] > span.kv {display: none}
