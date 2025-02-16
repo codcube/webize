@@ -19,7 +19,6 @@ data-height
 data-itemheight
 data-eio-rheight
 data-new-window-height
-data-new-window-width
 data-mobile-height
 data-image_height
 data-original-height
@@ -29,3 +28,4 @@ data-height-onload
 data-height-percentage
 data-pin-height
 data-lb-height
+data-pswp-height
