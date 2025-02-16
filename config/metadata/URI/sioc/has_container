@@ -73,3 +73,5 @@ home_url
 data-elementor-lightbox-slideshow
 data-rte-list
 grandparentAuthor
+data-parsley-errors-container
+data-kb-block
