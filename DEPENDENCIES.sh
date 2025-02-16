@@ -19,7 +19,6 @@ command -v pkg && pkg install binutils ruby grep gumbo-parser-static file findut
 command -v xbps-install && sudo xbps-install -S base-devel libltdl-devel libressl-devel poppler-utils ruby ruby-devel taglib-devel
 
 # Ruby https://www.ruby-lang.org/
-#command -v bundle || gem install bundler
 gem install bundler
 bundle install && rm Gemfile.lock
 
