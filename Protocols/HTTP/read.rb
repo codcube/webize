@@ -51,8 +51,8 @@ module Webize
     # and proxy-mode (thru) fetches vs data-only fetches in aggregation/merging scenarios. add some hints for the renderer and logger,
     # and cache all the things. maybe we can split this up somehow, especially so we can try other HTTP libraries more easily.
 
-    URI_OPEN_OPTS = {open_timeout: 16,
-                     read_timeout: 32,
+    URI_OPEN_OPTS = {open_timeout: 8,
+                     read_timeout: 30,
                      redirect: false} # don't invisibly follow redirects in HTTP-library code, return this data to us and clients/proxies so they can update URL bars, source links on 301s etc
 
     def fetchHTTP thru: true                                           # thread upstream HTTP response through to caller, or simply return fetched data
@@ -249,7 +249,7 @@ module Webize
 
     def fetchRemotes nodes
       barrier = Async::Barrier.new # limit concurrency
-      semaphore = Async::Semaphore.new(16, parent: barrier)
+      semaphore = Async::Semaphore.new(24, parent: barrier)
 
       repos = []                   # repository references
 
