@@ -15,7 +15,7 @@ class FilteredServer < Async::DNS::Server
     unless Seen[name]
       Seen[name] = true
       puts [Time.now.iso8601[11..15],
-            v6 ? '6️⃣' : nil,
+            v6 ? '6️' : nil,
             [color, "\e]8;;https://#{name}/\a#{name}\e]8;;\a\e[0m"].join].
              compact.join ' '
     end}
