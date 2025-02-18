@@ -28,14 +28,9 @@ module Webize
                          c: icon,
                        }}, "\n"]}}} if heading),
              {_: :tbody,
-              c: graph.sort_by{|r|
-                if r[Title]
-                  r[Title][0]
-                else
-                  r['uri']
-                end.to_s}.map{|resource|
+              c: graph.map{|resource|
 
-                # render resource as a row at most once
+                # render resource once
                 id = resource.__id__
                 next if env[:rows].has_key? id
                 env[:rows][id] = true
