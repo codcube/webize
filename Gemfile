@@ -1,9 +1,11 @@
 source "https://rubygems.org/"
 
 gem 'async-dns'
+gem 'base64'
 gem 'brotli'
 gem 'chronic'
 gem 'console'
+gem 'csv'
 gem 'falcon'
 gem 'icalendar'
 gem 'linkeddata'
