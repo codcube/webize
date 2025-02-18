@@ -14,9 +14,21 @@ you may want directories in [bin/](bin/) in **PATH**, to launch servers or do al
 
 if you use email, [procmailrc](config/dotfiles/.procmailrc) configures delivery to hour-dirs.
 
-we type 'localhost' often and don't want to type :8000 so we use the classic DNS and HTTP ports of 53 and 80 in the default config. one of the tricks on [this list](https://github.com/codcube/webize/blob/main/Protocols/DNS.rb#L72) may be needed on your system, or you can simply invent your own invocations with a >1024 port specifier
+we type 'localhost' often without :8000 so we use the classic DNS and HTTP ports in the default config. if needed you can invent your own daemon invocations with a >1024 port specifier, or enable low-port binding on linux-compatible OS:
 
-in the invocations below, common HTTP_PROXY and our CDN (static-cache base URI) and OFFLINE (local-only cache) environment-vars are supported.
+    sudo setcap 'cap_net_bind_service=+ep' /usr/bin/ruby
+
+or move the priveleged-port start point:
+
+    sudo sysctl -w net.ipv4.ip_unprivileged_port_start=80
+
+or change the binding port to high (>1024) and use a high-port resolver specification:
+
+    echo nameserver 127.0.0.1 port 1053 | sudo tee /etc/resolv.conf
+
+or redirect port 53 to a high port in kernel routing tables with the [low ports](bin/config/network/low_ports) script
+
+or redirect traffic in userspace with netcat/socat
 
 # USAGE
 
