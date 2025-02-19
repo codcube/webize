@@ -1,4 +1,3 @@
-#container_e6660b7f910e907d6103a2b49576435601432dde29f240fe56048727183a7344 {display: none}
 #down {float: right; border-radius: .6em .6em 0 0; border-width: .04em .04em 0 .04em; margin-right: .2em}
 #next {float: right; border-radius: .6em 0 0 0; border-width: .04em 0 0 .04em}
 #prev {float: left; border-radius: 0 .6em 0 0; border-width: .04em .04em 0 0}
@@ -26,6 +25,8 @@
 .resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
 .resource[host="www.mixcloud.com"] span[href] {display: none}
 .resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource {max-width: 42em; overflow: hidden}
+.resource[id^="container"] > a.title {color: #888; font-size: .8em}
+.resource[id^="container"] > span.kv {display: none}
 .title, .abstract, .key, .val {vertical-align: top}
 .title:visited {background-color: #ccc; color: #000}
 .top-bar .path a {color: #ddd; font-weight: normal}
