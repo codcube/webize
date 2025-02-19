@@ -70,7 +70,6 @@ https://forum.solidproject.org/latest.rss
 https://forum.solidproject.org/posts.rss
 https://fosstodon.org/@OKFN.rss
 https://fosstodon.org/@whynothugo.rss
-https://fosstodon.org/api/v1/timelines/public?local=true&only_media=false
 https://freegovinfo.info/feed/
 https://gerikson.com/m/feed.atom
 https://gitlab.com/ix.atom
