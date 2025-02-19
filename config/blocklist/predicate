@@ -645,3 +645,5 @@ data-logocolor
 hasAlpha
 data-parent-fit
 data-effect
+data-valign
+data-halign
