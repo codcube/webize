@@ -262,4 +262,4 @@ https://www.capeandislands.org/index.rss
 https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=did%3Aplc%3Aduslwfe3f2uoy24srkzmfz5n&filter=posts_and_author_threads&includePins=false&limit=30
 https://www.capecod.com/feed/
 https://fallriverreporter.com/feed/
-https://www.newportdispatch.com/feed/
+https://www.newportdispatch.com/category/news/feed/
