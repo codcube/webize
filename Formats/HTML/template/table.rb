@@ -78,9 +78,7 @@ module Webize
          c: kv.map{|k, vs|
            next if skip.member? k
 
-           [('<br>' if k.index(HT) == 0), # field-per-line TODO expand conditions
-
-            {_: key,
+           [{_: key,
              class: :key,
              c: Property.new(Type).env(env).
                rdf_type([k], inline: inline)},
