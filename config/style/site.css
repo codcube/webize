@@ -21,16 +21,11 @@
 .preembed .icon {position: absolute; left: 45%; top: 32%; font-size: 8em; color: #f00}
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .redirectors, .referers {background-color: #bbb; border-radius: .42em}
-.resource {border: 1px solid #333; border-radius: .62em; margin: 1px; vertical-align: top}
-.resource[host="fosstodon.org"] {max-width: 100ex}
-.resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
+.resource {border: 1px solid #333; border-radius: .62em; max-width: 164ex; margin: 1px; vertical-align: top; }
+.resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin, .resource[host="www.youtube.com"] > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
 .resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
 .resource[host="www.mixcloud.com"] span[href] {display: none}
 .resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource {max-width: 42em; overflow: hidden}
-.resource[host="www.reddit.com"] {max-width: 80ex}
-.resource[id^="container"] > a.title {color: #aaa; padding: 0; margin: 0; min-width: 0; min-height: 0; font-size: .88em}
-.resource[id^="container"] > span.kv {display: none}
-.resource[id^="container"] {border-color: #383838}
 .title, .abstract, .key, .val {vertical-align: top}
 .title:visited {background-color: #ccc; color: #000}
 .top-bar .path a {color: #ddd; font-weight: normal}
@@ -89,7 +84,7 @@ cite::before {content: '📚'; color: #666; margin-left: -12px}
 code > span { color: #6ef; padding: 0 0 0 .2em;}
 code {display: inline-block; background-color: #226; font-size: .88em; border-radius: .6em; margin: 2px}
 dl, dt, dd, form, ol, ul, table, p, .resource {display: inline-block}
-dl, dt, dd, img, video, table, tr, td, .resource, .val {max-width: 100%}
+dl, dt, dd, img, video, table, tr, td, .val {max-width: 100%}
 dt, .key {background-color: #111; border: 1px solid #666; border-radius: .4em}
 dt, .key, .type {color: #bbb}
 h1 .kv {font-size: .6em}
@@ -107,7 +102,7 @@ img {border-radius: .4em}
 li:nth-child(even) {background-color: #000; color: #fff}
 li:nth-child(odd) {background-color: #222; color: #fff}
 p > span, .val > span {background-color: #000; color: #fff}
-p {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 100ex}
+p {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; max-width: 80ex}
 p::before {content: '¶'; color: #666; margin-left: -12px}
 pre, code {max-width: 98ex; white-space: pre-wrap; font-family: Noto Sans Mono, monospace, mono; margin: 0}
 span.comment span {display: inline-block; background-color: #6ef; color: #000; font-weight: normal; font-family: monospace; white-space: pre-wrap; border-radius: .3em; padding: 0; margin: 0; max-width: 80ex}
