@@ -17,10 +17,11 @@ module Webize
                             style: 'font-size: 3em',
                             href: Node(['//', host, path, '?allow=', allow_key].join).href,
                             c: :👁️},
-                           {_: :a, # gateway reference
-                            title: 'access via gateway',
-                            href: ['http://m:8000/', uri].join,
-                            c: :⛩️}]
+                           #{_: :a, # gateway reference
+                           #title: 'access via gateway',
+                           #href: ['http://m:8000/', uri].join,
+                           #c: :⛩️}
+                          ]
 
       if uri.match? Gunk
 
