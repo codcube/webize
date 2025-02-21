@@ -171,6 +171,8 @@ preview.redd.it
 private-user-images.githubusercontent.com
 prodamdlim.akamaized.net
 prodamdnewsencoding.akamaized.net
+prod.squarespace.map.fastly.net
+prod.vox.map.fastly.net
 public.api.bsky.app
 query.semlab.io
 ra.co
@@ -199,6 +201,7 @@ socketry.io
 sources.werd.io
 spark.adobe.com
 sp.auth.adobe.com
+squarespace.map.fastly.net
 sshuttle.readthedocs.io
 static01.nyt.com
 static01.nytimes.com
