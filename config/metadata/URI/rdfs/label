@@ -61,3 +61,5 @@ data-tag
 data-tags
 marks
 markDefs
+data-label-single
+data-label-plural

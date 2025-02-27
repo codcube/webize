@@ -224,3 +224,6 @@ define
 data-members-form
 file
 data-parsley-required-message
+data-object
+data-params
+data-combo-value
