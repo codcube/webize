@@ -1,9 +1,11 @@
 module Webize
+
+  URIcolor = Webize.configHash 'style/color/URI'
+  HostColor = Webize.configHash 'style/color/host'
+
   module HTML
 
     FeedIcon = Webize.configData 'style/icons/feed.svg'
-    HostColor = Webize.configHash 'style/color/host'
-    URIcolor = Webize.configHash 'style/color/URI'
     Icons = Webize.configHash 'style/icons/uri'
     SiteFont = Webize.configData 'style/fonts/hack.woff2'
     SiteIcon = Webize.configData 'style/icons/favicon.ico'
