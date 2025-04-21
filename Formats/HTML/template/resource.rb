@@ -1,12 +1,16 @@
 module Webize
   class URI
+
     def color
       if deny?                    # blocked resource
         :red
+      elsif URIcolor.has_key? self
+        URIcolor[self]
       elsif HostColor.has_key? host
         HostColor[host]           # host color
       end
     end
+
   end
   module HTML
     class Property
