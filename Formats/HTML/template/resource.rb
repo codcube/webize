@@ -1,4 +1,13 @@
 module Webize
+  class URI
+    def color
+      if deny?                    # blocked resource
+        :red
+      elsif HostColor.has_key? host
+        HostColor[host]           # host color
+      end
+    end
+  end
   module HTML
     class Property
 
@@ -70,19 +79,13 @@ module Webize
                  id: 'p'+Digest::SHA2.hexdigest(rand.to_s)}
         end
 
-        color = if r.has_key? '#color'            # specified color
-                  r['#color'][0]
-                elsif r.has_key? '#new'           # new/updated resource highlight
+        color = if r.has_key? '#new'           # new/updated resource highlight
                   '#555'
                 elsif uri
-                  if uri.deny?                    # blocked resource
-                    :red
-                  elsif HostColor.has_key? uri.host
-                    HostColor[uri.host]           # host color
-                  end
+                  uri.color
                 end
 
-        skip = ['#color', '#new',
+        skip = ['#new',
                 Type, Title, Contains,
                 XHV + 'colspan',
                 XHV + 'rowspan',
