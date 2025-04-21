@@ -24,7 +24,7 @@
 .resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin, .video.resource > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
 .resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
 .resource[host="www.mixcloud.com"] span[href] {display: none}
-.resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource {max-width: 42em; overflow: hidden}
+.resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource {max-width: 39em; overflow: hidden}
 .resource[id^="container"] > a.title {color: #888; font-size: .8em}
 .resource[id^="container"] > span.kv {display: none}
 .title, .abstract, .key, .val {vertical-align: top}
