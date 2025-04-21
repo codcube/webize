@@ -20,7 +20,7 @@
 .preembed .icon {position: absolute; left: 45%; top: 32%; font-size: 8em; color: #f00}
 .preembed {display: inline-block; position: relative; vertical-align: top; border: 1px dotted red}
 .redirectors, .referers {background-color: #bbb; border-radius: .42em}
-.resource {border: 1px solid #333; border-radius: .62em; max-width: 167ex; margin: 1px; vertical-align: top}
+.resource {border: 1px solid #333; border-radius: .62em; margin: 1px; vertical-align: top}
 .resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin, .video.resource > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
 .resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
 .resource[host="www.mixcloud.com"] span[href] {display: none}
