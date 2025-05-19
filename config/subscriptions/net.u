@@ -1,4 +1,3 @@
-https://xn--gckvb8fzb.com/index.xml
 http://mcld.co.uk/blog/feeds/mcld_blog.atom
 http://mcld.co.uk/blog/feeds/mcld_blog.rss
 http://simia.net/api.php?hidebots=1&urlversion=1&days=7&limit=50&action=feedrecentchanges&feedformat=atom
@@ -20,7 +19,6 @@ https://blog.bovid.space/rss.xml
 https://blog.cryptographyengineering.com/feed/
 https://blog.datadryad.org/feed/
 https://blog.dxos.org/rss/
-https://news.elenarossini.com/rss/
 https://blog.ldodds.com/feed/
 https://blog.mauve.moe/
 https://blog.nationalarchives.gov.uk/feed/
@@ -39,7 +37,6 @@ https://coar-repositories.org/feed/
 https://codata.org/feed/
 https://code4lib.social/api/v1/timelines/public?local=true&only_media=false
 https://communitynetworks.org/rss.xml
-https://www.audubon.org/corkscrew/about-us/news
 https://council.science/feed/
 https://cpj.org/feed/
 https://cyber.harvard.edu/news/feed
@@ -104,6 +101,7 @@ https://lobste.rs/rss
 https://logicmag.io/rss.xml
 https://lukesmith.xyz/rss.xml
 https://lyrasisnow.org/feed/
+https://manualdousuario.net/en/feed/
 https://markcarrigan.net/feed/
 https://mas.to/@kissane.rss
 https://mas.to/@vrandecic.rss
@@ -114,6 +112,7 @@ https://mastodon.social/@doriantaylor.rss
 https://mastodon.social/@naturzukunft.rss
 https://mastodon.social/@wearenew_public.rss
 https://mastodon.social/tags/SemanticWeb.rss
+https://mcwhittemore.com/rss.xml
 https://mediajustice.org/news-category/blog/feed/
 https://mjg59.dreamwidth.org/data/atom
 https://mjg59.dreamwidth.org/data/rss
@@ -125,17 +124,18 @@ https://nebigdatahub.org/feed/
 https://neuromatch.social/@jonny.rss
 https://newdesigncongress.org/en/rss/
 https://newpublic.substack.com/feed
+https://news.elenarossini.com/rss/
 https://news.ycombinator.com/rss
 https://nextgraph.org/rss.xml
 https://noeldemartin.com/blog/rss.xml
 https://noeldemartin.com/now/rss.xml
-https://manualdousuario.net/en/feed/
 https://openbiblio.social/tags/linkeddata.rss
 https://openbiblio.social/tags/rdf.rss
 https://openfuture.eu/blog/feed/
 https://openlibraryfoundation.org/feed/
 https://openreferral.org/feed/
 https://ospolicyobservatory.uvic.ca/feed/
+https://p2panda.org/feed.xml
 https://pkp.sfu.ca/feed/
 https://psychedelicalpha.com/feed
 https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=did%3Aplc%3Aulsvrqhqegjw5gh7lxyav4yq&filter=posts_and_author_threads&limit=40
@@ -188,6 +188,7 @@ https://werd.io/?_t=rss
 https://writtendescription.blogspot.com/feeds/posts/default
 https://www.apc.org/en/rss.xml
 https://www.arl.org/feed/
+https://www.audubon.org/corkscrew/about-us/news
 https://www.bergnet.org/atom.xml
 https://www.blog-pat.ch/rss/
 https://www.brainonfire.net/blog/posts.atom
@@ -239,4 +240,4 @@ https://www.wrecka.ge/rss/
 https://www.youtube.com/feeds/videos.xml?channel_id=UCU8Yu4WZJ11Il3TZmNiMUFQ
 https://www.youtube.com/feeds/videos.xml?channel_id=UCwcqwZMvROqDDuB5yeOokdQ
 https://xeiaso.net/blog.rss
-https://mcwhittemore.com/rss.xml
+https://xn--gckvb8fzb.com/index.xml
