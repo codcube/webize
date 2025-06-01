@@ -2,11 +2,11 @@
  see the [manifesto](LINKS.md)
 
 # INSTALL
-[a script](INSTALL.sh) calls distro pkg-managers and bundler to install the gems and their dependencies. there is no install step for this library (until there's a release version (which likely won't happen unless someone forks the project as we're decades in and nowhere near a release candidate yet))
+[a script](INSTALL.sh) uses distro pkg-managers and bundler to install gems and their dependencies. there is no install step for this library itself until there's a release version, which likely won't happen unless someone forks the project as we're decades in and nowhere near a release candidate. simply require 'index.rb' and get coding, or launch one of the preconfigured servers and get webizing!
 
 # CONFIG
 
-set the cache location:
+set the storage base:
 
     export WEB=$HOME/web
 
@@ -16,7 +16,7 @@ you may want directories in [bin/](bin/) in **PATH**, to launch servers or do al
 
 if you use email, [procmailrc](config/dotfiles/.procmailrc) configures delivery to hour-dirs.
 
-we type 'localhost' often without :8000 so we use the classic DNS and HTTP ports in the default config. if needed you can invent your own daemon invocations with a >1024 port specifier, or enable low-port binding on linux-compatible OS:
+we type 'localhost' often without :8000 and use classic DNS and HTTP ports in the default config. if needed you can invent your own daemon invocations with a >1024 port specifier, or enable low-port binding on linux-compatible OS:
 
     sudo setcap 'cap_net_bind_service=+ep' /usr/bin/ruby
 
@@ -34,7 +34,7 @@ or redirect traffic in userspace with netcat/socat
 
 # USAGE
 
-HTTP server configured for our webizing running atop [falcon](https://github.com/socketry/falcon)
+HTTP server configured for webizing running atop [falcon](https://github.com/socketry/falcon)
 
     httpd
 
