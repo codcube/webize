@@ -2,7 +2,7 @@
  see the [manifesto](LINKS.md)
 
 # INSTALL
-[a script](INSTALL.sh) uses distro pkg-managers and bundler to install gems and their dependencies. there is no install step for this library itself until there's a release version, which likely won't happen unless someone forks the project as we're decades in and nowhere near a release candidate. simply require 'index.rb' and get coding, or launch one of the preconfigured servers and get webizing!
+[a script](INSTALL.sh) uses distro pkg-managers and bundler to install gems and their dependencies. there's no gem for this library yet as there's no release version - simply require [index.rb](index.rb) and get coding, or launch one of the preconfigured servers and get webizing!
 
 # CONFIG
 
