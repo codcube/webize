@@ -1,10 +1,12 @@
+# DESCRIPTION
+ see the [manifesto](LINKS.md)
+
 # INSTALL
-[a script](DEPENDENCIES.sh) calls distro packagers to install library dependencies of the Gem dependencies
-then runs 'bundle install'. if that fails, see comments in the script for environment-var and other tweaks.
+[a script](INSTALL.sh) calls distro pkg-managers and bundler to install the gems and their dependencies. there is no install step for this library (until there's a release version (which likely won't happen unless someone forks the project as we're decades in and nowhere near a release candidate yet))
 
 # CONFIG
 
-set the cache location. this will likely move to $HOME/.cache but is currently user-defined
+set the cache location:
 
     export WEB=$HOME/web
 
@@ -32,10 +34,10 @@ or redirect traffic in userspace with netcat/socat
 
 # USAGE
 
-HTTP server configured for our  RDF-conversion "webizing" libraries running with [falcon](https://github.com/socketry/falcon)
+HTTP server configured for our webizing running atop [falcon](https://github.com/socketry/falcon)
 
     httpd
 
-DNS server running with [async-dns](https://github.com/socketry/async-dns)
+DNS server running atop [async-dns](https://github.com/socketry/async-dns)
 
     dnsd
