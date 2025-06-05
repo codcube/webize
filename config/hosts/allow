@@ -17,6 +17,7 @@ abcnews.go.com
 acme-v02.api.letsencrypt.org
 activitypub.ghost.org
 airfire-data-exports.s3.us-west-2.amazonaws.com
+ajax.googleapis.com
 aje.io
 ajmn-aje-vod.akamaized.net
 a-naturalatlas-tiles.global.ssl.fastly.net
@@ -212,6 +213,7 @@ mastodon.cloud
 mastodon.online
 mastodon.xyz
 mathstodon.xyz
+maxcdn.bootstrapcdn.com
 media.beehiiv.com
 media.cnn.com
 media.mastodon.cloud
