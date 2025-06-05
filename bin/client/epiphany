@@ -1,3 +1,2 @@
 #!/bin/sh
 epiphany "http://l/$1"
-
