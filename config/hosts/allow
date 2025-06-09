@@ -116,6 +116,7 @@ dl-cdn.alpinelinux.org
 docs.bsky.app
 docs.google.com
 docs.nats.io
+docs.rsshub.app
 doc.traefik.io
 domains.gannett.map.fastly.net
 d.sni.global.fastly.net
@@ -259,6 +260,7 @@ radio1.serpcom.com
 radio.securenetsystems.net
 reddit.map.fastly.net
 redefined.s3.us-east-2.amazonaws.com
+rsshub.app
 rubenverborgh.github.io
 ruby-rdf.github.io
 ruby.social
