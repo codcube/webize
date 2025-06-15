@@ -39,7 +39,6 @@ end
 access
 locate
 metadata
-proxy
 rack
 read
 write
