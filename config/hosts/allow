@@ -46,6 +46,7 @@ api.tiles.mapbox.com
 api.usaspending.gov
 api-v2.soundcloud.com
 api.vimeo.com
+api.vimeo.com.cdn.cloudflare.net
 api.weather.com
 api.weather.gov
 api.www.documentcloud.org
@@ -265,6 +266,7 @@ pad.gnome.org
 peersky.p2plabs.xyz
 playback.media-streaming.soundcloud.cloud
 players.brightcove.net
+player.vimeo.com.cdn.cloudflare.net
 play-grounds.github.io
 preview.redd.it
 private-user-images.githubusercontent.com
