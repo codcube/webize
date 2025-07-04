@@ -128,6 +128,7 @@ docs.rsshub.app
 doc.traefik.io
 domains.gannett.map.fastly.net
 d.sni.global.fastly.net
+dualstack.iheartmedia.map.fastly.net
 e10743.a.akamaiedge.net
 e11847.a.akamaiedge.net
 e11957.x.akamaiedge.net
@@ -198,6 +199,7 @@ ibb.co
 icosahedron.website
 identity.digital
 i.ibb.co
+i.iheart.com
 image.cnbcfm.com
 images-na.ssl-images-amazon.com
 image.status.io
