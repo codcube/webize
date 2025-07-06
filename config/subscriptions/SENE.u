@@ -269,3 +269,5 @@ https://www.nshoremag.com/feed/
 https://flipsidenews.net/rss/
 https://www.mattapanfoodandfit.org/blog-feed.xml
 https://www.mma.org/feed/
+https://bsky.app/profile/did:plc:5cy2jd3fzplyslvbbqwjwcsp/rss
+https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=did%3Aplc%3A5cy2jd3fzplyslvbbqwjwcsp&filter=posts_and_author_threads&limit=40
