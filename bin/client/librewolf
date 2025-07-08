@@ -1,2 +1,2 @@
 #!/bin/sh
-librewolf "http://l:88/$1"
+librewolf "http://l:2222/$1"
