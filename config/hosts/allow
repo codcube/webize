@@ -86,6 +86,10 @@ caityjohnstone.medium.com
 cambridgedaymediafiles.s3.amazonaws.com
 camo.githubusercontent.com
 ca.news.yahoo.com
+cartodb-basemaps-a.global.ssl.fastly.net
+cartodb-basemaps-b.global.ssl.fastly.net
+cartodb-basemaps-c.global.ssl.fastly.net
+cartodb-basemaps-d.global.ssl.fastly.net
 ca-times.brightspotcdn.com
 ccrjustice-org.webpkgcache.com
 cdjhh3v.x.incapdns.net
@@ -105,6 +109,7 @@ cdn.zg-api.com
 cname.vercel-dns.com
 c-naturalatlas-tiles.global.ssl.fastly.net
 cnbc.com
+cocorahs.carto.com
 code4lib.social
 commonwealthbeacon.org
 crates.io
@@ -185,6 +190,7 @@ go.bsky.app
 gql.twitch.tv
 grohan.co
 guap.co
+gusc.ep.carto.com
 h2.twitch.map.fastly.net
 hachyderm.io
 hackmd.io
