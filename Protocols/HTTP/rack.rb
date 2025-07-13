@@ -1,7 +1,7 @@
 module Webize
   module HTTP
 
-    # format (key, val) in black&white scheme for terminal output
+    # format (key, val) in black & white color-scheme for terminal output
     def self.bwPrint(kv) = kv.map{|k,v|
       "\e[38;5;7;7m#{k}\e[0m#{v}\n"}
 
@@ -17,7 +17,7 @@ module Webize
                  LocalAddrs.member?(PeerHosts[env['SERVER_NAME']] || # hostname->address mapping is local address
                                     env['SERVER_NAME'])              # local address
 
-      env[:proxy_refs] = peerURL || localURL                        # enable proxy references on local and peer (re)hosts - pure URI-rewriting alternative to HTTP_PROXY app variables
+      env[:proxy_refs] = peerURL || localURL                        # enable proxy references on local and peer (re)hosts - pure URI-rewriting alternative to HTTP_PROXY env-var config
 
       base = RDF::URI(localURL ? '/' : [peerURL ? :http : :https, '://', # scheme
                                         env['HTTP_HOST']].join).    # host

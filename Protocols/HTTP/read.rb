@@ -27,6 +27,8 @@ module Webize
 
   class HTTP::Node
 
+    Updatees = Set.new # client list for updates feed
+
     # fetch node(s) from local or remote storage
     def fetch nodes = nil
 
@@ -210,6 +212,7 @@ module Webize
     end
 
     def fetchLocal nodes = nil
+      return updateStream if env['HTTP_ACCEPT'].include?('text/event-stream')
       return fileResponse if !nodes && storage.file? &&                    # static response if one non-transformable node
                              (format = fileMIME                            # lookup MIME type
                               env[:notransform] ||                         # (A → B) MIME transform and (A → A) intra-MIME reformat disabled by client
@@ -301,6 +304,19 @@ module Webize
       fetch                # remote node
     end
 
+    def updateStream
+		  body = proc do |stream|
+			  while true
+				  stream << "data: The time is #{Time.now}\n\n"
+				  sleep 1
+			  end
+		  rescue => error
+		  ensure
+#        Updatees.delete :thing 
+			  stream.close(error)
+		  end      
+		  [200, {'content-type' => 'text/event-stream'}, body]
+    end
   end
 end
 
