@@ -27,12 +27,12 @@ module Webize
         logger.warn "⚠️ format undefined on #{uri}"    # ⚠️ undefined format
       end
 
-      if env[:notransform] || fixed_format # static content
+      if fixed_format                      # static format:
         head = {'Content-Type' => format,  # response header
                 'Content-Length' => body.bytesize.to_s}
         head['Expires'] = (Time.now+3e7).httpdate if fixed_format # cache expiry
         [200, head, [body]]                # response in upstream format
-      else                                 # content-negotiated transform
+      else                                 # content-negotiated format:
         respond [repository], format       # response in preferred format
       end
     end

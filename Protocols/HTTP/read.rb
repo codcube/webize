@@ -71,8 +71,8 @@ module Webize
       head = headers.                                                  # request headers
                merge(URI_OPEN_OPTS).                                   # configure open-URI
                merge(cache_headers)                                    # cache headers
-                                                                       # accept graph data from origin when client is not content-negotiation aware
-      head['Accept'] = ['text/turtle', head['Accept']].join ',' unless env[:notransform] || !head.has_key?('Accept') || head['Accept'].match?(/text\/turtle/)
+                                                                       # accept RDF from origin even if proxy client is content-negotiation unaware
+      head['Accept'] = ['text/turtle', head['Accept']].join ',' unless head['Accept']&.match?(/text\/turtle/)
 
       ::URI.open(uri, head) do |response|
         h = headers response.meta                                      # response header
@@ -111,7 +111,7 @@ module Webize
           body = HTML.cachestamp body, self if format == 'text/html'    # stamp with in-band cache metadata
 
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # allow (X)HTML to be served as XML
-          notransform = env[:notransform] || format.match?(FixedFormat) # transformable content?
+          notransform = format.match?(FixedFormat)                      # transformable content?
 
           if ext = File.extname(doc)[1..-1]                             # name suffix with stripped leading '.'
             ext = ext.to_sym                                            # symbolize for lookup in RDF::Format
@@ -195,8 +195,6 @@ module Webize
         head['Content-Length'] = body.bytesize.to_s
         if !thru
           repository
-        elsif env[:notransform]
-          [status, head, [body]] # static response data
         else
           env[:origin_status] = status
           respond [repository] # dynamic/transformable response data
@@ -215,9 +213,9 @@ module Webize
       return updateStream if env['HTTP_ACCEPT'].include?('text/event-stream')
       return fileResponse if !nodes && storage.file? &&                    # static response if one non-transformable node
                              (format = fileMIME                            # lookup MIME type
-                              env[:notransform] ||                         # (A → B) MIME transform and (A → A) intra-MIME reformat disabled by client
-                                format.match?(MIME::FixedFormat) ||        # (A → B) MIME transform disabled by server
-      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) intra-MIME reformat disabled by server
+                              env[:qs]['notransform'] ||                   # (A → B) MIME transform blocked by client
+                                format.match?(MIME::FixedFormat) ||        # (A → B) MIME transform blocked by server
+      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) MIME reformat allowed by server
       nodes ||= storage.nodes                                              # default node set if unspecified
       repos = nodes.map &:read                                             # read node(s)
       dirMeta                                                              # 👉 container-adjacent nodes
