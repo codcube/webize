@@ -18,10 +18,10 @@ if you use email, [procmailrc](config/dotfiles/.procmailrc) configures delivery 
 
 # USAGE
 
-HTTP server - technically a shell script containing a [falcon](https://github.com/socketry/falcon) invocation. requires aforementioned PATH configuration:
+HTTP server - technically a shell script with a [falcon](https://github.com/socketry/falcon) invocation. requires aforementioned PATH configuration:
 
     httpd
 
-DNS server built on [async-dns](https://github.com/socketry/async-dns)
+DNS server built on [async-dns](https://github.com/socketry/async-dns) and our resource-access library
 
     dnsd
