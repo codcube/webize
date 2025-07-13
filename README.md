@@ -14,14 +14,14 @@ you may want directories in [bin/](bin/) in **PATH**, to launch servers or do al
 
     export PATH=$HOME/src/webize/bin/config:$HOME/src/webize/bin/server:$PATH
 
-if you use email, [procmailrc](config/dotfiles/.procmailrc) configures delivery to hour-dirs.
+if you use email, [procmailrc](config/dotfiles/.procmailrc) configures delivery to hour-dirs - copy it to your home dir and continue fetching/receiving mail as usual
 
 # USAGE
 
-HTTP server - technically a shell script containing a [falcon](https://github.com/socketry/falcon) invocation, requires PATH configuration:
+HTTP server - technically a shell script containing a [falcon](https://github.com/socketry/falcon) invocation. requires aforementioned PATH configuration:
 
     httpd
 
-DNS server - using [async-dns](https://github.com/socketry/async-dns)
+DNS server built on [async-dns](https://github.com/socketry/async-dns)
 
     dnsd
