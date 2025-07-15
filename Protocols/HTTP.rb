@@ -41,6 +41,7 @@ locate
 metadata
 rack
 read
+stream
 write
 ).map{|s|
   require_relative "HTTP/#{s}.rb"}
