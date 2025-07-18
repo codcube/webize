@@ -3,7 +3,17 @@ NodeList.prototype.map = function(f,a){
 	f.apply(this[i],a);
     return this;
 };
+
 document.addEventListener("DOMContentLoaded", function(){
+		if(var updates = document.getElementById('updates')){
+				(new EventSource("events")).onmessage = (event) => {
+						const container = document.createElement("li");
+						container.innerText = event.data;
+				
+						messages.appendChild(container);
+						messages.scrollTop = messages.scrollHeight;
+				};
+		};
 
     // construct selection ring
     var first = null;
