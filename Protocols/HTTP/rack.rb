@@ -49,7 +49,7 @@ module Webize
           sort_by{|k, stat| stat[:count]}.reverse.
           map{|k, stat| puts [stat[:count], k, stat[:target]].join "\t"} if debug?
 
-        Node::Updatees.each{|stream|
+        Node::Subscribers.each{|stream|
 				  stream << "data: #{uri}\n\n"
         }
 
