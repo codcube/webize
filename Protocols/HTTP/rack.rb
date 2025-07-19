@@ -49,9 +49,7 @@ module Webize
           sort_by{|k, stat| stat[:count]}.reverse.
           map{|k, stat| puts [stat[:count], k, stat[:target]].join "\t"} if debug?
 
-        Node::Subscribers.each{|stream|
-				  stream << "data: #{uri}\n\n"
-        }
+        #Node::Subscribers.each{|stream|stream << "data: #{uri}\n\n"} # update log subscribers
 
         Console.logger.info [(env[:base].scheme == 'http' && !peerURL) ? '🔓' : nil, # denote transport insecurity
 

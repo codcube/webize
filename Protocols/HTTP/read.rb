@@ -202,11 +202,6 @@ module Webize
       end
     end
 
-    def fetchList
-      return fetch uris if env[:qs].has_key?('fetch') # fetch each URI in list
-      fetchLocal                                      # return list of URIs, no follow-on fetching
-    end
-
     def fetchLocal nodes = nil
       return updateStream if env['HTTP_ACCEPT'].include?('text/event-stream')
       return fileResponse if !nodes && storage.file? &&                    # static response if one non-transformable node
@@ -274,9 +269,7 @@ module Webize
 
       return block parts[1] if p == 'block'                      # add domain to blocklist
 
-      return redirect '/d?f=msg*' if path == '/mail'             # redirect to email inbox (day-dir and FIND arg)
-
-      return fetchList if extname == '.u'                        # fetch URIs in list
+      return redirect '/d?f=msg*' if path == '/mail'             # redirect to email inbox (day-dir with FIND invocation)
 
       fetchLocal                                                 # fetch local node
     rescue Exception => e
