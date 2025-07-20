@@ -206,7 +206,6 @@ module Webize
     end
 
     def fetchLocal nodes = nil
-      return updateStream if env['HTTP_ACCEPT'].include?('text/event-stream')
       return fileResponse if !nodes && storage.file? &&                    # static response if one non-transformable node
                              (format = fileMIME                            # lookup MIME type
                               env[:qs]['notransform'] ||                   # (A → B) MIME transform blocked by client
@@ -246,6 +245,8 @@ module Webize
 
     def fetchRemotes nodes
       barrier = Async::Barrier.new # limit concurrency
+#      return updateStream if env['HTTP_ACCEPT'].include?('text/event-stream')
+
       semaphore = Async::Semaphore.new(24, parent: barrier)
 
       repos = []                   # repository references
