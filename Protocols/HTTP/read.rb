@@ -27,16 +27,22 @@ module Webize
 
   class HTTP::Node
 
+    URI_OPEN_OPTS = {open_timeout: 8,
+                     read_timeout: 30,
+                     redirect: false} # don't invisibly follow redirects inside HTTP-library code
+
     # fetch node(s) from local or remote storage
     def fetch nodes = nil
 
       # local
       return fetchLocal nodes if offline? # offline
-      # most third party clients are unaware of the flexibility content-negotiation provides, and even get confused if we return a different format
-      # therefore, if we've cached content of a type matching the FixedFormat rule, we return it
-      return fileResponse if storage.file? &&  # return static node if exists and
-                             fileMIME.match?(FixedFormat) && # format is fixed
-                             !basename.match?(/index/i)      # exclude compressed index-files from rule - common pattern in distro pkg-cache dirs
+
+      # immutable cache:
+      # most third party clients are unaware of content-negotiation facilities or even get confused if we return a different format
+      # if we have cached content of a type matching the FixedFormat rule, return it without reformats or origin checks
+      return fileResponse if storage.file? &&                # cached node exists?
+                             fileMIME.match?(FixedFormat) && # format is fixed?
+                             !basename.match?(/index/i)      # default to conneg and cache-busting  on directory-index files
 
       # network
       return fetchRemotes nodes if nodes # node(s)
@@ -44,18 +50,15 @@ module Webize
     end
 
     # fetch w/ HTTP remote resource and cache upstream/original and derived graph data
-    # much of this code deals with the mess in the wild of MIME/charset and other metadata only available inside the document,
-    # rather than HTTP headers, requiring readahead sniffing. add some normalizing of name symbols to be what's in Ruby's list,
-    # fix erroneous MIMEs and file extensions that won't map back to the right MIME if stored at upstream-supplied path, and work with
-    # the slightly odd choice of exception-handler flow being used for common HTTP Response statuses, while supporting conneg-unaware clients/servers,
-    # and proxy-mode (thru) fetches vs data-only fetches in aggregation/merging scenarios. add some hints for the renderer and logger,
-    # and cache all the things. maybe we can split this up somehow, especially so we can try other HTTP libraries more easily.
+    def fetchHTTP thru: true # thread upstream HTTP response (metadata) through to caller? or just return data, dropping header information after we've used it to guide processing of response
 
-    URI_OPEN_OPTS = {open_timeout: 8,
-                     read_timeout: 30,
-                     redirect: false} # don't invisibly follow redirects in HTTP-library code, return this data to us and clients/proxies so they can update URL bars, source links on 301s etc
+      # this method handles the mess in the wild of MIME/charset and other metadata only available inside the document,
+      # rather than HTTP headers, requiring readahead sniffing. add some normalizing of name symbols to be what's in Ruby's list,
+      # fix erroneous MIMEs and file extensions that won't map back to the right MIME if stored at upstream-supplied path, and work with
+      # the slightly odd choice of exception-handler flow being used for common HTTP Response statuses, while supporting conneg-unaware clients/servers,
+      # and proxy-mode (thru) fetches vs data-only fetches in aggregation/merging scenarios. add some hints for the renderer and logger,
+      # and cache all the things. maybe we can split this up somehow, especially so we can try other HTTP libraries more easily.
 
-    def fetchHTTP thru: true                                           # thread upstream HTTP response through to caller, or simply return fetched data
       doc = storage.document                                           # graph-cache location
       meta = [doc, '.meta'].join                                       # HTTP metadata-cache location
 
