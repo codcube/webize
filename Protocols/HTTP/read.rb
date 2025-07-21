@@ -212,22 +212,6 @@ module Webize
       opts[:thru] == false ? nil : notfound
     end
 
-    def fetchRemotes nodes
-      barrier = Async::Barrier.new # limit concurrency
-#      return updateStream if env['HTTP_ACCEPT'].include?('text/event-stream')
-
-      semaphore = Async::Semaphore.new(24, parent: barrier)
-
-      repos = []                   # repository references
-
-      nodes.map{|n|
-        semaphore.async{           # fetch URI -> repository
-          repos << (Node(n).fetch thru: false)}}
-
-      barrier.wait
-      respond repos                # repositories -> HTTP response
-    end
-
     def GET
       return hostGET if host                                     # fetch remote node
       ps = parts                                                 # parse path
@@ -271,6 +255,7 @@ module Webize
                               env[:qs]['notransform'] ||                   #  (A → B) MIME transform blocked by client
                                 format.match?(MIME::FixedFormat) ||        #  (A → B) MIME transform blocked by server
       (format == selectFormat(format) && !MIME::ReFormat.member?(format))) #  (A → A) MIME reformat blocked by server
+      return fetchRemotes(uris) if extname == '.u' && streaming?           # aggregate/streamed fetch of remote nodes in local list
       repos = storage.nodes.map &:read                                     # read local node(s)
       dirMeta                                                              # 👉 container-adjacent nodes
       timeMeta                                                             # 👉 timeslice-adjacent nodes
