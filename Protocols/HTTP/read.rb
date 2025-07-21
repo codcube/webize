@@ -266,11 +266,11 @@ module Webize
     end
 
     def localGET
-      return fileResponse if storage.file? &&                              # static response if available and non-transformable
-                             (format = fileMIME                            # lookup MIME type
-                              env[:qs]['notransform'] ||                   # (A → B) MIME transform blocked by client
-                                format.match?(MIME::FixedFormat) ||        # (A → B) MIME transform blocked by server
-      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) MIME reformat blocked by server
+      return fileResponse if storage.file? &&                              # static response if available and non-transformable:
+                             (format = fileMIME                            #  lookup MIME type
+                              env[:qs]['notransform'] ||                   #  (A → B) MIME transform blocked by client
+                                format.match?(MIME::FixedFormat) ||        #  (A → B) MIME transform blocked by server
+      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) #  (A → A) MIME reformat blocked by server
       repos = storage.nodes.map &:read                                     # read local node(s)
       dirMeta                                                              # 👉 container-adjacent nodes
       timeMeta                                                             # 👉 timeslice-adjacent nodes
