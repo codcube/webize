@@ -6,12 +6,10 @@ NodeList.prototype.map = function(f,a){
 
 document.addEventListener("DOMContentLoaded", function(){
 		if(var updates = document.getElementById('updates')){
-				(new EventSource("events")).onmessage = (event) => {
+				(new EventSource('?')).onmessage = (event) => {
 						const container = document.createElement("li");
 						container.innerText = event.data;
-				
-						messages.appendChild(container);
-						messages.scrollTop = messages.scrollHeight;
+						updates.appendChild(container);
 				};
 		};
 

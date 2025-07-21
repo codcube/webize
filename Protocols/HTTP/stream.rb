@@ -9,7 +9,7 @@ module Webize
         uris.map{|u|
           semaphore.async{
             repo = Node(u).fetch thru: false
-            stream << "data: #{u} #{Time.now}\n\n"
+            stream << "data: #{u} #{repo.subjects.join ' '} #{Time.now}\n\n"
           }}
       rescue => error
       ensure
