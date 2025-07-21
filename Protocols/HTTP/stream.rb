@@ -3,35 +3,18 @@ module Webize
 
     def streaming? = env['HTTP_ACCEPT'].include? 'text/event-stream'
 
-    def fetchRemotes nodes
-      barrier = Async::Barrier.new # limit concurrency
-#      return updateStream if 
-
-      semaphore = Async::Semaphore.new(24, parent: barrier)
-
-      repos = []                   # repository references
-
-      nodes.map{|n|
-        semaphore.async{           # fetch URI -> repository
-          repos << (Node(n).fetch thru: false)}}
-
-      barrier.wait
-      respond repos                # repositories -> HTTP response
-    end
-
-    def updateStream
+    def multiGET uris
+      semaphore = Async::Semaphore.new 24
       body = proc do |stream|
-        Subscribers << stream
-	while true
-	  stream << "data: The time is #{Time.now}\n\n"
-	  sleep 3600
-	end
+        uris.map{|u|
+          semaphore.async{
+            repo = Node(u).fetch thru: false
+            stream << "data: #{u} #{Time.now}\n\n"
+          }}
       rescue => error
       ensure
-        Subscribers.delete stream
-	stream.close(error)
+	      stream.close(error)
       end
-
       [200, {'content-type' => 'text/event-stream'}, body]
     end
 
