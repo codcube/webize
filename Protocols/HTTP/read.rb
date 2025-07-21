@@ -265,14 +265,13 @@ module Webize
       fetch   # fetch remote node
     end
 
-    def localGET nodes = nil
-      return fileResponse if !nodes && storage.file? &&                    # static response if one non-transformable node
+    def localGET
+      return fileResponse if storage.file? &&                              # static response if available and non-transformable
                              (format = fileMIME                            # lookup MIME type
                               env[:qs]['notransform'] ||                   # (A → B) MIME transform blocked by client
                                 format.match?(MIME::FixedFormat) ||        # (A → B) MIME transform blocked by server
-      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) MIME reformat allowed by server
-      nodes ||= storage.nodes                                              # default node set if unspecified
-      repos = nodes.map &:read                                             # read node(s)
+      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) MIME reformat blocked by server
+      repos = storage.nodes.map &:read                                     # read local node(s)
       dirMeta                                                              # 👉 container-adjacent nodes
       timeMeta                                                             # 👉 timeslice-adjacent nodes
       respond repos                                                        # response repository-set
