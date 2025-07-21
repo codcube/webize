@@ -187,19 +187,6 @@ module Webize
       end
     end
 
-    def localGET nodes = nil
-      return fileResponse if !nodes && storage.file? &&                    # static response if one non-transformable node
-                             (format = fileMIME                            # lookup MIME type
-                              env[:qs]['notransform'] ||                   # (A → B) MIME transform blocked by client
-                                format.match?(MIME::FixedFormat) ||        # (A → B) MIME transform blocked by server
-      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) MIME reformat allowed by server
-      nodes ||= storage.nodes                                              # default node set if unspecified
-      repos = nodes.map &:read                                             # read node(s)
-      dirMeta                                                              # 👉 container-adjacent nodes
-      timeMeta                                                             # 👉 timeslice-adjacent nodes
-      respond repos                                                        # response repository-set
-    end
-
     def fetch **opts
       env[:fetched] = true                              # denote network-fetch for logger
       case scheme                                       # request scheme
@@ -276,6 +263,19 @@ module Webize
                              !basename.match?(/index/i)      # unless conneg-enabled/cache-busted directory-index files (ZIP/TAR'd distro package-index files)
       dirMeta # 👉 adjacent nodes
       fetch   # fetch remote node
+    end
+
+    def localGET nodes = nil
+      return fileResponse if !nodes && storage.file? &&                    # static response if one non-transformable node
+                             (format = fileMIME                            # lookup MIME type
+                              env[:qs]['notransform'] ||                   # (A → B) MIME transform blocked by client
+                                format.match?(MIME::FixedFormat) ||        # (A → B) MIME transform blocked by server
+      (format == selectFormat(format) && !MIME::ReFormat.member?(format))) # (A → A) MIME reformat allowed by server
+      nodes ||= storage.nodes                                              # default node set if unspecified
+      repos = nodes.map &:read                                             # read node(s)
+      dirMeta                                                              # 👉 container-adjacent nodes
+      timeMeta                                                             # 👉 timeslice-adjacent nodes
+      respond repos                                                        # response repository-set
     end
 
   end
