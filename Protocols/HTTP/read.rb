@@ -134,7 +134,7 @@ module Webize
             env[:origin_format] = format                                # note original format for logging/stats
             h.map{|k,v|                                                 # HTTP resource metadata to graph
               graph << RDF::Statement.new(self, RDF::URI(HT+k), v)} if graph
-            respond [graph], format                                     # HTTP response in content-negotiated format
+            respond graph, format                                     # HTTP response in content-negotiated format
           end
         end
       end
@@ -180,7 +180,7 @@ module Webize
           repository
         else
           env[:origin_status] = status
-          respond [repository] # dynamic/transformable response data
+          respond repository # dynamic/transformable response data
         end
       else
         raise
@@ -213,11 +213,11 @@ module Webize
     end
 
     def GET
-      return hostGET if host                                     # fetch remote node
+      return peerGET if host                                     # fetch remote node
       ps = parts                                                 # parse path
       p = ps[0]                                                  # first path component
       return localGET unless p                                   # fetch local node (null or root path)
-      return unproxy.hostGET if (p[-1] == ':' && ps.size > 1) || # fetch remote node (proxy-URI avec scheme)
+      return unproxy.peerGET if (p[-1] == ':' && ps.size > 1) || # fetch remote node (proxy-URI avec scheme)
                             (p.index('.') && p != 'favicon.ico') # fetch remote node (proxy-URI sans scheme)
       return dateDir if %w{m d h y}.member? p                    # redirect to current year/month/day/hour container
       return block parts[1] if p == 'block'                      # add domain to blocklist
@@ -237,18 +237,6 @@ module Webize
     def HEAD = self.GET.yield_self{|s, h, _|
                                    [s, h, []]} # status + header only
 
-    def hostGET
-      return [301, {'Location' => relocate.href}, []] if relocate? # relocated node
-      return deny if deny? # blocked node
-      # most third party clients are unaware of content-negotiation facilities or even get confused if we return a different format
-      # immutable cache: if we have cached content of a type matching the FixedFormat rule, return it without reformats or origin checks
-      return fileResponse if storage.file? &&                # return cached node if exists,
-                             fileMIME.match?(FixedFormat) && # and format is fixed,
-                             !basename.match?(/index/i)      # unless conneg-enabled/cache-busted directory-index files (ZIP/TAR'd distro package-index files)
-      dirMeta # 👉 adjacent nodes
-      fetch   # fetch remote node
-    end
-
     def localGET
       return fileResponse if storage.file? &&                              # static response if available and non-transformable:
                              (format = fileMIME                            #  lookup MIME type
@@ -256,10 +244,23 @@ module Webize
                                 format.match?(MIME::FixedFormat) ||        #  (A → B) MIME transform blocked by server
       (format == selectFormat(format) && !MIME::ReFormat.member?(format))) #  (A → A) MIME reformat blocked by server
       return fetchRemotes(uris) if extname == '.u' && streaming?           # aggregate/streamed fetch of remote nodes in local list
-      repos = storage.nodes.map &:read                                     # read local node(s)
       dirMeta                                                              # 👉 container-adjacent nodes
       timeMeta                                                             # 👉 timeslice-adjacent nodes
-      respond repos                                                        # response repository-set
+      respond storage.nodes.map &:read                                     # respond with local node(s)
+    end
+
+    def peerGET
+      return [301, {'Location' => relocate.href}, []] if relocate? # relocated node
+      return deny if deny? # blocked node
+      # most third party clients and apps are unaware of content-negotiation facilities
+      # they tend to get confused and fail if we return a different format for a requested static-asset even if asked/allowed for in ACCEPT headers usually ignored by both sides of exchange
+      # we also don't want to incur roundtrips and HTTP Requests to see if these static files changed at the origin, since they never will as the URI is hash-derived and changes on update
+      # our solution to both of these is immutable cache: if we have content of FixedFormat type, no formats or origin-checks happen, the app is less confused and network less bogged down
+      return fileResponse if storage.file? &&                # return cached node if exists,
+                             fileMIME.match?(FixedFormat) && # and format is fixed,
+                             !basename.match?(/index/i)      # unless conneg-enabled/cache-busted index file (ZIP/TAR'd distro package-lists, dynamic index images)
+      dirMeta # 👉 adjacent nodes
+      fetch   # fetch remote node
     end
 
   end

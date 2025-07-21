@@ -21,7 +21,7 @@ module Webize
 
     def notfound
       env[:origin_status] ||= 404
-      respond [RDF::Repository.new]
+      respond RDF::Repository.new
     end
 
     def redirect(location) = [302, {'Location' => location}, []]

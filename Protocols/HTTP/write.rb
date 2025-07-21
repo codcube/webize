@@ -22,7 +22,7 @@ module Webize
     end
 
     # return graph in requested format
-    def respond repositories, defaultFormat = 'text/html'
+    def respond repo, defaultFormat = 'text/html'
       format = selectFormat defaultFormat
       format += '; charset=utf-8' if %w{text/html text/turtle}.member? format
 
@@ -39,8 +39,12 @@ module Webize
        head? ? nil : [if writer = RDF::Writer.for(content_type: format)
                       writer.buffer(base_uri: self,
                                     prefixes: Prefixes) do |w|
-                        repositories.compact.map{|r|
-                          w << r}
+                        if repo.class == Array
+                          repo.compact.map{|r|
+                            w << r}
+                        else
+                          w << repo
+                        end
                       end
                      else
                        logger.warn "⚠️ Writer unavailable for #{format}" ; ''
