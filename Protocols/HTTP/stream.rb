@@ -8,6 +8,7 @@ module Webize
       body = proc do |stream|
         uris.map{|u|
           semaphore.async{
+            puts "fetch #{u}"
             repo = Node(u).fetch thru: false
             stream << "data: #{u} #{repo.subjects.join ' '} #{Time.now}\n\n"
           }}

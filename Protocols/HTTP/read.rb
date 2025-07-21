@@ -238,12 +238,12 @@ module Webize
                                    [s, h, []]} # status + header only
 
     def localGET
+      return multiGET uris if extname == '.u' && streaming?                # aggregate/streamed fetch of node(s)
       return fileResponse if storage.file? &&                              # static response if available and non-transformable:
                              (format = fileMIME                            #  lookup MIME type
                               env[:qs]['notransform'] ||                   #  (A → B) MIME transform blocked by client
                                 format.match?(MIME::FixedFormat) ||        #  (A → B) MIME transform blocked by server
       (format == selectFormat(format) && !MIME::ReFormat.member?(format))) #  (A → A) MIME reformat blocked by server
-      return multiGET uris if extname == '.u' && streaming?                # aggregate/streamed fetch of remote nodes in local list
       dirMeta                                                              # 👉 container-adjacent nodes
       timeMeta                                                             # 👉 timeslice-adjacent nodes
       respond storage.nodes.map &:read                                     # respond with local node(s)
