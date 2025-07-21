@@ -31,24 +31,6 @@ module Webize
                      read_timeout: 30,
                      redirect: false} # don't invisibly follow redirects inside HTTP-library code
 
-    # fetch node(s) from local or remote storage
-    def fetch nodes = nil
-
-      # local
-      return fetchLocal nodes if offline? # offline
-
-      # immutable cache:
-      # most third party clients are unaware of content-negotiation facilities or even get confused if we return a different format
-      # if we have cached content of a type matching the FixedFormat rule, return it without reformats or origin checks
-      return fileResponse if storage.file? &&                # cached node exists?
-                             fileMIME.match?(FixedFormat) && # format is fixed?
-                             !basename.match?(/index/i)      # default to conneg and cache-busting  on directory-index files
-
-      # network
-      return fetchRemotes nodes if nodes # node(s)
-             fetchRemote                 # node
-    end
-
     # fetch w/ HTTP remote resource and cache upstream/original and derived graph data
     def fetchHTTP thru: true # thread upstream HTTP response (metadata) through to caller? or just return data, dropping header information after we've used it to guide processing of response
 
@@ -79,7 +61,7 @@ module Webize
         h = headers response.meta                                      # response header
         case status = response.status[0].to_i                          # response status
         when 204                                                       # no upstream content
-          fetchLocal
+          localGET
         when 206                                                       # partial upstream content
           h['Access-Control-Allow-Origin'] ||= origin
           [206, h, [response.read]]
@@ -175,13 +157,13 @@ module Webize
         elsif no_scheme == dest.no_scheme
           if scheme == 'https' && dest.scheme == 'http'    # 🔒downgrade redirect
             logger.warn "🛑 downgrade redirect #{dest}"
-            fetchLocal if thru
+            localGET if thru
           elsif scheme == 'http' && dest.scheme == 'https' # 🔒upgrade redirect
             logger.debug "🔒 upgrade redirect #{dest}"
             dest.fetchHTTP
           else                                             # redirect loop or non-HTTP protocol
             logger.warn "🛑 not following #{uri} → #{dest} redirect"
-            fetchLocal if thru
+            localGET if thru
           end
         else
           HTTP::Redirector[dest] ||= []                    # update redirection cache
@@ -189,7 +171,7 @@ module Webize
           [status, {'Location' => dest.href}, []]          # redirect
         end
       when /304/                                           # origin unmodified
-        thru ? fetchLocal : repository
+        thru ? localGET : repository
       when /300|[45]\d\d/                                  # not allowed/available/found
         body = HTTP.decompress(head, e.io.read).encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
         RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|repository << g} if head['Content-Type']&.index 'html'
@@ -205,7 +187,7 @@ module Webize
       end
     end
 
-    def fetchLocal nodes = nil
+    def localGET nodes = nil
       return fileResponse if !nodes && storage.file? &&                    # static response if one non-transformable node
                              (format = fileMIME                            # lookup MIME type
                               env[:qs]['notransform'] ||                   # (A → B) MIME transform blocked by client
@@ -218,7 +200,7 @@ module Webize
       respond repos                                                        # response repository-set
     end
 
-    def fetchRemote **opts
+    def fetch **opts
       env[:fetched] = true                              # denote network-fetch for logger
       case scheme                                       # request scheme
       when 'gemini'
@@ -253,7 +235,7 @@ module Webize
 
       nodes.map{|n|
         semaphore.async{           # fetch URI -> repository
-          repos << (Node(n).fetchRemote thru: false)}}
+          repos << (Node(n).fetch thru: false)}}
 
       barrier.wait
       respond repos                # repositories -> HTTP response
@@ -262,20 +244,14 @@ module Webize
     def GET
       return hostGET if host                                     # fetch remote node
       ps = parts                                                 # parse path
-      p = ps[0]                                                  # find first path component
-
-      return fetchLocal unless p                                 # fetch local node at null or root path
-
-      return unproxy.hostGET if (p[-1] == ':' && ps.size > 1) || # fetch remote node at proxy-URI with scheme
-                            (p.index('.') && p != 'favicon.ico') # fetch remote node at proxy-URI sans scheme
-
+      p = ps[0]                                                  # first path component
+      return localGET unless p                                   # fetch local node (null or root path)
+      return unproxy.hostGET if (p[-1] == ':' && ps.size > 1) || # fetch remote node (proxy-URI avec scheme)
+                            (p.index('.') && p != 'favicon.ico') # fetch remote node (proxy-URI sans scheme)
       return dateDir if %w{m d h y}.member? p                    # redirect to current year/month/day/hour container
-
       return block parts[1] if p == 'block'                      # add domain to blocklist
-
-      return redirect '/d?f=msg*' if path == '/mail'             # redirect to email inbox (day-dir with FIND invocation)
-
-      fetchLocal                                                 # fetch local node
+      return redirect '/d?f=msg*' if path == '/mail'             # redirect to message inbox (day-dir with FIND invocation)
+      localGET                                                   # fetch local node
     rescue Exception => e
       env[:warnings].
         push({_: :pre,
@@ -292,9 +268,14 @@ module Webize
 
     def hostGET
       return [301, {'Location' => relocate.href}, []] if relocate? # relocated node
-      dirMeta              # 👉 adjacent nodes
       return deny if deny? # blocked node
-      fetch                # remote node
+      # most third party clients are unaware of content-negotiation facilities or even get confused if we return a different format
+      # immutable cache: if we have cached content of a type matching the FixedFormat rule, return it without reformats or origin checks
+      return fileResponse if storage.file? &&                # return cached node if exists,
+                             fileMIME.match?(FixedFormat) && # and format is fixed,
+                             !basename.match?(/index/i)      # unless conneg-enabled/cache-busted directory-index files (ZIP/TAR'd distro package-index files)
+      dirMeta # 👉 adjacent nodes
+      fetch   # fetch remote node
     end
 
   end
