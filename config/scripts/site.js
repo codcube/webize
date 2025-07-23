@@ -7,10 +7,14 @@ NodeList.prototype.map = function(f,a){
 document.addEventListener("DOMContentLoaded", function(){
 		var updates = document.getElementById('updates');
 		if(updates){
-				(new EventSource('?')).onmessage = (event) => {
+				var events = new EventSource('?');
+				events.onmessage = (event) => {
 						const container = document.createElement("li");
 						container.innerText = event.data;
 						updates.appendChild(container);
+				};
+				events.onerror = (err) => {
+						events.close();
 				};
 		};
 
