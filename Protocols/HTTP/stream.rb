@@ -12,7 +12,7 @@ module Webize
             repo = Node(u).fetch thru: false
             stream << "data: #{u} #{repo.subjects.join ' '} #{Time.now}\n\n"
           }}
-        barrier wait
+        barrier.wait
       rescue => error
       ensure
 	      stream.close(error)
