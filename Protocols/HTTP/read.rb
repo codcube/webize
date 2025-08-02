@@ -100,13 +100,13 @@ module Webize
             ext = ext.to_sym                                            # symbolize for lookup in RDF::Format
           end
 
-          # Content-Type: header is more formally-specified and less ad-hoc than path extensions.
-          # internally, we treat extensions as correct to map to a MIME without needing to exec 'attr', compile FFI-based POSIX-eattr libs or use sidecar turtle files
-          # therefore we need to store it at the correct location for the upstream reported MIME
+          # Content-Type: header is formally-specified, not ad-hoc like path-name extensions.
+          # in local storage we treat extensions as correct, to map to a MIME without needing to exec 'attr', compile FFI-based POSIX-eattr libs or use sidecar turtle files
+          # therefore we need to store content at the correct location for the upstream reported MIME
           if (mimes = RDF::Format.content_types[format]) &&             # MIME definitions
              !(exts = mimes.map(&:file_extension).flatten).member?(ext) # extension maps to MIME?
             doc = [(link = doc), '.', exts[0]].join                     # append mapped extension
-            # link to updated location from original to preserve findability and 1:1 fixed-format node mapping
+            # link to updated location from original
             FileUtils.ln_s File.basename(doc), link unless !format.match?(FixedFormat) ||
                                                             File.exist?(link) ||
                                                             File.symlink?(link)
@@ -237,6 +237,7 @@ module Webize
     def HEAD = self.GET.yield_self{|s, h, _|
                                    [s, h, []]} # status + header only
 
+    # GET from local filesystem
     def localGET
       return multiGET uris if extname == '.u' && streaming?                # aggregate/streamed fetch of node(s)
       return fileResponse if storage.file? &&                              # static response if available and non-transformable:
@@ -249,6 +250,7 @@ module Webize
       respond storage.nodes.map &:read                                     # respond with local node(s)
     end
 
+    # get from peer server, either origin or chained cache/proxy
     def peerGET
       return [301, {'Location' => relocate.href}, []] if relocate? # relocated node
       return deny if deny? # blocked node
