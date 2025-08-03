@@ -32,15 +32,15 @@ module Webize
                      redirect: false} # don't invisibly follow redirects inside HTTP-library code
 
     # fetch remote resource and return it directly or as derived graph-data or a representation thereof
-    def fetchHTTP thru: true # thread origin HTTP response through to caller?
+    def fetchHTTP thru: true # thread original HTTP response through to caller?
 
       ## this method handles a mess in the wild:
       # handle MIME/charset and other metadata only available inside the document (rather than HTTP headers) with readahead sniffin
-      # normalize header-name symbols
+      # normalize header-value symbol mappings
       # fix file extensions that don't map back to origin-MIME when stored at origin-path
       # support both conneg-aware and conneg-unaware clients and servers
       # support fully proxied (thru) fetches vs data-only fetches
-      # extract some header values for response generation and logging
+      # extract header values for guiding response generation and request logging
       # cache all the things
 
       doc = storage.document                                           # graph-cache location
