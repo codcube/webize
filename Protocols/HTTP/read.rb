@@ -94,7 +94,6 @@ module Webize
           body = HTML.cachestamp body, self if format == 'text/html'    # stamp with in-band cache metadata
 
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # allow (X)HTML to be served as XML
-          notransform = format.match?(FixedFormat)                      # transformable content?
 
           if ext = File.extname(doc)[1..-1]                             # name suffix with stripped leading '.'
             ext = ext.to_sym                                            # symbolize for lookup in RDF::Format
@@ -102,7 +101,7 @@ module Webize
 
           # Content-Type: header is formally-specified, not ad-hoc like path-name extensions.
           # in local storage we treat extensions as correct, to map to a MIME without needing to exec 'attr', compile FFI-based POSIX-eattr libs or use sidecar turtle files
-          # therefore we need to store content at the correct location for the upstream reported MIME
+          # we store content at a mappable location for the upstream reported MIME
           if (mimes = RDF::Format.content_types[format]) &&             # MIME definitions
              !(exts = mimes.map(&:file_extension).flatten).member?(ext) # extension maps to MIME?
             doc = [(link = doc), '.', exts[0]].join                     # append mapped extension
@@ -112,19 +111,18 @@ module Webize
                                                             File.symlink?(link)
           end
 
-          File.open(doc, 'w'){|f|f << body }                            # cache raw data
+          File.open(doc,'w'){|f|f << body} if format.match? FixedFormat # cache raw data
           graph = readRDF format, body                                  # parse graph-data
 
-          if h['Last-Modified']                                         # preserve origin timestamp
+          if h['Last-Modified']                                         # cache origin timestamp
             mtime = Time.httpdate h['Last-Modified'] rescue nil
             FileUtils.touch doc, mtime: mtime if mtime
           end
+
           if !thru                                                      # no HTTP response construction or proxy
             print MIME.format_icon format                               # denote fetch with single character for activity feedback
-            graph_pointer graph                                         # source graph
-            graph << RDF::Statement.new(self, RDF::URI(HT + 'status'), status) # source status
             graph                                                       # return graph-data
-          elsif notransform                                             # fixed format:
+          elsif format.match? FixedFormat                               # fixed format:
             staticResponse format, body                                 # return HTTP response in original/upstream format
           else                                                          # client format preference:
             env[:origin_format] = format                                # note original format for logger
