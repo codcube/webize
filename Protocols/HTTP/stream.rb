@@ -9,8 +9,9 @@ module Webize
         semaphore = Async::Semaphore.new 24, parent: barrier
         uris.map{|u|                 # URIs to fetch
           semaphore.async{
-            repo = Node(u).fetch thru: false
-            stream << "data: #{u} #{repo.subjects.join ' '} #{Time.now}\n\n"
+            Node(u).fetch(thru: false) do |graph|
+              stream << "data: #{u} #{graph.namem} #{Time.now}\n\n"
+            end
           }}
         barrier.wait
       rescue => error
