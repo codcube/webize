@@ -41,7 +41,7 @@ module Webize
       # support both conneg-aware and conneg-unaware clients and servers
       # support fully proxied (thru) fetches vs data-only fetches
       # extract header values for guiding response generation and request logging
-      # cache all the things
+      # cache origin/upstream entity
 
       doc = storage.document                                           # graph-cache location
       meta = [doc, '.meta'].join                                       # HTTP metadata-cache location
@@ -143,7 +143,7 @@ module Webize
       end
     rescue Exception => e
       raise unless e.respond_to?(:io) && e.io.respond_to?(:status) # raise non-HTTP-response errors
-      repository ||= RDF::Repository.new
+      repository ||= RDF::Repository.new.extend Webize::Cache
       graph_pointer repository                             # source graph
       status = e.io.status[0].to_i                         # source status
       repository << RDF::Statement.new(self, RDF::URI(HT + 'status'), status)

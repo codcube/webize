@@ -13,7 +13,7 @@ module Webize
             node.fetch(thru: false).     # fetch to RDF::Repository
               index(env,node) do |graph| # cache and index graph-data
                                          # notify caller of update(s)
-              stream << "data: #{u} #{graph.name} #{Time.now}\n\n"
+              stream << "data: #{uri} #{graph.name} #{Time.now}\n\n"
             end
           }}
         barrier.wait
