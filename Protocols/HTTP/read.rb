@@ -31,15 +31,17 @@ module Webize
                      read_timeout: 30,
                      redirect: false} # don't invisibly follow redirects inside HTTP-library code
 
-    # fetch w/ HTTP remote resource and cache upstream/original and derived graph data
-    def fetchHTTP thru: true # thread upstream HTTP response (metadata) through to caller? or just return data, dropping header information after we've used it to guide processing of response
+    # fetch remote resource and return it directly or as derived graph-data or a representation thereof
+    def fetchHTTP thru: true # thread origin HTTP response through to caller?
 
-      # this method handles the mess in the wild of MIME/charset and other metadata only available inside the document,
-      # rather than HTTP headers, requiring readahead sniffing. add some normalizing of name symbols to be what's in Ruby's list,
-      # fix erroneous MIMEs and file extensions that won't map back to the right MIME if stored at upstream-supplied path, and work with
-      # the slightly odd choice of exception-handler flow being used for common HTTP Response statuses, while supporting conneg-unaware clients/servers,
-      # and proxy-mode (thru) fetches vs data-only fetches in aggregation/merging scenarios. add some hints for the renderer and logger,
-      # and cache all the things. maybe we can split this up somehow, especially so we can try other HTTP libraries more easily.
+      ## this method handles a mess in the wild:
+      # handle MIME/charset and other metadata only available inside the document (rather than HTTP headers) with readahead sniffin
+      # normalize header-name symbols
+      # fix file extensions that don't map back to origin-MIME when stored at origin-path
+      # support both conneg-aware and conneg-unaware clients and servers
+      # support fully proxied (thru) fetches vs data-only fetches
+      # extract some header values for response generation and logging
+      # cache all the things
 
       doc = storage.document                                           # graph-cache location
       meta = [doc, '.meta'].join                                       # HTTP metadata-cache location
@@ -120,21 +122,22 @@ module Webize
           end
 
           unless thru && notransform
-            graph = readRDF(format, body).index env, self, updates: !thru # parse, cache, and index graph-data
+            graph = readRDF format, body                                # parse graph-data
           end
 
           if !thru                                                      # no HTTP response construction or proxy
             print MIME.format_icon format                               # denote fetch with single character for activity feedback
             graph_pointer graph                                         # source graph
             graph << RDF::Statement.new(self, RDF::URI(HT + 'status'), status) # source status
-            graph                                                       # return cached+fetched graph data
-          elsif notransform                                             # origin/upstream-server format preference
-            staticResponse format, body                                 # HTTP response in upstream format
-          else                                                          # client format preference
-            env[:origin_format] = format                                # note original format for logging/stats
-            h.map{|k,v|                                                 # HTTP resource metadata to graph
+            graph                                                       # return graph-data
+          elsif notransform                                             # fixed format:
+            staticResponse format, body                                 # return HTTP response in original/upstream format
+          else                                                          # client format preference:
+            env[:origin_format] = format                                # note original format for logger
+            graph.index env, self                                       # index graph-data
+            h.map{|k,v|                                                 # add origin HTTP metadata to graph
               graph << RDF::Statement.new(self, RDF::URI(HT+k), v)} if graph
-            respond graph, format                                     # HTTP response in content-negotiated format
+            respond graph, format                                       # return HTTP response in content-negotiated format
           end
         end
       end

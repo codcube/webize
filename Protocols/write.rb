@@ -2,12 +2,7 @@ module Webize
   module Cache
 
     # cache and index graphs in repository
-    def index env, base, updates: false
-      if updates                      # return updates only?
-        updates = RDF::Repository.new # updates graph
-        update_size = 0               # updates count
-      end
-
+    def index env, base, &b
       # query patterns:
       timestamp = RDF::Query::Pattern.new :s, RDF::URI(Date), :o  # timestamp
       creator = RDF::Query::Pattern.new :s, RDF::URI(Creator), :o # sender
@@ -30,11 +25,9 @@ module Webize
         log = ["\e[38;5;48m#{graph.size}⋮🐢\e[1m", [g.display_host, g.path, "\e[0m"].join]
 
         # updates
-        if updates                  # updates graph?
-          g.graph_pointer graph     # update pointer
-          updates << graph          # update to updates graph
-          update_size += 1
-        else                        # mark as update
+        if block_given?             # yield update-graph to caller
+          yield graph
+        else                        # flag graph as update
           self << RDF::Statement.new(g, RDF::URI('#new'), true)
         end
 
@@ -68,13 +61,7 @@ module Webize
         Console.logger.info log.join ' '                      # log message
       }
 
-      # output graph
-      if updates # updates graph
-        updates << RDF::Statement.new(base, RDF::URI('#update_size'), update_size) if update_size > 0
-        updates
-      else       # input graph
-        self
-      end
+      self
      end
   end
 end
