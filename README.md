@@ -1,6 +1,3 @@
-# DESCRIPTION
- see the [manifesto](LINKS.md)
-
 # INSTALL
 [a script](INSTALL.sh) uses distro pkg-managers and bundler to install gems and their dependencies. there's no gem for this library yet as there's no release version - simply require [index.rb](index.rb) and get coding, or launch one of the preconfigured servers and get webizing!
 
@@ -18,10 +15,10 @@ if you use email, [procmailrc](config/dotfiles/.procmailrc) configures delivery 
 
 # USAGE
 
-HTTP server - technically a shell script with a [falcon](https://github.com/socketry/falcon) invocation. requires aforementioned PATH configuration:
+HTTP server - technically a shell script with a [falcon](https://github.com/socketry/falcon) invocation
 
     httpd
 
-DNS server built on [async-dns](https://github.com/socketry/async-dns) and our resource-access library
+DNS server built on [async-dns](https://github.com/socketry/async-dns) and our access rules
 
     dnsd

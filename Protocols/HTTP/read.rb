@@ -237,7 +237,7 @@ module Webize
     def HEAD = self.GET.yield_self{|s, h, _|
                                    [s, h, []]} # status + header only
 
-    # GET from local filesystem
+    # GET from local storage. follow-on peer GETs allowed
     def localGET
       return multiGET uris if extname == '.u' && streaming?                # aggregate/streamed fetch of node(s)
       return fileResponse if storage.file? &&                              # static response if available and non-transformable:
@@ -250,7 +250,7 @@ module Webize
       respond storage.nodes.map &:read                                     # respond with local node(s)
     end
 
-    # get from peer server, either origin or chained cache/proxy
+    # GET from peer server, either origin or chained cache/proxy
     def peerGET
       return [301, {'Location' => relocate.href}, []] if relocate? # relocated node
       return deny if deny? # blocked node
