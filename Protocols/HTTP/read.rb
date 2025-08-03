@@ -33,8 +33,6 @@ module Webize
 
     # fetch remote resource and return it directly or as derived graph-data or a representation thereof
     def fetchHTTP thru: true # thread original HTTP response through to caller?
-
-      ## this method handles a mess in the wild:
       # handle MIME/charset and other metadata only available inside the document (rather than HTTP headers) with readahead sniffin
       # normalize header-value symbol mappings
       # fix file extensions that don't map back to origin-MIME when stored at origin-path
@@ -115,16 +113,12 @@ module Webize
           end
 
           File.open(doc, 'w'){|f|f << body }                            # cache raw data
+          graph = readRDF format, body                                  # parse graph-data
 
           if h['Last-Modified']                                         # preserve origin timestamp
             mtime = Time.httpdate h['Last-Modified'] rescue nil
             FileUtils.touch doc, mtime: mtime if mtime
           end
-
-          unless thru && notransform
-            graph = readRDF format, body                                # parse graph-data
-          end
-
           if !thru                                                      # no HTTP response construction or proxy
             print MIME.format_icon format                               # denote fetch with single character for activity feedback
             graph_pointer graph                                         # source graph
@@ -134,7 +128,7 @@ module Webize
             staticResponse format, body                                 # return HTTP response in original/upstream format
           else                                                          # client format preference:
             env[:origin_format] = format                                # note original format for logger
-            graph.index env, self                                       # index graph-data
+            graph.index env, self                                       # cache graph-data
             h.map{|k,v|                                                 # add origin HTTP metadata to graph
               graph << RDF::Statement.new(self, RDF::URI(HT+k), v)} if graph
             respond graph, format                                       # return HTTP response in content-negotiated format

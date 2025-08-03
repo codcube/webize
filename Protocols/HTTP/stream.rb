@@ -4,6 +4,7 @@ module Webize
     def streaming? = env['HTTP_ACCEPT'].include? 'text/event-stream'
 
     def multiGET uris
+      puts env
       body = proc do |stream|
         barrier = Async::Barrier.new     # limit concurrency
         semaphore = Async::Semaphore.new 24, parent: barrier
