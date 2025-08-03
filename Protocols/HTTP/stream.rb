@@ -14,7 +14,7 @@ module Webize
             node.fetch(thru: false).     # fetch resource to RDF::Repository
               index(env,node) do |graph| # cache and index graph-data
                                          # notify caller of update(s)
-              stream << "data: #{HTML.markup JSON.fromGraph(graph)[graph.name.to_s], env}\n\n"
+              stream << "data: #{HTML.render HTML.markup(JSON.fromGraph(graph), env)}\n\n"
             end
           }}
         barrier.wait
