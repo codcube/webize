@@ -7,10 +7,10 @@ module Webize
       body = proc do |stream|
         barrier = Async::Barrier.new     # limit concurrency
         semaphore = Async::Semaphore.new 24, parent: barrier
-        uris.map{|uri|                   # URIs to fetch
+        uris.map{|uri|                   # resources to GET
           semaphore.async{
             node = Node uri              # instantiate HTTP::Node
-            node.fetch(thru: false).     # fetch to RDF::Repository
+            node.fetch(thru: false).     # fetch resource to RDF::Repository
               index(env,node) do |graph| # cache and index graph-data
                                          # notify caller of update(s)
               stream << "data: #{uri} #{graph.name} #{Time.now}\n\n"
