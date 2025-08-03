@@ -9,8 +9,11 @@ module Webize
         semaphore = Async::Semaphore.new 24, parent: barrier
         uris.map{|u|                 # URIs to fetch
           semaphore.async{
-            Node(u).fetch(thru: false) do |graph|
-              stream << "data: #{u} #{graph.namem} #{Time.now}\n\n"
+            node = Node u            # instantiate HTTP::Node resource
+            node.
+              fetch(thru: false).        # fetch to in-memory RDF::Repository
+              index(env,node) do |graph| # index graph and notify caller of update(s)
+              stream << "data: #{u} #{graph.name} #{Time.now}\n\n"
             end
           }}
         barrier.wait
