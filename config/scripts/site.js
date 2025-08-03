@@ -9,8 +9,8 @@ document.addEventListener("DOMContentLoaded", function(){
 		if(updates){
 				var events = new EventSource('?');
 				events.onmessage = (event) => {
-						const container = document.createElement("li");
-						container.innerText = event.data;
+						const container = document.createElement("div");
+						container.innerHTML = event.data;
 						updates.appendChild(container);
 				};
 				events.onerror = (err) => {
