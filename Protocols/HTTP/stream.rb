@@ -5,14 +5,14 @@ module Webize
 
     def multiGET uris
       body = proc do |stream|
-        barrier = Async::Barrier.new # limit concurrency
+        barrier = Async::Barrier.new     # limit concurrency
         semaphore = Async::Semaphore.new 24, parent: barrier
-        uris.map{|u|                 # URIs to fetch
+        uris.map{|uri|                   # URIs to fetch
           semaphore.async{
-            node = Node u            # instantiate HTTP::Node resource
-            node.
-              fetch(thru: false).        # fetch to in-memory RDF::Repository
-              index(env,node) do |graph| # index graph and notify caller of update(s)
+            node = Node uri              # instantiate HTTP::Node
+            node.fetch(thru: false).     # fetch to RDF::Repository
+              index(env,node) do |graph| # cache and index graph-data
+                                         # notify caller of update(s)
               stream << "data: #{u} #{graph.name} #{Time.now}\n\n"
             end
           }}
