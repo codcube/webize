@@ -7,7 +7,7 @@ NodeList.prototype.map = function(f,a){
 document.addEventListener("DOMContentLoaded", function(){
 		var updates = document.getElementById('updates');
 		if(updates){
-				var events = new EventSource('?');
+				var events = new EventSource(document.location);
 				events.onmessage = (event) => {
 						const container = document.createElement("div");
 						container.innerHTML = event.data;
