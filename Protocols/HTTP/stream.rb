@@ -4,7 +4,6 @@ module Webize
     def streaming? = env['HTTP_ACCEPT'].include? 'text/event-stream'
 
     def multiGET uris
-      puts env
       body = proc do |stream|
         barrier = Async::Barrier.new     # limit concurrency
         semaphore = Async::Semaphore.new 24, parent: barrier
@@ -14,7 +13,7 @@ module Webize
             node.fetch(thru: false).     # fetch resource to RDF::Repository
               index(env,node) do |graph| # cache and index graph-data
                                          # notify caller of update(s)
-              stream << "data: #{HTML.render HTML.markup(JSON.fromGraph(graph), env)}\n\n"
+              stream << "data: #{HTML.render HTML.markup(JSON.fromGraph(graph).values, env)}\n\n"
             end
           }}
         barrier.wait
