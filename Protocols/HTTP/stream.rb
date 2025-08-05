@@ -6,7 +6,6 @@ module Webize
   class HTTP::Node
 
     Subscribers = Set.new # runtime client list
-    #Node::Subscribers.each{|stream|stream << "data: #{uri}\n\n"} # update log subscribers
 
     def firehose
       body = proc do |stream|
@@ -36,6 +35,7 @@ module Webize
               index(env,node) do |graph| # cache and index graph-data
                                          # notify caller of update(s)
               stream << "data: #{HTML.render HTML.markup(JSON.fromGraph(graph).values, env)}\n\n"
+              Subscribers.each{|s|s << "data: #{graph.name}\n\n"} # notify firehose subscribers
             end
           }}
         barrier.wait
