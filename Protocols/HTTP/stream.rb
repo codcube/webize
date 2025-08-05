@@ -1,4 +1,8 @@
 module Webize
+  class URI
+
+    def streamable? = path == '/' || extname == '.u'
+  end
   class HTTP::Node
 
     def streaming? = env['HTTP_ACCEPT'].include? 'text/event-stream'

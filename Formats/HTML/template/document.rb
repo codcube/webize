@@ -110,7 +110,7 @@ module Webize
                                                  c: :🛑} unless r.deny_domain?)}]}}}]} if HTTP::Redirector[self]),
 
                  # updates container
-                 ({id: :updates} if extname == '.u'),
+                 ({id: :updates} if streamable?),
 
                  # document-node data
                  keyval(doc),
