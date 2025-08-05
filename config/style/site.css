@@ -64,7 +64,7 @@ a.origin:visited, a.pointer:visited, td[property="uri"] a:visited {background-co
 a.pointer, td[property="uri"] a {margin: 0; padding: 0; background-color: #222; color: #fff; border-radius: .5em; font-weight: normal; float: right}
 a.title {margin: 0; border-radius: .38em; font-size: 1.08em}
 a.title, a.title > span {background-color: #fff; color: #000}
-a.title:visited, a.title:visited > span {background-color: #888; color: #000}
+a.title:visited, a.title:visited > span {background-color: #999; color: #000}
 audio {width: 80ex; float: right}
 blockquote blockquote blockquote blockquote {background-color: #aaa; color: #000}
 blockquote blockquote blockquote blockquote::before {color: #aaa}
