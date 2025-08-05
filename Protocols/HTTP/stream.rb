@@ -5,7 +5,22 @@ module Webize
   end
   class HTTP::Node
 
+    Subscribers = Set.new # runtime client list
+    #Node::Subscribers.each{|stream|stream << "data: #{uri}\n\n"} # update log subscribers
+
     def firehose
+      body = proc do |stream|
+        Subscribers << stream
+        while true
+          stream << "data: timestamp #{Time.now}<br>\n\n"
+          sleep 3600
+        end
+      rescue => error
+      ensure
+        Subscribers.delete stream
+	      stream.close(error)
+      end
+      [200, {'content-type' => 'text/event-stream'}, body]
     end
 
     def streaming? = env['HTTP_ACCEPT'].include? 'text/event-stream'
