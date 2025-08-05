@@ -232,23 +232,29 @@ module Webize
     def HEAD = self.GET.yield_self{|s, h, _|
                                    [s, h, []]} # status + header only
 
-    # GET from local storage. follow-on peer GETs allowed
+    # GET local node
     def localGET
-      return multiGET uris if extname == '.u' && streaming?                # aggregate/streamed fetch of node(s)
+      if streaming?
+        return firehose if !path || path == '/'                            # stream of local updates
+        return multiGET uris if extname == '.u'                            # aggregated GET of node(s)
+      end
+
       return fileResponse if storage.file? &&                              # static response if available and non-transformable:
                              (format = fileMIME                            #  lookup MIME type
                               env[:qs]['notransform'] ||                   #  (A → B) MIME transform blocked by client
                                 format.match?(MIME::FixedFormat) ||        #  (A → B) MIME transform blocked by server
       (format == selectFormat(format) && !MIME::ReFormat.member?(format))) #  (A → A) MIME reformat blocked by server
+
       dirMeta                                                              # 👉 container-adjacent nodes
       timeMeta                                                             # 👉 timeslice-adjacent nodes
-      respond storage.nodes.map &:read                                     # respond with local node(s)
+      respond storage.nodes.map &:read                                     # representation of local node
     end
 
-    # GET from peer server, either origin or chained cache/proxy
+    # GET node from peer (origin server or chained proxy)
     def peerGET
       return [301, {'Location' => relocate.href}, []] if relocate? # relocated node
-      return deny if deny? # blocked node
+      return deny if deny?                                         # blocked node
+
       # most third party clients and apps are unaware of content-negotiation facilities
       # they tend to get confused and fail if we return a different format for a requested static-asset even if asked/allowed for in ACCEPT headers usually ignored by both sides of exchange
       # we also don't want to incur roundtrips and HTTP Requests to see if these static files changed at the origin, since they never will as the URI is hash-derived and changes on update
@@ -256,6 +262,7 @@ module Webize
       return fileResponse if storage.file? &&                # return cached node if exists,
                              fileMIME.match?(FixedFormat) && # and format is fixed,
                              !basename.match?(/index/i)      # unless conneg-enabled/cache-busted index file (ZIP/TAR'd distro package-lists, dynamic index images)
+
       dirMeta # 👉 adjacent nodes
       fetch   # fetch remote node
     end

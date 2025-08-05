@@ -5,6 +5,9 @@ module Webize
   end
   class HTTP::Node
 
+    def firehose
+    end
+
     def streaming? = env['HTTP_ACCEPT'].include? 'text/event-stream'
 
     def multiGET uris
