@@ -23,13 +23,7 @@
 .redirectors, .referers {background-color: #bbb; border-radius: .42em}
 .resource {border: 1px solid #333; border-radius: .62em; margin: 1px; vertical-align: top}
 .resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin, .video.resource > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
-.resource[host="www.mixcloud.com"] span.key, .resource[host="www.mixcloud.com"] span.val[key="http://schema.org/key"] {display: none}
-.resource[host="www.mixcloud.com"] span[href] {display: none}
-.resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource {max-width: 39em; overflow: hidden}
-.resource[id^="container"] > a.title {color: #888; font-size: .8em}
-.resource[id^="container"] > span.kv {display: none}
 .title, .abstract, .key, .val {vertical-align: top}
-.title:visited {background-color: #ccc; color: #000}
 .top-bar .path a {color: #ddd; font-weight: normal}
 .top-bar .path a:last-child {color: #000; background-color: #fff; font-weight: bold; border-radius: 0 0 .3em .3em; margin-top: 0}
 .top-bar .path {color: #666}
@@ -61,7 +55,6 @@ a.date {white-space: nowrap; color: #ccc; background-color: #000; font-weight: n
 a.feed {border: 1px solid orange}
 a.fragref {padding: .1em .3em .1em .3em; border-radius: .3em; font-size: 1.3em; border: 1px dotted #fef}
 a.from, a.to {color: #000}
-a.from:visited, a.to:visited {color: #fff}
 a.global {background-color: #004; border: 1px solid #008}
 a.global, a.local, a.blocked {display: inline-block}
 a.global:visited, a.local:visited {background-color: #000; border-color: #30f}
@@ -71,7 +64,7 @@ a.origin:visited, a.pointer:visited, td[property="uri"] a:visited {background-co
 a.pointer, td[property="uri"] a {margin: 0; padding: 0; background-color: #222; color: #fff; border-radius: .5em; font-weight: normal; float: right}
 a.title {margin: 0; border-radius: .38em; font-size: 1.08em}
 a.title, a.title > span {background-color: #fff; color: #000}
-a:visited span.uri {background-color: black}
+a.title:visited, a.title:visited > span {background-color: #888; color: #000}
 audio {width: 80ex; float: right}
 blockquote blockquote blockquote blockquote {background-color: #aaa; color: #000}
 blockquote blockquote blockquote blockquote::before {color: #aaa}
