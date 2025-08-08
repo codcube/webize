@@ -5,6 +5,7 @@
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em; position: fixed}
 #updates > div {max-width: 80ex}
+#updates .blocked {display: none}
 .abstract {border: 1px solid #888; background: repeating-linear-gradient(-45deg, #888, #888 1px, transparent 1px, transparent 18px); display: inline-block}
 .abstract, .abstract span {border-radius: .38em}
 .blocked {background: repeating-linear-gradient(300deg, #f00, #f00 .125em, transparent .125em, transparent 1em); color: #fff; border: 1px solid red}
