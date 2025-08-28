@@ -647,3 +647,6 @@ data-parent-fit
 data-effect
 data-valign
 data-halign
+data-wp-bind--aria-disabled
+data-wp-class--is-submitting
+allowSubscriptions

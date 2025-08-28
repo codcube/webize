@@ -227,3 +227,4 @@ watchEndpoint
 watchEndpointSupportedOnesieConfig
 watchNextEndScreenRenderer
 webCommandMetadata
+activitySubscription
