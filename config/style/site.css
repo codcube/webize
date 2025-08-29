@@ -4,8 +4,6 @@
 #prev, #next, #up, #down {font-size: 2em; border-style: solid; border-color: #777; color: #bbb; padding: .8em}
 #prev:hover, #next:hover, #up:hover, #down:hover {background-color: #333}
 #up {right: 3em; top: 0; border-radius: 0 0 .6em .6em; border-width: 0 .04em .04em .04em; position: fixed}
-#updates > div {max-width: 80ex}
-#updates .blocked {display: none}
 .abstract {border: 1px solid #888; background: repeating-linear-gradient(-45deg, #888, #888 1px, transparent 1px, transparent 18px); display: inline-block}
 .abstract, .abstract span {border-radius: .38em}
 .blocked {background: repeating-linear-gradient(300deg, #f00, #f00 .125em, transparent .125em, transparent 1em); color: #fff; border: 1px solid red}
@@ -24,6 +22,7 @@
 .redirectors, .referers {background-color: #bbb; border-radius: .42em}
 .resource {border: 1px solid #333; border-radius: .62em; margin: 1px; vertical-align: top}
 .resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin, .video.resource > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
+.resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource, #updates > div {max-width: 80ex}
 .title, .abstract, .key, .val {vertical-align: top}
 .top-bar .path a {color: #ddd; font-weight: normal}
 .top-bar .path a:last-child {color: #000; background-color: #fff; font-weight: bold; border-radius: 0 0 .3em .3em; margin-top: 0}
@@ -33,6 +32,7 @@
 .top-bar form input {background-color: #282828; color: #eee; border-radius: .5em; border-width: 0; margin: 0; padding: 0; width: 24ex}
 .top-bar svg {height: 1em; width: 1em}
 .top-bar {border-width: 0 1px 1px 1px; display: inline-block; border-style: solid; border-color: #555; border-radius: 0 0 .62em .62em; vertical-align: top}
+.val[key="http://schema.org/authToken"] {display: none}
 .val[key="http://www.w3.org/2000/01/rdf-schema#label"] > span {background-color: #777; font-size: .88em; border-radius: .28em; color: #000; margin-left: 1px}
 .video {max-width: 80em}
 .warning a {background-color: #fff; color: #000}
