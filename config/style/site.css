@@ -81,7 +81,7 @@ cite {border: 1px dotted #444; border-radius: .4em; margin: 2px 2px 2px 12px; ma
 cite::before {content: '📚'; color: #666; margin-left: -12px}
 code > span { color: #6ef; padding: 0 0 0 .2em;}
 code {display: inline-block; background-color: #226; font-size: .88em; border-radius: .6em; margin: 2px}
-dl, dt, dd, form, ol, ul, table, p, .resource, #updates div {display: inline-block}
+dl, dt, dd, div, form, ol, ul, table, p {display: inline-block}
 dl, dt, dd, img, video, table, tr, td, .val {max-width: 100%}
 dt, .key {background-color: #111; border: 1px solid #666; border-radius: .4em}
 dt, .key, .type {color: #bbb}
