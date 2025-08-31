@@ -23,6 +23,7 @@
 .resource {border: 1px solid #333; border-radius: .62em; margin: 1px; vertical-align: top}
 .resource[host="www.mixcloud.com"] > .kv > .val > a.origin, .resource[host="soundcloud.com"] > .kv > .val > a.origin, .video.resource > .kv > .val > a.origin {font-size: 2em; float: right; font-weight: normal}
 .resource[host="www.mixcloud.com"], .resource[host="soundcloud.com"], .video.resource, #updates > div {max-width: 80ex}
+.resource[host="api-v2.soundcloud.com"] {display: none}
 .title, .abstract, .key, .val {vertical-align: top}
 .top-bar .path a {color: #ddd; font-weight: normal}
 .top-bar .path a:last-child {color: #000; background-color: #fff; font-weight: bold; border-radius: 0 0 .3em .3em; margin-top: 0}
