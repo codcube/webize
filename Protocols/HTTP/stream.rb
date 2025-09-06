@@ -9,7 +9,7 @@ module Webize
 
     def firehose
       body = proc do |stream|
-        Writers << writer = ::JSON::LD::Writer.new(output: stream)
+        Writers << writer = ::JSON::LD::Writer.new(stream)
         while true
           puts "firehose:", stream, writer
           sleep 3600
