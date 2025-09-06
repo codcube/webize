@@ -235,7 +235,7 @@ module Webize
     # GET local node
     def localGET
       if streaming?
-        return firehose if !path || path == '/'                            # stream of local updates
+        return firehose if path == '/feed'                                 # stream of local updates
         return multiGET uris if extname == '.u'                            # aggregated GET of node(s)
       end
 

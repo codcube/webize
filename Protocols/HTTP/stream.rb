@@ -5,37 +5,35 @@ module Webize
   end
   class HTTP::Node
 
-    Subscribers = Set.new # runtime client list
+    Writers = Set.new # client list
 
     def firehose
       body = proc do |stream|
-        Subscribers << stream
+        Writers << writer = ::JSON::LD::Writer.new(output: stream)
         while true
-          stream << "data: timestamp #{Time.now}<br>\n\n"
+          puts "firehose:", stream, writer
           sleep 3600
         end
       rescue => error
       ensure
-        Subscribers.delete stream
+        Writers.delete writer
 	      stream.close(error)
       end
       [200, {'content-type' => 'text/event-stream'}, body]
     end
 
-    def streaming? = env['HTTP_ACCEPT'].include? 'text/event-stream'
-
     def multiGET uris
       body = proc do |stream|
         barrier = Async::Barrier.new     # limit concurrency
         semaphore = Async::Semaphore.new 24, parent: barrier
-        uris.map{|uri|                   # resources to GET
+        uris.map{|uri|                   # resource list
           semaphore.async{
-            node = Node uri              # instantiate HTTP::Node
-            node.fetch(thru: false).     # fetch resource to RDF::Repository
-              index(env,node) do |graph| # cache and index graph-data
-                                         # notify caller of update(s)
-              stream << "data: #{HTML.render HTML.markup(JSON.fromGraph(graph).values, env)}\n\n"
-              Subscribers.each{|s|s << "data: #{graph.name}\n\n"} # notify firehose subscribers
+            node = Node uri              # resource (HTTP::Node)
+            node.fetch(thru: false).     # resource -> graph (RDF::Repository)
+              index(env,node) do |graph| # graph -> local cache/index
+              stream <<                  # graph HTML representation -> SSE client
+                "data: #{HTML.render HTML.markup(JSON.fromGraph(graph).values, env)}\n\n"
+              syndicate graph            # graph -> firehose/global-updates client(s)
             end
           }}
         barrier.wait
@@ -44,6 +42,14 @@ module Webize
 	      stream.close(error)
       end
       [200, {'content-type' => 'text/event-stream'}, body]
+    end
+
+    def streaming? = env['HTTP_ACCEPT'].include? 'text/event-stream'
+
+    def syndicate(graph) = graph.each_statement do |s|
+      Writers.map do |w|
+        w.stream_statement s
+      end
     end
 
   end
