@@ -85,7 +85,7 @@ module Webize
           body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
           body = HTML.cachestamp body, self if format == 'text/html'    # stamp with in-band cache metadata
 
-          format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # allow (X)HTML to be served as XML
+          format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # detect (X)HTML served as XML
 
           if ext = File.extname(doc)[1..-1]                             # name suffix with stripped leading '.'
             ext = ext.to_sym                                            # symbolize for lookup in RDF::Format
@@ -98,7 +98,7 @@ module Webize
                                                             File.symlink?(link)
           end
 
-          File.open(doc,'w'){|f|f << body} if format.match? FixedFormat # cache raw data
+          File.open(doc, 'w'){|f| f << body }                           # cache raw data
           graph = readRDF format, body                                  # parse graph-data
 
           if h['Last-Modified']                                         # cache origin timestamp
@@ -160,6 +160,8 @@ module Webize
         head['Content-Length'] = body.bytesize.to_s
         if !thru
           repository
+        elsif status == 403 # redirect to origin for anubis/cloudflare/etc challenges via upstream UI
+          [302, {'Location' => uri}, []]
         else
           env[:origin_status] = status
           respond repository # dynamic/transformable response data
