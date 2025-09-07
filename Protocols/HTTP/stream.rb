@@ -13,6 +13,9 @@ module Webize
         Readers << reader = ::JSON::LD::Reader.new(stream, stream: true)
         Writers << writer = ::JSON::LD::Writer.new(stream)
         puts "firehose:", stream, reader, writer
+
+        #stream.each do |message|
+        #  puts message
         reader.each_statement do |s|
           puts s
         end
