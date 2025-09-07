@@ -16,6 +16,7 @@ module Webize
     end
 
     def POST
+      return firehose if path == '/feed' # bidirectional stream of updates
       env[:deny] = true
       [202, {'Access-Control-Allow-Credentials' => 'true',
              'Access-Control-Allow-Origin' => origin}, []]

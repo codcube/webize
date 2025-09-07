@@ -5,17 +5,20 @@ module Webize
   end
   class HTTP::Node
 
-    Writers = Set.new # client list
+    Writers = Set.new # data sinks get a writer
+    Readers = Set.new # data sources get a reader
 
     def firehose
       body = proc do |stream|
+        Readers << reader = ::JSON::LD::Reader.new(stream, stream: true)
         Writers << writer = ::JSON::LD::Writer.new(stream)
-        while true
-          puts "firehose:", stream, writer
-          sleep 3600
+        puts "firehose:", stream, reader, writer
+        reader.each_statement do |s|
+          puts s
         end
       rescue => error
       ensure
+        Readers.delete reader
         Writers.delete writer
 	      stream.close(error)
       end
