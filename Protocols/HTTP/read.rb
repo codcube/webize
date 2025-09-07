@@ -31,16 +31,8 @@ module Webize
                      read_timeout: 30,
                      redirect: false} # don't invisibly follow redirects inside HTTP-library code
 
-    # fetch remote resource and return it directly or as derived graph-data or a representation thereof
-    def fetchHTTP thru: true # thread original HTTP response through to caller?
-      # handle MIME/charset and other metadata only available inside the document (rather than HTTP headers) with readahead sniffin
-      # normalize header-value symbol mappings
-      # fix file extensions that don't map back to origin-MIME when stored at origin-path
-      # support both conneg-aware and conneg-unaware clients and servers
-      # support fully proxied (thru) fetches vs data-only fetches
-      # extract header values for guiding response generation and request logging
-      # cache origin/upstream entity
-
+    # fetch resource representation and return it or derived graph-data or a representation thereof
+    def fetchHTTP thru: true # thread upstream HTTP-Response through to caller? TODO use #block_given? instead of option-flag
       doc = storage.document                                           # graph-cache location
       meta = [doc, '.meta'].join                                       # HTTP metadata-cache location
 
@@ -98,14 +90,9 @@ module Webize
           if ext = File.extname(doc)[1..-1]                             # name suffix with stripped leading '.'
             ext = ext.to_sym                                            # symbolize for lookup in RDF::Format
           end
-
-          # Content-Type: header is formally-specified, not ad-hoc like path-name extensions.
-          # in local storage we treat extensions as correct, to map to a MIME without needing to exec 'attr', compile FFI-based POSIX-eattr libs or use sidecar turtle files
-          # we store content at a mappable location for the upstream reported MIME
           if (mimes = RDF::Format.content_types[format]) &&             # MIME definitions
-             !(exts = mimes.map(&:file_extension).flatten).member?(ext) # extension maps to MIME?
-            doc = [(link = doc), '.', exts[0]].join                     # append mapped extension
-            # link to updated location from original
+             !(exts = mimes.map(&:file_extension).flatten).member?(ext) # upstream extension does not map back to reported MIME?
+            doc = [(link = doc), '.', exts[0]].join                     # append mappable extension, link new location from original
             FileUtils.ln_s File.basename(doc), link unless !format.match?(FixedFormat) ||
                                                             File.exist?(link) ||
                                                             File.symlink?(link)
