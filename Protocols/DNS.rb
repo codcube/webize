@@ -2,14 +2,9 @@
 require 'async/dns'
 require_relative '../index'
 
-Host = ENV['HOST'] || '127.0.0.1'
-Port = ENV['PORT'] || 53
+class Webize::DNS < Async::DNS::Server
 
-Unfiltered = ENV.has_key? 'UNFILTERED'
-
-class FilteredServer < Async::DNS::Server
-
-  Seen = {}
+  Seen = {} # hosts we've encountered in current run
 
   Log = -> name, color, v6 {
     unless Seen[name]
@@ -25,13 +20,9 @@ class FilteredServer < Async::DNS::Server
   def process(name, resource_class, transaction)
     v6 = resource_class == Resolv::DNS::Resource::IN::AAAA
     if (resource = Webize::URI ['//', name].join).deny?
-      color = "\e[38;5;#{resource.deny_domain? ? 196 : 202}#{Unfiltered ? nil : ';7'}m"
+      color = "\e[38;5;#{resource.deny_domain? ? 196 : 202};7m"
       Log[name, color, v6]
-      if Unfiltered
-        transaction.passthrough! resolver
-      else
-        transaction.respond! v6 ? '::1' : Host
-      end
+      transaction.respond! v6 ? '::1' : '127.0.0.1'
     else
       color = name.index('www.') == 0 ? nil : "\e[38;5;51m"
       Log[name, color, v6]
@@ -39,5 +30,3 @@ class FilteredServer < Async::DNS::Server
     end
   end
 end
-
-FilteredServer.new.run

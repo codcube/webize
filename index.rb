@@ -30,6 +30,7 @@ XML),
 
  Protocols: %w(
 access locate read write
+DNS
 Gemini
 HTTP
 POSIX
