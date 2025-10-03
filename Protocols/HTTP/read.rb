@@ -241,13 +241,13 @@ module Webize
 
     # GET node from peer (origin server or chained proxy)
     def peerGET
-      return [301, {'Location' => relocate.href}, []] if relocate? # relocated node
-      return deny if deny?                                         # blocked node
+      return [301, {'Location' => relocate.href}, []] if relocate?     # relocated node
+      return deny if deny?                                             # block node access
+      AllowHosts.push host if temp_allow? && !AllowHosts.member?(host) # allow node access
 
-      # most third party clients and apps are unaware of content-negotiation facilities
-      # they tend to get confused and fail if we return a different format for a requested static-asset even if asked/allowed for in ACCEPT headers usually ignored by both sides of exchange
-      # we also don't want to incur roundtrips and HTTP Requests to see if these static files changed at the origin, since they never will as the URI is hash-derived and changes on update
-      # our solution to both of these is immutable cache: if we have content of FixedFormat type, no formats or origin-checks happen, the app is less confused and network less bogged down
+      # many clients and apps are unaware of content-negotiation facilities and become confused or fail if we return a differing-from-original format
+      # we also don't want to incur origin-roundtrip HTTP Requests to see if content at a URI changed when it won't ever due to content-addressing
+      # if storage name matches FixedFormat regex, no formats or origin-checks happen
       return fileResponse if storage.file? &&                # return cached node if exists,
                              fileMIME.match?(FixedFormat) && # and format is fixed,
                              !basename.match?(/index/i)      # unless conneg-enabled/cache-busted index file (ZIP/TAR'd distro package-lists, dynamic index images)
