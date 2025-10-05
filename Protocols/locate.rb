@@ -18,12 +18,14 @@ module Webize
 
   # cache-configuration options
 
-  # local cache - accepts shutoff argument
-  Local_Cache = !%w(0 false no off).member?(
-    (ENV['MEDIA_CACHE'] || 'ON').downcase) # (on by default)
+  # local media-cache toggle - enabled by default
+  Local_Cache = !%w(0 false no off).member?((ENV['MEDIA_CACHE'] || 'ON').downcase)
 
-  # peer cache - accepts base-URI argument
+  # remote media-cache URI
   Remote_Cache = ENV['CDN']
+
+  # in-memory RDF cache
+  Graph = RDF::Graph.new
 
   class URI
 
