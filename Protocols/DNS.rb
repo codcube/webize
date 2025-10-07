@@ -10,7 +10,7 @@ class Webize::DNS < Async::DNS::Server
     unless Seen[resource.host]
       Seen[resource.host] = true # mark as visited
 
-      Graph << RDF::Statement.new(RDF::URI(Time.now.utc.strftime '/%Y/%m/%d/%H/'), RDF::URI('#nslookup'), resource) # populate runtime graph cache
+      Webize::Graph << RDF::Statement.new(RDF::URI(Time.now.utc.strftime '/%Y/%m/%d/%H/'), RDF::URI('#nslookup'), resource) # populate runtime graph cache
 
       # logging
       color = if resource.deny?
