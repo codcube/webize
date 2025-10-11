@@ -110,11 +110,7 @@ module Webize
 
                     # child nodes
                     if r[Contains]
-                      if TabularChild.member? type.to_s # tabular view
-                        property Schema + 'item', r[Contains]
-                      else                              # inline view
-                        r[Contains].map{|c| HTML.markup c, env }
-                      end
+                      r[Contains].map{|c| HTML.markup c, env }
                     end,
 
                     # node metadata

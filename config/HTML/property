@@ -1,5 +1,6 @@
 #childDir buttons
 #entry table
+#nslookup table
 http://purl.org/dc/terms/Audio audio
 http://purl.org/dc/terms/Image img
 http://purl.org/dc/terms/Video video

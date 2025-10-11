@@ -47,9 +47,6 @@ module Webize
     end
     class Node
 
-      # display children of these node types in tabular format
-      TabularChild = %w(form ol ul select)
-
       # list elements
       def dd(node) = inlineResource node, :dd
       def dfn(node) = inlineResource node, :dfn
