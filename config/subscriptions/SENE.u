@@ -254,7 +254,7 @@ https://www.youtube.com/feeds/videos.xml?channel_id=UCqdM7PpJ84RvkqM87OzMAzw
 https://www.youtube.com/feeds/videos.xml?channel_id=UCvM_2-HUTqwKkcQvLVRcMJw
 https://www.youtube.com/feeds/videos.xml?channel_id=UCx_SjDi4CS5ALkWCS9ffldQ
 https://www.capeandislands.org/index.rss
-https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=did%3Aplc%3Aduslwfe3f2uoy24srkzmfz5n&filter=posts_and_author_threads&includePins=false&limit=30
+https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=did%3Aplc%3Aduslwfe3f2uoy24srkzmfz5n
 https://www.capecod.com/feed/
 https://fallriverreporter.com/feed/
 https://www.newportdispatch.com/category/news/feed/
@@ -269,7 +269,7 @@ https://flipsidenews.net/rss/
 https://www.mattapanfoodandfit.org/blog-feed.xml
 https://www.mma.org/feed/
 https://bsky.app/profile/did:plc:5cy2jd3fzplyslvbbqwjwcsp/rss
-https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=did%3Aplc%3A5cy2jd3fzplyslvbbqwjwcsp&filter=posts_and_author_threads&limit=40
+https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=did%3Aplc%3A5cy2jd3fzplyslvbbqwjwcsp
 https://provincetownindependent.org/feed/
 https://massterlist.com/feed/
 https://urbanists.social/@NeponsetGreenway.rss

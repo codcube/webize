@@ -137,8 +137,8 @@ https://ospolicyobservatory.uvic.ca/feed/
 https://p2panda.org/feed.xml
 https://pkp.sfu.ca/feed/
 https://psychedelicalpha.com/feed
-https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=did%3Aplc%3Aulsvrqhqegjw5gh7lxyav4yq&filter=posts_and_author_threads&limit=40
-https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=did%3Aplc%3A2tfdyd4zbroc4p6ys6ajluos&filter=posts_and_author_threads&limit=40
+https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=did%3Aplc%3Aulsvrqhqegjw5gh7lxyav4yq
+https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=did%3Aplc%3A2tfdyd4zbroc4p6ys6ajluos
 https://puri.sm/feed/
 https://reb00ted.org/index.xml
 https://retractionwatch.com/feed/
