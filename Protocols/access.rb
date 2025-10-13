@@ -24,7 +24,6 @@ module Webize
       return false if AllowHosts.member? host      # allow host
       return true if BlockedSchemes.member? scheme # block scheme
       return true if uri.match? Gunk               # block URI pattern
-      return false if CDN_doc?                     # allow URI pattern
       return deny_domain?                          # block domain
     end
 
