@@ -30,16 +30,17 @@ module Webize
 
     def multiGET uris
       body = proc do |stream|
-        barrier = Async::Barrier.new     # limit concurrency
+        barrier = Async::Barrier.new                   # concurrency limits
         semaphore = Async::Semaphore.new 24, parent: barrier
-        uris.map{|uri|                   # resource list
+        uris.map{|uri|                                 # resource(s)
           semaphore.async{
-            node = Node uri              # resource (HTTP::Node)
-            node.fetch(thru: false).     # resource -> graph (RDF::Repository)
-              index(env,node) do |graph| # graph -> local cache/index
-              stream <<                  # graph HTML representation -> SSE client
-                "data: #{HTML.render HTML.markup(JSON.fromGraph(graph).values, env)}\n\n"
-              syndicate graph            # graph -> firehose/global-updates client(s)
+            node = Node uri                            # locator (HTTP::Node)
+            status, header, _ = node.fetch do |graphs| # response data (RDF::Repository)
+              graphs.index(env,node) do |graph|        # persist response graph(s)
+                stream <<                              # Graph -> JSON -> HTML -> client (SSE)
+                  "data: #{HTML.render HTML.markup(JSON.fromGraph(graph).values, env)}\n\n"
+                syndicate graph                        # graph -> global/firehose-update clients
+              end
             end
           }}
         barrier.wait
