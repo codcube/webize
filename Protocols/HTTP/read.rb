@@ -32,7 +32,7 @@ module Webize
                      redirect: false} # don't invisibly follow redirects inside HTTP-library code
 
     # fetch resource representation and return it or derived graph-data or a representation thereof
-    def fetchHTTP thru: true # thread upstream HTTP-Response through to caller? TODO use #block_given? instead of option-flag
+    def fetchHTTP
       doc = storage.document                                           # graph-cache location
       meta = [doc, '.meta'].join                                       # HTTP metadata-cache location
 
@@ -106,14 +106,13 @@ module Webize
             FileUtils.touch doc, mtime: mtime if mtime
           end
 
-          if !thru                                                      # no HTTP response construction or proxy
-            print MIME.format_icon format                               # denote fetch with single character for activity feedback
-            graph                                                       # return graph-data
-          elsif format.match? FixedFormat                               # fixed format:
+          yield graph if block_given?                                   # yield fetched graph
+
+          if format.match? FixedFormat                                  # fixed format:
             staticResponse format, body                                 # return HTTP response in original/upstream format
           else                                                          # client format preference:
             env[:origin_format] = format                                # note original format for logger
-            graph.index env, self                                       # cache graph-data
+            graph.index env, self unless block_given?                   # cache graph-data
             h.map{|k,v|                                                 # add origin HTTP metadata to graph
               graph << RDF::Statement.new(self, RDF::URI(HT+k), v)} if graph
             respond graph, format                                       # return HTTP response in content-negotiated format
