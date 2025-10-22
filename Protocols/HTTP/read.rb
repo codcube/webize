@@ -168,16 +168,16 @@ module Webize
       end
     end
 
-    def fetch **opts, &block
+    def fetch &block
       env[:fetched] = true                              # denote network-fetch for logger
       case scheme                                       # request scheme
       when 'gemini'
         Gemini::Node.new(uri).env(env).fetch            # fetch w/ Gemini
       when /https?/
         if ENV.has_key?('http_proxy')
-          insecure.fetchHTTP **opts, block              # fetch w/ HTTP proxy
+          insecure.fetchHTTP block                      # fetch w/ HTTP proxy
         else
-          fetchHTTP **opts, block                       # fetch w/ HTTP(S)
+          fetchHTTP block                               # fetch w/ HTTP(S)
         end
       else
         logger.warn "⚠️ unsupported scheme #{uri}"      # unsupported scheme
