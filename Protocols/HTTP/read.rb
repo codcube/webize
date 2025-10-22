@@ -122,30 +122,27 @@ module Webize
       end
     rescue Exception => e
       raise unless e.respond_to?(:io) && e.io.respond_to?(:status) # raise non-HTTP-response errors
-      repository ||= RDF::Repository.new.extend Webize::Cache
-      graph_pointer repository                             # source graph
       status = e.io.status[0].to_i                         # source status
-      repository << RDF::Statement.new(self, RDF::URI(HT + 'status'), status)
       head = headers e.io.meta                             # headers
       case status.to_s
       when /30[12378]/                                     # redirects
         location = e.io.meta['location']
         dest = Node join location
-        if !thru                                           # notify on console and warnings-bar of new location
-          logger.warn "➡️ #{uri} → #{location}"
-          env[:warnings].push [{_: :a, href: href, c: uri}, '➡️',
-                               {_: :a, href: dest.href, c: dest.uri}, '<br>']
-          repository
-        elsif no_scheme == dest.no_scheme
+                                                           # note new location
+        logger.warn "➡️ #{uri} → #{location}"
+        env[:warnings].push [{_: :a, href: href, c: uri}, '➡️',
+                             {_: :a, href: dest.href, c: dest.uri}, '<br>']
+
+        if no_scheme == dest.no_scheme
           if scheme == 'https' && dest.scheme == 'http'    # 🔒downgrade redirect
             logger.warn "🛑 downgrade redirect #{dest}"
-            localGET if thru
+            localGET
           elsif scheme == 'http' && dest.scheme == 'https' # 🔒upgrade redirect
             logger.debug "🔒 upgrade redirect #{dest}"
             dest.fetchHTTP
           else                                             # redirect loop or non-HTTP protocol
             logger.warn "🛑 not following #{uri} → #{dest} redirect"
-            localGET if thru
+            localGET
           end
         else
           HTTP::Redirector[dest] ||= []                    # update redirection cache
@@ -153,15 +150,15 @@ module Webize
           [status, {'Location' => dest.href}, []]          # redirect
         end
       when /304/                                           # origin unmodified
-        thru ? localGET : repository
+        block_given? ? [304,{},[]] : localGET              # return unmodified-at-origin entity if requested
       when /300|[45]\d\d/                                  # not allowed/available/found
         body = HTTP.decompress(head, e.io.read).encode 'UTF-8', undef: :replace, invalid: :replace, replace: ' '
         RDF::Reader.for(content_type: 'text/html').new(body, base_uri: self){|g|repository << g} if head['Content-Type']&.index 'html'
         head['Content-Length'] = body.bytesize.to_s
-        if !thru
-          repository
-        elsif status == 403 # redirect to origin for anubis/cloudflare/etc challenges via upstream UI
+        if status == 403 # redirect to origin for anubis/cloudflare/etc challenges via upstream UI
           [302, {'Location' => uri}, []]
+        elsif block_given?
+          [status, head, body]
         else
           env[:origin_status] = status
           respond repository # dynamic/transformable response data
@@ -184,7 +181,7 @@ module Webize
         end
       else
         logger.warn "⚠️ unsupported scheme #{uri}"      # unsupported scheme
-        opts[:thru] == false ? nil : notfound
+        notfound
       end
     rescue Exception => e                               # warn on exception
       env[:warnings].push [e.class,                     # error class
@@ -193,7 +190,7 @@ module Webize
                            #{_: :pre,                    # error backtrace
                            #c: (CGI.escapeHTML e.backtrace.join "\n")}
                           ]
-      opts[:thru] == false ? nil : notfound
+      notfound
     end
 
     def GET
