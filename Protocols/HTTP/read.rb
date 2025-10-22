@@ -33,89 +33,90 @@ module Webize
 
     # fetch resource representation and return it or derived graph-data or a representation thereof
     def fetchHTTP
-      doc = storage.document                                           # graph-cache location
-      meta = [doc, '.meta'].join                                       # HTTP metadata-cache location
+      doc = storage.document                                   # graph-cache location
+      meta = [doc, '.meta'].join                               # HTTP metadata-cache location
 
-      cache_headers = {}                                               # conditional-request headers
-      if File.exist? meta                                              # cached metadata (HEAD) for resource?
-        metadata = ::JSON.parse File.open(meta).read                   # read metadata and set header fields
+      cache_headers = {}                                       # conditional-request headers
+      if File.exist? meta                                      # cached metadata (HEAD) for resource?
+        metadata = ::JSON.parse File.open(meta).read           # read metadata and set header fields
         cache_headers['If-None-Match'] = metadata['ETag'] if metadata['ETag']
         cache_headers['If-Modified-Since'] = metadata['Last-Modified'] if metadata['Last-Modified']
       end
 
-      head = headers.                                                  # request headers
-               merge(URI_OPEN_OPTS).                                   # configure open-URI
-               merge(cache_headers)                                    # cache headers
-                                                                       # accept RDF from origin even if proxy client is content-negotiation unaware
+      head = headers.                                          # request headers
+               merge(URI_OPEN_OPTS).                           # configure open-URI
+               merge(cache_headers)                            # cache headers
+                                                               # accept RDF from origin when our client is content-negotiation unaware
       head['Accept'] = ['text/turtle', head['Accept']].join ',' unless head['Accept']&.match?(/text\/turtle/)
 
       ::URI.open(uri, head) do |response|
-        h = headers response.meta                                      # response header
-        case status = response.status[0].to_i                          # response status
-        when 204                                                       # no upstream content
+        h = headers response.meta                              # response header
+        case status = response.status[0].to_i                  # response status
+        when 204                                               # no upstream content
           localGET
-        when 206                                                       # partial upstream content
+        when 206                                               # partial upstream content
           h['Access-Control-Allow-Origin'] ||= origin
           [206, h, [response.read]]
-        else                                                           # massage metadata, cache and return data
-          body = HTTP.decompress h, response.read                      # decompress body
-
-          File.open(meta, 'w'){|f| f << h.merge({uri: uri}).to_json}   # cache HTTP metadata
+        else                                                   # massage metadata, cache and return data
+          body = HTTP.decompress h, response.read              # decompress body
+                                                               # cache HTTP metadata
+          File.open(meta, 'w'){|f| f << h.merge({uri: uri}).to_json}
 
           format = if (parts[0] == 'feed' || (Feed::Names.member? basename)) && adapt?
-                     'application/atom+xml'                            # format defined on feed URI
-                   elsif content_type = h['Content-Type']              # format defined in HTTP header
+                     'application/atom+xml'                    # format defined on feed URI
+                   elsif content_type = h['Content-Type']      # format defined in HTTP header
                      ct = content_type.split(/;/)
-                     if ct.size == 2 && ct[1].index('charset')         # charset defined in HTTP header
+                     if ct.size == 2 && ct[1].index('charset') # charset defined in HTTP header
                        charset = ct[1].sub(/.*charset=/i,'')
                        charset = nil if charset.empty? || charset == 'empty'
                      end
                      ct[0]
                    elsif path && content_type = (MIME.fromSuffix File.extname path)
-                     content_type                                       # format defined on basename
+                     content_type                              # format defined on basename
                    else
                      'text/plain'
-                   end.downcase                                         # normalize format
+                   end.downcase                                # normalize format
 
           if !charset && format.index('html') && metatag = body[0..4096].encode('UTF-8', undef: :replace, invalid: :replace).match(/<meta[^>]+charset=['"]?([^'">]+)/i)
-            charset = metatag[1]                                        # detect in-band charset definition
+            charset = metatag[1]                               # detect in-band charset definition
           end
-          charset = charset ? (normalize_charset charset) : 'UTF-8'     # normalize charset identifier
+          charset = charset ? (normalize_charset charset) : 'UTF-8' # normalize charset identifier
 
           body.encode! 'UTF-8', charset, invalid: :replace, undef: :replace if format.match? /(ht|x)ml|script|text/ # transcode to UTF-8
-          body = HTML.cachestamp body, self if format == 'text/html'    # stamp with in-band cache metadata
+          body = HTML.cachestamp body, self if format == 'text/html' # stamp with in-band cache metadata
 
           format = 'text/html' if format == 'application/xml' && body[0..2048].match?(/(<|DOCTYPE )html/i) # detect (X)HTML served as XML
 
-          if ext = File.extname(doc)[1..-1]                             # name suffix with stripped leading '.'
-            ext = ext.to_sym                                            # symbolize for lookup in RDF::Format
+          if ext = File.extname(doc)[1..-1]                    # name suffix with stripped leading '.'
+            ext = ext.to_sym                                   # symbolize for lookup in RDF::Format
           end
-          if (mimes = RDF::Format.content_types[format]) &&             # MIME definitions
-             !(exts = mimes.map(&:file_extension).flatten).member?(ext) # upstream extension does not map back to reported MIME?
-            doc = [(link = doc), '.', exts[0]].join                     # append mappable extension, link new location from original
-            FileUtils.ln_s File.basename(doc), link unless !format.match?(FixedFormat) ||
+          if (mimes = RDF::Format.content_types[format]) &&    # MIME definitions
+             !(exts = mimes.map(&:file_extension).flatten).member?(ext) # upstream extension doesn't map to MIME?
+            doc = [(link = doc), '.', exts[0]].join            # memo original path and append mapped extension
+            FileUtils.ln_s File.basename(doc), link unless !format.match?(FixedFormat) || # link original to updated path
                                                             File.exist?(link) ||
                                                             File.symlink?(link)
           end
 
-          File.open(doc, 'w'){|f| f << body }                           # cache raw data
-          graph = readRDF format, body                                  # parse graph-data
+          File.open(doc, 'w'){|f| f << body }                  # cache raw data
+          graph = readRDF format, body                         # parse graph-data
 
-          if h['Last-Modified']                                         # cache origin timestamp
+          if h['Last-Modified']                                # cache origin timestamp
             mtime = Time.httpdate h['Last-Modified'] rescue nil
             FileUtils.touch doc, mtime: mtime if mtime
           end
 
-          yield graph if block_given?                                   # yield fetched graph
-
-          if format.match? FixedFormat                                  # fixed format:
-            staticResponse format, body                                 # return HTTP response in original/upstream format
-          else                                                          # client format preference:
-            env[:origin_format] = format                                # note original format for logger
-            graph.index env, self unless block_given?                   # cache graph-data
-            h.map{|k,v|                                                 # add origin HTTP metadata to graph
+          if block_given?                                      # caller to consume intermediate representation of fetch results
+            yield graph                                        # yield fetched/webized representation (RDF::Graph)
+            [status, h, nil]                                   # HTTP status and headers, no further handling of body
+          elsif format.match? FixedFormat                      # fixed format: UNIMPLEMENTED transcode of static-asset formats. ffmpeg/imagemagick could produce e.g. JPG/PNG images for browsers not accepting AVIF/WEBP
+            staticResponse format, body                        # HTTP response in origin format
+          else                                                 # content-negotiated format:
+            env[:origin_format] = format                       # memo origin format (for logger. TODO logger queries HTTP-request metadata available in graph)
+            graph.index env, self                              # memo graph in local cache-storage / index-structures
+            h.map{|k,v|                                        # memo origin resource metadata in graph
               graph << RDF::Statement.new(self, RDF::URI(HT+k), v)} if graph
-            respond graph, format                                       # return HTTP response in content-negotiated format
+            respond graph, format                              # HTTP response in content-negotiated format
           end
         end
       end
