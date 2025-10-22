@@ -32,7 +32,7 @@ module Webize
                      redirect: false} # don't invisibly follow redirects inside HTTP-library code
 
     # fetch resource representation and return it or derived graph-data or a representation thereof
-    def fetchHTTP &b
+    def fetchHTTP &block
       doc = storage.document                                   # graph-cache location
       meta = [doc, '.meta'].join                               # HTTP metadata-cache location
 
@@ -175,9 +175,9 @@ module Webize
         Gemini::Node.new(uri).env(env).fetch            # fetch w/ Gemini
       when /https?/
         if ENV.has_key?('http_proxy')
-          insecure.fetchHTTP block                      # fetch w/ HTTP proxy
+          insecure.fetchHTTP &block                     # fetch w/ HTTP proxy
         else
-          fetchHTTP block                               # fetch w/ HTTP(S)
+          fetchHTTP &block                              # fetch w/ HTTPS
         end
       else
         logger.warn "⚠️ unsupported scheme #{uri}"      # unsupported scheme
