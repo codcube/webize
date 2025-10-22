@@ -32,7 +32,7 @@ module Webize
                      redirect: false} # don't invisibly follow redirects inside HTTP-library code
 
     # fetch resource representation and return it or derived graph-data or a representation thereof
-    def fetchHTTP
+    def fetchHTTP &b
       doc = storage.document                                   # graph-cache location
       meta = [doc, '.meta'].join                               # HTTP metadata-cache location
 
@@ -106,9 +106,9 @@ module Webize
             FileUtils.touch doc, mtime: mtime if mtime
           end
 
-          if block_given?                                      # caller to consume intermediate representation of fetch results
-            yield graph                                        # yield fetched/webized representation (RDF::Graph)
-            [status, h, nil]                                   # HTTP status and headers, no further handling of body
+          if block_given?                                      # caller to handle intermediate representation of body
+            yield graph                                        # yield fetched/webized representation of body
+            [status, h, nil]                                   # return header receipt, no further handle/output-transform of body
           elsif format.match? FixedFormat                      # fixed format: UNIMPLEMENTED transcode of static-asset formats. ffmpeg/imagemagick could produce e.g. JPG/PNG images for browsers not accepting AVIF/WEBP
             staticResponse format, body                        # HTTP response in origin format
           else                                                 # content-negotiated format:
