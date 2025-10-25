@@ -36,7 +36,7 @@ module Webize
     # formalisms/guidelines: https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
     def graph_pointer graph, start=nil
       start ||= respond_to?(:base) ? base : self                          # traversal starting-point
-,      [*fsNames[0..-2], self].inject(start) do |parent, child|           # walk from source to destination graph
+      [*fsNames[0..-2], self].inject(start) do |parent, child|            # walk from source to destination graph
         if Identifiable.member? child.class                               # node has URI
           graph << RDF::Statement.new(child, RDF::URI(Title), child.display_name) # emit node name
         else
