@@ -57,7 +57,7 @@ module Webize
   end
   class Resource
     # in provided graph (argument to this method),
-    # construct a reference (👉) skeleton from base (request-URI) graph via nested containing nodes to current (self) resource,
+    # construct a reference (👉) skeleton from base (request-URI) via nested containing nodes to current (self) resource,
     # for reachability in recursive walk, lookup, treeization, etc algorithms https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
     # related RDF formalisms and guidelines: https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
     def graph_pointer graph
