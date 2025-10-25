@@ -234,9 +234,8 @@ module Webize
       dirMeta                                                              # 👉 container-adjacent nodes
       timeMeta                                                             # 👉 timeslice-adjacent nodes
 
-      pat = RDF::Query::Pattern.new self, :p, :o
-      respond [Webize::Graph.query(pat),                                   # read transient and persisted graph data
-               *storage.nodes.map(&:read)]                                 # return representation of local node(s)
+      respond [Webize::Graph.project_graph(self),                          # read ephemeral graph data
+               *storage.nodes.map(&:read)]                                 # read persisted graph data, return representation
     end
 
     # GET node from peer (origin server or chained proxy)
