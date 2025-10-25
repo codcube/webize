@@ -56,11 +56,10 @@ module Webize
 
   end
   class Resource
-
-    # 👉 (self) from graph, for reachability in recursive walk, lookup, treeization, etc algorithms
-    # 
-    # classic example: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
-    # RDF formalisms&guidelines: https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
+    # in provided graph (argument to this method),
+    # construct a reference (👉) skeleton from base (request-URI) graph via nested containing nodes to current (self) resource,
+    # for reachability in recursive walk, lookup, treeization, etc algorithms https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
+    # related RDF formalisms and guidelines: https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
     def graph_pointer graph
       [*fsNames[0..-2], self].inject(base) do |parent, child| # walk from base to target graph via hierarchical containers
         if Identifiable.member? child.class

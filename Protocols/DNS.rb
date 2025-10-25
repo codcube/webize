@@ -12,11 +12,13 @@ class Webize::DNS < Async::DNS::Server
 
       # link resource to timeline graph
       timestamp = Time.now.utc
+      hour = RDF::URI(timestamp.strftime '/%Y/%m/%d/%H/')
 
-      (Webize::Resource resource).graph_pointer Webize::Graph
+      Webize::Graph << RDF::Statement.new(hour, RDF::URI(Contains), resource)
       Webize::Graph << RDF::Statement.new(resource,
                                           RDF::URI(Date),
-                                          timestamp.iso8601, graph_name: RDF::URI(timestamp.strftime '/%Y/%m/%d/%H/'))
+                                          timestamp.iso8601,
+                                          graph_name: hour)
       # logging
       color = if resource.deny?
                 "\e[38;5;#{resource.deny_domain? ? 196 : 202};7m"
