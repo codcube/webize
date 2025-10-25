@@ -25,7 +25,7 @@ module Webize
   Remote_Cache = ENV['CDN']
 
   # in-memory RDF cache
-  Graph = RDF::Graph.new
+  Graph = RDF::Repository.new
 
   class URI
 
