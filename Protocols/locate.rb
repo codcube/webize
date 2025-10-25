@@ -57,7 +57,7 @@ module Webize
   end
   class Resource
 
-    # 👉 graph, for reachability in recursive walk, lookup, treeization, etc algorithms
+    # 👉 (self) from graph, for reachability in recursive walk, lookup, treeization, etc algorithms
     # 
     # classic example: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
     # RDF formalisms&guidelines: https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html

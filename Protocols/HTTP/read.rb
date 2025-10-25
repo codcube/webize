@@ -234,8 +234,10 @@ module Webize
       dirMeta                                                              # 👉 container-adjacent nodes
       timeMeta                                                             # 👉 timeslice-adjacent nodes
 
-      respond [Webize::Graph.project_graph(self),                          # read ephemeral graph data
-               *storage.nodes.map(&:read)]                                 # read persisted graph data, return representation
+      graph = Webize::Graph.project_graph(self)
+
+      respond [graph,                                                      # include ephemeral graph data
+               *storage.nodes.map(&:read)]                                 # load persisted graph data + return representation
     end
 
     # GET node from peer (origin server or chained proxy)
