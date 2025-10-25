@@ -8,14 +8,15 @@ class Webize::DNS < Async::DNS::Server
 
   Log = -> resource {
     unless Seen[resource.host]
-      Seen[resource.host] = true # mark as visited
+      Seen[resource.host] = true                         # mark resource as visited for deduplication of book-keeping (TODO count multiple visits?)
+      timestamp = Time.now.utc                           # resource timestamp
+      hour = RDF::URI timestamp.strftime '/%Y/%m/%d/%H/' # timeslice (hour) graph-URI
+      resource.👉 Webize::Graph, hour                    # add resource to timeline
+      Webize::Graph << RDF::Statement.new(resource,      # add resource timestamp to graph
+                                          RDF::URI(Date),
+                                          timestamp.iso8601,
+                                          graph_name: hour)
 
-      # link resource to timeline graph
-      timestamp = Time.now.utc
-      hour = RDF::URI(timestamp.strftime '/%Y/%m/%d/%H/')
-
-      Webize::Graph << RDF::Statement.new(hour, RDF::URI(Contains), resource, graph_name: hour)
-      Webize::Graph << RDF::Statement.new(resource, RDF::URI(Date), timestamp.iso8601, graph_name: hour)
       # logging
       color = if resource.deny?
                 "\e[38;5;#{resource.deny_domain? ? 196 : 202};7m"

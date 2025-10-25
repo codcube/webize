@@ -29,6 +29,25 @@ module Webize
 
   class URI
 
+    # in RDF graph (first argument),
+    # construct reference-👉 skeleton from env/req base-graph via hierarchical containing nodes to this (implicit via self) graph,
+    # for reachability in recursive walk, lookup, treeization, etc algorithms
+    # reachability: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
+    # formalisms/guidelines: https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
+    def graph_pointer graph
+      [*fsNames[0..-2], self].inject(respond_to?(:base) ? base : self) do |parent, child| # walk from base to target graph via hierarchical containers
+        if Identifiable.member? child.class
+          graph << RDF::Statement.new(child, RDF::URI(Title), child.display_name) # child name
+        else
+          child_name = child.to_s
+          child = RDF::URI '#c' + Digest::SHA2.hexdigest([parent, child].join) # mint child URI
+          graph << RDF::Statement.new(child, RDF::URI(Title), child_name) # child name
+        end
+        graph << RDF::Statement.new(parent, RDF::URI(Contains), child) # parent 👉 child
+        child                                                          # child
+      end
+    end
+
     def relocate? = (URL_host? && (query_hash['url'] || query_hash['u'])) ||
                     RSS_available? ||
                     [FWD_hosts, YT_rehosts].find{|_| _.member? host} ||
@@ -56,23 +75,6 @@ module Webize
 
   end
   class Resource
-    # in provided graph (argument to this method),
-    # construct a reference (👉) skeleton from base (request-URI) via nested containing nodes to current (self) resource,
-    # for reachability in recursive walk, lookup, treeization, etc algorithms https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
-    # related RDF formalisms and guidelines: https://www.w3.org/submissions/CBD/ https://patterns.dataincubator.org/book/graph-per-source.html
-    def graph_pointer graph
-      [*fsNames[0..-2], self].inject(base) do |parent, child| # walk from base to target graph via hierarchical containers
-        if Identifiable.member? child.class
-          graph << RDF::Statement.new(child, RDF::URI(Title), child.display_name) # child name
-        else
-          child_name = child.to_s
-          child = RDF::URI '#c' + Digest::SHA2.hexdigest([parent, child].join) # mint child URI
-          graph << RDF::Statement.new(child, RDF::URI(Title), child_name) # child name
-        end
-        graph << RDF::Statement.new(parent, RDF::URI(Contains), child) # parent 👉 child
-        child                                                          # child
-      end
-    end
 
     # resource reference in current browsing context
     def href
